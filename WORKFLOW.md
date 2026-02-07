@@ -27,14 +27,12 @@
 flowchart TD
     %% Phase 0
     subgraph P0["Phase 0: 立项与规划"]
-        direction TB
         Brainstorm["头脑风暴\nBrainstorming"] --> InitClaude["初始化 CLAUDE.md"]
         InitClaude --> Research["技术调研 (可选)\nContext7 / Crawl4AI"]
     end
 
     %% Phase 1+2: 模块开发循环
     subgraph DevLoop["Phase 1-2: 模块开发 (每个模块独立选择路径)"]
-        direction TB
         ModuleStart{"选择开发方式"}
 
         ModuleStart -->|"常规模块\n新项目 / 小改动"| PlanMode["Plan Mode 讨论方案"]
@@ -54,7 +52,6 @@ flowchart TD
 
     %% Phase 3
     subgraph P3["Phase 3: 集成与收尾"]
-        direction TB
         TechVerify["/verify 技术检查"] --> E2E["/e2e 端到端测试"]
         E2E --> PRReview["/review-pr 深度审查"]
         PRReview --> Security["安全审查"]
