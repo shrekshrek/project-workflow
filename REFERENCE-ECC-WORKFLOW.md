@@ -307,6 +307,36 @@ Python、Go、Django、Spring Boot、Postgres 等各有专用 skill，包含对�
 > **Critical: 不要同时启用所有 MCP。** 200k 的上下文窗口启用过多工具后可能缩减到 70k。
 > 在项目配置中用 `disabledMcpServers` 禁用不需要的 MCP。
 
+### 高级验证命令
+
+ECC 提供了两个归类于"Longform Guide"的高级验证命令，不在核心工作流（Plan → TDD → Review → Commit）中，但可按需使用：
+
+**`/verify`** — 全量技术检查，依次执行 6 项：
+
+| 检查项 | 内容 |
+|:---|:---|
+| Build | 构建是否成功 |
+| Types | TypeScript 类型错误 |
+| Lint | 代码规范问题 |
+| Tests | 测试通过率和覆盖率 |
+| Console.log | 调试语句审计 |
+| Git Status | 未提交的变更 |
+
+输出结构化的 PASS/FAIL 报告，含 "Ready for PR: YES/NO" 结论。支持 `quick`、`full`、`pre-commit`、`pre-pr` 参数。
+
+**`/checkpoint`** — 检查点验证，与 `/verify` 配合使用：
+
+```
+/checkpoint create "feature-start"    ← 记录起点
+  ↓ 开发...
+/checkpoint create "core-done"        ← 记录中间点
+/checkpoint verify "core-done"        ← 内部调用 /verify，对比前后变化
+  ↓ 重构...
+/checkpoint verify "feature-start"    ← 完整对比：文件变更、测试增减、覆盖率变化
+```
+
+> 在我们的 WORKFLOW.md 中，`/verify` 被放在 Phase 3 集成收尾阶段作为上线前的全量技术兜底，而非每个模块的必经步骤（模块级的技术检查由 PostToolUse hooks 实时覆盖）。
+
 ### ECC 未覆盖的领域
 
 ECC 主要关注**单会话内的开发流程**，以下方面需要结合其他方案补充：

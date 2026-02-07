@@ -60,6 +60,24 @@
 
 > 机制不重要，重要的是模式：**独立工作目录 = 独立 Claude 上下文**。
 
+### Agent Teams（2026.02.05 新功能）
+
+Anthropic 在 Opus 4.6 发布同期推出了 **Agent Teams**（研究预览），是 worktree 手动并行的官方升级方案：
+
+- 一个 **lead session** 协调工作、分配任务、汇总结果
+- 多个 **teammate** 在独立上下文窗口中并行工作，可直接互相通信
+- 与 subagent 的区别：subagent 只能向主 agent 汇报；teammate 之间可以共享发现、互相挑战、自主协调
+- 共享 task list，支持 Shift+Up/Down 或 tmux 直接接管任何 teammate
+
+启用方式：设置环境变量 `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`
+
+最适合的场景：
+- 研究与审查（多个 teammate 同时调查不同方面）
+- 新模块开发（每个 teammate 负责不同文件集）
+- 竞争性调试（多个假设并行验证）
+
+> **注意**：仍为实验阶段，已知限制包括不支持会话恢复、不支持嵌套 team。两个 teammate 编辑同一文件会导致覆盖，需要提前规划文件分工。
+
 ---
 
 ## 4. CLAUDE.md 的使用方式
@@ -114,9 +132,10 @@
 
 ## 7. 模型选择
 
-使用 **Opus 4.5 + thinking** 做所有事情。
+使用 **Opus + thinking** 做所有事情（Boris 分享时为 Opus 4.5，2026.02.05 已发布 Opus 4.6）。
 
 > 虽然比 Sonnet 更大更慢，但需要的引导更少、工具调用更准确，最终反而更快。
+> Opus 4.6 新增 1M token 上下文窗口（beta）和 Agent Teams 支持。
 
 ---
 
