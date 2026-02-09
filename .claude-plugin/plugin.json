@@ -1,0 +1,14 @@
+{
+  "name": "project-workflow",
+  "version": "0.1.0",
+  "description": "Structured project workflow for module-by-module development. Provides /project-plan, /module-plan, /module-done commands with specialized agents for planning, exploration, and architecture design.",
+  "author": {
+    "name": "shrekwang"
+  },
+  "commands": ["./commands/"],
+  "agents": [
+    "./agents/system-architect.md",
+    "./agents/tech-researcher.md",
+    "./agents/codebase-explorer.md"
+  ]
+}

@@ -10,7 +10,7 @@
 1. [项目生命周期总览](#1-项目生命周期总览)
 2. [Plan Mode 与 /plan 命令](#2-plan-mode-与-plan-命令)
 3. [Phase 0：立项与规划](#3-phase-0立项与规划)
-4. [模块开发路径选择](#4-模块开发路径选择)
+4. [模块开发流程总览](#4-模块开发流程总览)
 5. [模块开发详解（Plan Mode 工作流）](#5-模块开发详解plan-mode-工作流)
 6. [Phase 3：集成与收尾](#6-phase-3集成与收尾)
 7. [会话管理：开始与结束仪式](#7-会话管理开始与结束仪式)
@@ -26,29 +26,20 @@
 ```mermaid
 flowchart TD
     %% Phase 0
-    subgraph P0["Phase 0: 立项与规划"]
+    subgraph P0["Phase 0: 立项与规划 (/project-plan)"]
         Brainstorm["头脑风暴\nBrainstorming"] --> InitClaude["初始化项目文件\nCLAUDE.md + PROGRESS.md"]
         InitClaude --> Research["技术调研 (可选)\nContext7 / Crawl4AI"]
         Research --> Arch["架构设计\ndocs/architecture.md"]
     end
 
     %% Phase 1+2: 模块开发循环
-    subgraph DevLoop["Phase 1-2: 模块开发 (每个模块独立选择路径)"]
-        ModuleStart{"选择开发方式"}
-
-        ModuleStart -->|"常规模块\n新项目 / 小改动"| PlanMode["Plan Mode 讨论方案"]
-        PlanMode --> Execute["执行开发\n直接执行 或 /tdd"]
-        Execute --> Verify1["验证功能"]
-        Verify1 --> CodeReview["/code-review"]
-        CodeReview --> Commit1["/commit"]
-
-        ModuleStart -->|"复杂模块\n大量现有代码"| FD["/feature-dev\n7 阶段: 探索→架构→实现→审查"]
-        FD --> Verify2["验证功能"]
-        Verify2 --> Commit2["/commit"]
-
-        Commit1 --> Update["更新 PROGRESS.md"]
-        Commit2 --> Update
-        Update -->|"还有模块"| ModuleStart
+    subgraph DevLoop["Phase 1-2: 模块开发"]
+        PlanMode["/module-plan\n讨论并持久化方案"] --> Execute["执行开发\n直接执行 或 /tdd"]
+        Execute --> Verify["验证功能"]
+        Verify --> CodeReview["/code-review"]
+        CodeReview --> Commit["/commit"]
+        Commit --> Update["/module-done"]
+        Update -->|"还有模块"| PlanMode
     end
 
     %% Phase 3
@@ -60,15 +51,14 @@ flowchart TD
     end
 
     %% 连接各阶段
-    Arch --> ModuleStart
+    Arch --> PlanMode
     Update -->|"所有模块完成"| TechVerify
 ```
 
 | 阶段 | 目标 | 核心指令 | 产出物 |
 |:---|:---|:---|:---|
-| Phase 0 | 明确做什么、怎么做 | Brainstorming → 架构设计 | CLAUDE.md + PROGRESS.md + docs/architecture.md |
-| Phase 1-2 | 逐模块设计与实现 | **路径 A**: Plan Mode → 执行 → 验证 → `/code-review` → `/commit` | 可运行的代码 + 测试 |
-|  |  | **路径 B**: `/feature-dev`（7 阶段一体化）→ 验证 → `/commit` |  |
+| Phase 0 | 明确做什么、怎么做 | `/project-plan`（或手动 Brainstorming → 架构设计） | CLAUDE.md + PROGRESS.md + docs/architecture.md |
+| Phase 1-2 | 逐模块设计与实现 | `/module-plan` → 执行 → 验证 → `/code-review` → `/commit` → `/module-done` | 可运行的代码 + 测试 |
 | Phase 3 | 全局验证与上线 | `/verify` → `/e2e` → `/review-pr` → 安全审查 → `/commit-push-pr` | PR、部署产物 |
 
 ---
@@ -127,7 +117,8 @@ Shift+Tab 循环：Normal → Plan → Auto-accept → Normal → ...
 ```
 1. Shift+Tab → 进入 Plan 模式
 2. 多轮对话讨论方案，反复打磨直到满意
-3. 让 Claude 把当前模块的方案写入 docs/plan.md，同时更新 PROGRESS.md 的模块状态
+3. /module-plan               ← 将方案持久化到 docs/plan.md，更新 PROGRESS.md
+   (或手动让 Claude 写入 docs/plan.md + 更新 PROGRESS.md)
 4. (可选) 用其他模型审查 docs/plan.md ← 复杂功能建议做
 5. /compact                    ← 方案已持久化，压缩上下文为执行腾出空间
 6. Shift+Tab → 切到 Auto-accept 模式
@@ -154,6 +145,8 @@ Shift+Tab 循环：Normal → Plan → Auto-accept → Normal → ...
 ## 3. Phase 0：立项与规划
 
 **目标**: 从模糊的想法收敛到可执行的需求清单和全局架构设计。
+
+> **推荐**: 使用 `/project-plan` 命令，它会引导你完成整个 Phase 0 流程（需求梳理 → 技术调研 → 澄清问题 → 架构设计 → 持久化到项目文件）。以下是各步骤的详细说明，也可手动逐步执行。
 
 ### 步骤 1：头脑风暴
 
@@ -255,70 +248,34 @@ Step 4 产出的 `docs/architecture.md` 是**全局设计**——解决"系统�
 
 ---
 
-## 4. 模块开发路径选择
+## 4. 模块开发流程总览
 
-**目标**: 为每个模块选择合适的开发路径。
+**目标**: 每个模块按统一流程完成：规划 → 执行 → 验证 → 审查 → 提交 → 更新进度。
 
 ```mermaid
 flowchart TD
-    Start["开始开发一个模块"] --> Q{"需要深度理解\n现有代码?"}
-    Q -->|"否 (新项目/小改动)"| PM["Plan Mode 讨论方案\n→ 执行 → 验证 → /code-review"]
-    Q -->|"是 (大量现有代码)"| FD["/feature-dev 7 阶段\n探索 → 架构 → 实现 → 审查"]
-    PM --> Commit["/commit → 更新 PROGRESS.md"]
-    FD --> Verify["验证功能"] --> Commit
-    Commit -->|"还有模块"| Start
-    Commit -->|"全部完成"| P3["Phase 3: 集成与收尾"]
+    Start["/module-plan\n讨论并持久化方案"] --> Execute["执行开发\n直接执行 或 /tdd"]
+    Execute --> Verify["验证功能"]
+    Verify --> CR["/code-review"]
+    CR --> Commit["/commit"]
+    Commit --> Done["/module-done"]
+    Done -->|"还有模块"| Start
+    Done -->|"全部完成"| P3["Phase 3: 集成与收尾"]
 ```
 
-### 两条路径
+### 启动模块规划
 
-| 场景 | 推荐路径 | 说明 |
-|:---|:---|:---|
-| 新项目、或小型功能（3-5 个文件） | **Plan Mode 工作流** | 多轮讨论方案 → 执行 → 验证 → 审查 → 提交 |
-| 已有代码库上的大功能（5+ 个文件） | **`/feature-dev` 工作流** | 7 阶段一体化：代码探索 → 架构 → 实现 → 审查 |
+**推荐使用 `/module-plan`**：它会引导你完成从加载项目上下文、探索现有代码、讨论设计方案到持久化的完整流程。对于涉及大量现有代码的复杂模块，`/module-plan` 会自动启动 2-3 个 codebase-explorer agent 并行扫描代码库，发现可复用的模式和架构层次。
 
-**选择关键**：`/feature-dev` 的独有价值在**代码探索**——它会派 2-3 个 agent 并行深入分析现有代码，发现可复用的模式和架构层次。如果项目已有大量代码需要理解，用 `/feature-dev`；如果是新项目或代码量不大，Plan Mode 讨论更灵活高效。
-
-### 路径 A：Plan Mode 工作流
-
-用 Plan Mode 讨论方案（参见第 2 节），确认后将**当前模块**的详细实施方案写入 `docs/plan.md`，更新 PROGRESS.md，然后按第 5 节的流程执行开发。
+也可以用 Plan Mode 手动讨论方案（参见第 2 节），确认后手动将**当前模块**的详细实施方案写入 `docs/plan.md`，更新 PROGRESS.md。然后按第 5 节的流程执行开发。
 
 > `docs/plan.md` 是**当前模块的临时实施方案**，每开发一个新模块时覆盖更新。它的作用是跨越 `/compact` 的上下文桥梁——压缩后 Claude 可以重新读取该文件恢复方案细节。
-
-### 路径 B：`/feature-dev` 工作流
-
-```
-/feature-dev "实现 Stripe 支付集成，支持一次性支付和订阅，包含 Webhook 处理"
-```
-
-**`/feature-dev` 的 7 个阶段**：
-
-| 阶段 | 做什么 | 你需要做什么 |
-|:---|:---|:---|
-| Phase 1 Discovery | 确认需求 | 回答追问 |
-| Phase 2 Exploration | 2-3 个 agent 并行扫描代码库 | 等待（这是独有价值） |
-| Phase 3 Clarifying | 列出所有歧义 | 逐一确认 |
-| Phase 4 Architecture | 2-3 个 architect agent 出方案 | **选择一种方案** |
-| Phase 5 Implementation | 按方案实现 | 等待或介入 |
-| Phase 6 Quality Review | 3 个 reviewer agent 并行审查 | 决定修复哪些问题 |
-| Phase 7 Summary | 总结产出物 | 确认 |
-
-**`/feature-dev` 完成后**：
-
-`/feature-dev` 已包含实现和审查，但不包含验证、提交和进度持久化。完成后手动补充，然后直接进入下一个模块或 Phase 3：
-
-```
-1. 验证：运行 dev server / 测试套件，确认功能正常工作
-2. /commit
-3. 更新 PROGRESS.md 的模块状态和下次入口
-4. → 下一个模块（回到路径选择）或 → Phase 3 集成收尾
-```
 
 ---
 
 ## 5. 模块开发详解（Plan Mode 工作流）
 
-**目标**: 按模块逐个实现，每个模块走完整的开发-测试-审查流程。本节详解路径 A（Plan Mode）的具体操作。路径 B（`/feature-dev`）的操作详见第 4 节。
+**目标**: 按模块逐个实现，每个模块走完整的开发-测试-审查流程。本节详解第 4 节流程中各步骤的具体操作。
 
 ### 5.1 核心原则
 
@@ -333,7 +290,7 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    A["Plan 模式讨论方案\n(Shift+Tab, 不动代码)"] -->|"方案确认, Shift+Tab"| B{"核心业务逻辑?"}
+    A["/module-plan 讨论并持久化方案"] -->|"方案确认, Shift+Tab"| B{"核心业务逻辑?"}
     B -->|"支付/权限/精度等"| TDD["/tdd 测试驱动开发"]
     B -->|"CRUD/页面/配置等"| Direct["Auto-accept 直接执行"]
     TDD --> V["验证功能\n(dev server / 手动测试)"]
@@ -342,13 +299,13 @@ flowchart TD
     CR --> Fix{"有问题?"}
     Fix -->|"是"| FixIt["修复"] --> CR
     Fix -->|"否"| Commit["/commit"]
-    Commit --> Update["更新 PROGRESS.md"]
+    Commit --> Update["/module-done"]
     Update -->|"下一个模块"| A
 ```
 
 #### 第一步：Plan 模式讨论方案
 
-`Shift+Tab` 进入 Plan 模式（参见第 2 节），用自然语言和 Claude 讨论模块的实现方案：
+**推荐使用 `/module-plan`**，它会引导你完成从加载上下文到讨论方案再到持久化的完整流程。也可以手动操作：`Shift+Tab` 进入 Plan 模式（参见第 2 节），用自然语言和 Claude 讨论模块的实现方案：
 
 ```
 Shift+Tab → 进入 Plan 模式
@@ -364,7 +321,8 @@ Plan 模式的核心是**多轮对话**——你可以质疑方案、提出约�
 `/plan` 可以作为**可选的起点**——如果你不确定从哪里开始讨论，先用 `/plan "模块描述"` 让 Claude 输出一份结构化方案，然后在 Plan 模式下针对这份方案逐项讨论修改。
 
 > **注意**: Plan 模式下的讨论和 `/plan` 的输出都只存在于当前会话中，不会自动保存到项目文件。
-> 方案确认后，持久化到项目文件：
+> 方案确认后，用 `/module-plan` 持久化到项目文件（它会写入 `docs/plan.md` 并更新 `PROGRESS.md`）。
+> 也可以手动完成：
 >
 > ```
 > 把刚才确认的实施方案写入 docs/plan.md（详细版），
@@ -417,9 +375,10 @@ Plan 模式的核心是**多轮对话**——你可以质疑方案、提出约�
 
 ```
 /commit
+/module-done
 ```
 
-然后更新 `PROGRESS.md`：
+`/module-done` 会标记模块为"已完成"、更新 PROGRESS.md 的下次入口、并在需要时创建模块级 CLAUDE.md。也可以手动更新：
 
 ```
 帮我更新 PROGRESS.md，标记订单模块 CRUD API 已完成，更新"下次继续的入口"
@@ -433,12 +392,18 @@ Plan 模式的核心是**多轮对话**——你可以质疑方案、提出约�
 |:---|:---|:---|
 | < 50% | 继续当前会话 | 直接开始下一个模块 |
 | 50-70% | `/compact` 后继续 | 压缩上下文，保留关键信息再继续 |
-| > 70%，或下个模块复杂 | 开新会话 | `/commit` → 更新 PROGRESS.md → 开新会话 |
-| 刚跑完 `/feature-dev` | 开新会话 | 7-9 个 subagent 报告已填满上下文 |
+| > 70%，或下个模块复杂 | 开新会话 | `/commit` → `/module-done` → 开新会话 |
 
 > **如何查看上下文用量？** 观察 Claude Code 状态栏的 token 计数。
 
 **继续当前会话时**：
+
+```
+/module-done                  ← 标记当前模块完成，更新 PROGRESS.md
+/module-plan 支付模块          ← 开始下一个模块的方案讨论
+```
+
+或手动衔接：
 
 ```
 我已完成订单模块，现在开始开发支付模块。
@@ -448,22 +413,12 @@ Plan 模式的核心是**多轮对话**——你可以质疑方案、提出约�
 **开新会话时**：
 
 ```bash
-# 确保当前会话已 /commit 并更新了 PROGRESS.md
+# 确保当前会话已 /commit 并运行了 /module-done
 claude                        # 开新会话
 请阅读 CLAUDE.md 和 PROGRESS.md，从支付模块开始
 ```
 
-### 5.4 复杂模块：使用 `/feature-dev`
-
-如果某个模块涉及大量现有代码需要理解（如在已有系统上集成支付），可以用 `/feature-dev` 替代 Plan Mode 工作流来处理该模块。`/feature-dev` 的代码探索阶段（Exploration）能派 2-3 个 agent 并行分析现有代码中可复用的模式，这是 Plan Mode 做不到的。`/feature-dev` 完成后直接进入下一个模块，无需再走 5.2 的流程。
-
-```
-/feature-dev "实现 Stripe 支付集成，支持一次性支付和订阅，包含 Webhook 处理"
-```
-
-完成后补充验证、提交和更新进度（详见第 4 节"路径 B"）。
-
-### 5.5 上下文管理
+### 5.4 上下文管理
 
 > 上下文窗口是 Claude Code 最核心的约束。社区反馈中，上下文管理不当是**排名第一的失败原因**。
 
@@ -491,7 +446,7 @@ claude                        # 开新会话
 Plan Mode 讨论可能消耗 20-30% 上下文。讨论完毕后：
 
 ```
-1. 让 Claude 把当前模块的详细方案写入 docs/plan.md，更新 PROGRESS.md
+1. /module-plan            ← 持久化方案到 docs/plan.md + 更新 PROGRESS.md
 2. /compact               ← 方案已持久化，可以安全压缩
 3. Shift+Tab → Auto-accept 模式开始执行
 ```
@@ -574,7 +529,7 @@ flowchart TD
     New --> Dev
     Dev --> End["准备结束会话"]
     End --> C1["/commit\n确保代码已提交"]
-    C1 --> C2["更新 PROGRESS.md\n进度 + 下次入口"]
+    C1 --> C2["/module-done\n更新 PROGRESS.md"]
     C2 --> C3["(可选) /update-docs\n(可选) /learn"]
 ```
 
@@ -606,7 +561,8 @@ Claude 会自动加载 `CLAUDE.md`，但 `PROGRESS.md` 需要显式要求读取�
 
 ```
 必做: /commit                        ← 确保代码已提交
-必做: 更新 PROGRESS.md               ← 模块状态 + 下次继续的入口
+必做: /module-done                   ← 更新 PROGRESS.md（模块状态 + 下次入口）
+      (或手动更新 PROGRESS.md)
 可选: 更新 CLAUDE.md                 ← 仅当发现新的编码约定或常见错误时
 可选: /update-docs                   ← 有较多文件变更时更新代码地图
 可选: /learn                         ← 踩到坑或发现重要经验时提取教训
@@ -633,10 +589,10 @@ Claude 会自动加载 `CLAUDE.md`，但 `PROGRESS.md` 需要显式要求读取�
 │  "请阅读 CLAUDE.md 和 PROGRESS.md，总结进度和下一步"   │
 ├──────────────────────────────────────────────────────┤
 │             正常开发                                  │
-│  Plan模式讨论 → 执行 → 验证 → /code-review → /commit  │
+│  /module-plan → 执行 → 验证 → /code-review → /commit  │
 ├──────────────────────────────────────────────────────┤
 │             会话结束                                  │
-│  /commit → 更新 PROGRESS.md → (可选)/update-docs/learn │
+│  /commit → /module-done → (可选)/update-docs/learn     │
 └──────────────────────────────────────────────────────┘
 ```
 
@@ -867,7 +823,7 @@ Shift+Tab → 切回 Plan 模式
 |:---|:---|:---|
 | 数据库 Schema | 已完成 | |
 | 用户认证 | 已完成 | |
-| 订单系统 | 进行中 | CRUD 完成，缺分页 |
+| 订单系统 | 方案已确认 | CRUD 完成，缺分页 |
 | 支付集成 | 未开始 | |
 | 管理后台 | 未开始 | |
 
