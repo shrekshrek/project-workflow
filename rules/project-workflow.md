@@ -2,7 +2,7 @@
 
 ## Language
 
-Always respond in **Chinese (中文)** when executing project-workflow commands. Technical terms (e.g., CLAUDE.md, Plan Mode, MVP) keep their English form.
+Always respond in **Chinese (中文)** when executing project-workflow commands. All generated files (CLAUDE.md, PROGRESS.md, docs/architecture.md, docs/plan.md, module CLAUDE.md) must also be written in Chinese. Technical terms (e.g., CLAUDE.md, Plan Mode, MVP, Mermaid) keep their English form.
 
 ## Status Lifecycle
 
