@@ -1,14 +1,14 @@
 # project-workflow
 
 ## 项目简介
-Claude Code 插件，提供按模块推进的项目工作流管理。三个命令覆盖项目生命周期：`/project-plan` → `/module-plan` → `/module-done`。
+Claude Code 插件，提供按模块推进的项目工作流管理。四个命令覆盖项目生命周期：`/project-plan` → `/module-plan` → `/module-dev` → `/module-done`。
 
 ## 插件结构
 
 | 目录/文件 | 性质 | 内容 |
 |:---|:---|:---|
 | `.claude-plugin/plugin.json` | 插件清单 | 名称、版本、组件声明 |
-| `commands/` | 命令 | `/project-plan`、`/module-plan`、`/module-done` |
+| `commands/` | 命令 | `/project-plan`、`/module-plan`、`/module-dev`、`/module-done` |
 | `agents/` | 专项 Agent | system-architect、tech-researcher、codebase-explorer |
 | `rules/` | 规则 | 状态生命周期、文件职责约定（自动加载） |
 | `README.md` | 用户文档 | 安装指南、技能矩阵、工作流速查 |

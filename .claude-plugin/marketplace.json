@@ -10,7 +10,7 @@
     {
       "name": "project-workflow",
       "source": "./",
-      "description": "Provides /project-plan, /module-plan, /module-done commands with specialized agents for planning, exploration, and architecture design.",
+      "description": "Provides /project-plan, /module-plan, /module-dev, /module-done commands with specialized agents for planning, exploration, and architecture design.",
       "author": {
         "name": "shrekwang"
       },

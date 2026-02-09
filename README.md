@@ -2,7 +2,7 @@
 
 > Claude Code 插件：按模块推进的项目工作流管理。
 
-三个命令覆盖项目生命周期：`/project-plan` → `/module-plan` → `/module-done`。
+四个命令覆盖项目生命周期：`/project-plan` → `/module-plan` → `/module-dev` → `/module-done`。
 
 ---
 
@@ -12,7 +12,7 @@
 claude plugin install /path/to/project-workflow
 ```
 
-安装后可用 `/project-plan`、`/module-plan`、`/module-done` 三个斜杠命令。
+安装后可用 `/project-plan`、`/module-plan`、`/module-dev`、`/module-done` 四个斜杠命令。
 
 ---
 
@@ -20,7 +20,7 @@ claude plugin install /path/to/project-workflow
 
 | 组件 | 内容 |
 |:---|:---|
-| **Commands** (3) | `/project-plan`、`/module-plan`、`/module-done` |
+| **Commands** (4) | `/project-plan`、`/module-plan`、`/module-dev`、`/module-done` |
 | **Agents** (3) | system-architect、tech-researcher、codebase-explorer |
 | **Rules** (1) | 状态生命周期、文件职责约定（自动加载） |
 
@@ -57,6 +57,23 @@ claude plugin install /path/to/project-workflow
 
 **调用的 Agent**:
 - **codebase-explorer** (1-3 个) — 按复杂度伸缩：追踪依赖接口、识别代码模式、分析相似功能
+
+### `/module-dev "模块名"`
+
+按 `docs/plan.md` 实施模块开发，带上下文加载和验收关卡。
+
+**前置条件**: 已运行 `/module-plan`，docs/plan.md 存在，模块状态为"方案已确认"。
+
+**流程**: 加载上下文 → 确认实现步骤 → 逐步实现（代码 + 关键行为测试）→ 验收关卡
+
+**特点**:
+- 自动加载 CLAUDE.md、docs/plan.md、docs/architecture.md 全量上下文
+- 从 plan 中提取步骤清单，标注哪些需要测试
+- 关键行为先写测试再实现，trivial 代码直接实现
+- Phase 4 验收：build 检查 + 测试通过 + 对照 plan 逐项核对
+- 支持跨会话续接（Resume Mode）
+
+**不调用 Agent** — 直接使用 Claude 的编码能力。
 
 ### `/module-done "模块名"`
 
@@ -100,7 +117,7 @@ claude plugin install /path/to/project-workflow
 
 ## 标准工作流 (SOP)
 
-根据任务复杂度选择三种模式之一。执行阶段使用 Claude Code 内置命令（如 `/tdd`、`/code-review`、`/commit`）。
+根据任务复杂度选择三种模式之一。模式 C 使用本插件的 `/module-dev` 完成实现，模式 A/B 可搭配 ECC 命令（如 `/code-review`、`/commit`）。
 
 ### 模式 A：直接编码
 
@@ -123,7 +140,7 @@ claude plugin install /path/to/project-workflow
 **适用**: 全新功能、复杂模块重构、涉及多文件的大任务。
 
 ```
-/module-plan → 执行（/tdd 或 Auto-accept）→ 验证 → /code-review → /commit → /module-done
+/module-plan → /module-dev → /commit → /module-done
 ```
 
 ### 选择速查
@@ -132,7 +149,7 @@ claude plugin install /path/to/project-workflow
 |:---|:---|:---|
 | 1-2 个文件，逻辑简单 | **A** 直接编码 | `/commit` |
 | 3-5 个文件，已知方案 | **B** 轻量迭代 | `/plan` → `/tdd` → `/commit` |
-| 5+ 个文件，需要设计 | **C** 模块化开发 | `/module-plan` → `/module-done` |
+| 5+ 个文件，需要设计 | **C** 模块化开发 | `/module-plan` → `/module-dev` → `/module-done` |
 
 ---
 
@@ -143,8 +160,8 @@ claude plugin install /path/to/project-workflow
 | 阶段 | 推荐工具 | 说明 |
 |:---|:---|:---|
 | 规划 | `/project-plan`, `/module-plan` | 本插件提供 |
-| 测试驱动开发 | `/tdd` | ECC 内置 |
-| 代码审查 | `/code-review`, `/review-pr` | ECC 内置 / PR Review Toolkit |
+| 实现 | `/module-dev` | 本插件提供（含测试 + 验收） |
+| 代码审查 | `/code-review`, `/review-pr` | ECC / PR Review Toolkit（可选） |
 | 提交 | `/commit`, `/commit-push-pr` | Commit Commands 插件 |
 | 构建修复 | `/fix` | ECC 内置 |
 | 完成模块 | `/module-done` | 本插件提供 |

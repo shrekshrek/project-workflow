@@ -34,10 +34,8 @@ flowchart TD
 
     %% Phase 1+2: 模块开发循环
     subgraph DevLoop["Phase 1-2: 模块开发"]
-        PlanMode["/module-plan\n讨论并持久化方案"] --> Execute["执行开发\n直接执行 或 /tdd"]
-        Execute --> Verify["验证功能"]
-        Verify --> CodeReview["/code-review"]
-        CodeReview --> Commit["/commit"]
+        PlanMode["/module-plan\n讨论并持久化方案"] --> Execute["/module-dev\n按方案逐步实现 + 验收"]
+        Execute --> Commit["/commit"]
         Commit --> Update["/module-done"]
         Update -->|"还有模块"| PlanMode
     end
@@ -234,7 +232,7 @@ Step 4 产出的 `docs/architecture.md` 是**全局设计**——解决"系统�
 |:---|:---|:---|
 | **解决的问题** | 系统怎么搭 | 这个模块怎么写 |
 | **讨论范围** | 系统架构、数据模型、模块边界、技术选型 | 表结构、API 路由、实现步骤、测试策略 |
-| **辅助技能** | Backend Architect、Mermaid Diagrams、Architect Review | 技术栈对应技能（自动触发）、/tdd、Testing Patterns |
+| **辅助技能** | Backend Architect、Mermaid Diagrams、Architect Review | 技术栈对应技能（自动触发）、/module-dev |
 | **产出文件** | `docs/architecture.md`（持久） | `docs/plan.md`（临时，每模块覆盖） |
 
 > 模块方案讨论中，技术栈相关的技能会根据讨论内容自动触发（如 FastAPI Expert、Vercel React/Next.js、Supabase Best Practices 等）。完整的技能选用指南见 `README.md` 第 5 节。
@@ -254,10 +252,8 @@ Step 4 产出的 `docs/architecture.md` 是**全局设计**——解决"系统�
 
 ```mermaid
 flowchart TD
-    Start["/module-plan\n讨论并持久化方案"] --> Execute["执行开发\n直接执行 或 /tdd"]
-    Execute --> Verify["验证功能"]
-    Verify --> CR["/code-review"]
-    CR --> Commit["/commit"]
+    Start["/module-plan\n讨论并持久化方案"] --> Dev["/module-dev\n按方案逐步实现 + 验收"]
+    Dev --> Commit["/commit"]
     Commit --> Done["/module-done"]
     Done -->|"还有模块"| Start
     Done -->|"全部完成"| P3["Phase 3: 集成与收尾"]
@@ -290,14 +286,10 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    A["/module-plan 讨论并持久化方案"] -->|"方案确认, Shift+Tab"| B{"核心业务逻辑?"}
-    B -->|"支付/权限/精度等"| TDD["/tdd 测试驱动开发"]
-    B -->|"CRUD/页面/配置等"| Direct["Auto-accept 直接执行"]
-    TDD --> V["验证功能\n(dev server / 手动测试)"]
-    Direct --> V
-    V --> CR["/code-review"]
-    CR --> Fix{"有问题?"}
-    Fix -->|"是"| FixIt["修复"] --> CR
+    A["/module-plan\n讨论并持久化方案"] -->|"方案确认"| Dev["/module-dev\n逐步实现 + 关键行为测试"]
+    Dev --> Verify["Phase 4 验收\nbuild + 测试 + 对照 plan"]
+    Verify --> Fix{"有问题?"}
+    Fix -->|"是"| FixIt["修复"] --> Verify
     Fix -->|"否"| Commit["/commit"]
     Commit --> Update["/module-done"]
     Update -->|"下一个模块"| A
@@ -331,19 +323,20 @@ Plan 模式的核心是**多轮对话**——你可以质疑方案、提出约�
 
 #### 第二步：执行开发
 
-方案确认后，`Shift+Tab` 切到 Auto-accept 模式，让 Claude 按讨论好的方案实现并编写测试。
-
-大多数功能直接执行即可。以下场景建议用 `/tdd` 替代：
-
-| 场景 | 选择 | 原因 |
-|:---|:---|:---|
-| CRUD、页面、配置等常规功能 | 直接执行 | 逻辑清晰，计划中已包含测试策略 |
-| 支付计算、权限判断、数据转换等核心逻辑 | `/tdd` | 边界多、出错代价高，先写测试能定义清楚接口契约 |
-| 涉及精度、并发、状态机等容易出错的逻辑 | `/tdd` | 先定义期望行为，再写实现去满足 |
+**推荐使用 `/module-dev`**：它会自动加载 CLAUDE.md、docs/plan.md、docs/architecture.md 全量上下文，从 plan 中提取实现步骤，逐步完成代码和测试。
 
 ```
-/tdd "订单金额计算：商品单价×数量，满减优惠，运费阶梯计算，精度到分"
+/module-dev
 ```
+
+`/module-dev` 的测试策略是**按 plan 定向测试**，而非一刀切：
+
+| 步骤类型 | 处理方式 |
+|:---|:---|
+| 涉及业务逻辑、边界条件、错误处理的步骤 | 先写测试再实现（plan 中标注的关键行为） |
+| 配置、迁移、简单 wiring 等步骤 | 直接实现，不写测试 |
+
+实现完成后，`/module-dev` 会自动进入 Phase 4 验收（build 检查 + 测试 + 对照 plan 逐项核对）。如果验收发现问题，可再次运行 `/module-dev` 进入 Refinement Mode 修补。
 
 #### 第三步：验证
 
@@ -692,7 +685,7 @@ Claude 会自动加载 `CLAUDE.md`，但 `PROGRESS.md` 需要显式要求读取�
 |:---|:---|:---|
 | 写完一段代码 | `/code-review` | 日常轻量检查（简单模块可跳过，见 5.2） |
 | 构建失败 | `/fix` | 自动诊断修复 |
-| 核心逻辑开发时 | `/tdd` 测试驱动开发 | 支付/权限/精度等场景，确保覆盖率 80%+ |
+| 模块实现时 | `/module-dev` | 按 plan 逐步实现，关键行为先写测试，Phase 4 验收 |
 | 涉及数据库改动 | Database Reviewer 自动触发 | Schema、索引、RLS 检查 |
 | 涉及认证/用户输入 | Security Reviewer 自动触发 | OWASP Top 10 检查 |
 | 所有模块完成、上线前 | `/verify` | 全量技术兜底：构建 + 类型 + lint + 测试 + console.log |
@@ -716,10 +709,10 @@ Claude 会自动加载 `CLAUDE.md`，但 `PROGRESS.md` 需要显式要求读取�
 ### 测试失败
 
 ```
-/tdd
+/module-dev
 ```
 
-原则：**修实现，不改测试**（除非测试本身有误）。
+再次运行 `/module-dev` 进入 Refinement Mode，Phase 4 会定位失败的测试并修复。原则：**修实现，不改测试**（除非测试本身有误）。
 
 ### 方向跑偏：Re-plan
 

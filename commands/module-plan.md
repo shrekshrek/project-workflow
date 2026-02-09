@@ -104,7 +104,7 @@ This is a re-run to adjust an existing module plan. Read `docs/plan.md`, then:
 5. **Test Strategy**: What to test and how:
    - Unit tests (which functions, what scenarios)
    - Integration tests (which flows)
-   - Which scenarios warrant TDD (`/tdd`) vs direct implementation
+   - Which behaviors need tests (key business logic, edge cases from item 4) vs which can skip (config, simple wiring)
 6. **Key Decisions**: Any design choices made during discussion, with reasoning. Flag anything the user should explicitly confirm.
 
 **For each item**: Draft a concrete proposal based on `docs/architecture.md` and Phase 2 findings. Don't ask the user to design from scratch — present a plan and let them adjust.
@@ -134,7 +134,7 @@ After all items are discussed, present the complete plan summary and **ask user 
 
 **After writing**:
 - List each modified file with line count
-- Remind the user: "Plan is saved. Start implementation with `Shift+Tab` to enter execution mode, or use `/tdd` for core business logic."
+- Remind the user: "Plan is saved. Run `/module-dev` to start implementation."
 
 ---
 

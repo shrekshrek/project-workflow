@@ -40,4 +40,5 @@ Do NOT use other status values (e.g., "进行中", "开发中", "待测试").
 
 - `/project-plan` — Full project planning: requirements, research, architecture, persist to project files
 - `/module-plan` — Module planning: load context, explore code, design, persist to docs/plan.md
+- `/module-dev` — Module implementation: load context, follow plan step by step, test key behaviors, verify against plan
 - `/module-done` — Mark module complete: update PROGRESS.md, optionally create module CLAUDE.md
