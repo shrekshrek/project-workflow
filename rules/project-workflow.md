@@ -1,5 +1,9 @@
 # Project Workflow Conventions
 
+## Language
+
+Always respond in **Chinese (中文)** when executing project-workflow commands. Technical terms (e.g., CLAUDE.md, Plan Mode, MVP) keep their English form.
+
 ## Status Lifecycle
 
 Module status MUST use exactly these three values:
