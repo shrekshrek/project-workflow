@@ -9,7 +9,11 @@
 ## 安装
 
 ```bash
-claude plugin install /path/to/project-workflow
+# 1. 添加 marketplace
+/plugin marketplace add shrekshrek/project-workflow
+
+# 2. 安装插件
+/plugin install project-workflow
 ```
 
 安装后可用 `/project-plan`、`/module-plan`、`/module-dev`、`/module-done`、`/plan-review` 五个斜杠命令。
@@ -186,7 +190,7 @@ claude plugin install /path/to/project-workflow
 | 构建修复 | `/fix` | ECC 内置 |
 | 完成模块 | `/module-done` | 本插件提供 |
 
-> ECC = [everything-claude-code](https://github.com/anthropic/everything-claude-code)，Claude Code 工作流引擎。
+> ECC = [everything-claude-code](https://github.com/affaan-m/everything-claude-code)，Claude Code 工作流引擎。
 
 ---
 
