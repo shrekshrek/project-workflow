@@ -178,11 +178,23 @@
 
 ## 配套工具速查
 
-本插件专注于**项目规划与进度管理**，执行阶段依赖 Claude Code 生态的已有工具：
+本插件专注于**项目规划与进度管理**，执行阶段依赖 Claude Code 生态的已有工具。
+
+### 推荐安装
+
+| 插件 | 安装命令 | 提供的关键命令 |
+|:---|:---|:---|
+| [everything-claude-code](https://github.com/affaan-m/everything-claude-code) | `/plugin marketplace add affaan-m/everything-claude-code` | `/code-review`, `/fix`, `/verify`, `/e2e`, `/plan`, `/tdd` |
+| [claude-plugins-official](https://github.com/anthropics/claude-plugins-official) | 内置 marketplace | `/commit`, `/commit-push-pr`, `/review-pr`, Brainstorming, Context7 |
+
+### 各阶段工具对照
 
 | 阶段 | 推荐工具 | 说明 |
 |:---|:---|:---|
+| 头脑风暴 | Brainstorming 技能 | claude-plugins-official（可选，`/project-plan` 内置引导） |
+| 技术调研 | Context7 MCP, Crawl4AI | claude-plugins-official（可选） |
 | 规划 | `/project-plan`, `/module-plan` | 本插件提供 |
+| 架构辅助 | Backend Architect, Mermaid Diagrams, Architect Review | 独立技能，讨论时自动触发（可选） |
 | 方案审查 | `/plan-review` | 本插件提供（只读，不修改文件） |
 | 实现 | `/module-dev` | 本插件提供（含测试 + 验收） |
 | 代码审查 | `/code-review`, `/review-pr` | ECC / PR Review Toolkit（可选） |
@@ -190,7 +202,7 @@
 | 构建修复 | `/fix` | ECC 内置 |
 | 完成模块 | `/module-done` | 本插件提供 |
 
-> ECC = [everything-claude-code](https://github.com/affaan-m/everything-claude-code)，Claude Code 工作流引擎。
+> 标注"可选"的工具不安装不影响核心流程，本插件的五个命令可独立运行。
 
 ---
 
