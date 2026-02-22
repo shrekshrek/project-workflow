@@ -189,7 +189,7 @@ claude plugin install project-workflow@project-workflow
 | [everything-claude-code](https://github.com/affaan-m/everything-claude-code) | `claude plugin marketplace add affaan-m/everything-claude-code` | `/code-review`, `/build-fix`, `/verify`, `/e2e`, `/plan`, `/tdd` |
 | [claude-plugins-official](https://github.com/anthropics/claude-plugins-official) | 内置 marketplace | `/commit`, `/commit-push-pr`, `/review-pr`, Brainstorming, Context7 |
 
-> **与 everything-claude-code (ECC) 的兼容说明**: ECC 内置 PreToolUse hook 默认会拦截所有 `.md` 文件写入，而本插件的 `/project-plan` 和 `/module-plan` 需要写入 `PROGRESS.md` 和 `docs/*.md`。安装 ECC 后需手动修改其 `hooks.json` 将这两类路径加入白名单，否则规划命令将被静默阻断。详见 [ECC 兼容配置](https://github.com/shrekshrek/project-workflow-references)。
+> **与 ECC 的兼容说明**: ECC 的 PreToolUse hook 会拦截 `.md` 文件写入，导致 `/project-plan`、`/module-plan` 无法创建 `PROGRESS.md` 和 `docs/*.md`。安装 ECC 后需在其 `hooks.json` 的 matcher 白名单中加入 `PROGRESS.md` 和 `docs/`，路径为 `~/.claude/plugins/cache/everything-claude-code/everything-claude-code/<version>/hooks/hooks.json`。
 
 ### 各阶段工具对照
 
