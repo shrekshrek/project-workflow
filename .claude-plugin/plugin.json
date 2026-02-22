@@ -1,6 +1,6 @@
 {
   "name": "project-workflow",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "description": "Structured project workflow for module-by-module development. Provides /project-plan, /module-plan, /module-dev, /module-done, /plan-review commands with specialized agents for planning, exploration, and architecture design.",
   "author": {
     "name": "shrekwang"
