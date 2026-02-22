@@ -186,7 +186,7 @@
 
 | 插件 | 安装命令 | 提供的关键命令 |
 |:---|:---|:---|
-| [everything-claude-code](https://github.com/affaan-m/everything-claude-code) | `/plugin marketplace add affaan-m/everything-claude-code` | `/code-review`, `/fix`, `/verify`, `/e2e`, `/plan`, `/tdd` |
+| [everything-claude-code](https://github.com/affaan-m/everything-claude-code) | `/plugin marketplace add affaan-m/everything-claude-code` | `/code-review`, `/build-fix`, `/verify`, `/e2e`, `/plan`, `/tdd` |
 | [claude-plugins-official](https://github.com/anthropics/claude-plugins-official) | 内置 marketplace | `/commit`, `/commit-push-pr`, `/review-pr`, Brainstorming, Context7 |
 
 ### 各阶段工具对照
@@ -201,7 +201,7 @@
 | 实现 | `/module-dev` | 本插件提供（含测试 + 验收） |
 | 代码审查 | `/code-review`, `/review-pr` | ECC / PR Review Toolkit（可选） |
 | 提交 | `/commit`, `/commit-push-pr` | Commit Commands 插件 |
-| 构建修复 | `/fix` | ECC 内置 |
+| 构建修复 | `/build-fix` | ECC 内置 |
 | 完成模块 | `/module-done` | 本插件提供 |
 
 > 标注"可选"的工具不安装不影响核心流程，本插件的五个命令可独立运行。

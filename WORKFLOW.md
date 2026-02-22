@@ -736,7 +736,7 @@ Claude 会自动加载 `CLAUDE.md`，但 `PROGRESS.md` 需要显式要求读取�
 | 模块方案确认后 | `/plan-review 模块名` | 方案可行性、接口一致性审查（可选） |
 | 写完一段代码 | `/code-review` | 日常轻量检查（简单模块可跳过，见 5.2） |
 | 标记模块完成时 | `/module-done` | Code Review Gate：检查未提交变更，提醒运行 code-review |
-| 构建失败 | `/fix` | 自动诊断修复 |
+| 构建失败 | `/build-fix` | 自动诊断修复 |
 | 模块实现时 | `/module-dev` | 按 plan 逐步实现，关键行为先写测试，Phase 4 验收 |
 | 涉及数据库改动 | Database Reviewer 自动触发 | Schema、索引、RLS 检查 |
 | 涉及认证/用户输入 | Security Reviewer 自动触发 | OWASP Top 10 检查 |
@@ -751,11 +751,10 @@ Claude 会自动加载 `CLAUDE.md`，但 `PROGRESS.md` 需要显式要求读取�
 ### 构建失败
 
 ```
-/fix
+/build-fix
 ```
 
-如果 `/fix` 无法解决，尝试更具针对性的命令：
-- TypeScript 错误: `/build-fix`
+如果 `/build-fix` 无法解决，尝试更具针对性的命令：
 - Go 编译错误: `/go-build`
 
 ### 测试失败
@@ -777,7 +776,7 @@ Shift+Tab → 切回 Plan 模式
 当前实现遇到了 XXX 问题，让我们重新规划一下方案
 ```
 
-这比反复用 `/fix` 修补更有效。
+这比反复用 `/build-fix` 修补更有效。
 
 ### 会话上下文丢失
 
