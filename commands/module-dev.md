@@ -106,13 +106,19 @@ All plan steps appear complete. This is a re-run to check quality and fix issues
    - Integration points with other modules
 3. **Implement** — Write the code to make tests pass
 4. **Run tests** — Verify they pass. Fix if needed.
-5. **Move to next step**
+5. **Spec check** — Before moving on, review this step against `docs/plan.md`:
+   - All functionality required by this step is implemented
+   - Nothing was added beyond what the plan specifies (extra code = remove it)
+   - Interface signatures match the plan
+   - If any deviation: stop, explain the deviation to the user. User decides: fix code to match plan, or update plan to match the better design
+6. **Move to next step**
 
 ### Steps marked "无需测试":
 
 1. **Implement directly** — Write the code following plan specifications
 2. **Verify** — Run build/type check if applicable
-3. **Move to next step**
+3. **Spec check** — Same as above: does the output match the plan? Anything added beyond spec?
+4. **Move to next step**
 
 ### Rhythm guidelines:
 

@@ -98,10 +98,25 @@ This is a re-run to adjust an existing module plan. Read `docs/plan.md`, then:
 2. **API / Interface Design**: Routes or function signatures, request/response shapes, error responses. Follow patterns established in completed modules.
    - (Full-stack projects) Backend modules: design endpoints according to the API contracts in `docs/architecture.md`. Flag any deviations from the contract with justification.
    - (Full-stack projects) Frontend modules: reference the API already implemented by the backend counterpart. Focus on data fetching patterns (e.g., React Query, SWR), state management, and UI interaction design rather than re-specifying the API.
-3. **Implementation Steps**: Ordered list of concrete steps. Each step should be small enough to implement and test independently. Include:
-   - What to create (files, functions, classes)
-   - What to modify (existing files, configurations)
-   - Dependencies between steps
+3. **Implementation Steps**: Ordered list of concrete steps. Each step should be small enough to implement and test independently. Each step must include:
+   - **Files**: Exact paths to create or modify (e.g., `src/orders/create.ts` (new), `src/orders/types.ts` (modify))
+   - **Interface**: Function signatures or API route definitions with input/output types
+   - **Key assertions** (for steps that need tests): Concrete behaviors to verify, written as input → expected outcome (e.g., "missing required field → ValidationError", "normal path → returns Order with status 'created'")
+   - **Verification**: Exact command to run tests for this step (e.g., `npm test -- orders/create.test.ts`)
+   - **Dependencies**: Which previous steps must be complete
+
+   Example step format:
+   ```
+   Step 2: 实现订单创建逻辑
+     文件: src/orders/create.ts (新建), src/orders/types.ts (修改)
+     接口: createOrder(input: CreateOrderInput): Promise<Order>
+     关键断言:
+       - 缺少必填字段 → ValidationError
+       - 库存不足 → InsufficientStockError，不创建记录
+       - 正常路径 → 返回 Order，status = 'created'，库存扣减
+     验证: npm test -- orders/create.test.ts
+     依赖: Step 1 (数据库迁移)
+   ```
 4. **Edge Cases & Error Handling**: Known edge cases, validation rules, error scenarios, and how each is handled.
 5. **Test Strategy**: What to test and how:
    - Unit tests (which functions, what scenarios)
@@ -126,7 +141,7 @@ After all items are discussed, present the complete plan summary and **ask user 
    - Module name and responsibility (one line)
    - Data model details (table schemas or type definitions)
    - API / interface design (routes, signatures, contracts)
-   - Implementation steps (ordered, with file paths where applicable)
+   - Implementation steps (ordered, each with: exact file paths, interface signatures, key assertions, verification commands, dependencies)
    - Edge cases and error handling
    - Test strategy (what to test, which approach)
    - Key decisions and rationale

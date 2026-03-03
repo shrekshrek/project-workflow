@@ -58,7 +58,9 @@ claude plugin install project-workflow@project-workflow
 **流程**: 加载项目上下文 → 探索现有代码（1-3 个 agent）→ 讨论设计方案 → 持久化
 
 **产出文件**:
-- `docs/plan.md` — 当前模块的实施方案（每模块覆盖更新）
+- `docs/plan.md` — 当前模块的实施方案（每模块覆盖更新），步骤采用可验证格式
+
+**步骤格式**: 每个实现步骤包含精确文件路径、接口签名（含类型）、关键断言（输入 → 预期结果）、验证命令。为 `/module-dev` 的 Spec Check 提供比对锚点。
 
 **调用的 Agent**:
 - **codebase-explorer** (1-3 个) — 按复杂度伸缩：追踪依赖接口、识别代码模式、分析相似功能
@@ -69,13 +71,14 @@ claude plugin install project-workflow@project-workflow
 
 **前置条件**: 已运行 `/module-plan`，docs/plan.md 存在，模块状态为"方案已确认"。
 
-**流程**: 加载上下文 → 确认实现步骤 → 逐步实现（代码 + 关键行为测试）→ 验收关卡
+**流程**: 加载上下文 → 确认实现步骤 → 逐步实现（代码 + 关键行为测试 + 每步 Spec Check）→ 验收关卡
 
 **特点**:
 - 自动加载 CLAUDE.md、docs/plan.md、docs/architecture.md 全量上下文
 - 从 plan 中提取步骤清单，标注哪些需要测试
 - 关键行为先写测试再实现，trivial 代码直接实现
-- Phase 4 验收：build 检查 + 测试通过 + 对照 plan 逐项核对
+- 每步完成后 Spec Check：对照 plan 检查功能完整性、是否多建、接口一致性
+- Phase 4 验收：build 检查 + 测试通过 + 对照 plan 逐项核对 + 编码规范检查
 - 支持跨会话续接（Resume Mode）
 
 **不调用 Agent** — 直接使用 Claude 的编码能力。
