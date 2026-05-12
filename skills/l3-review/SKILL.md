@@ -3,6 +3,8 @@ name: l3-review
 description: Run the project's L3 review — verify implementation matches the feature's spec.md (Outcomes, Scope, Constraints, Verification). Delegates to the `spec-reviewer` sub-agent. Use after L1 (mechanical) and L2 (AGENTS.md) are green.
 ---
 
+> **Response language**: Match the user's prompt language (中文 / English / etc.) in all natural-language output — headers, summaries, questions. Pass-through agent reports preserve the agent's own language choice (which also follows this rule). Code, commands, file paths stay as-is.
+
 # L3 Review
 
 L3 in the project-workflow methodology = **feature-spec compliance**. This is the only review level that checks "did you build what the spec said". Pairs naturally with `spec-init` (which created the spec).

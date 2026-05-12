@@ -3,6 +3,8 @@ name: l1-review
 description: Run the project's L1 review — mechanical/automated checks (lint, typecheck, tests). Reads the project's `check` command from AGENTS.md (or package.json scripts) and reports pass/fail with a concise summary, not the full stdout dump.
 ---
 
+> **Response language**: Match the user's prompt language (中文 / English / etc.) in all natural-language output — headers, summaries, questions, progress messages. Code, commands, file paths, and tool output stay as-is.
+
 # L1 Review
 
 L1 in the project-workflow methodology = the **mechanical layer**: lint, type checks, unit tests. Stuff that machines can verify with zero ambiguity. This skill runs the project's defined "everything check" command and gives a focused report.

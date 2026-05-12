@@ -3,6 +3,8 @@ name: feature-done
 description: One-shot end-of-feature gate. Runs L1 (mechanical checks) → L2 (AGENTS.md compliance) → L3 (spec.md compliance) → proof-bundle in sequence, aggregates results, gives a single READY/NEEDS WORK/BLOCKED verdict. Replaces manually running the four steps.
 ---
 
+> **Response language**: Match the user's prompt language (中文 / English / etc.) in all natural-language output — headers, summaries, verdict explanations, suggested commit message hints. Sub-skills/agents called from here inherit the same rule. Code, commands, file paths stay as-is.
+
 # Feature Done
 
 Composite skill: chains L1 → L2 → L3 → proof-bundle for end-of-P2 delivery verification.

@@ -3,6 +3,8 @@ name: l2-review
 description: Run the project's L2 review — verify code changes follow the AGENTS.md conventions for this project (module structure, naming, Pydantic/SQLAlchemy/etc style rules, API endpoint conventions, test discipline). Delegates the actual review to the `agents-md-reviewer` sub-agent, which can ONLY cite rules explicitly in AGENTS.md.
 ---
 
+> **Response language**: Match the user's prompt language (中文 / English / etc.) in all natural-language output — headers, summaries, questions. Pass-through agent reports preserve the agent's own language choice (which also follows this rule). Code, commands, file paths stay as-is.
+
 # L2 Review
 
 L2 in the project-workflow methodology = **project-level conventions** (the things in AGENTS.md). This skill triggers a sub-agent to mechanically check changed code against those conventions. Designed to find: "you wrote `db.query(...)` but `backend/AGENTS.md` says 'never use 1.x query style'".

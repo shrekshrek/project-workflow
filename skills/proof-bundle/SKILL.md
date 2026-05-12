@@ -3,6 +3,8 @@ name: proof-bundle
 description: Verify a feature's proof bundle is complete — tests passing, L1/L2/L3 reviewed, diff summary, drift suggestions. Fills/updates the Proof Bundle section at the bottom of tasks.md. Use at end of P2 feature delivery.
 ---
 
+> **Response language**: Match the user's prompt language (中文 / English / etc.) in all natural-language output — headers, summaries, questions. Tasks.md proof-bundle section content follows the existing language used in that tasks.md file (preserve consistency). Code, commands, file paths stay as-is.
+
 # Proof Bundle
 
 Proof bundle = the **end-of-feature delivery checklist**. Borrowed from openai/symphony's "manage work, not agents" principle: verify the work produced the right outputs, not that the agent followed the right process.
