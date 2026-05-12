@@ -29,16 +29,23 @@ Then in any project:
 /project-workflow:spec-init <feature-slug>
 ```
 
-## Skills (current state)
+## Skills
 
-| Skill | Status | What it does |
+| Skill | Version | What it does |
 |---|---|---|
-| `/project-workflow:spec-init` | ✅ v2.0.0 | Start a new feature spec — creates `docs/specs/<NNN>-<slug>/{spec,plan,tasks}.md` with module-setup auto-detection (per workflow §2) |
-| `/project-workflow:l1-review` | 🚧 planned | Run project's `check` command (lint/typecheck/test) and report |
-| `/project-workflow:l2-review` | 🚧 planned | AGENTS.md compliance review via sub-agent |
-| `/project-workflow:l3-review` | 🚧 planned | spec.md compliance review via sub-agent |
-| `/project-workflow:proof-bundle` | 🚧 planned | Verify proof bundle completeness on feature delivery |
-| `/project-workflow:feature-done` | 🚧 planned | Composite: L1 + L2 + L3 + proof-bundle |
+| `/project-workflow:spec-init` | v2.0.0 | Start a new feature spec — creates `docs/specs/<NNN>-<slug>/{spec,plan,tasks}.md` with module-setup auto-detection (per workflow §2) |
+| `/project-workflow:l1-review` | v2.1.0 | Run project's `check` command (lint/typecheck/test) and report pass/fail with concise summary |
+| `/project-workflow:l2-review` | v2.1.0 | AGENTS.md compliance review via `agents-md-reviewer` sub-agent — finds rule violations on changed files |
+| `/project-workflow:l3-review` | v2.1.0 | spec.md compliance review via `spec-reviewer` sub-agent — finds missing items, deviations, scope creep |
+| `/project-workflow:proof-bundle` | v2.1.0 | Verify proof bundle completeness and write to `tasks.md` § Proof Bundle |
+| `/project-workflow:feature-done` | v2.1.0 | Composite: L1 → L2 → L3 → proof-bundle, single READY/NEEDS WORK/BLOCKED verdict |
+
+## Sub-agents
+
+| Agent | Used by | Scope |
+|---|---|---|
+| `agents-md-reviewer` | `/l2-review` | Reads AGENTS.md (+ tier-level + `.claude/rules/`), checks changed code for rule violations |
+| `spec-reviewer` | `/l3-review` | Reads feature's spec.md, checks implementation matches §1 Outcomes / §2 Scope / §3 Constraints / §4 Verification |
 
 ## Read this first
 
@@ -62,7 +69,9 @@ v1 source preserved at git tag [`v1.1.0`](../../tree/v1.1.0). Install via `git c
 
 ## Status
 
-v2.0.0 is **early** — 1 skill (`/spec-init`) shipped, 5 more in progress. The full methodology docs (workflow.md / gotchas.md / spec-driven.md) are complete and have been validated end-to-end against a working Vue 3 + FastAPI scaffold (kept in a private dev playground until publish).
+v2.1.0 ships 6 skills + 2 sub-agents. `/spec-init` is validated end-to-end (produced a 316-line spec/plan/tasks triple for `email-verification` feature on the reference scaffold). The remaining 5 skills are fresh — battle-testing welcome.
+
+The methodology docs (workflow.md / gotchas.md / spec-driven.md / dev-deploy.md) are complete and have been validated against a working Vue 3 + FastAPI scaffold (kept in a private dev playground until publish).
 
 ## License
 
