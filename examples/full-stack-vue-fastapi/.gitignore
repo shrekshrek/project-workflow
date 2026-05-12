@@ -1,0 +1,63 @@
+# === Secrets ===
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+
+# === Python ===
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+env/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+*.egg-info/
+dist/
+build/
+
+# === Node ===
+node_modules/
+.pnpm-store/
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# === Frontend build ===
+frontend/dist/
+frontend/.nuxt/
+frontend/.output/
+
+# === IDE ===
+.idea/
+*.swp
+*.swo
+.vscode/*
+!.vscode/settings.json.example
+
+# === OS ===
+.DS_Store
+Thumbs.db
+
+# === AI tool 私有(允许提交少量共享配置,见下方反向规则)===
+.claude/
+.cursor/
+.codex/
+CLAUDE.local.md
+
+# === 允许提交的共享 AI 配置(覆盖上面的通配,这些需要团队共享)===
+!.claude/settings.json
+!.claude/hooks/
+!.claude/hooks/**
+!.claude/rules/
+!.claude/rules/**
+
+# === Docker ===
+*.local.yml

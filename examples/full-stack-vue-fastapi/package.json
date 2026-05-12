@@ -1,0 +1,49 @@
+{
+  "name": "scaffold-v2",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Vue 3 + Element Plus + FastAPI scaffold (project-workflow v2 reference impl)",
+  "scripts": {
+    "//--- Setup / Lifecycle ---": "",
+    "bootstrap": "pnpm install && pnpm --prefix frontend install && pnpm check:env && docker compose build",
+    "check:env": "tsx scripts/check-env.ts",
+    "cleanup": "tsx scripts/cleanup-docker.ts",
+
+    "//--- Development ---": "",
+    "dev": "pnpm check:env && pnpm dev:down && concurrently -k -n backend,frontend -c yellow,cyan \"pnpm dev:be\" \"pnpm fe:dev\"",
+    "dev:build": "pnpm check:env && pnpm dev:down && concurrently -k -n backend,frontend -c yellow,cyan \"docker compose up --build\" \"pnpm fe:dev\"",
+    "dev:be": "docker compose up",
+    "dev:down": "docker compose down --remove-orphans",
+    "dev:logs": "docker compose logs -f backend",
+    "dev:shell": "docker compose exec backend bash",
+    "dev:psql": "docker compose exec postgres sh -c 'psql -U $POSTGRES_USER -d $POSTGRES_DB'",
+
+    "//--- Backend ---": "",
+    "be:lint": "docker compose exec backend uv run ruff check --fix src tests",
+    "be:format": "docker compose exec backend uv run ruff format src tests",
+    "be:test": "docker compose exec backend uv run pytest",
+    "be:test:cov": "docker compose exec backend uv run pytest --cov=src --cov-report=term-missing",
+    "be:migrate:make": "docker compose exec backend uv run alembic revision --autogenerate -m",
+    "be:migrate:up": "docker compose exec backend uv run alembic upgrade head",
+    "be:migrate:down": "docker compose exec backend uv run alembic downgrade -1",
+    "be:add": "docker compose exec backend uv add",
+
+    "//--- Frontend ---": "",
+    "fe:dev": "pnpm --prefix frontend dev",
+    "fe:build": "pnpm --prefix frontend build",
+    "fe:preview": "pnpm --prefix frontend preview",
+    "fe:lint": "pnpm --prefix frontend lint",
+    "fe:typecheck": "pnpm --prefix frontend typecheck",
+    "fe:add": "pnpm --prefix frontend add",
+
+    "//--- Combined ---": "",
+    "check": "pnpm be:lint && pnpm be:test && pnpm fe:typecheck && pnpm fe:lint"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.0",
+    "enquirer": "^2.4.1",
+    "tsx": "^4.20.6",
+    "@types/node": "^22.10.0"
+  },
+  "packageManager": "pnpm@9.15.0"
+}

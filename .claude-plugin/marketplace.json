@@ -1,21 +1,23 @@
 {
   "name": "project-workflow",
   "owner": {
-    "name": "shrekwang"
+    "name": "shrek.wang"
   },
   "metadata": {
-    "description": "Structured project workflow for module-by-module development with Claude Code"
+    "description": "project-workflow v2 — spec-driven feature development blueprint for AI-assisted coding"
   },
   "plugins": [
     {
       "name": "project-workflow",
       "source": "./",
-      "description": "Provides /project-plan, /module-plan, /module-dev, /module-done, /plan-review commands with specialized agents for planning, exploration, and architecture design.",
+      "description": "Spec-driven feature development plugin. v2.0.0 ships /spec-init; /l1-review, /l2-review, /l3-review, /proof-bundle, /feature-done coming.",
       "author": {
-        "name": "shrekwang"
+        "name": "shrek.wang"
       },
+      "homepage": "https://github.com/shrekshrek/project-workflow",
       "repository": "https://github.com/shrekshrek/project-workflow",
-      "keywords": ["workflow", "planning", "architecture", "modules"],
+      "license": "MIT",
+      "keywords": ["spec-driven", "workflow", "blueprint", "agents-md"],
       "category": "workflow"
     }
   ]
