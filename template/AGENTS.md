@@ -25,8 +25,11 @@ CLAUDE.md                  thin pointer: @AGENTS.md
 
 **关键依赖关系**(改 A 文件常常要同步改 B):
 
-- `{{KEY_DEP_1}}`(例:`README.md` 命令清单 ↔ 根 `package.json` scripts)
-- `{{KEY_DEP_2}}`(例:`AGENTS.md` Boundaries ↔ `.claude/rules/security.md`)
+<!-- 项目演化中识别后补充。典型例:
+     - README.md 命令清单 ↔ 根 package.json scripts
+     - AGENTS.md Boundaries ↔ .claude/rules/security.md
+     - <tier>/AGENTS.md ↔ <tier>/ 实际栈选择 -->
+- (按需填写)
 
 ## Commands
 
@@ -55,11 +58,18 @@ CLAUDE.md                  thin pointer: @AGENTS.md
 
 ## Code Style
 
-<!-- 一段真实代码胜过三段描述。粘一段你想要的风格 -->
+<!-- 单一 source of truth = .claude/rules/code-style.md。AGENTS.md 只做指针 + 1-3 条最特殊点
+     不 inline 代码 snippet —— 跟 .claude/rules/code-style.md 重复必漂移(详见 §1.3 反模式)。
+     稳定后想加视觉锚,在本节末尾另起一段贴 5-15 行真实代码即可 -->
 
-```{{LANGUAGE}}
-{{REAL_CODE_SNIPPET}}
-```
+**Source of truth**:
+- `.claude/rules/code-style.md` ── 详细规则(AI / 人 都读)
+- `{{LINT_CONFIG_PATH}}` ── 机器强制(eslint / ruff / gofmt 等 config)
+
+**项目特殊点**(top 1-3,快速参考,不重复 source of truth 的内容):
+- {{STYLE_HIGHLIGHT_1}}
+- {{STYLE_HIGHLIGHT_2}}
+- {{STYLE_HIGHLIGHT_3}}
 
 ## Git Workflow
 

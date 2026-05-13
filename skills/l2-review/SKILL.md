@@ -85,7 +85,7 @@ Next: `/project-workflow:l3-review <slug>` to verify spec compliance.
 
 ## Step 5 — Failure modes
 
-- **No AGENTS.md found**: tell user "L2 review requires AGENTS.md; this project has none. Run `/project-workflow:spec-init` setup first or create AGENTS.md per template."
+- **No AGENTS.md found**: tell user "L2 review requires AGENTS.md; this project has none. Run `/project-workflow:feature-init` setup first or create AGENTS.md per template."
 - **Agent returns empty findings**: that's fine, report "✅ L2: no violations found across N files."
 - **Agent finds something subjective**: trust it — the agent has strict scoping in its system prompt to only cite explicit rules.
 

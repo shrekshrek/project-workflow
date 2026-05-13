@@ -7,7 +7,7 @@ description: Run the project's L3 review — verify implementation matches the f
 
 # L3 Review
 
-L3 in the project-workflow methodology = **feature-spec compliance**. This is the only review level that checks "did you build what the spec said". Pairs naturally with `spec-init` (which created the spec).
+L3 in the project-workflow methodology = **feature-spec compliance**. This is the only review level that checks "did you build what the spec said". Pairs naturally with `feature-init` (which created the spec).
 
 User input: `$ARGUMENTS` — feature slug or path to spec.md
 
@@ -22,7 +22,7 @@ Resolve `$ARGUMENTS` to a spec.md path:
 | `docs/specs/.../spec.md` (full path) | Use as-is |
 | empty | Find most-recent `docs/specs/<NNN>-*/spec.md` by `ls -t` or NNN order |
 
-If spec.md missing: fail with "Spec not found. Run `/project-workflow:spec-init <slug>` first."
+If spec.md missing: fail with "Spec not found. Run `/project-workflow:feature-init <slug>` first."
 
 If found, also locate sibling `plan.md` and `tasks.md` (for context — pass to agent).
 

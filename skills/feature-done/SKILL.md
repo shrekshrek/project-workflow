@@ -22,7 +22,7 @@ Same logic as `/l3-review` and `/proof-bundle`:
 | `<slug>` | `docs/specs/<NNN>-<slug>/` |
 | `current` or empty | most-recent `docs/specs/<NNN>-*/` |
 
-Verify spec.md exists. If not: "No spec found. Run `/project-workflow:spec-init <slug>` first."
+Verify spec.md exists. If not: "No spec found. Run `/project-workflow:feature-init <slug>` first."
 
 ## Step 2 — Cache check (skip re-running if code unchanged since last review)
 

@@ -1,0 +1,92 @@
+# `{{TIER_NAME}}` tier — AGENTS.md(差量于根 AGENTS.md)
+
+> 本 tier 跟根 AGENTS.md 默认**不同**的部分写在这里。
+> 重复根的内容会漂移 —— 见根 AGENTS.md / [`workflow.md §1.3 反模式`](../docs/workflow.md#13-agentsmd-的内容标准)。
+
+<!--
+P0 时根据栈填齐 placeholder。
+本文件目标 < 100 行,长尾放 .claude/rules/ 或 docs/。
+-->
+
+## Commands(本 tier 特有)
+
+- 起服务:`{{TIER_DEV_COMMAND}}`
+- 跑测试:`{{TIER_TEST_COMMAND}}`
+- Lint:`{{TIER_LINT_COMMAND}}`
+- DB migration:`{{TIER_MIGRATION_COMMAND}}`
+- 任务队列(可选):`{{TIER_QUEUE_COMMAND}}`
+
+## Testing(本 tier 特有)
+
+- 框架:`{{TIER_TEST_FRAMEWORK}}`(如 pytest + httpx + pytest-asyncio)
+- 测试文件位置:`{{TIER_TEST_LOCATION}}`(如 `tests/` 镜像 `src/`)
+- 每个 endpoint 至少:happy + 1 边界 + 1 错误路径(401 / 404 / 422)
+
+## Module Structure
+
+`{{TIER_SRC_DIR}}/<bounded-context>/` 五件套(每个领域模块):
+
+- `router.py` — HTTP 路由层(或框架等价物)
+- `service.py` — 业务逻辑
+- `repository.py` — 数据访问
+- `schemas.py` — Pydantic / Zod / etc. 输入输出 schema
+- `models.py` — ORM model
+
+**职责分离**:
+- {{TIER_LAYER_SEPARATION_1}}(如 "service.py 不依赖 {{TIER_FRAMEWORK}}")
+- {{TIER_LAYER_SEPARATION_2}}(如 "repository.py 只返 model,不返 schema")
+
+## Code Style(本 tier 特有)
+
+**Source of truth**:
+- `.claude/rules/code-style.md`(继承根)
+- `{{TIER_LINT_CONFIG}}`(如 `pyproject.toml` ruff 节)
+
+**本 tier 特殊**(不重复根):
+- {{TIER_STYLE_HIGHLIGHT_1}}(如 "严格 type hints + `from __future__ import annotations`")
+- {{TIER_STYLE_HIGHLIGHT_2}}(如 "Pydantic v2 strict mode,参考 `docs/gotchas.md` #3")
+- {{TIER_STYLE_HIGHLIGHT_3}}(如 "SQLAlchemy 2.0 风格:用 `select()`,禁 `Query.filter`")
+
+## 框架特殊约定
+
+### {{TIER_FRAMEWORK}}
+
+{{TIER_FRAMEWORK_RULES}}
+
+<!-- 例(FastAPI):
+  - 路由分组用 APIRouter,顶层 app/main.py include
+  - 错误用 HTTPException + 统一 exception handler
+  - Dependency injection 走 Depends,不绕过
+  - 异步函数返回值 Pydantic schema(不直接返 ORM model)
+-->
+
+### {{TIER_ORM}}(如适用)
+
+{{TIER_ORM_RULES}}
+
+<!-- 例(SQLAlchemy 2.0):
+  - 用 `select()` / `scalar()` / `scalars()`,不用 1.x `Query.filter`
+  - Session 走 DI,不 module-level globals
+  - Async session: AsyncSession 透传到 service 层
+-->
+
+### {{TIER_QUEUE}}(可选)
+
+{{TIER_QUEUE_RULES}}
+
+<!-- 例(Celery):
+  - 所有 task 必须**幂等**(重试不能产生副作用)
+  - Retry 策略:exponential backoff,max 5 retries
+  - Task 不直接调 ORM,走 service 层
+  - 长任务(> 30 秒)用 chord/group 拆分
+-->
+
+## Boundaries(本 tier 特有,继承根)
+
+- ✅ Always:加测试 / 改模块内部 / 写 schema
+- ⚠️ Ask first:
+  - 加 alembic migration(或对应 ORM migration)
+  - 改公开 API 契约
+  - 改 {{TIER_QUEUE}} 配置(broker / serializer / 并发数)
+  - 加新外部依赖(库 / API)
+- 🚫 Never:同根

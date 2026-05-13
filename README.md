@@ -40,14 +40,16 @@ Full framing with sources: [`docs/workflow.md §0.1`](docs/workflow.md).
 
 Then in any project:
 ```
-/project-workflow:spec-init <feature-slug>
+/project-workflow:feature-init <feature-slug>
 ```
 
 ## Skills
 
 | Skill | Version | What it does |
 |---|---|---|
-| `/project-workflow:spec-init` | v2.0.0 | Start a new feature spec — creates `docs/specs/<NNN>-<slug>/{spec,plan,tasks}.md` with module-setup auto-detection (per workflow §2) |
+| `/project-workflow:project-init` | v2.3.0 | P0 greenfield initialization — Q&A walks through stack and conventions, generates 10+ files (AGENTS.md / .claude/ / docs/specs/_template/ / etc.). "不确定" answers trigger `tech-researcher` sub-agent for parallel research. Auto-handles fullstack tier structure. |
+| `/project-workflow:project-personalize` | v2.3.0 | P0 scaffold-cloned / retrofit — adapts existing v2-shaped project to user's values. Replaces scaffold defaults, completes tier-level AGENTS.md (中庸 scheme), dispatches `codebase-explorer` sub-agent to scan existing structure. |
+| `/project-workflow:feature-init` | v2.0.0 | Start a new feature spec — creates `docs/specs/<NNN>-<slug>/{spec,plan,tasks}.md` with module-setup auto-detection (per workflow §2) |
 | `/project-workflow:l1-review` | v2.1.0 | Run project's `check` command (lint/typecheck/test) and report pass/fail with concise summary |
 | `/project-workflow:l2-review` | v2.1.0 | AGENTS.md compliance review via `agents-md-reviewer` sub-agent — finds rule violations on changed files |
 | `/project-workflow:l3-review` | v2.1.0 | spec.md compliance review via `spec-reviewer` sub-agent — finds missing items, deviations, scope creep |
@@ -60,6 +62,8 @@ Then in any project:
 |---|---|---|
 | `agents-md-reviewer` | `/l2-review` | Reads AGENTS.md (+ tier-level + `.claude/rules/`), checks changed code for rule violations |
 | `spec-reviewer` | `/l3-review` | Reads feature's spec.md, checks implementation matches §1 Outcomes / §2 Scope / §3 Constraints / §4 Verification |
+| `tech-researcher` | `/project-init` Q&A | Researches stack/library choices (2-3 candidates + pros/cons + recommendation). Read-only. Triggers when user answers "不确定" / "帮我选" in Q&A. |
+| `codebase-explorer` | `/project-personalize` Path C | Surveys existing codebase structure → recommends `## Project Structure` content. Read-only, no edits. |
 
 ## Read this first
 
@@ -83,7 +87,7 @@ v1 source preserved at git tag [`v1.1.0`](../../tree/v1.1.0). Install via `git c
 
 ## Status
 
-v2.1.0 ships 6 skills + 2 sub-agents. `/spec-init` is validated end-to-end (produced a 316-line spec/plan/tasks triple for `email-verification` feature on the reference scaffold). The remaining 5 skills are fresh — battle-testing welcome.
+v2.1.0 ships 6 skills + 2 sub-agents. `/feature-init` is validated end-to-end (produced a 316-line spec/plan/tasks triple for `email-verification` feature on the reference scaffold). The remaining 5 skills are fresh — battle-testing welcome.
 
 The methodology docs (workflow.md / gotchas.md / spec-driven.md / dev-deploy.md) are complete and have been validated against a working Vue 3 + FastAPI scaffold (kept in a private dev playground until publish).
 

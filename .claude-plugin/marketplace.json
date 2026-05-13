@@ -10,7 +10,7 @@
     {
       "name": "project-workflow",
       "source": "./",
-      "description": "Spec-driven feature development plugin. 6 skills (/spec-init, /l1-review, /l2-review, /l3-review, /proof-bundle, /feature-done) + 2 sub-agents (agents-md-reviewer, spec-reviewer).",
+      "description": "Spec-driven feature development plugin (Claude Code-native). 8 skills (/project-init, /project-personalize, /feature-init, /l1-review, /l2-review, /l3-review, /proof-bundle, /feature-done) + 4 sub-agents (agents-md-reviewer, spec-reviewer, tech-researcher, codebase-explorer).",
       "author": {
         "name": "shrek.wang"
       },
