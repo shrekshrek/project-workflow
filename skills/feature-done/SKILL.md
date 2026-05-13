@@ -24,11 +24,28 @@ Same logic as `/l3-review` and `/proof-bundle`:
 
 Verify spec.md exists. If not: "No spec found. Run `/project-workflow:spec-init <slug>` first."
 
-## Step 2 — Run sequence
+## Step 2 — Cache check (skip re-running if code unchanged since last review)
 
-Execute these in order. **Stop early** if a fatal step fails (configurable below).
+If L2/L3/proof-bundle have already been run in this session (visible in conversation history) **and code hasn't changed since**, reuse those results instead of re-running. This makes `/feature-done` idempotent and cheap to re-invoke.
 
-### 2.1 L1 — mechanical checks
+**Cache invalidation conditions** (re-run the affected step if any are true):
+1. User explicitly requested re-run (`/feature-done <slug> --fresh` or similar wording)
+2. `git status --short` shows modified files in scope since last review timestamp
+3. Last review was > 24 hours ago
+4. Conversation context shows code edits (Edit / Write tool calls) on scoped files after the last review
+
+**For each step**, decide independently: L1 should usually re-run (cheap, ~10s); L2/L3 typically reuse if cache valid (~1-6 min agent calls saved).
+
+**Always do** `git status --short` at start to know what actually changed. Document the decision in your report header:
+
+```
+L1: fresh (always re-run)
+L2: 复用 (~1 min agent run earlier this session, no scoped changes since)
+L3: 复用 (~6 min agent run earlier this session, no scoped changes since)
+proof-bundle: re-run (writes tasks.md, so always re-run to refresh)
+```
+
+## Step 3 — L1 mechanical checks (almost always fresh)
 
 Invoke the L1 skill internally (or duplicate its logic):
 - Find check command in AGENTS.md
@@ -39,7 +56,7 @@ Invoke the L1 skill internally (or duplicate its logic):
 
 **If L1 green**: continue.
 
-### 2.2 L2 — AGENTS.md compliance
+## Step 4 — L2 AGENTS.md compliance (reuse if cache valid per Step 2)
 
 Invoke L2 skill (which calls `agents-md-reviewer` agent):
 - Find AGENTS.md files relevant to changed files
@@ -50,7 +67,7 @@ Invoke L2 skill (which calls `agents-md-reviewer` agent):
 
 **If L2 clean or only partials**: continue.
 
-### 2.3 L3 — spec.md compliance
+## Step 5 — L3 spec.md compliance (reuse if cache valid per Step 2)
 
 Invoke L3 skill (which calls `spec-reviewer` agent):
 - Pass spec.md, plan.md, tasks.md, changed-files scope to agent
@@ -58,21 +75,27 @@ Invoke L3 skill (which calls `spec-reviewer` agent):
 
 **Always continue to proof-bundle**, regardless of L3 result (proof bundle records it).
 
-### 2.4 proof-bundle
+## Step 6 — proof-bundle (always fresh — writes tasks.md)
 
 Invoke proof-bundle skill:
 - Compute diff summary
 - Aggregate L1/L2/L3 results from above (don't re-run)
 - Write to tasks.md
 
-## Step 3 — Aggregate report
+## Step 7 — Aggregate report
 
 Single consolidated report (not 4 separate ones):
 
 ```markdown
 ## /project-workflow:feature-done — <feature-slug>
 
-🏁 End-of-feature gate complete. Total time: <Ns>.
+🏁 End-of-feature gate complete. Total time: <Ns> (this run) / <累计> (this session).
+
+### Cache decisions
+- L1: <fresh | cached + reason>
+- L2: <fresh | 复用 (reason)>
+- L3: <fresh | 复用 (reason)>
+- proof-bundle: <fresh, always>
 
 ### L1 — Mechanical (<duration>)
 <one-line: ✅ all green / ❌ N failures listed below>
@@ -119,7 +142,7 @@ Closes: <issue # if known>
 Re-run `/project-workflow:feature-done <slug>` after fixes.
 ```
 
-## Step 4 — Verdict logic
+## Step 8 — Verdict logic
 
 | L1 | L2 | L3 | Verdict |
 |---|---|---|---|
@@ -137,4 +160,6 @@ Spec scope creep (🚫) = 🟡 NEEDS WORK (user reconciles by either trimming im
 - **Don't auto-commit**. Even on 🟢 READY, leave commit to the user.
 - **Don't auto-fix**. Each underlying skill (L1/L2/L3) is read-only; this skill aggregates them.
 - **Parallelizable later**: L2 and L3 could run in parallel (they don't depend on each other). v2.1.0 runs them sequentially for simplicity; revisit if user reports slowness.
-- **Re-running** is cheap (most skills are deterministic on same input). Encourage user to re-run after fixes.
+- **Re-running is cheap** thanks to the Step 2 cache check. Encourage user to re-run after fixes — only changed steps will re-execute.
+- **ROI-ranked action list**: when verdict is 🟡, rank suggested actions by impact (highest-leverage fix first, e.g., "config change that unblocks coverage gate" before "1-line AGENTS.md edit"). Include estimated time per action when known.
+- **Conditional commit message hint**: even on 🟡, if user might want to ship despite blockers, offer a draft commit message that explicitly notes the known deviations and where context lives (e.g., proof bundle path).
