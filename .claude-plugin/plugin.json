@@ -1,7 +1,7 @@
 {
   "name": "project-workflow",
   "description": "Spec-driven feature development blueprint for AI-assisted coding. Skills: /spec-init, /l1-review, /l2-review, /l3-review, /proof-bundle, /feature-done. Agents: agents-md-reviewer, spec-reviewer.",
-  "version": "2.2.1",
+  "version": "2.2.2",
   "author": {
     "name": "shrek.wang"
   },
