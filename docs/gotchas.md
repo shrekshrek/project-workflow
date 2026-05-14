@@ -1,6 +1,6 @@
 # 工程陷阱清单
 
-> 跨工具、跨语言的"AI / 工程师容易踩"的工程坑。每条都来自 `scaffold-v2/` 验证过程中的真实故障(2026-05-12 集中梳理),反例 → 正例 → 为什么。
+> 跨工具、跨语言的"AI / 工程师容易踩"的工程坑。每条都来自一个真实 fullstack 项目搭建过程中的故障(2026-05-12 集中梳理),反例 → 正例 → 为什么。
 >
 > **怎么用**:新项目 P0 阶段扫一遍;AGENTS.md 可以 `@imports` 引用本文件让 AI 读到。
 
@@ -8,7 +8,7 @@
 
 ## 1. `pnpm setup` 是 pnpm 内置命令,会覆盖你的 npm script
 
-**反例**(scaffold-v2 第一版踩了):
+**反例**(项目第一版踩了):
 ```json
 { "scripts": { "setup": "pnpm install && docker compose build" } }
 ```
@@ -83,7 +83,7 @@ services:
   backend:
     container_name: ${PROJECT_NAME}_backend
 ```
-结果 Docker Desktop 里显示 `scaffold-v2 > scaffold_v2_postgres-1`,**项目名前缀被重复了两次**,而且锁死了 `--scale` 能力。
+结果 Docker Desktop 里显示 `myapp > myapp_postgres-1`,**项目名前缀被重复了两次**,而且锁死了 `--scale` 能力。
 
 **正例**:
 ```yaml

@@ -4,13 +4,12 @@
 // 这是**方法论骨架**:展示 hook 怎么挂、怎么从 stdin 读 file_path、怎么按文件类型分流 lint。
 // 具体 lint 命令是栈相关,默认全部注释掉,启用前打开你需要的那条。
 //
-// 想要一份**完整能跑的多栈实现**(host 端前端 eslint + docker exec 后端 ruff
-// + 容器没起来 silent skip + WIP 分支跳过 + 大文件跳过 等),
-// 直接照搬 scaffold-v2 的版本:
-//   https://github.com/<repo>/scaffold-v2/blob/main/.claude/hooks/lint-on-edit.js
+// 一份**完整能跑的多栈实现**通常会处理:host 端前端 eslint + docker exec 后端 ruff
+// + 容器没起来 silent skip + WIP 分支跳过 + 大文件跳过 等。
+// 本骨架只示意分流,生产用法请按项目实际工具填充各 case 分支。
 //
 // 启用前的 todo:
-// 1. 取消注释 case 分支里你栈对应的 lint 命令(或照搬 scaffold-v2 的)
+// 1. 取消注释 case 分支里你栈对应的 lint 命令
 // 2. chmod +x 让本脚本可执行(若 settings.json 用 `node <path>` 调,这步可跳)
 // 3. 验证:改一个文件,看是否自动跑 lint
 //

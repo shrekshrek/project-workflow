@@ -48,7 +48,7 @@ For **L2** (AGENTS.md compliance) cache validity:
    - `.claude/rules/*.md`
    - `docs/gotchas.md` (if exists)
    - Any source files in scope (the implementation)
-3. **Special case**: if the project scope (e.g., `scaffold-v2/`) is **fully untracked** (`?? <dir>/` in git status — entire directory not in git yet), `git status` won't show inner file changes. **In this case, always force fresh L2 run** since git can't track changes within untracked directories. Fall back to file mtime comparison if needed:
+3. **Special case**: if the project scope (e.g., a sub-project directory freshly added but not yet `git add`ed) is **fully untracked** (`?? <dir>/` in git status — entire directory not in git yet), `git status` won't show inner file changes. **In this case, always force fresh L2 run** since git can't track changes within untracked directories. Fall back to file mtime comparison if needed:
    ```bash
    find <scope> -name "AGENTS.md" -o -name "*.md" -newer <last-review-marker> 2>/dev/null
    ```

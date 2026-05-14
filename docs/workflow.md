@@ -348,7 +348,7 @@ paths:
 
 P0 时配最小可用的 hook,**文件保存后自动 lint/format/类型检查**。详细的 hook 设计哲学见 §4.2。
 
-> **📌 起 P0 前先扫一遍** [docs/gotchas.md](gotchas.md) —— 这是 scaffold-v2 验证过程中沉淀的 10 条"工程坑"清单(Dockerfile / pnpm script 命名 / docker-compose / Pydantic extras / 测试基建等)。**全是 AI 第一次搭项目会踩的**,提前看能省 2-3 小时调试。
+> **📌 起 P0 前先扫一遍** [docs/gotchas.md](gotchas.md) —— 一个真实 fullstack 项目搭建过程中沉淀的 10 条"工程坑"清单(Dockerfile / pnpm script 命名 / docker-compose / Pydantic extras / 测试基建等)。**全是 AI 第一次搭项目会踩的**,提前看能省 2-3 小时调试。
 
 settings.json 挂载:
 
