@@ -1,7 +1,7 @@
 # `{{TIER_NAME}}` tier — AGENTS.md(差量于根 AGENTS.md)
 
 > 本 tier 跟根 AGENTS.md 默认**不同**的部分写在这里。
-> 重复根的内容会漂移 —— 见根 AGENTS.md / [`workflow.md §1.3 反模式`](../docs/workflow.md#13-agentsmd-的内容标准)。
+> 重复根的内容会漂移 —— 见根 AGENTS.md / [`workflow.md §1.3 反模式`](https://github.com/shrekshrek/project-workflow/blob/main/docs/workflow.md#13-agentsmd-的内容标准)。
 
 <!--
 P0 时根据栈填齐 placeholder。

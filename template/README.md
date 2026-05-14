@@ -4,9 +4,7 @@
 >
 > **What this is NOT**:不是工程脚手架,**不包含**:Dockerfile / docker-compose / package.json scripts / 后端模块结构 / 前端框架代码 等。
 >
-> **想要 Vue 3 + Element Plus + FastAPI 全栈实例**(真能跑、含 Docker / Postgres / Alembic / 18 个测试已绿、统一 CLI):在另一个仓库,待发布。
->
-> **想避免"AI 第一次搭项目踩的坑"**:看 [`docs/gotchas.md`](../docs/gotchas.md)(10 条,从真实验证沉淀)。
+> **想避免"AI 第一次搭项目踩的坑"**:看 [`docs/gotchas.md`](../docs/gotchas.md)(10 条,从真实搭建过程沉淀)。
 
 ## 怎么用
 

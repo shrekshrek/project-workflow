@@ -91,6 +91,17 @@ ls -la       # 此时 cwd 已是 target
 
 **一问一答,等用户回答再问下一个**。每轮把答案存到本地变量等 Step 5 用。
 
+### ⚠️ Greenfield 隔离原则(critical)
+
+`/project-init` 的语义是"给一个 **干净的新项目** 起骨架"。**Q&A 选项 + 默认值必须语言/栈中立**,不引用任何具体已存在项目。
+
+具体要求:
+- 选项的 label / description / 副标题里**不要写**类似 "跟 X 项目一致"、"如 X 那样" 这种 cross-reference,即使 target 父目录有 CLAUDE.md / AGENTS.md 提及那些项目
+- 默认值基于:**(a) 本会话已答的 Q&A 答案** + **(b) 该栈的社群通用 default**;**不基于** target 的父级 / 兄弟级项目偏好
+- 一旦发现自己想说 "跟 ... 一致"(无论是 monorepo 兄弟项目、lab 测试场、父仓库 reference 实现)→ **改用栈通用描述**(如 "Python async 主流"、"轻量 sync 框架"、"Vue 3 生态契合最深"等)
+
+**为什么这条规则存在**:用户跑 `/project-init` 的子目录可能是 monorepo / dotfiles 仓 / 测试 lab 内,Claude 默认会读父级 CLAUDE.md。父级偏好**对本新项目没有约束力**——新项目应该独立选型,不该自动继承。若用户真要继承,他们会跑 `/project-personalize`(那才是 scaffold-cloned / retrofit 工具)。
+
 ### Q&A 引导原则(委托 tech-researcher sub-agent)
 
 用户答 "不确定" / "帮我选" / "推荐一个" 时,**dispatch [`tech-researcher`](../../agents/tech-researcher.md) sub-agent** 做研究并返回结构化报告:

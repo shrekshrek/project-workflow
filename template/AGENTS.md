@@ -81,8 +81,6 @@ CLAUDE.md                  thin pointer: @AGENTS.md
 
 P0 完成、第一次 `pnpm dev` 之前,务必扫一遍工程陷阱清单 `docs/gotchas.md`(从 [project-workflow v2 仓库](https://github.com/shrekshrek/project-workflow) 复制进项目,或直接读在线版)。10 条覆盖 Docker / pnpm script 命名 / Pydantic extras / 测试基建 / asyncpg 跨 loop 等,**全是 AI 第一次搭项目会踩**。
 
-工程化样例(Vue + FastAPI 全栈、Docker、Alembic、统一 CLI、18 个测试):在另一个仓库,待发布(届时 project-workflow 主 README 会链)。
-
 ## 代码修改原则(KISS + 最小变更)
 
 - **优先编辑现有文件**,不主动建新文件;新文件需有清晰理由(职责无法挂入现有模块)

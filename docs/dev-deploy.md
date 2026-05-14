@@ -4,9 +4,7 @@
 >
 > 适用场景:单服务器 / 小规模生产 / 单人或小团队。**不适用**:K8s 集群、多 region、企业级 CI/CD。
 >
-> 实证基础:
-> - [`shrekshrek/full-stack-scaffolding-fastapi-nuxt4`](https://github.com/shrekshrek/full-stack-scaffolding-fastapi-nuxt4)(Nuxt 4 版,生产实证)
-> - Vue 3 + Element Plus + FastAPI scaffold(blueprint 验证用,另一仓库待发布)
+> 实证基础:[`shrekshrek/full-stack-scaffolding-fastapi-nuxt4`](https://github.com/shrekshrek/full-stack-scaffolding-fastapi-nuxt4)(Nuxt 4 版,生产实证)。
 >
 > **配套**:具体的工程踩坑清单见 [`gotchas.md`](gotchas.md) —— Docker / pnpm / Pydantic / 测试基建 共 10 条。
 
