@@ -244,15 +244,17 @@ rm -rf "$TEMP_DIR"
 | `{{BRANCH_PATTERN}}` | Q&A 轮 4 |
 | `{{COMMIT_FORMAT}}` | 默认 conventional commits |
 | `{{LINT_CONFIG_PATH}}` | 据 Q&A 轮 3 lint 工具推断(如 `.eslintrc.cjs` / `pyproject.toml`)|
-| `{{STYLE_HIGHLIGHT_1/2/3}}` | 据栈推 1-3 条**真正特殊**的风格点(见 5.3)|
+| `{{STYLE_HIGHLIGHT_1/2/3}}` | 据栈推 1-3 条**真正特殊**的风格点(见 5.4)|
 
 ### 5.2 `.claude/rules/`
 
 | 文件 | Placeholder | 据什么填 |
 |---|---|---|
+| `code-style.md` | `{{CODE_STYLE_GLOBS}}` | 据 Q&A 1.5 tier 命名 + 轮 2 语言推导,见下方"globs 推导" |
 | `code-style.md` | `{{NAMING_CONVENTION}}` | 据语言:Python snake_case / JS-TS camelCase + PascalCase classes |
 | `code-style.md` | `{{INDENT}}` | 据语言:Python 4 / JS-TS-Go 2 / Rust 4 |
 | `code-style.md` | `{{LINE_LIMIT}}` | 默认 100(Python 可 88) |
+| `testing.md` | `{{TESTING_GLOBS}}` | 据 Q&A 1.5 tier 命名 + 轮 3 测试框架推导,见下方"globs 推导" |
 | `testing.md` | `{{UNIT_TEST_FRAMEWORK}}` / `{{INTEGRATION_TEST_FRAMEWORK}}` | Q&A 轮 3 |
 | `testing.md` | `{{E2E_FRAMEWORK}}` | 询问 / 默认 Playwright |
 | `testing.md` | `{{TEST_FILE_LAYOUT}}` | 推断(Python tests/ 镜像 src/ / JS `*.test.ts` 同目录) |
@@ -261,7 +263,46 @@ rm -rf "$TEMP_DIR"
 | `testing.md` | `{{COVERAGE_THRESHOLD}}` | 默认 80(跟根 AGENTS.md 一致) |
 | `security.md` | (主要固定文本,placeholder 极少) | 通常不需大改 |
 
-### 5.3 STYLE_HIGHLIGHT 推断规则
+### 5.3 globs 推导(`{{CODE_STYLE_GLOBS}}` / `{{TESTING_GLOBS}}`)
+
+格式:**comma-separated 字符串**(`globs: pattern1, pattern2`)—— 不要用 `paths:` YAML 列表,silently fails(见 workflow.md §1.6)。
+
+#### 单 tier 项目(轮 1 答 b/c/d)
+
+| 主语言 | `{{CODE_STYLE_GLOBS}}` | `{{TESTING_GLOBS}}` |
+|---|---|---|
+| Python | `src/**/*.py`(或语言惯例 `<project>/**/*.py`)| `tests/**/*.py` |
+| TypeScript / JavaScript | `src/**/*.{ts,tsx,js,jsx,vue}` | `**/*.test.{ts,tsx,js,jsx}`(JS 测试常就近)|
+| Go | `**/*.go`(Go 不分 src/) | `**/*_test.go` |
+| Rust | `src/**/*.rs` | `tests/**/*.rs, src/**/*.rs`(Rust 测试 inline + integration)|
+
+#### Fullstack(轮 1 答 a,轮 1.5 给 tier 命名)
+
+记 backend tier 名 = `$BTIER`(default `backend`)、frontend tier 名 = `$FTIER`(default `frontend`):
+
+| 主语言组合 | `{{CODE_STYLE_GLOBS}}` | `{{TESTING_GLOBS}}` |
+|---|---|---|
+| Python + TS/Vue | `$BTIER/**/*.py, $FTIER/**/*.{ts,vue}` | `$BTIER/tests/**/*.py, $FTIER/**/*.test.{ts,vue}` |
+| Go + TS | `$BTIER/**/*.go, $FTIER/**/*.{ts,tsx}` | `$BTIER/**/*_test.go, $FTIER/**/*.test.{ts,tsx}` |
+| 全 TS(node + react / vue)| `$BTIER/**/*.ts, $FTIER/**/*.{ts,tsx,vue}` | `**/*.test.{ts,tsx}` |
+| Rust + TS | `$BTIER/src/**/*.rs, $FTIER/**/*.{ts,tsx}` | `$BTIER/tests/**/*.rs, $FTIER/**/*.test.{ts,tsx}` |
+
+替换示例(Q&A 轮 1.5 自定 tier `server + web`,Python+Vue 栈):
+
+```
+CODE_STYLE_GLOBS = "server/**/*.py, web/**/*.{ts,vue}"
+TESTING_GLOBS    = "server/tests/**/*.py, web/**/*.test.{ts,vue}"
+```
+
+#### 多 tier(> 2,如 backend + worker + frontend)
+
+把每个 tier 都加进去:`backend/**/*.py, worker/**/*.py, frontend/**/*.{ts,vue}`。OR 关系。
+
+#### 边缘 / 冷门栈
+
+栈识别不出 → 填一个保守 fallback:`**/*.<ext>`(全仓 ext 匹配),用户后续按需收窄。
+
+### 5.4 STYLE_HIGHLIGHT 推断规则
 
 **不要写栈通用 default**(如"2 空格缩进"——工具 default,不算特殊)。**要写项目级别真正会出错的**:
 
@@ -396,6 +437,7 @@ template 的 lint-on-edit.js 是骨架(if-else by extension)。
 - 部分 placeholder 若 Q&A 没覆盖到,可能留在文件里 —— 搜 "{{" 看是否有残留
 - `.claude/rules/code-style.md` 各章节("函数/类"、"文件/模块"、"错误处理")可按项目实践补充
 - Spec/plan/tasks 模板由 `/feature-init` 提供。**想 per-project 定制**:`mkdir -p docs/specs/_template && touch docs/specs/_template/.user-customized` + 自己写 `spec.md / plan.md / tasks.md`,`/feature-init` 会优先读本地版
+- 想加 framework-specific rules(FastAPI / Vue / etc.):看 `.claude/rules/_examples/` 下的 starter(如 `fastapi.example.md`),复制成 `.claude/rules/<framework>.md` 改 globs 适配你项目。frontmatter 格式坑(`paths:` 列表静默失败)+ debug 步骤见 [workflow.md §1.6](https://github.com/shrekshrek/project-workflow/blob/main/docs/workflow.md#16-路径级规则claudrules官方支持)
 
 ### AGENTS.md 行数检查
 

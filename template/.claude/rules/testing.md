@@ -1,7 +1,5 @@
 ---
-# paths:
-#   - "tests/**/*"
-#   - "**/*.test.{ts,js,py,go}"
+globs: {{TESTING_GLOBS}}
 ---
 
 # Testing Conventions

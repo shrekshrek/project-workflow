@@ -1,5 +1,5 @@
 ---
-# 安全规则全量加载,不加 paths frontmatter
+# 安全规则全量加载,不加 globs frontmatter
 ---
 
 # Security Rules

@@ -1,8 +1,5 @@
 ---
-# paths: 可选,只在 Claude 读匹配文件时加载,节省 context budget
-# paths:
-#   - "src/**/*.{ts,tsx}"
-#   - "lib/**/*.ts"
+globs: {{CODE_STYLE_GLOBS}}
 ---
 
 # Code Style

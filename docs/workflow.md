@@ -331,12 +331,11 @@ AGENTS.md / CLAUDE.md 可以用 `@path/to/file` 拉别的文件入 context,**递
 
 ### 1.6 路径级规则:`.claude/rules/`(官方支持)
 
-模块化 instructions,可加 `paths:` frontmatter 让规则**只在匹配文件被读时触发**:
+模块化 instructions,加 frontmatter 让规则**只在匹配文件被 Claude 读取时触发**:
 
 ```markdown
 ---
-paths:
-  - "src/api/**/*.ts"
+globs: <tier>/**/*.py, <other-tier>/**/*.ts
 ---
 
 # API 开发规则
@@ -345,20 +344,54 @@ paths:
 - 用标准 error response 格式
 ```
 
+例(fullstack 项目,backend Python + frontend TS):
+
+```yaml
+globs: backend/**/*.py, frontend/**/*.{ts,vue}
+```
+
+例(单 tier Python CLI 项目):
+
+```yaml
+globs: src/**/*.py
+```
+
 **为什么用**:复杂项目把"全部加载"的 instructions 拆成"按需加载",节省 context budget。
+
+#### Frontmatter 格式选择
+
+| 格式 | 状态 | 推荐 |
+|---|---|---|
+| `globs: pattern1, pattern2`(comma 分隔字符串) | ✅ 可靠 | **本 plugin 推荐** |
+| `paths: **/*.py`(单行 unquoted)| ✅ work | 备选 |
+| `paths:` + YAML 列表(`- "**/*.py"`)| ❌ **silently fails** | **不要用** |
+| 无 frontmatter | ✅ work | 全量加载,适合 security 等通用规则 |
+
+> ⚠️ **`paths:` YAML 列表是 Anthropic 文档教的格式,但实际有 bug**:
+> 见 [Issue #17204](https://github.com/anthropics/claude-code/issues/17204) —— 静默失败、无 error。
+> 本 plugin template + 本文档都已切到 `globs:` 格式规避此问题。
+
+#### 已知 limitation
+
+- **Write/Create 文件不触发规则加载**,只 Read 触发:见 [Issue #23478](https://github.com/anthropics/claude-code/issues/23478)(Anthropic 已 closed as not planned)
+  - 实际影响:AI 用 Write 工具新建文件时,匹配 globs 的规则**不会进 context**
+  - workaround:PostToolUse hook 在 Write 后强制 Read,见上述 issue
+  - 简化:大部分修改场景走 Edit(基于已 Read 的文件),规则正常加载;只有"凭空新建文件"时失效
+- 通配符遵循标准 glob:`**` 递归、`*` 单层、`{a,b}` 任一、**不支持** `!exclude` 排除
+- 路径相对 project root
+- 多 globs 之间是 OR(任一匹配即触发)
+
+#### Debug 步骤
+
+规则没生效时:
+1. 确认 frontmatter 用的是 `globs:`(不是 `paths:` YAML 列表)
+2. 让 Claude `cat .claude/rules/<file>.md` 确认 frontmatter 解析正确
+3. 让 Claude Read 一个**应该匹配**的文件(如 `backend/app/main.py`),然后问"刚才加载了哪些 .claude/rules/?"—— 看实际触发情况
+4. 若仍不工作,检查是否是 Write 不触发的 bug(见上)
 
 > **plugin 定位:Claude Code only**
 >
-> project-workflow v2.3+ 已把 floor 收紧到 Claude Code only(见 [docs/tooling.md §5](tooling.md))。**默认**:rules 放 `.claude/rules/<topic>.md` + `paths:` frontmatter,享 path-scoped 加载;`/project-init` 模板自动按此结构生成。
->
-> **注意 `.claude/rules/` 是 Claude-private 目录**:Cursor 的 `.cursor/rules/`、OpenCode 的相应目录互不读取。一份规则放 `.cursor/rules/api.mdc`,Codex / Claude / OpenCode 不会跨读。本 plugin 不再针对跨工具优化。
->
-> **若你仍要跨工具(逃生口)**:
-> - 把 rules 内容搬到 `docs/rules/<topic>.md`(中性目录,纯 markdown,**无** `paths:` frontmatter)
-> - `AGENTS.md` 末尾用 `@docs/rules/<topic>.md` 拉入 → 所有读 AGENTS.md 的工具都拿到
-> - 代价:失去 path-scoping,context 全量加载;plugin SKILL 不询问 / 不自动 emit 这条路径(需手工迁移)
->
-> 反模式:把所有约定写进 `.cursor/rules/`,然后宣称"项目支持多 AI 工具"——其他工具一脸懵。
+> project-workflow v2.3+ 已把 floor 收紧到 Claude Code only(见 [docs/tooling.md §5](tooling.md))。**默认**:rules 放 `.claude/rules/<topic>.md` + `globs:` frontmatter,享 path-scoped 加载;`/project-init` 模板自动按此结构生成。`.claude/rules/` 是 Claude-private 目录,其他 AI 工具(Cursor / Codex / OpenCode)不读 —— 本 plugin 不再为跨工具优化,如有需要请绕开 plugin 自行管理。
 
 ### 1.7 Hooks 初始配置
 
