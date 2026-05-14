@@ -1,13 +1,15 @@
 ---
 name: project-personalize
-description: Adapt a scaffold-cloned or v2-shaped existing project to user's specifics. Replaces scaffold defaults (project name / DB / etc.), completes tier-level AGENTS.md per 中庸 scheme, dispatches codebase-explorer sub-agent to scan existing structure. Accepts optional `$ARGUMENTS` = target directory path (defaults to current working directory) — useful for monorepos where the v2-shaped sub-project isn't the cwd. Claude Code-native. Use when you've cloned a v2 scaffold or want to retrofit an existing project. Not for greenfield — use /project-init for that.
+description: Adapt a scaffold-cloned or v2-shaped existing project to user's specifics. Replaces scaffold defaults (project name / DB / etc.), completes tier-level AGENTS.md per 中庸 scheme, dispatches codebase-explorer sub-agent to scan existing structure. Accepts optional `$ARGUMENTS` = target directory path (defaults to current working directory) — useful for monorepos where the v2-shaped sub-project isn't the cwd. Claude Code-native. Use when you've cloned a v2 scaffold or want to retrofit an existing project; **if you want ready-to-run full stack starting from a scaffold, this is the right tool — don't use /project-init for that** (project-init is conventions-only, doesn't scaffold code). Not for greenfield empty directories — use /project-init for that.
 ---
 
 **Response language**: Match the user's prompt language. File edits stay in the file's existing language.
 
 # Project Personalize
 
-Adapt a project that **already has** v2 baseline files (AGENTS.md / `.claude/` / `docs/specs/_template/`)—typically because you cloned a v2 scaffold or are retrofitting an existing project—to your specific values, tier structure, and codebase reality.
+Adapt a project that **already has** v2 baseline files (AGENTS.md / `.claude/`)—typically because you cloned a v2 scaffold or are retrofitting an existing project—to your specific values, tier structure, and codebase reality.
+
+> `docs/specs/_template/` 不是 v2 baseline 必需项 —— 模板由 `/feature-init` 提供;本 skill 检测到本地 `_template/` 时仅作为可选 override 处理。
 
 **Use when**:
 - You cloned a v2-shaped scaffold(如 [`shrekshrek/full-stack-scaffolding-fastapi-nuxt4`](https://github.com/shrekshrek/full-stack-scaffolding-fastapi-nuxt4))
@@ -57,7 +59,7 @@ ls -la       # 此时 cwd 已是 target
 | 根 `AGENTS.md` 是否 v2 六要素结构 | 检测 `## Commands` + `## Testing` + `## Project Structure` + `## Code Style` + `## Git Workflow` + `## Boundaries` 是否齐 |
 | 根 `CLAUDE.md` | 存在 / 不存在 + 是否 `@AGENTS.md` alias |
 | `.claude/rules/` | 存在 / 不存在 |
-| `docs/specs/_template/` | 存在 / 不存在 |
+| `docs/specs/_template/`(可选)| 存在=用户 override / 不存在=用 plugin bundle 默认 |
 | Tier 目录(`backend/` / `frontend/` / `server/` / etc.) | 列出找到的 tier + 每个 tier 的 `AGENTS.md` / `CLAUDE.md` 状态 |
 
 **若根 `AGENTS.md` 不存在或非 v2 六要素结构** → 告诉用户:"这不像 v2-shaped 项目。建议先跑 `/project-init` 从零起 v2 baseline。" → 中止。
@@ -210,7 +212,7 @@ sub-agent 返回结构化报告(detected scale / tier breakdown / frameworks / m
 ### 还需手工 review
 
 - AGENTS.md 全文扫一遍,确认 personalize 后的值都对
-- 跑 `wc -l AGENTS.md`,> 200 行的话精简(参考 workflow.md §1.3)
+- 跑 `wc -l AGENTS.md`,> 200 行的话精简([workflow.md §1.3](https://github.com/shrekshrek/project-workflow/blob/main/docs/workflow.md#13-agentsmd-的内容标准))
 - 跑测试确认 personalize 没动到代码逻辑
 
 ### 📋 下一步

@@ -1,6 +1,6 @@
 ---
 name: project-init
-description: Initialize a project's v2 starter kit (AGENTS.md + .claude/ + docs/specs/_template/ + tier-level AGENTS.md if fullstack). Q&A driven, language/stack agnostic. Dispatches tech-researcher sub-agent for "不确定" answers. Accepts optional `$ARGUMENTS` = target directory path (defaults to current working directory) — useful for monorepos / lab repos where you want to init a sub-project without leaving the parent session. Claude Code-native. Use at P0 (project's first day). Not for adding features mid-project — use /feature-init for that.
+description: Initialize a project's v2 starter kit (AGENTS.md + .claude/ + tier-level AGENTS.md if fullstack). Q&A driven, language/stack agnostic. Dispatches tech-researcher sub-agent for "不确定" answers. Accepts optional `$ARGUMENTS` = target directory path (defaults to current working directory). Spec templates live in `/feature-init` skill bundle; projects can override by creating `docs/specs/_template/` manually. Claude Code-native. Use at P0 (project's first day). Not for adding features mid-project — use /feature-init for that.
 ---
 
 **Response language**: Match the user's prompt language (中文 / English / etc.) for all natural-language output. Generated file content stays in the language of the source template (Chinese for v2).
@@ -25,9 +25,8 @@ Initialize a new (or existing-but-no-AGENTS.md) project's v2 baseline. Q&A walks
 │   ├── hooks/lint-on-edit.js                  # 按 lint 工具裁剪
 │   └── settings.json
 ├── docs/
-│   ├── specs/_template/{spec,plan,tasks}.md
 │   ├── adr/{README,0000-template}.md
-│   └── gotchas.md                             # 从 project-workflow repo 复制
+│   └── gotchas.md
 ├── .github/
 │   ├── PULL_REQUEST_TEMPLATE.md
 │   └── ISSUE_TEMPLATE/{bug_report,feature_request,proposal}.md
@@ -76,7 +75,7 @@ ls -la       # 此时 cwd 已是 target
 | 空目录 / 几乎空 | 直接进 Step 2(greenfield 流程) |
 | 已有 `AGENTS.md` | **`/project-init` 不适合**——跑 `/project-workflow:project-personalize` 替代(见下) |
 | 已有 `.claude/` 但无 AGENTS.md | 问: "已有 .claude/。要 (a) 全部覆盖 / (b) 中止?" |
-| 已有 `docs/specs/_template/` | 类似 |
+| 已有 `docs/specs/_template/` | 问:"已有自定模板,要 (a) 保留 / (b) 覆盖?" 默认 (a) |
 
 若用户选中止 → 直接停。否则继续。
 
@@ -166,18 +165,13 @@ sub-agent 返回结构化报告(2-3 candidates + recommendation + 理由)→ pro
 - Lint 工具?(给栈 default)
 - 包管理器?(pnpm / npm / yarn / pip / poetry / cargo / go mod / 等)
 
-### 轮 4:命令
-
-- 起服务命令?(`pnpm dev` / `python -m uvicorn ...` / etc.)
-- 跑测试命令?
-- Lint 命令?
-- 部署命令?(可选)
-
-### 轮 5:部署 + 团队
+### 轮 4:部署 + 团队
 
 - 部署目标?(单机+Docker / Kubernetes / Serverless / 不部署)
 - 团队规模?(solo / small / large)
 - 分支命名?(default: `feat/<scope>` + `fix/<scope>`,接受 default 答 "ok")
+
+> **关于命令值(起服务 / 跑测试 / lint / 部署 / migration / E2E)**:**不单独问** —— 据轮 3(test framework / lint 工具 / pkg mgr)+ 轮 1.5(tier 名)+ 本轮 deploy 目标 + Step 6.1 mini-Q&A(framework / ORM)**推导**。Step 5 / Step 6.3 填文件时,agent 内部据这些答案生成具体命令字符串。若推导歧义,**问用户确认**而不是单方面写。
 
 ## Step 3 — Clone v2 template
 
@@ -202,6 +196,12 @@ git clone --depth 1 https://github.com/shrekshrek/project-workflow "$TEMP_DIR/pw
 # template/ 整个复制(starter kit shape)
 cp -r "$TEMP_DIR/pw/template/." .
 
+# Spec 模板由 /feature-init bundle 提供,项目本地不持有
+# 例外:存在 .user-customized 哨兵表示用户已自定 override,保留
+if [ -d "./docs/specs/_template" ] && [ ! -f "./docs/specs/_template/.user-customized" ]; then
+  rm -rf "./docs/specs/_template"
+fi
+
 # gotchas.md 在 docs/ 不在 template/
 mkdir -p docs
 cp "$TEMP_DIR/pw/docs/gotchas.md" docs/gotchas.md
@@ -218,12 +218,13 @@ rm -rf "$TEMP_DIR"
 - `AGENTS.md`, `CLAUDE.md`
 - `.claude/rules/{code-style,testing,security}.md`
 - `.claude/hooks/lint-on-edit.js`, `.claude/settings.json`
-- `docs/specs/_template/{spec,plan,tasks}.md`
 - `docs/adr/{README,0000-template}.md`
 - `docs/gotchas.md`
 - `.github/...`
 - `.gitignore`
 - `_multi_tier_examples/`(仅 fullstack 用,见 Step 6)
+
+**不**该出现 `docs/specs/_template/`(除非存在 `.user-customized` 哨兵)。
 
 ## Step 5 — 填 placeholder(根 AGENTS.md + `.claude/rules/`)
 
@@ -233,13 +234,14 @@ rm -rf "$TEMP_DIR"
 
 | Placeholder | 据什么填 |
 |---|---|
-| `{{DEV_COMMAND}}` / `{{TEST_COMMAND}}` / `{{LINT_COMMAND}}` / `{{DEPLOY_COMMAND}}` | Q&A 轮 4(部署若没写"(项目演化中补)") |
+| `{{DEV_COMMAND}}` / `{{TEST_COMMAND}}` / `{{LINT_COMMAND}}` | 据轮 3(pkg mgr / test / lint)+ 轮 1.5(tier 名)推导(不单独问命令) |
+| `{{DEPLOY_COMMAND}}` | 据轮 4 deploy 目标推(单机+Docker → `docker compose up -d` / Kubernetes → `kubectl apply -f k8s/` / 不部署 → "(项目演化中补)") |
 | `{{TEST_FRAMEWORK}}` | Q&A 轮 3 |
 | `{{TEST_LOCATION}}` | 默认 `tests/`(可改) |
 | `{{COVERAGE_THRESHOLD}}` | 默认 80 |
 | `{{SRC_DIR}}` | **单 tier**:`src`(语言惯例:Python `<project>/`,Go `cmd/`+`internal/`)<br>**多 tier**:根 AGENTS.md **不填具体路径**,改成指针 `(见各 <tier>/AGENTS.md)`——避免跟 tier-level 重复 |
 | `{{TEST_DIR}}` | 同上 SRC_DIR 规则 |
-| `{{BRANCH_PATTERN}}` | Q&A 轮 5 |
+| `{{BRANCH_PATTERN}}` | Q&A 轮 4 |
 | `{{COMMIT_FORMAT}}` | 默认 conventional commits |
 | `{{LINT_CONFIG_PATH}}` | 据 Q&A 轮 3 lint 工具推断(如 `.eslintrc.cjs` / `pyproject.toml`)|
 | `{{STYLE_HIGHLIGHT_1/2/3}}` | 据栈推 1-3 条**真正特殊**的风格点(见 5.3)|
@@ -255,7 +257,7 @@ rm -rf "$TEMP_DIR"
 | `testing.md` | `{{E2E_FRAMEWORK}}` | 询问 / 默认 Playwright |
 | `testing.md` | `{{TEST_FILE_LAYOUT}}` | 推断(Python tests/ 镜像 src/ / JS `*.test.ts` 同目录) |
 | `testing.md` | `{{TEST_NAME_PATTERN}}` | 据框架推 |
-| `testing.md` | `{{TEST_RUN_COMMAND}}` / `{{COVERAGE_COMMAND}}` / `{{E2E_RUN_COMMAND}}` | Q&A 轮 4 + 据框架推 |
+| `testing.md` | `{{TEST_RUN_COMMAND}}` / `{{COVERAGE_COMMAND}}` / `{{E2E_RUN_COMMAND}}` | 据轮 3 test framework + pkg mgr 推 |
 | `testing.md` | `{{COVERAGE_THRESHOLD}}` | 默认 80(跟根 AGENTS.md 一致) |
 | `security.md` | (主要固定文本,placeholder 极少) | 通常不需大改 |
 
@@ -294,29 +296,35 @@ For each tier in [Q&A 轮 1.5 tier list]:
 
 不确定时问用户:"这个 tier 主要是后台服务,还是有用户界面?"
 
-#### Service-style tier mini-Q&A(5-7 个问题)
+#### Service-style tier mini-Q&A
 
-```
-1. 框架? (FastAPI / Django / Flask / Express / Spring Boot / Gin / Rocket / 其他)
-2. ORM? (SQLAlchemy 2.0 / 1.x / Django ORM / Prisma / TypeORM / 不用)
-3. 主要库? (Pydantic / Celery / Redis / Kafka / 等,列 3-5 个)
-4. 任务队列? (Celery / RQ / BullMQ / Sidekiq / 不用 ── 若 tier 本身就是 worker,在此问 broker)
-5. 数据库? (PostgreSQL / MySQL / SQLite / MongoDB / etc.)
-6. 测试框架(本 tier 特有,可跟根不同)?
-7. 起服务 / 跑测试 / lint / migration / 任务运行 命令?
-```
+✅ **Required(必问 —— 产出文件每条 project-specific 断言必 trace 到这些答案)**:
+1. 框架?(FastAPI / Django / Flask / Express / Spring Boot / Gin / Rocket / 其他)
+2. ORM?(SQLAlchemy 2.0 / 1.x / Django ORM / Prisma / TypeORM / 不用)
+3. 数据库?(PostgreSQL / MySQL / SQLite / MongoDB / etc.)
 
-#### UI-style tier mini-Q&A(5-7 个问题)
+⚪️ **Optional(可省;若省,生成文件**只能用 stack default 或留 TODO**,**禁** agent 单方面写决策塞进 AGENTS.md)**:
+4. 任务队列?(Celery / RQ / BullMQ / Sidekiq / 不用 ── 若 tier 本身就是 worker,在此问 broker)
+5. Migration 工具?(Alembic / Atlas / sqlx-cli / 框架自带 / 纯 SQL)
+6. 主要库?(Pydantic / Redis client / Kafka client / 等,列 3-5 个)
+7. 测试框架(本 tier 特有,可跟根不同;不问则继承根)?
 
-```
-1. 框架? (Vue/Nuxt / React/Next / Svelte/SvelteKit / Solid / Astro / React Native / Flutter / 其他)
-2. UI 库? (Nuxt UI / shadcn / MUI / Element Plus / Ant Design / Tailwind only / 自造)
-3. 样式方案? (Tailwind / CSS Modules / styled-components / UnoCSS / 其他)
-4. State 管理? (Pinia / Vuex / Redux Toolkit / Zustand / Jotai / 不用)
-5. 组件 / E2E 测试框架?
-6. 渲染模式 / 平台目标? (SSR / SSG / SPA / hybrid / iOS+Android / etc.)
-7. 起开发 / build / test / lint 命令?
-```
+**起服务 / 跑测试 / lint / migration / 任务运行 命令不单独问** —— 据 framework + pkg mgr + ORM 推导。
+
+#### UI-style tier mini-Q&A
+
+✅ **Required(必问 —— 产出文件每条 project-specific 断言必 trace 到这些答案)**:
+1. 框架?(Vue/Nuxt / React/Next / Svelte/SvelteKit / Solid / Astro / React Native / Flutter / 其他)
+2. UI 库?(Nuxt UI / shadcn / MUI / Element Plus / Ant Design / Tailwind only / 自造)
+3. State 管理?(Pinia / Vuex / Redux Toolkit / Zustand / Jotai / 不用)
+4. 渲染模式 / 平台目标?(SSR / SSG / SPA / hybrid / iOS+Android / etc.)
+
+⚪️ **Optional(可省;若省,生成文件**只能用 stack default 或留 TODO**,**禁** agent 单方面写决策塞进 AGENTS.md)**:
+5. 样式方案?(Tailwind / UnoCSS / CSS Modules / styled-components / scoped CSS only)
+6. 组件测试框架?(Vitest + @vue/test-utils / Jest + RTL / 其他)
+7. E2E 框架?(Playwright / Cypress / 不用)
+
+**起开发 / build / test / lint 命令不单独问** —— 据 framework + pkg mgr 推导。
 
 ### Step 6.2:据类别选模板,复制到 `<tier>/`
 
@@ -378,7 +386,7 @@ template 的 lint-on-edit.js 是骨架(if-else by extension)。
 - AGENTS.md(根, {{N}} 个 placeholder 已填)
 - CLAUDE.md(1 行 @AGENTS.md)
 - .claude/{rules,hooks,settings.json}
-- docs/{specs/_template,adr,gotchas.md}
+- docs/{adr,gotchas.md}
 - .github/{PULL_REQUEST_TEMPLATE,ISSUE_TEMPLATE/*}
 - .gitignore
 - (多 tier 时,per tier 一对) `<tier>/AGENTS.md` + `<tier>/CLAUDE.md` —— 据类别(service-style / UI-style)选模板,据 mini-Q&A 填具体栈细节
@@ -387,17 +395,41 @@ template 的 lint-on-edit.js 是骨架(if-else by extension)。
 
 - 部分 placeholder 若 Q&A 没覆盖到,可能留在文件里 —— 搜 "{{" 看是否有残留
 - `.claude/rules/code-style.md` 各章节("函数/类"、"文件/模块"、"错误处理")可按项目实践补充
-- `docs/specs/_template/` 是模板,**不要直接改这里**;新功能用 `/feature-init <slug>` 起 spec
+- Spec/plan/tasks 模板由 `/feature-init` 提供。**想 per-project 定制**:`mkdir -p docs/specs/_template && touch docs/specs/_template/.user-customized` + 自己写 `spec.md / plan.md / tasks.md`,`/feature-init` 会优先读本地版
 
 ### AGENTS.md 行数检查
 
-跑 `wc -l AGENTS.md`:
-- < 100 行:理想(Anthropic Boris Cherny 标杆)
-- 100-200 行:可接受
-- **> 200 行**:**警告**——Anthropic best-practices 显示 > 200 行依从度下降。建议:
-  - 长尾搬 `.claude/rules/*.md`(用 `@imports` 在 AGENTS.md 末尾按需拉)
-  - 或拆到 `docs/architecture.md` / ADR
-  - tier-level AGENTS.md 同样原则,各 < 100 行
+**强制跑**(不是 "建议跑"):
+
+```bash
+wc -l AGENTS.md $(find . -maxdepth 2 -name 'AGENTS.md' -not -path './AGENTS.md' 2>/dev/null) 2>/dev/null
+```
+
+把每个文件的行数列进总结报告,按下表分类判定:
+
+| 行数区间 | 状态 | 行动 |
+|---|---|---|
+| < 100 | ✅ 理想(Anthropic Boris Cherny 标杆)| 无需动作 |
+| 100-200 | ⚠️ 可接受 | 留意未来增长 |
+| > 200 | 🚫 警告 —— Anthropic best-practices 显示 > 200 依从度下降 | 建议:长尾搬 `.claude/rules/*.md`(用 `@imports` 在末尾按需拉)/ 或拆到 `docs/architecture.md` / ADR;tier-level AGENTS.md 同样原则,各 < 100 |
+
+**不允许** agent 跳过本步 / 凭印象描述 / 用"大约"表达。每个 AGENTS.md 都必须有具体行数 + 分类标签。
+
+### ⚠️ Aspirational refs(本 P0 不创建)
+
+生成的 AGENTS.md 引用了下列文件,**但 P0 不生成 code scaffold**。用户照根 AGENTS.md 命令(`docker compose up -d` / `pnpm test` / 等)跑前**必须先就位**,否则报错。
+
+按 Q&A 答案动态列举(示例,fullstack Python + TS):
+
+| 文件 | 怎么获得 |
+|---|---|
+| `docker-compose.yml` / `docker-compose.prod.yml`(deploy = Docker 时) | 自己写,或 fork 现成 scaffold |
+| `<tier>/pyproject.toml` / `<tier>/app/main.py` 等(Python tier) | `cd <tier> && uv init`(或 `poetry init` / `pdm init`) |
+| `<tier>/package.json` / `<tier>/vite.config.ts` / `<tier>/.eslintrc.cjs`(TS/JS tier) | `cd <tier> && pnpm create vite`(或框架对应 init) |
+| `.github/workflows/*.yml`(CI) | 自己写或参考栈社区模板 |
+
+> 想要 ready-to-run 全栈起步 → clone scaffold 后跑 `/project-workflow:project-personalize`,不用 `/project-init`。
+> `/project-init` 的定位是**约定层 init**,不是 code scaffolder。
 
 ### 📋 下一步
 
@@ -408,10 +440,10 @@ template 的 lint-on-edit.js 是骨架(if-else by extension)。
    /project-workflow:feature-init <your-first-feature-slug>
    ```
 
-参考文档:
-- 完整方法论:[`docs/workflow.md`](docs/workflow.md)
-- 快速操作版:[`docs/quickstart.md`](docs/quickstart.md)
-- spec/plan/tasks 写法:[`docs/spec-driven.md`](docs/spec-driven.md)
+参考文档(plugin 仓):
+- 完整方法论:https://github.com/shrekshrek/project-workflow/blob/main/docs/workflow.md
+- 快速操作版:https://github.com/shrekshrek/project-workflow/blob/main/docs/quickstart.md
+- spec/plan/tasks 写法:https://github.com/shrekshrek/project-workflow/blob/main/docs/spec-driven.md
 ```
 
 ## Failure modes

@@ -35,8 +35,7 @@ Take the highest leading number, increment by 1, zero-pad to 3 digits. If `docs/
 
 Read these files for context (skip silently if missing):
 - `AGENTS.md` (project conventions)
-- `docs/specs/_template/{spec,plan,tasks}.md` (templates)
-- `docs/workflow.md` §3 P2 Feature Development (process)
+- `docs/specs/_template/{spec,plan,tasks}.md` (optional override — only if project customized)
 
 Scan project structure to map existing modules:
 - Backend: `backend/src/*/` (or `src/*/` for single-tier)
@@ -284,4 +283,4 @@ spec.md §3-5 还有 TODOs。要我现在 Q&A 走完吗?
 
 - **Do not** generate code yet — this is the planning artifact only
 - **Do not** overwrite existing `docs/specs/<NNN>-<slug>/` (collision detection: error out)
-- **Match the project's existing template** if `docs/specs/_template/` exists; the above is fallback
+- **Template source**:本 SKILL.md § Step 5 起的 spec/plan/tasks 内置模板是 canonical source。若项目有 `docs/specs/_template/`(用户手工 mkdir + `.user-customized` 哨兵),则优先读本地 override

@@ -347,14 +347,16 @@ paths:
 
 **为什么用**:复杂项目把"全部加载"的 instructions 拆成"按需加载",节省 context budget。
 
-> **⚠️ 陷阱:`.cursor/rules/` `.claude/rules/` 都是工具私有**
+> **plugin 定位:Claude Code only**
 >
-> Cursor 的 `.cursor/rules/`、Claude 的 `.claude/rules/`、OpenCode 的相应目录——**互不读取**。一份规则放进 `.cursor/rules/api.mdc`,Codex / Claude / OpenCode 不会看到。
+> project-workflow v2.3+ 已把 floor 收紧到 Claude Code only(见 [docs/tooling.md §5](tooling.md))。**默认**:rules 放 `.claude/rules/<topic>.md` + `paths:` frontmatter,享 path-scoped 加载;`/project-init` 模板自动按此结构生成。
 >
-> 项目想做"真正跨工具":
-> - **共享规则**放 `docs/rules/<topic>.md`(中性目录名,纯 markdown)
-> - 在 `AGENTS.md` 用 `@docs/rules/api.md` 拉入 → 所有读 `AGENTS.md` 的工具都拿到
-> - 工具私有 `.claude/rules/` 只放 Claude 独有的(比如 hook 行为相关)
+> **注意 `.claude/rules/` 是 Claude-private 目录**:Cursor 的 `.cursor/rules/`、OpenCode 的相应目录互不读取。一份规则放 `.cursor/rules/api.mdc`,Codex / Claude / OpenCode 不会跨读。本 plugin 不再针对跨工具优化。
+>
+> **若你仍要跨工具(逃生口)**:
+> - 把 rules 内容搬到 `docs/rules/<topic>.md`(中性目录,纯 markdown,**无** `paths:` frontmatter)
+> - `AGENTS.md` 末尾用 `@docs/rules/<topic>.md` 拉入 → 所有读 AGENTS.md 的工具都拿到
+> - 代价:失去 path-scoping,context 全量加载;plugin SKILL 不询问 / 不自动 emit 这条路径(需手工迁移)
 >
 > 反模式:把所有约定写进 `.cursor/rules/`,然后宣称"项目支持多 AI 工具"——其他工具一脸懵。
 

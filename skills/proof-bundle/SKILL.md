@@ -9,7 +9,7 @@ description: Verify a feature's proof bundle is complete — tests passing, L1/L
 
 Proof bundle = the **end-of-feature delivery checklist**. Borrowed from openai/symphony's "manage work, not agents" principle: verify the work produced the right outputs, not that the agent followed the right process.
 
-The template (from `template/docs/specs/_template/tasks.md` § Proof Bundle):
+The template (from `/feature-init` SKILL.md inline tasks.md § Proof Bundle):
 
 ```
 - [ ] Diff 摘要:(新建/改了什么)
