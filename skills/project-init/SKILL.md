@@ -1,6 +1,6 @@
 ---
 name: project-init
-description: Initialize a project's v2 starter kit (AGENTS.md + .claude/ + docs/specs/_template/ + tier-level AGENTS.md if fullstack). Q&A driven, language/stack agnostic. Dispatches tech-researcher sub-agent for "不确定" answers. Claude Code-native. Use at P0 (project's first day). Not for adding features mid-project — use /feature-init for that.
+description: Initialize a project's v2 starter kit (AGENTS.md + .claude/ + docs/specs/_template/ + tier-level AGENTS.md if fullstack). Q&A driven, language/stack agnostic. Dispatches tech-researcher sub-agent for "不确定" answers. Accepts optional `$ARGUMENTS` = target directory path (defaults to current working directory) — useful for monorepos / lab repos where you want to init a sub-project without leaving the parent session. Claude Code-native. Use at P0 (project's first day). Not for adding features mid-project — use /feature-init for that.
 ---
 
 **Response language**: Match the user's prompt language (中文 / English / etc.) for all natural-language output. Generated file content stays in the language of the source template (Chinese for v2).
@@ -14,7 +14,7 @@ Initialize a new (or existing-but-no-AGENTS.md) project's v2 baseline. Q&A walks
 **Use when**: P0 — project's first day, no AGENTS.md yet.
 **Not for**: starting a new feature (use `/feature-init <slug>`) or refreshing existing AGENTS.md (use `/refresh-agents-md` — planned, not implemented).
 
-**Output structure**(written to current working directory):
+**Output structure**(written to target directory — see Step 0):
 
 ```
 .
@@ -37,10 +37,38 @@ Initialize a new (or existing-but-no-AGENTS.md) project's v2 baseline. Q&A walks
     └── CLAUDE.md                              # @AGENTS.md
 ```
 
-## Step 1 — 检测当前状态
+## Step 0 — 解析 target 目录(可选 `$ARGUMENTS`)
+
+User input: `$ARGUMENTS` — optional target directory path. Empty → 用当前工作目录(cwd)。
+
+| 输入 | 处理 |
+|---|---|
+| 空 | target = `pwd`,跳过 cd,继续 Step 1 |
+| 相对路径(如 `validation-runs/p0-greenfield-001`) | 基于 cwd 解析为绝对路径 |
+| 绝对路径(如 `/Users/foo/new-proj`) | 直接用 |
+
+解析后:
 
 ```bash
-ls -la
+TARGET_DIR="<resolved absolute path>"
+
+# 目录不存在 → 问用户是否 mkdir
+if [ ! -d "$TARGET_DIR" ]; then
+  echo "Target $TARGET_DIR 不存在,要创建吗?(y/n)"
+  # y → mkdir -p "$TARGET_DIR";n → 中止
+fi
+
+cd "$TARGET_DIR"
+```
+
+**后续所有 Step 的 `ls -la` / `cp` / Edit / Write 都对此 target 目录操作**(Bash cwd 已切换;Edit/Write 用绝对路径或相对此 cwd)。
+
+> **为什么这个 Step 存在**:lab 仓 / monorepo / "我有 5 个 sub-project,只想 init 其中一个" 场景需要从父目录的 session 里指定子目录。省略 `$ARGUMENTS` 完全 backward-compatible。
+
+## Step 1 — 检测 target 状态
+
+```bash
+ls -la       # 此时 cwd 已是 target
 ```
 
 判断:

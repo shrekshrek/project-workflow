@@ -1,6 +1,6 @@
 ---
 name: project-personalize
-description: Adapt a scaffold-cloned or v2-shaped existing project to user's specifics. Replaces scaffold defaults (project name / DB / etc.), completes tier-level AGENTS.md per 中庸 scheme, dispatches codebase-explorer sub-agent to scan existing structure. Claude Code-native. Use when you've cloned a v2 scaffold or want to retrofit an existing project. Not for greenfield — use /project-init for that.
+description: Adapt a scaffold-cloned or v2-shaped existing project to user's specifics. Replaces scaffold defaults (project name / DB / etc.), completes tier-level AGENTS.md per 中庸 scheme, dispatches codebase-explorer sub-agent to scan existing structure. Accepts optional `$ARGUMENTS` = target directory path (defaults to current working directory) — useful for monorepos where the v2-shaped sub-project isn't the cwd. Claude Code-native. Use when you've cloned a v2 scaffold or want to retrofit an existing project. Not for greenfield — use /project-init for that.
 ---
 
 **Response language**: Match the user's prompt language. File edits stay in the file's existing language.
@@ -16,10 +16,37 @@ Adapt a project that **already has** v2 baseline files (AGENTS.md / `.claude/` /
 
 **Not for**: greenfield(空目录从零起)—— 用 `/project-workflow:project-init` 替代。
 
+## Step 0 — 解析 target 目录(可选 `$ARGUMENTS`)
+
+User input: `$ARGUMENTS` — optional target directory path. Empty → 用当前工作目录(cwd)。
+
+| 输入 | 处理 |
+|---|---|
+| 空 | target = `pwd`,跳过 cd,继续 Step 1 |
+| 相对路径(如 `apps/web-portal`) | 基于 cwd 解析为绝对路径 |
+| 绝对路径(如 `/Users/foo/cloned-scaffold`) | 直接用 |
+
+解析后:
+
+```bash
+TARGET_DIR="<resolved absolute path>"
+
+if [ ! -d "$TARGET_DIR" ]; then
+  echo "Target $TARGET_DIR 不存在 —— project-personalize 要求目录已有 v2 baseline 文件,无法初始化空目录。"
+  # 中止;建议用 /project-init
+fi
+
+cd "$TARGET_DIR"
+```
+
+**后续所有 Step 的 `ls -la` / `find` / Edit / Write 都对此 target 目录操作**。省略 `$ARGUMENTS` 完全 backward-compatible(沿用原 cwd 行为)。
+
+> **跟 `/project-init` 的区别**:project-init 允许 target 不存在(可创建);project-personalize **要求 target 已存在且有 v2 baseline**(scaffold-cloned 或既有项目)。
+
 ## Step 1 — Detect existing state
 
 ```bash
-ls -la
+ls -la       # 此时 cwd 已是 target
 ```
 
 报告检测到的状态:
