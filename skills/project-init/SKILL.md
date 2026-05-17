@@ -302,17 +302,40 @@ TESTING_GLOBS    = "server/tests/**/*.py, web/**/*.test.{ts,vue}"
 
 在 agent 内存中改根 AGENTS.md 末尾,**不立即 Write**(等 4.6 preview 通过)。
 
+### 4.5b 决策完整性 audit(强制,workflow §1.12 Generation Discipline)
+
+Preview Gate 之前,dispatch [`decision-completeness-auditor`](../../agents/decision-completeness-auditor.md) sub-agent(input/output 详见 agent doc)审本 Step 累积内容:
+
+- `files_to_audit`: 根 `AGENTS.md` + `.claude/rules/{code-style,testing,security}.md`(inline content,未落盘)
+- `qa_answers`: Step 2 Q&A 所有答案,dot-path keyed(如 `project_type` / `tiers` / `main_language` / etc.)
+- `language_conventions`: null(agent 自推)
+- `plugin_hardcoded_defaults`(per [workflow §1.10 "不问什么"](https://github.com/shrekshrek/project-workflow/blob/main/docs/workflow.md#110-qa-设计project-setup-skill-问什么) 表):
+  ```
+  - {value: "feat/<NNN>-<slug>", source: "workflow.md §1.10", rationale: "跟 /feature-init 工具行为对齐"}
+  - {value: "fix/<scope>", source: "workflow.md §1.10", rationale: "对齐 branch naming"}
+  - {value: "GitHub", source: "workflow.md §1.10", rationale: "plugin 默认 GitHub 词汇 / .github/"}
+  - {value: "conventional commits", source: "workflow.md §1.10", rationale: "default 99% 项目接受"}
+  - {value: "≥ 80%", source: "workflow.md §1.10", rationale: "测试覆盖率门槛 default"}
+  - {value: "按 feature / domain 组织", source: "workflow.md §1.10 + §2.5", rationale: "模块组织 default"}
+  - {value: "(B 层未定 — 部署时补,见 docs/adr/000N-deploy.md)", source: "workflow.md §1.10", rationale: "P0 不预测部署"}
+  ```
+
+**Block 规则**(per [workflow §1.12](https://github.com/shrekshrek/project-workflow/blob/main/docs/workflow.md#112-生成纪律generation-discipline)):🚫 > 0 不进 4.6 Preview,按 agent 修正选项处理后**重跑本 step**;⚠️ 不 block,4.6 Preview Gate 同时展示给用户处置。
+
 ### 4.6 落盘前 Preview Gate(强制,workflow §1.10 关键纪律)
 
-Step 4.1-4.5 全部改动**累积在 agent 内存**,**未落盘**。本步一次性 stdout preview 全部最终状态(每个文件代码块包,带文件名标题):
+Step 4.1-4.5 全部改动**累积在 agent 内存**,**未落盘**;4.5b audit 已通过(🚫 = 0)。本步一次性 stdout preview 全部最终状态(每个文件代码块包,带文件名标题):
 - 根 `AGENTS.md`(含 4.5 取消注释后的 `@import` 行)
 - `.claude/rules/code-style.md`
 - `.claude/rules/testing.md`
 - `.claude/rules/security.md`(若 4.5 改了 description)
 
+**同时附上 4.5b audit 报告摘要**(`✅ Verified: N / ⚠️ Warnings: M / 🚫 Must-fix: 0`)+ ⚠️ 项明细让用户选择处置。
+
 打完后 AskUserQuestion:
-- **接受所有 → 落盘**
-- **第 N 个要改 → 让用户指,改完重新 preview**
+- **接受所有(含 ⚠️ 项)→ 落盘**
+- **某 ⚠️ 项要 fix → 改完重新 4.5b audit + 重 preview**
+- **第 N 个文件要改 → 让用户指,改完重 audit + 重 preview**
 - **全 revert → 回 Step 4.1 重填**
 
 用户 confirm 才走 Edit/Write 落盘。
@@ -405,9 +428,20 @@ cp "$PLUGIN_ROOT/template/_multi_tier_examples/${TIER_CATEGORY}.CLAUDE.md.exampl
 
 **关键 2:删除不适用的整个章节**:某 tier 用不到的章节(如 service-tier 不用 ORM 时 `### {{TIER_ORM}}` 整节删)直接整段删,不留空章节。
 
+### Step 5.3b 决策完整性 audit(强制,workflow §1.12 Generation Discipline)
+
+每填完一个 tier(Step 5.3),**单 tier 一组** dispatch [`decision-completeness-auditor`](../../agents/decision-completeness-auditor.md)(input/output 详见 agent doc):
+
+- `files_to_audit`: `<tier>/AGENTS.md` + `.claude/rules/<framework>.md`(若 Step 5.3 cp 出来)
+- `qa_answers`: Step 2 + 本 tier Step 5.1 mini-Q&A 答案,dot-path keyed
+- `language_conventions`: null
+- `plugin_hardcoded_defaults`: 同 4.5b 列表(workflow §1.10 "不问什么" 表)
+
+**Block 规则**:同 4.5b — 🚫 > 0 不进 5.4 Preview,修完**重跑本 step**;⚠️ 不 block,5.4 同时展示。
+
 ### Step 5.4:Tier-level Preview Gate(强制)
 
-每填完一个 tier-level AGENTS.md(Step 5.3),**stdout preview 一组文件**:
+每填完一个 tier-level AGENTS.md(Step 5.3 + 5.3b audit 通过),**stdout preview 一组文件**:
 - tier-level `<tier>/AGENTS.md`
 - 该 tier 自动 cp 出来的 `.claude/rules/<framework>.md`(若 Step 5.3 关键 1 第 2 步触发)
 

@@ -37,11 +37,12 @@ skills/                Claude Code skills
 └── agents-md-revise/     /project-workflow:agents-md-revise    (P4 主动 refresh A 类约定)
 
 agents/                Sub-agents(被 skills dispatch)
-├── agents-md-reviewer.md      L2 AGENTS.md 合规 review(by /l2-review)
-├── spec-reviewer.md           L3 spec.md 合规 review(by /l3-review)
-├── spec-quality-reviewer.md   spec 自身质量主观二审(by /spec-quality-check)
-├── tech-researcher.md         技术选型调研(by /project-init Q&A,opt-in)
-└── codebase-explorer.md       既有 codebase 结构扫描(by /project-personalize Path C)
+├── agents-md-reviewer.md            L2 AGENTS.md 合规 review(by /l2-review)
+├── spec-reviewer.md                 L3 spec.md 合规 review(by /l3-review)
+├── spec-quality-reviewer.md         spec 自身质量主观二审(by /spec-quality-check)
+├── tech-researcher.md               技术选型调研(by /project-init Q&A,opt-in)
+├── codebase-explorer.md             既有 codebase 结构扫描(by /project-personalize Path C)
+└── decision-completeness-auditor.md plant 决策追溯审计(by /project-init / /project-personalize / /feature-init / /agents-md-revise,Preview Gate 之前)— 实施 workflow.md §1.12
 docs/                  方法论文档
 ├── workflow.md        ⭐ 5 阶段 + 4 支柱(核心)
 ├── gotchas.md         ⭐ 10 工程陷阱

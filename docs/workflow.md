@@ -611,6 +611,80 @@ docs/adr/
 - 改一个文件,看 hook 自动跑(lint/format 生效)
 - 把 AGENTS.md 给 AI 读一遍,问它"基于本文件总结这个项目",看理解是否准确
 
+### 1.12 生成纪律(Generation Discipline)
+
+> **Serves §0.5 信念 1**:消除"P0 setup 期间的人工对齐劳动"——用户审 AGENTS.md 时不应该靠肉眼分辨"哪些是 agent 猜的"。
+
+#### 主张
+
+P0 生成(`/project-init` / `/project-personalize`)Preview Gate 落盘**之前**,待写入的所有文件里**每条特定字符串决策**(模块名 / 路径 / broker / 端口 / 包名 / 命名空间 / etc.)必须 trace 回三类来源之一:
+
+- ✅ Q&A 直接答 → 标 `(Q&A 轮 N)`
+- ⚠️ 语言/社区惯例 → 标 `(Python app/ 惯例)` / `(cargo init 默认 src/)`
+- 🚫 纯 plant 无出处 → **禁入库**,必须满足下列之一:
+  - (a) 改成显式 deferred:`(待定,见 ADR 000N-XXX)`
+  - (b) 回 Q&A 追问用户
+  - (c) 显式标 template default + 注明改时同步指针
+
+#### 底层逻辑
+
+§1.10 "不问什么"已经处理一半("不该问的题不让 LLM 即兴编")。本节处理另一半:**该问的题用 plant 顶包**。两类失败模式正交:
+
+| §1.10 防 | 本节防 |
+|---|---|
+| Aspirational(P0 没数据时 AI 编"看起来对"的特殊约束 / 性能门槛) | Plant(Q&A 未问的决策细节 agent 自行填,且填得不自洽) |
+
+不防的代价是:用户拿到 AGENTS.md 跑命令 → 报错 → 回查发现是 agent 猜的。**P0 生成期的对齐对话被推到 P2 runtime,违 §0.5 信念 1**。
+
+#### 依据
+
+| 类型 | 内容 |
+|---|---|
+| 实战观察 | scaffold-v2 lab 跑 v2.8.0 /project-init 全栈 Q&A,plant 出 `app/` vs `src/` vs `src/app/` 3 处不自洽 + Celery broker 未问就填 Redis + `app.celery_app` 凭空模块名(见 plugin-validation-findings.md F-42 / F-43) |
+| 类比 §6.4 Reviewer 承诺 | "Cite-or-skip"(reviewer 不写没引用的 finding)→ 本节 "Trace-or-defer"(generator 不写没追溯的决策);两者都是把"主观判断"压成"机械可查" |
+| 业界对照 | Spec Kit / mcpmarket Drift Detection 都做 P3 spec-vs-code drift,**P0 generation 期的 plant 防线没人专门做** —— 本节填补 |
+
+#### 怎么用
+
+##### Generator 承诺(类比 §6.4 Reviewer 承诺,落地形态见下)
+
+| 承诺 | 含义 |
+|---|---|
+| **Trace-or-defer** | 每条 plant 决策必须 trace 来源或显式 deferred,不允许无标记 plant 入库 |
+| **Cross-file consistency** | 同一决策多处引用必须对齐(grep 自检,而非"写完不看") |
+| **Anti-cargo-cult** | Q&A 选项 / 默认值不引用具体已存在项目(monorepo 兄弟 / 父仓库 reference),用栈通用描述 |
+| **Greenfield isolation** | 默认值基于语言/社区惯例,不基于父目录 / 兄弟项目偏好 |
+
+##### 落地形态(二选一,都符合本节主张)
+
+| 形态 | 适用 | 实施 |
+|---|---|---|
+| **Skill 内置** | 决策类型少 / skill prompt 没膨胀 | SKILL.md Preview Gate 之前加 self-audit step,扫 + 列决策矩阵 + 严重项 block Preview |
+| **Sub-agent reviewer**(推荐:可靠性更高) | 决策类型多 / 想跨 skill 复用(/project-init + /project-personalize + /agents-md-revise) | dispatch 独立 `decision-completeness-auditor` read-only agent,返结构化报告,skill block on 🚫 项;agent 上下文干净,不受 fill 任务惯性影响 |
+
+无论哪种形态,**Preview Gate 必须强制 block 严重项,不允许"audit 报警但用户一键 approve 略过"**。
+
+#### 失效情形
+
+- **既有项目 retrofit**(/project-personalize Path C):代码可读,plant 决策能从代码扫出,本节弱化为"agent 标注哪些是扫出来的、哪些是真 plant",不强 block
+- **P0 前 brainstorm**:用户也没决策,brainstorm 阶段所有"决策"都是探索,本节不适用
+- **真正的 deferred**:标了 `(待定,见 ADR)` 就是合法非 plant(部署命令 / Celery broker 等 B 层未起场景)
+- **生成 ≤ 1 处的决策**:单点决策无跨文件一致性问题,Trace-or-defer 适用但 Cross-file consistency 不适用
+
+#### 跟其他原则的边界
+
+- **vs §6.4 三层 review**:**不是第 4 类 review**。§6.4 是 P3 implementation 完成时按规则源分层审产物;本节是 P0 setup 生成时审决策追溯。时机 / 对象 / 失败处置都不同
+- **vs §6.3 环境强制**:§6.3 是 P2/P4 持续 runtime(hook),本节是 P0 一次性 generation gate;前者治持续漂移,后者治源头污染
+- **vs §1.10 Q&A 设计**:互补——§1.10 列"不问什么"(防 aspirational),本节列"plant 怎么处理"(防 unanchored plant)。两节共同覆盖 P0 内容来源纪律
+
+#### 给 plugin 实施者的提示
+
+不要一次到位上多个 audit agents。建议增量:
+
+1. **先**:Skill 内置 self-audit + Generator 承诺写进 SKILL.md(轻量,验证概念)
+2. **后**(实施 #1 之后跑 ≥ 2 次 validation 仍发现 plant):升级成 sub-agent
+3. **同时**:其他 audit(内容争议性 / starter 缺失生成)**别捆绑**,验证 #1 收益后再单独加。每个 audit agent 独立服务一类正交 finding(对应 §7.4 反 over-engineer)
+
 ---
 
 ## 2. Module Setup(P2 内的 sub-flow,非独立 phase)
