@@ -103,7 +103,7 @@ ls docs/specs/ | grep -E '^[0-9]{3}-' | sort -rn | head -1
 **用户 override**:若用户项目本地有 `./docs/specs/_template/` 且含 `.user-customized` 哨兵 → 优先用本地版,跳过 plugin source。
 
 ```bash
-PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT:-$(ls -td ~/.claude/plugins/cache/project-workflow/project-workflow/*/ 2>/dev/null | head -1)}"
+PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT:-$(ls -d ~/.claude/plugins/cache/project-workflow/project-workflow/*/ 2>/dev/null | sort -V | tail -1)}"
 
 # 优先本地 override,否则用 plugin canonical
 if [ -f "./docs/specs/_template/.user-customized" ]; then

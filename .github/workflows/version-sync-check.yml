@@ -1,0 +1,53 @@
+name: plugin.json version sync check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# 防止 commit msg "v2.X.Y" 跟 .claude-plugin/plugin.json `version` 漂移。
+# 历史背景:维护期间 commit msg 先升版,plugin.json `version` 字段忘改 →
+# cache 目录命名 / changelog tooling / `/plugin info` 显示错版本。
+# 见 workflow.md §1.12 末尾 "给 plugin 实施者的提示"。
+
+jobs:
+  version-sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Extract version from latest commit message
+        id: commit_version
+        run: |
+          MSG=$(git log -1 --format=%s)
+          # 匹配 "vX.Y.Z" 或 "vX.Y.Z-rc.N" 形式,小写 v
+          COMMIT_VER=$(echo "$MSG" | grep -oE 'v[0-9]+\.[0-9]+\.[0-9]+(-[a-z0-9.]+)?' | head -1 | sed 's/^v//')
+          if [ -z "$COMMIT_VER" ]; then
+            echo "::notice::Commit message has no vX.Y.Z token — skipping version sync check."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "commit_ver=$COMMIT_VER" >> "$GITHUB_OUTPUT"
+
+      - name: Extract version from plugin.json
+        id: json_version
+        if: steps.commit_version.outputs.skip != 'true'
+        run: |
+          JSON_VER=$(jq -r .version .claude-plugin/plugin.json)
+          echo "json_ver=$JSON_VER" >> "$GITHUB_OUTPUT"
+
+      - name: Compare versions
+        if: steps.commit_version.outputs.skip != 'true'
+        run: |
+          COMMIT_VER="${{ steps.commit_version.outputs.commit_ver }}"
+          JSON_VER="${{ steps.json_version.outputs.json_ver }}"
+          echo "Commit msg version: $COMMIT_VER"
+          echo "plugin.json version: $JSON_VER"
+          if [ "$COMMIT_VER" != "$JSON_VER" ]; then
+            echo "::error::Version drift detected. Commit msg says v$COMMIT_VER but plugin.json says $JSON_VER. Either bump plugin.json or drop the version token from commit msg."
+            exit 1
+          fi
+          echo "::notice::Version sync OK: v$COMMIT_VER"

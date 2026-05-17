@@ -640,7 +640,7 @@ P0 生成(`/project-init` / `/project-personalize`)Preview Gate 落盘**之前**
 
 | 类型 | 内容 |
 |---|---|
-| 实战观察 | scaffold-v2 lab 跑 v2.8.0 /project-init 全栈 Q&A,plant 出 `app/` vs `src/` vs `src/app/` 3 处不自洽 + Celery broker 未问就填 Redis + `app.celery_app` 凭空模块名(见 plugin-validation-findings.md F-42 / F-43) |
+| 实战观察 | P0 fullstack Q&A 实测:Q&A 只覆盖 framework / ORM / DB 等高层选型,**fill placeholder 阶段 agent 易 plant 未问的细节**(src 包根 / 任务队列 broker / 入口模块路径 / 等),且 plant 跨多处不自洽(同一 src 路径 3 处写法)。Plant 不留追溯,用户审 AGENTS.md 时无法分辨"agent 猜的"还是"项目真决策" |
 | 类比 §6.4 Reviewer 承诺 | "Cite-or-skip"(reviewer 不写没引用的 finding)→ 本节 "Trace-or-defer"(generator 不写没追溯的决策);两者都是把"主观判断"压成"机械可查" |
 | 业界对照 | Spec Kit / mcpmarket Drift Detection 都做 P3 spec-vs-code drift,**P0 generation 期的 plant 防线没人专门做** —— 本节填补 |
 

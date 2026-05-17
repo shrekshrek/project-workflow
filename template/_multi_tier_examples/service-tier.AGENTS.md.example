@@ -8,6 +8,15 @@ P0 时根据栈填齐 placeholder。
 本文件目标 < 100 行,长尾放 .claude/rules/ 或 docs/。
 -->
 
+## Source Layout
+
+> Single source of truth for src 路径。其他节(Commands / Testing / Module
+> Structure)统一引用 `{{TIER_SRC_DIR}}`,改 layout 只改本节。
+
+- 包根:`{{TIER_SRC_DIR}}/`
+- 入口:`{{TIER_ENTRY_POINT}}`({{TIER_FRAMEWORK}} app 实例 / main entry)
+- 测试镜像:`{{TIER_TEST_DIR}}/` ↔ `{{TIER_SRC_DIR}}/`
+
 ## Commands(本 tier 特有)
 
 - 起服务:`{{TIER_DEV_COMMAND}}`
@@ -19,7 +28,7 @@ P0 时根据栈填齐 placeholder。
 ## Testing(本 tier 特有)
 
 - 框架:`{{TIER_TEST_FRAMEWORK}}`(如 pytest + httpx + pytest-asyncio)
-- 测试文件位置:`{{TIER_TEST_LOCATION}}`(如 `tests/` 镜像 `src/`)
+- 测试文件位置:`{{TIER_TEST_DIR}}/` 镜像 `{{TIER_SRC_DIR}}/`
 - 每个 endpoint 至少:happy + 1 边界 + 1 错误路径(401 / 404 / 422)
 
 ## Module Structure

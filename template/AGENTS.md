@@ -16,10 +16,19 @@ Claude Code reads `CLAUDE.md` which imports this file via `@AGENTS.md`.
 README.md                  快速上手 + 命令清单
 AGENTS.md                  本文件,项目级 AI 协作约定
 CLAUDE.md                  thin pointer: @AGENTS.md
-└── docs/
-    ├── specs/<NNN>-<slug>/ 实际功能 spec(每开发任务一个目录,由 /feature-init 创建)
-    ├── adr/               架构决策记录
-    └── (其他业务文档)
+.claude/                   path-scoped rules + hooks + settings
+├── rules/<topic>.md       code-style / testing / security / framework-specific
+├── hooks/                 PostToolUse 等机械检查
+└── settings.json
+docs/
+├── specs/<NNN>-<slug>/    实际功能 spec(每开发任务一个目录,由 /feature-init 创建)
+├── adr/                   架构决策记录
+└── (其他业务文档)
+<!-- Fullstack 项目追加 tier 占位:
+<tier>/                    tier 级 AGENTS.md(差量于根)
+└── AGENTS.md / CLAUDE.md
+例:backend/ + frontend/ ── 用户 Q&A 自定义命名
+-->
 ```
 
 **关键依赖关系**(改 A 文件常常要同步改 B):
@@ -108,7 +117,10 @@ P0 完成、第一次起服务之前,务必扫一遍工程陷阱清单 [`docs/go
 
 ---
 
-<!-- 路径级规则按需 @import,只在 Claude 读相关文件时加载,节省 context budget -->
+<!-- 路径级规则按需 @import,只在 Claude 读相关文件时加载,节省 context budget。
+     纪律(workflow §1.6):
+     - 有 `globs:` frontmatter 的规则 → 注释保留(globs 处理 path-scoped 加载)
+     - 无 `globs:` 的全局规则(如 security)→ 取消注释,走 @import 强制加载 -->
 <!-- @.claude/rules/code-style.md -->
 <!-- @.claude/rules/testing.md -->
 <!-- @.claude/rules/security.md -->

@@ -165,7 +165,7 @@ Plugin 已装在本地(用户能跑 `/project-workflow:project-init` 即证明),
 
 ```bash
 # Claude Code 调用 skill 时注入 CLAUDE_PLUGIN_ROOT;defensive fallback 走 cache 目录最新版
-PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT:-$(ls -td ~/.claude/plugins/cache/project-workflow/project-workflow/*/ 2>/dev/null | head -1)}"
+PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT:-$(ls -d ~/.claude/plugins/cache/project-workflow/project-workflow/*/ 2>/dev/null | sort -V | tail -1)}"
 
 # template/ 复制,排除 _multi_tier_examples/(plugin asset,Step 5 直接从 $PLUGIN_ROOT 读)
 find "$PLUGIN_ROOT/template" -mindepth 1 -maxdepth 1 ! -name '_multi_tier_examples' \
@@ -212,7 +212,7 @@ cp "$PLUGIN_ROOT/docs/gotchas.md" docs/gotchas.md
 | `{{LINT_CONFIG_PATH}}` | mixed-lang → 指针 `(见各 <tier>/AGENTS.md)`;single-lang → 据 lint 工具推(`.eslintrc.cjs` / `pyproject.toml`)|
 | `{{STYLE_HIGHLIGHT_1/2/3}}` | 据栈推 1-3 条**真正特殊**的风格点(见 4.4)|
 
-**模块组织模式 default**(写进 `## Project Structure` 节末尾,**不问用户**):
+**模块组织模式 default**(**不问用户**;写进 `.claude/rules/code-style.md` 末尾 `## 文件 / 模块` 节,**不**写进根 AGENTS.md ── 减少根 AGENTS.md 行数,跟模块/文件相关规则归在一处):
 > 模块组织模式:**按 feature / domain 组织,不按 type**(避免 `controllers/` `services/` `utils/` 这种 type-based 散布)。详见 [workflow §2.5](https://github.com/shrekshrek/project-workflow/blob/main/docs/workflow.md#25-模块组织建议领域优先不要技术分层)。
 
 **Git 平台 default**(写进 `## Git Workflow` 节):固定填 `平台:GitHub(PR + Actions + Discussions)`(系统其他地方都默认 GitHub 词汇 / `.github/`;GitLab/Gitea 用户 P0 后手动改)。
@@ -367,15 +367,31 @@ For each tier in [Q&A 轮 1.5 tier list]:
 1. 框架?(FastAPI / Django / Flask / Express / Spring Boot / Gin / Rocket / 其他)
 2. ORM?(SQLAlchemy 2.0 / 1.x / Django ORM / Prisma / TypeORM / 不用)
 3. 数据库?(PostgreSQL / MySQL / SQLite / MongoDB / etc.) — **LLM context only**,不填 placeholder,用于推导 ORM critical rules(async driver / dialect / pool)
-4. **(mixed-lang fullstack only)** 测试框架?(pytest / Jest / 等;single-lang 已在 Q&A 轮 2 共享答过,跳过)
-5. **(mixed-lang fullstack only)** Lint 工具?(Ruff / Black + Flake8 / ESLint / 等)
-6. **(mixed-lang fullstack only)** 包管理器?(uv / poetry / pdm / pip / pnpm / npm / cargo / go mod / 等)
+4. **Source 布局?**(Python / Node / Go 真有歧义,Rust / Java / C# 中等歧义,Rails / Elixir 单 app 几乎无歧义但仍 default-confirm。**问一题就把后续 Commands / Module Structure / Testing 路径决策钉死,避免多处独立 plant 漂移**)。**选项据 Q&A 轮 2 主语言渲染,default 高亮**:
+
+   | 主语言 | 选项(✨ = default) |
+   |---|---|
+   | **Python** | ✨ (a) `app/` flat(FastAPI / Flask / Django 主流)<br>(b) `src/<package>/` PEP 518 src-layout<br>(c) `<package>/` 平铺(`uv init` 默认)<br>(d) 自定义 |
+   | **Node/TS**(非 Next.js)| ✨ (a) `src/`(Vite / NestJS / 多数 Express 项目)<br>(b) root-level `app.{ts,js}` / `server.{ts,js}` 单文件<br>(c) 自定义 |
+   | **Next.js** | ✨ (a) `app/` App Router(2026 主流)<br>(b) `pages/` Pages Router(legacy)<br>(c) 自定义 |
+   | **Go** | ✨ (a) `cmd/<binary>/` + `internal/<domain>/`(golang-standards layout)<br>(b) flat — `main.go` 在根目录(小 CLI / 单 binary)<br>(c) 自定义 |
+   | **Rust** | ✨ (a) `src/main.rs` 单 binary(`cargo init` 默认)<br>(b) `src/bin/<name>.rs` 多 binary<br>(c) workspace `crates/<member>/`<br>(d) 自定义 |
+   | **Java/Kotlin(Spring Boot)** | ✨ (a) `src/main/<lang>/<root.package>/`(Maven/Gradle 标准)<br>(b) Multi-module — `<module>/src/main/<lang>/...`<br>(c) 自定义 |
+   | **Elixir** | ✨ (a) `lib/<app_name>/`(Mix 标准)<br>(b) umbrella — `apps/<app>/lib/<app>/`<br>(c) 自定义 |
+   | **Ruby(Rails)** | ✨ (a) `app/{controllers,models,views,...}`(Rails 强制,无 user choice)<br>(b) 自定义(罕见) |
+   | **C#/.NET** | ✨ (a) `src/<Project.Name>/`(`dotnet new` 现代)<br>(b) `<Project.Name>/` 老式根目录<br>(c) 自定义 |
+   | **其他 / 冷门栈** | 用户输入 `<src 包根>` + `<入口文件>` |
+
+5. **(mixed-lang fullstack only)** 测试框架?(pytest / Jest / 等;single-lang 已在 Q&A 轮 2 共享答过,跳过)
+6. **(mixed-lang fullstack only)** Lint 工具?(Ruff / Black + Flake8 / ESLint / 等)
+7. **(mixed-lang fullstack only)** 包管理器?(uv / poetry / pdm / pip / pnpm / npm / cargo / go mod / 等)
 
 ⚪️ Optional:
-7. 任务队列?(Celery / RQ / BullMQ / Sidekiq / 不用 ── 若 tier 本身就是 worker,在此问 broker)
-8. Migration 工具?(Alembic / Atlas / sqlx-cli / 框架自带 / 纯 SQL)
+8. 任务队列?(Celery / RQ / BullMQ / Sidekiq / 不用 ── 若 tier 本身就是 worker,在此问 broker)
+9. Migration 工具?(Alembic / Atlas / sqlx-cli / 框架自带 / 纯 SQL)
 
 > 起服务 / 测试 / lint / migration 命令**推导**(见 Step 2 末尾主声明)。
+> `{{TIER_SRC_DIR}}` / `{{TIER_ENTRY_POINT}}` / `{{TIER_TEST_DIR}}` 据题 4 答案渲染(若用户接受 default,渲染对应 ✨ 行)。
 
 #### UI-style tier mini-Q&A
 
@@ -399,7 +415,7 @@ For each tier in [Q&A 轮 1.5 tier list]:
 模板按**类别**(不是 tier 名),覆盖任意 tier 名:
 
 ```bash
-PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT:-$(ls -td ~/.claude/plugins/cache/project-workflow/project-workflow/*/ 2>/dev/null | head -1)}"
+PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT:-$(ls -d ~/.claude/plugins/cache/project-workflow/project-workflow/*/ 2>/dev/null | sort -V | tail -1)}"
 TIER_NAME=<from Q&A 轮 1.5>     # 用户自定的 tier 名(如 backend / worker / api / mobile / web ...)
 TIER_CATEGORY=<service-tier 或 ui-tier>  # 据 Step 5.1 分类
 
@@ -417,6 +433,10 @@ cp "$PLUGIN_ROOT/template/_multi_tier_examples/${TIER_CATEGORY}.CLAUDE.md.exampl
 ### Step 5.3:填 tier-level AGENTS.md placeholder + framework split
 
 逐个替换 `{{TIER_NAME}}` / `{{TIER_DEV_COMMAND}}` / `{{TIER_FRAMEWORK}}` 等(详见 [_multi_tier_examples/README.md](../template/_multi_tier_examples/README.md))。
+
+**Source Layout 渲染**:
+- `{{TIER_SRC_DIR}}` / `{{TIER_ENTRY_POINT}}` / `{{TIER_TEST_DIR}}` 据 Step 5.1 题 4 答案渲染(每语言 ✨ default 或用户自定)
+- service-tier template 的 `## Source Layout` 节是 SOT,其他节(Commands / Testing / Module Structure)统一引用 `{{TIER_SRC_DIR}}`,渲染时只替换一处指针 — **防止多处独立 plant 出不自洽路径**(workflow §1.12 Cross-file consistency)
 
 **关键 1:framework 规则强制 split**(workflow §1.3 决策口诀 + 反模式防御):
 

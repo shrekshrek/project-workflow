@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+// @ts-nocheck
+/* eslint-disable @typescript-eslint/no-unused-vars */
 // PostToolUse hook: lint on edit
 //
 // 这是**方法论骨架**:展示 hook 怎么挂、怎么从 stdin 读 file_path、怎么按文件类型分流 lint。
@@ -9,9 +11,12 @@
 // 本骨架只示意分流,生产用法请按项目实际工具填充各 case 分支。
 //
 // 启用前的 todo:
-// 1. 取消注释 case 分支里你栈对应的 lint 命令
+// 1. 取消注释 case 分支里你栈对应的 lint 命令(取消 execFileSync 行,IDE warnings 自然消失)
 // 2. chmod +x 让本脚本可执行(若 settings.json 用 `node <path>` 调,这步可跳)
 // 3. 验证:改一个文件,看是否自动跑 lint
+//
+// **关于顶部 `// @ts-nocheck` 和 ESLint disable**:template 默认 lint 命令全注释,导致
+// `execFileSync` / `localBin` IDE 报 unused;启用任意 case 后两条注释可一并删。
 //
 // 详细设计见 workflow.md §1.7 + §4.2(失效情形)
 
