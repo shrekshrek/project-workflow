@@ -119,6 +119,8 @@ git status --short  # uncommitted scope
 - ✅ "Spec match — N items verified, 0 missing/deviation"
 - ⚠️ "N deviations from spec.md(各 1 行)"
 
+**L2 + L3 都收到后,按 [workflow.md §6.4 L2/L3 Finding 重叠规则](../../docs/workflow.md#l2l3-finding-重叠时的去重规则)去重**:同一行被双 flag 且**同根因** → 以 L3 为准呈现,L2 标 "also flagged by L2";不同根因 → 两条都保留。
+
 ### Item 5a: A 类约定触动汇总(本 feature 实际改了哪几份)
 
 **Why this section exists**:feature 实施期常顺手改 A 类约定(`AGENTS.md` Boundaries / 模块结构,或 `.claude/rules/<framework>.md` 框架约定),但用户改完代码后**容易忘记自己改了哪几份**。本节给出显式 audit,让 reviewer / 自己复盘时能一眼看到。

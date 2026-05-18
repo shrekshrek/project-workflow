@@ -1340,6 +1340,21 @@ LLM 的 attention 是 quadratic 或 sub-linear cost over context length。当 co
 
 **workflow 调用方不必背契约**,但**知道这些保证**有助于判断 review 结果可信度,以及解释"为什么 reviewer 不给某条它做不到的建议"。完整契约定义见 reviewer skill 文件本身。
 
+#### L2/L3 Finding 重叠时的去重规则
+
+L2 / L3 reviewer 独立 dispatch,各看各的规则源(AGENTS.md vs spec.md),**不互相感知**。同一行被双 flag 是正交设计的正常代价,不是 bug。**用户 / [`proof-bundle`](../skills/proof-bundle/SKILL.md) 在装配 Review summary 时按下表去重**(reviewer 承诺不改):
+
+| 场景 | 规则 |
+|---|---|
+| 双 flag 同一行 + **同根因**(e.g. 都说"该加 error handling") | **L3 为准** —— spec 是 feature 强契约,修 L3 同时修 L2 |
+| 双 flag 同一行 + **不同根因**(e.g. L2 说"命名漂",L3 说"行为不符 §1 Outcomes") | **两条都保留**,各自处理 |
+| 仅 L2 flag,代码符合 spec | L2 为准(spec 没禁的约定一致性优先) |
+| 仅 L3 flag | L3 为准(spec 是 feature 基线) |
+
+**Why L3 > L2 同根因时**:L3 违反 = verification 直接 fail(行为/范围错);L2 违反 = drift(风格/结构错)。严重性 L3 高;一个 fix 通常两边都满足,先按 L3 框架修。
+
+**落地**:此规则由 [`proof-bundle`](../skills/proof-bundle/SKILL.md) skill 在聚合 L2 + L3 输出时执行 —— reviewer 各自报独立 finding,**去重在 aggregator**,不下沉到 reviewer 内部(否则违反 §6.4 主张的"正交问题正交工具")。
+
 #### 失效情形
 
 通用情形见 [§9 何时偏离](#9-何时偏离手册)。本原则特有的:
