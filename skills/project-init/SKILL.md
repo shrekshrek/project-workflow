@@ -318,9 +318,11 @@ Preview Gate 之前,dispatch [`decision-completeness-auditor`](../../agents/deci
   - {value: "≥ 80%", source: "workflow.md §1.10", rationale: "测试覆盖率门槛 default"}
   - {value: "按 feature / domain 组织", source: "workflow.md §1.10 + §2.5", rationale: "模块组织 default"}
   - {value: "(B 层未定 — 部署时补,见 docs/adr/000N-deploy.md)", source: "workflow.md §1.10", rationale: "P0 不预测部署"}
+  - {value: "Playwright", source: "本 skill testing.md {{E2E_FRAMEWORK}} default", rationale: "P0 cross-tier E2E default, refinable via ADR"}
   ```
-
 **Block 规则**(per [workflow §1.12](https://github.com/shrekshrek/project-workflow/blob/main/docs/workflow.md#112-生成纪律generation-discipline)):🚫 > 0 不进 4.6 Preview,按 agent 修正选项处理后**重跑本 step**;⚠️ 不 block,4.6 Preview Gate 同时展示给用户处置。
+
+> ⚠️ **vendor docs 钉死的 idiom**(如 Vue 3 `PascalCase.vue` / `defineProps<{...}>()` / EP `unplugin-vue-components` / UnoCSS `uno.config.ts` 等)auditor 据训练自识别归 ⚠️ language/vendor idiom,**不**归 🚫 must-fix ── 治 F-53 frontend audit 过激判断。详见 `decision-completeness-auditor.md` Phase 2 反例。
 
 ### 4.6 落盘前 Preview Gate(强制,workflow §1.10 关键纪律)
 
@@ -438,13 +440,16 @@ cp "$PLUGIN_ROOT/template/_multi_tier_examples/${TIER_CATEGORY}.CLAUDE.md.exampl
 - `{{TIER_SRC_DIR}}` / `{{TIER_ENTRY_POINT}}` / `{{TIER_TEST_DIR}}` 据 Step 5.1 题 4 答案渲染(每语言 ✨ default 或用户自定)
 - service-tier template 的 `## Source Layout` 节是 SOT,其他节(Commands / Testing / Module Structure)统一引用 `{{TIER_SRC_DIR}}`,渲染时只替换一处指针 — **防止多处独立 plant 出不自洽路径**(workflow §1.12 Cross-file consistency)
 
-**关键 1:framework 规则强制 split**(workflow §1.3 决策口诀 + 反模式防御):
+**关键 1:framework 规则强制 split**(workflow §1.3 决策口诀 + 反模式防御 + F-52 修法):
 
-- `{{TIER_FRAMEWORK_CRITICAL_RULES}}` / `{{TIER_ORM_CRITICAL_RULES}}` / `{{TIER_QUEUE_CRITICAL_RULES}}` 只填 **≤ 5 条 critical**(最常违反 + 最影响项目正确性的)
-- **完整 detail** split 到 `.claude/rules/<framework>.md`:
-  1. 检测 `$PLUGIN_ROOT/template/.claude/rules/_examples/<framework>.example.md` 是否存在(`fastapi` / `vue` / `django` / etc.)
+- `{{TIER_FRAMEWORK_CRITICAL_LABELS}}` / `{{TIER_ORM_CRITICAL_LABELS}}` / `{{TIER_QUEUE_CRITICAL_LABELS}}` 只填 **≤ 5 个短标签**(label-only,单行 ≤ 80 字符),例:
+  - FastAPI:`APIRouter 分组 / Depends DI / HTTPException 集中处理 / async 内禁 sync I/O / 输出返 Pydantic schema`
+  - Vue 3 + Vite:`Composition API + <script setup> / defineProps generic / ref vs reactive / useXxx 命名 / 路由 lazy + guard 走 router 配置`
+- **完整 detail 严格禁止复制进 tier AGENTS.md**,必走 `.claude/rules/<framework>.md`:
+  1. 检测 `$PLUGIN_ROOT/template/.claude/rules/_examples/<framework>.example.md` 是否存在(`fastapi` / `vue` / `react` / `gin` / 等)
   2. 若有 → `cp "$PLUGIN_ROOT/template/.claude/rules/_examples/<framework>.example.md" .claude/rules/<framework>.md`,改 frontmatter `globs:` 适配 tier(如 `globs: backend/**/*.py`),`description:` 适配
-  3. 若无 starter → tier-level critical 段填 5 条;`.claude/rules/<framework>.md` 先建空壳带 frontmatter + TODO comment
+  3. 若无 starter → tier-level labels 段填 ≤ 5 个标签;`.claude/rules/<framework>.md` 先建空壳带 frontmatter + TODO comment
+- **F-52 防漂移**:tier critical 段 verbatim 重复 `.claude/rules/<fw>.md` 内容 = 违反 tier 文件自己头部"差量于根"原则。**禁** 在 tier critical 段写整句 rule(只标签);整句 detail 永远在 rules 文件里
 
 **关键 2:删除不适用的整个章节**:某 tier 用不到的章节(如 service-tier 不用 ORM 时 `### {{TIER_ORM}}` 整节删)直接整段删,不留空章节。
 

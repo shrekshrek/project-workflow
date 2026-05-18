@@ -95,13 +95,17 @@ P0 时根据栈填齐 placeholder。
   - selectors 在 `selectors/` 单独文件
 -->
 
-## 框架特殊约定(critical only,详规则 split 到 `.claude/rules/`)
+## 框架特殊约定(**label-only**,detail 走 `.claude/rules/<fw>.md`)
 
-### {{TIER_FRAMEWORK}}(critical rules,≤ 5 条)
+> ⚠️ 每条只给短标签(单行 ≤ 80 字符)。Detail 严禁重复 ── 违反 → 两边漂移(workflow §1.3 反模式 / 本仓 F-52)。
 
-{{TIER_FRAMEWORK_CRITICAL_RULES}}
+### {{TIER_FRAMEWORK}}(critical labels,≤ 5 个)
 
-**详规则**:见 `.claude/rules/<framework>.md`(P0 时若 `_examples/<framework>.example.md` 存在,skill 已自动 `cp` + 适配 globs)。
+{{TIER_FRAMEWORK_CRITICAL_LABELS}}
+
+<!-- 例(Vue 3):Composition API + <script setup> / defineProps generic / ref vs reactive / useXxx / 路由 lazy + guard 走 router 配置
+     例(React 19):函数组件 + hooks / Rules of Hooks / state 选型不混 / useEffect deps 显式 / list key 用 stable id -->
+
 
 ## Boundaries(本 tier 特有,继承根)
 

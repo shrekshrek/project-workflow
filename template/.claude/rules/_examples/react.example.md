@@ -81,4 +81,4 @@ globs: frontend/**/*.{ts,tsx}
 - 查询优先级:`getByRole` > `getByLabelText` > `getByText` > `getByTestId`(最后兜底)
 - 用户交互用 `userEvent`(real interaction),**不**用 `fireEvent`(底层 API,不模拟 user flow)
 - Async assertion:`await screen.findByText(...)` 或 `waitFor(() => ...)`
-- Mock API:msw(Mock Service Worker)level mock,**不**在测试里 `jest.mock('axios')` level
+- Mock API:优先 service-worker level mock(如 msw / Mock Service Worker),避免在测试里直接 mock HTTP client 模块(`vi.mock('axios' / 'ofetch' / 'ky' / ...)` 或 `jest.mock(...)`)

@@ -56,21 +56,23 @@ P0 时根据栈填齐 placeholder。
 - {{TIER_STYLE_HIGHLIGHT_2}}(如 Python "Pydantic v2 strict mode";Go "Context 必走第一个参数";Java "Record 优先于 class for DTO")
 - {{TIER_STYLE_HIGHLIGHT_3}}(如 Python "SQLAlchemy 2.0 `select()`";Go "sqlx struct tag,禁 raw SQL 拼接";Java "JPA `@Transactional` 边界明确")
 
-## 框架特殊约定(critical only,详规则 split 到 `.claude/rules/`)
+## 框架特殊约定(**label-only**,detail 走 `.claude/rules/<fw>.md`)
 
-### {{TIER_FRAMEWORK}}(critical rules,≤ 5 条)
+> ⚠️ 每条只给短标签(单行 ≤ 80 字符)。Detail 严禁重复 ── 违反 → 两边漂移(workflow §1.3 反模式 / 本仓 F-52)。
 
-{{TIER_FRAMEWORK_CRITICAL_RULES}}
+### {{TIER_FRAMEWORK}}(critical labels,≤ 5 个)
 
-**详规则**:见 `.claude/rules/<framework>.md`(P0 时若 `_examples/<framework>.example.md` 存在,skill 已自动 `cp` + 适配 globs)。
+{{TIER_FRAMEWORK_CRITICAL_LABELS}}
 
-### {{TIER_ORM}}(critical rules,如适用,≤ 3 条)
+<!-- 例(FastAPI):APIRouter 分组 / Depends DI / HTTPException 集中处理 / async 内禁 sync I/O / 输出返 Pydantic schema -->
 
-{{TIER_ORM_CRITICAL_RULES}}
+### {{TIER_ORM}}(critical labels,如适用,≤ 3 个)
 
-### {{TIER_QUEUE}}(critical rules,可选,≤ 3 条)
+{{TIER_ORM_CRITICAL_LABELS}}
 
-{{TIER_QUEUE_CRITICAL_RULES}}
+### {{TIER_QUEUE}}(critical labels,可选,≤ 3 个)
+
+{{TIER_QUEUE_CRITICAL_LABELS}}
 
 ## Boundaries(本 tier 特有,继承根)
 

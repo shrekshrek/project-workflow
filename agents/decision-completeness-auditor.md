@@ -93,22 +93,27 @@ Skip these (not your job):
 
 ### Phase 2 — Trace each decision
 
-For each unique decision string in inventory, search (in order):
+按 [workflow.md §1.12](../docs/workflow.md#112-生成纪律generation-discipline) **三类来源** trace,for each unique decision string in inventory:
 
-1. **qa_answers** — direct match against answer values OR derived(`backend.framework = FastAPI` → `app.main:app` 是该框架惯例 entry)
-2. **plugin_hardcoded_defaults** — value matches a plugin-policy hardcoded item(caller-passed list)
-3. **language_conventions** — match against language-idiom defaults (Python: `app/` 或 `src/<pkg>/`; Go: `cmd/` + `internal/`; etc.)
-4. **None of above** → 🚫 unanchored plant
+1. **qa_answers** — direct match against answer values OR derived(`backend.framework = FastAPI` → `app.main:app` 是该框架惯例 entry) → ✅
+2. **plugin_hardcoded_defaults** — value matches a plugin-policy hardcoded item(caller-passed list) → 🛡️ 视同 ✅
+3. **language_conventions / 框架 vendor docs 钉死的 idiom** — match against language idiom 或 framework vendor 官方文档**唯一推荐**路径(`PascalCase.vue` / `defineProps<{...}>()` / `APIRouter` / `select()` 等 agent 凭训练即可识别) → ⚠️
+4. **None of above** → 🚫 unanchored plant,must-fix
 
-**严格判断**:
-- ✅ 严格匹配 Q&A 答案 → 标 `(Q&A: round N / key X)`
-- 🛡️ 匹配 plugin policy hardcode → 标 `(plugin policy: <source>, <rationale>)` —— **不**报 ⚠️ / 🚫,视同 ✅
-- ⚠️ 是该语言 mainstream idiom 之一(多个选项) → 标 `(language idiom: X / Y / Z; chose X)`,提示 "Q&A 应该问"
-- 🚫 既无 Q&A 也无 plugin policy 也无 idiom 基础 → 必须修
+**⚠️ vs 🚫 边界(F-53 校准):vendor docs 钉死的强 idiom 归 ⚠️ 不归 🚫**:
+- vendor docs 列**唯一推荐**路径(如 Vue 3 `PascalCase.vue` SFC naming / FastAPI `lifespan` 而非 deprecated `@app.on_event`)→ ⚠️ language/vendor idiom,**caller 端展示给用户处置(accept / fix / defer),不 block Preview**
+- vendor docs 列**多 idiom 并存**(如 Vitest 测试可 `.test.ts` 同目录 / `__tests__/` / `tests/` 顶层)→ ⚠️ language idiom,提示 Q&A 应该问
+- **真无追溯**(Q&A 没问 + vendor docs 没钉 + 无 language idiom 基础)→ 🚫 must-fix
 
 **反例(避免过度宽容)**:
-- ❌ "FastAPI mainstream uses `app/main.py`,所以 `app.celery_app` 也 plausibly OK" —— **错**。`app.main` 是 entry convention,`app.celery_app` 不是 → 仍是 plant
-- ❌ "Celery 通常配 Redis" —— **错**。"通常" ≠ "convention",Celery 官方文档列 Redis / RabbitMQ / SQS / 等多个 broker 都是 first-class → 仍是 plant 必须 Q&A 或 deferred
+- ❌ "FastAPI mainstream uses `app/main.py`,所以 `app.celery_app` 也 plausibly OK" —— **错**。`app.main` 是 entry convention,`app.celery_app` 不是 → 仍是 🚫 plant
+- ❌ "Celery 通常配 Redis" —— **错**。"通常" ≠ "convention",Celery 官方文档列 Redis / RabbitMQ / SQS / 等多个 broker 都是 first-class → 仍是 🚫 plant 必须 Q&A 或 deferred
+
+**反例(避免过度严苛 ── F-53 修)**:
+- ❌ 标 `PascalCase.vue` 为 🚫 must-fix —— **错**。Vue 3 官方 Style Guide A 唯一推荐 → ⚠️ language/vendor idiom,caller 让用户 accept / fix / defer
+- ❌ 标 `defineProps<{...}>()` generic 形式为 🚫 must-fix —— **错**。Vue 3 官方 TS+Composition 唯一推荐 → ⚠️ language/vendor idiom
+- ❌ 标 EP `unplugin-vue-components` + resolver 按需引入为 🚫 must-fix —— **错**。Element Plus 官方文档唯一按需路径 → ⚠️ language/vendor idiom
+- ❌ 标 `uno.config.ts` 文件名为 🚫 must-fix —— **错**。UnoCSS 官方默认 → ⚠️ language/vendor idiom
 
 ### Phase 3 — Cross-file consistency
 
@@ -173,9 +178,15 @@ For each unique decision, list ALL its occurrences across `files_to_audit`. Flag
 
 ## Coverage
 
-`coverage = (verified + warnings) / total = X / Y = Z%`
+**严算**(F-53 修):
+- `verified_ratio = (✅+🛡️) / total`(锚定到 Q&A / plugin policy)
+- `acceptance_pending_ratio = ⚠️ / total`(language / vendor idiom,等 caller 决定 accept / fix / defer)
+- `must_fix_ratio = 🚫 / total`(unanchored plant,block Preview Gate)
 
-High confidence requires coverage ≥ 95% **AND** Must-fix = 0.
+例:`verified=15 ✅+🛡️ / warnings=10 ⚠️ / must-fix=1 🚫 / total=26`
+→ `verified=58% / acceptance_pending=38% / must-fix=4%`
+
+**High confidence gate**:`verified_ratio + acceptance_pending_ratio ≥ 95%` **AND** `must_fix = 0`(`⚠️` 算作"已识别 + 留 caller 处置"算进 confidence;真未识别的 🚫 才 block)。
 ```
 
 ## Caller obligations(契约)

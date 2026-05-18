@@ -61,7 +61,7 @@ globs: backend/**/*.py
 ## Lifespan / 启停
 
 - 启停逻辑用 `lifespan` async context manager,**禁**废弃的 `@app.on_event("startup"/"shutdown")`
-- 数据库连接池 / 后台任务 / Redis client 都在 lifespan 起停
+- 数据库连接池 / 后台任务 / 外部客户端(若引入 cache / 消息中间件,见 ADR)都在 lifespan 起停
 
 ## 测试
 

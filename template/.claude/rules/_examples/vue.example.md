@@ -44,19 +44,19 @@ globs: frontend/**/*.{ts,vue}
 - store 文件:`src/stores/<name>.ts` 或 `src/modules/<ctx>/stores/<name>.ts`
 - 异步逻辑放 store 的 action,**不**放组件 setup
 - 跨 store 通信:被引用 store `useOtherStore()` 注入,**禁** import store 文件 + ref 互相穿(循环依赖)
-- Persist:`pinia-plugin-persistedstate`,不手写 localStorage
+- Persist(若需):用专门插件而非手写 localStorage(具体库选型见 ADR)
 
 ## Routing(Vue Router v4)
 
 - 路由 lazy load:`component: () => import('./Foo.vue')`
 - Route guard 走 `beforeEnter` 或全局 `beforeEach` + `meta` 字段;**禁** 在组件 mounted 里手动 redirect
-- params / query 类型化:`route.params.id as string` 不安全;用 unplugin-vue-router 或类型断言函数
+- params / query 类型化:`route.params.id as string` 不安全;用类型断言函数封装(如需 file-based + 自动类型生成,见 ADR)
 
 ## UI 库(若用,如 Element Plus / Naive UI / Nuxt UI)
 
 - **优先**用 UI 库自带组件,**不**自己造重复
 - **不**混用多个 UI 库(Element Plus + Ant Design 会样式漂)
-- 按需引入(`unplugin-vue-components` auto-import),**禁** full bundle import
+- 按需引入(对应 UI 库的官方 resolver,如 Element Plus 用 `unplugin-vue-components` + EP resolver),**禁** full bundle import(`import 'foo-ui/dist/index.css'` 全包打入)
 
 ## TypeScript
 
@@ -78,4 +78,4 @@ globs: frontend/**/*.{ts,vue}
 - 用户交互优先 `wrapper.find(...).trigger('click')` + DOM assertion,**不**直接调 component instance method
 - Pinia testing:`createTestingPinia({ createSpy: vi.fn })` 注入测试 store
 - async update 用 `await wrapper.vm.$nextTick()` 或 `flushPromises()`
-- Mock API:msw level mock,**不**在测试里 `vi.mock('axios')`
+- Mock API:优先 service-worker level mock(如 msw),避免在测试里直接 mock HTTP client 模块(`vi.mock('axios' / 'ofetch' / 'ky' / ...)`)
