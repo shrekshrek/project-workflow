@@ -142,11 +142,14 @@ cp "$SRC/tasks.md" "docs/specs/$NNN-$SLUG/tasks.md"
    - 建议新模块:`<path>`(plan/tasks 已加 skeleton)
    - 需用户澄清:<具体选项>
 
+⚠️ 选 (y) 前注意:若你是 LLM 替 user 走 Q&A,务必**只答 user 在 Q&A 真给的细节**;user 未给的字段类型 / 数值上限 / 表名 / 库选型 / ADR 编号等**留 `(待 ADR-NNNN-...)` deferred 形式**,**不要 plant**"reasonable default"(Step 7.6b decision-completeness audit 会拦,但前置不 plant 体验更好)。
+⚠️ 选 (n) 前注意:user 自填**务必先读** scaffold base modules(如 `backend/app/<existing-module>/`)+ 既有 `.claude/rules/*.md`(尤其 `<framework>.md`),避免跨文件 inconsistency / 违反项目既有 rule(如 raw SQL 违反 `.claude/rules/fastapi.md` 的 `select()` 规则)。
+
 要我现在 Q&A 走完上面的 TODOs 吗?
-  (y)es      → 按 canonical 4 节走 spec §1 Outcomes → plan §2 架构决策(Data Model + API)
-                → spec §3 Constraints → spec §2 末轮补"不做" → plan §1.1 Sibling Alignment(若多模块)
-  (n)o       → 你后续自由填(参考 [`spec-driven §3.6.5`](../../docs/spec-driven.md#365-phase-a填-todos-的-ai-协作-sop)),完了跑 `/project-workflow:spec-quality-check`
-  (s)kip §X  → 只填指定节(如 'skip 架构' 跳过 plan §2)
+  (y)es      → Q&A 走 framing(spec §1 Outcomes / plan §2 framing / spec §3 Constraints / spec §2 末"不做" / plan §1.1 Sibling)
+                架构决策细节(字段类型 / API 契约 / 错误码 / 算法 等)Q&A 不深问 → user 自填 plan.md §2 placeholder
+  (n)o       → 你后续自由填全部 spec/plan/tasks(参考 [`spec-driven §3.6.5`](../../docs/spec-driven.md#365-phase-a填-todos-的-ai-协作-sop)),完了跑 `/project-workflow:spec-quality-check`
+  (s)kip §X  → 只填指定节(如 'skip 架构 framing' 跳过 plan §2)
 ```
 
 ## Step 7 — (可选)Q&A 填 TODOs
@@ -179,29 +182,28 @@ Step 6 末尾收到用户答 (y) / (n) / (s)。若 (n) → exit。若 (y) 或 (s
 
 > "✅ §1 Outcomes 已填:<总结>。OK 进 plan §2 架构决策吗?"
 
-### Step 7.2 — plan.md §2 架构决策(数据模型 + API + 关键算法)
+### Step 7.2 — plan.md §2 ── framing only,**不深问决策细节**
 
-> Canonical 把 Data Model + API Contract 放在 plan.md §2(HOW),不在 spec.md(WHAT)。
->
-> **对照 Step 3 读到的 `.claude/rules/*.md`**:若本 feature scope 命中某条规则的 `globs:`(如 `fastapi.md` 约束 `backend/**/*.py`,而本 feature 改 backend),引导问题里**显式提**该规则的相关项(如 "用 Pydantic v2 strict mode" / "endpoint 用 kebab-case path"),避免 plan §2 跟项目约定漂移。
+> Q&A medium 不擅长收集 ≥ 20 项结构化决策(entity 字段 / API 契约 / 错误码 / pagination / etc.);Feature 类型多样(CRUD / FE / job / refactor / infra / ML),固定 Q&A 不通用。**Plugin 立场**:framing 由 Q&A,细节由 caller 文件编辑 + audit gate(Step 7.6b)catch plant + inconsistency。
 
-按顺序问(必要时跳过不适用项):
+问 framing:
 
 ```
-1. (若涉及数据持久化)"核心 entity 是什么?关键 3-5 个字段 + 关系(1-1 / 1-N / N-N)?"
-2. (若涉及 HTTP API)"暴露哪些 endpoint?Method + Path + 请求体 + 响应体?"
-   → 若项目有 framework rule(如 `.claude/rules/fastapi.md`)规定 path 命名 / schema 风格,引导对齐
-3. (若涉及 HTTP API)"错误路径有哪些?(401 / 404 / 422 / 409 / 500 ...)"
-   → 主动追问 "401 / 404 case 覆盖了吗?"(对应 §3.7 Q3 可测验证)
-4. (按需,若用户对 ORM / API 风格 / 序列化方式不确定)"用 X 还是 Y?要我调研吗?"
-   → **先看** `.claude/rules/<framework>.md` 是否已有定论(项目级 codified) → 已有 → 直接对齐(不再问)
-   → 未定论且用户 yes → dispatch [`tech-researcher`](../../agents/tech-researcher.md) sub-agent
-5. (若 plan §2 涉及多个外部库 / 不熟悉的 API / 版本相关问题)"要不要拉外部库文档塞进 plan §2 当 reference?"
-   → 用户 yes → 用 `context7` MCP(优先)或 `WebFetch`(回退)拉文档,关键部分(版本约束 / breaking changes / 推荐用法)摘进 plan.md §2,**避免实施时 AI 猜 API 形状**(workflow.md §3.1 决策清单 #3)
-6. (若有关键算法 / 状态机)"算法 / 状态转移?"
+1. "本 feature 大致形状?"(1-2 句)
+   - HTTP API / 后台 job / 纯前端 / refactor / 其他?
+   - 涉及数据持久化?
+   - 涉及第三方库 / 外部 API?(若 yes 列已知)
+
+2. (按需)用户对 ORM / API 风格 / 库选型不确定 → 先查 `.claude/rules/<framework>.md` 有无定论;无 + 用户要研究 → dispatch [`tech-researcher`](../../agents/tech-researcher.md)
+
+3. (按需)plan §2 涉及多个外部库 / 不熟悉 API → 问"拉文档 reference?";yes → `context7` MCP(回退 `WebFetch`),关键部分摘进 plan.md §2
 ```
 
-写进 plan.md §2 各子节(数据模型 / API 契约 / 关键算法)。确认。
+写 framing summary(2-3 句)进 plan.md §2 顶部 prose,**不**填具体字段 / 契约 / 错误码集。
+
+提示用户:
+
+> "✅ §2 framing 已记。具体架构决策(字段类型 / API 契约 / 错误码 / pagination / 算法)请**直接编辑 plan.md §2** placeholder;不确定细节用 `(待 ADR-NNNN-XXX)` defer,**不要 plant 'reasonable default'**;对照 `.claude/rules/<framework>.md` 项目已定 idiom 写。Step 7.6b audit 兜底。"
 
 ### Step 7.3 — spec.md §3 Constraints(硬约束)
 
