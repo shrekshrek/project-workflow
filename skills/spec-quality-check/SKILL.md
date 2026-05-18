@@ -125,7 +125,7 @@ Sub-agent 返回结构化报告(Q3/Q4/Q5/Q7 各项 ✅/⚠️边缘/❌ + spec.m
 
 ## Notes
 
-- **跟 `/feature-init` 关系**:feature-init 起骨架(40% 完成),用户跟 AI 填 TODO 到 ~95%,**spec-quality-check 验最后那 5% 的 quality**。
+- **跟 `/feature-init` 关系**:feature-init 负责**创建** spec/plan/tasks 骨架 + 可选 Q&A 填 TODOs;spec-quality-check 负责**验收**已填写内容是否合格。两者职责互补,不交叠。
 - **跟 `/spec-revise` 关系**:quality-check 是**便宜阶段 gate**(implementation 前);spec-revise 是**贵阶段 fix**(implementation 中)。
 - **跟 `/l3-review` 关系**:quality-check 验 spec 自身质量(spec 内部);l3-review 验 code 是否符合 spec(spec vs code)。**两个不同问题**。
 - **Goal-driven**:服务 [§0.1 命题 1 Verification](../../docs/workflow.md#01-这本手册解决什么) —— 输入清晰度的最后一道 gate。

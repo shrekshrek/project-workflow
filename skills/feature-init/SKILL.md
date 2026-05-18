@@ -147,8 +147,6 @@ cp "$SRC/tasks.md" "docs/specs/$NNN-$SLUG/tasks.md"
                 → spec §3 Constraints → spec §2 末轮补"不做" → plan §1.1 Sibling Alignment(若多模块)
   (n)o       → 你后续自由填(参考 [`spec-driven §3.6.5`](../../docs/spec-driven.md#365-phase-a填-todos-的-ai-协作-sop)),完了跑 `/project-workflow:spec-quality-check`
   (s)kip §X  → 只填指定节(如 'skip 架构' 跳过 plan §2)
-
-> Gate 通过后的完整 post-gate roadmap(分支 / 实施 / spec-revise / feature-done)由 `/spec-quality-check` Step 7 给出。**全 P2 流程见** [workflow.md §3.0](../../docs/workflow.md#30-p2-流程全景skill-视角)。
 ```
 
 ## Step 7 — (可选)Q&A 填 TODOs
@@ -284,9 +282,7 @@ Step 6 末尾收到用户答 (y) / (n) / (s)。若 (n) → exit。若 (y) 或 (s
 ✅ spec §1 + plan §2 + spec §3 + spec §2 Exclude + spec §4 + plan §1.1 已 Q&A 填完。
 ✅ 决策完整性 audit 通过(0 🚫;N ⚠️ 已展示)。
 
-下一步:跑 `/project-workflow:spec-quality-check` 验最后那 5%(机械检 + 主观二审)。
-
-> Gate 通过后的完整 post-gate roadmap(分支 / 实施 / spec-revise / feature-done)由 `/spec-quality-check` Step 7 给出。**全 P2 流程见** [workflow.md §3.0](../../docs/workflow.md#30-p2-流程全景skill-视角)。
+下一步:跑 `/project-workflow:spec-quality-check` 验已填内容是否合格(机械检 + 主观二审)。
 ```
 
 ### Step 7 Failure modes
