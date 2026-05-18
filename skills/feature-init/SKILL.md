@@ -47,7 +47,7 @@ ls docs/specs/ | grep -E '^[0-9]{3}-' | sort -rn | head -1
 **选读**(缺失则静默跳过):
 - `docs/specs/_template/{spec,plan,tasks}.md` —— 仅当项目自定义 override(有 `.user-customized` 哨兵)
 - `<tier>/AGENTS.md` 每个检测到的 tier —— 拿 tier 特异约定
-- **`.claude/rules/*.md` 全集** —— A 类 peer to AGENTS.md(典型:`code-style.md` / `testing.md` / `security.md` + 可能的 `<framework>.md`)。读每个文件的 frontmatter `globs:`,记下"哪条规则约束哪些路径",Step 7.2 / 7.5 引导时按此对照本 feature 的 scope 提示用户
+- **`.claude/rules/*.md` 全集** —— A 类 peer to AGENTS.md(典型:`code-style.md` / `testing.md` / `security.md` + 可能的 `<framework>.md`)。读每个文件的 frontmatter `globs:`,记下"哪条规则约束哪些路径",Step 7 强约束 + Step 7.D conversational fill 引导时按此对照本 feature 的 scope 提示用户
 
 ### 扫描项目结构(tier-aware)
 
@@ -142,160 +142,115 @@ cp "$SRC/tasks.md" "docs/specs/$NNN-$SLUG/tasks.md"
    - 建议新模块:`<path>`(plan/tasks 已加 skeleton)
    - 需用户澄清:<具体选项>
 
-⚠️ 选 (y) 前注意:若你是 LLM 替 user 走 Q&A,务必**只答 user 在 Q&A 真给的细节**;user 未给的字段类型 / 数值上限 / 表名 / 库选型 / ADR 编号等**留 `(待 ADR-NNNN-...)` deferred 形式**,**不要 plant**"reasonable default"(Step 7.6b decision-completeness audit 会拦,但前置不 plant 体验更好)。
+⚠️ 选 (y) 前注意:若你是 LLM 替 user 走,务必**只答 user 真给的细节**;user 未给的字段类型 / 数值上限 / 表名 / 库选型 / ADR 编号等**留 `(待 ADR-NNNN-...)` deferred 形式**,**不要 plant**"reasonable default"(Step 7.E decision-completeness audit 会拦,但前置不 plant 体验更好)。
 ⚠️ 选 (n) 前注意:user 自填**务必先读** scaffold base modules(如 `backend/app/<existing-module>/`)+ 既有 `.claude/rules/*.md`(尤其 `<framework>.md`),避免跨文件 inconsistency / 违反项目既有 rule(如 raw SQL 违反 `.claude/rules/fastapi.md` 的 `select()` 规则)。
 
-要我现在 Q&A 走完上面的 TODOs 吗?
-  (y)es      → Q&A 走 framing(spec §1 Outcomes / plan §2 framing / spec §3 Constraints / spec §2 末"不做" / plan §1.1 Sibling)
-                架构决策细节(字段类型 / API 契约 / 错误码 / 算法 等)Q&A 不深问 → user 自填 plan.md §2 placeholder
-  (n)o       → 你后续自由填全部 spec/plan/tasks(参考 [`spec-driven §3.6.5`](../../docs/spec-driven.md#365-phase-a填-todos-的-ai-协作-sop)),完了跑 `/project-workflow:spec-quality-check`
-  (s)kip §X  → 只填指定节(如 'skip 架构 framing' 跳过 plan §2)
+要我现在走 mission-critical 强约束 + adaptive hooks 吗?
+  (y)es      → 走 Step 7:
+                - 7.A 必走:Scope "不做"(workflow §3.7 Q2 强约束)
+                - 7.B 多模块必走:Sibling Alignment(workflow §3.7 Q6 强约束)
+                - 7.C 按需 dispatch:tech-researcher(stack 选型不确定时)/ context7(外部库文档拉取时)
+                - 7.D 其余 TODOs(Outcomes / Constraints / 架构 / etc.)**plugin 不预设 Q&A** → 你主会话跟 AI 对话填
+                - 7.E 决策完整性 audit 兜底
+  (n)o       → 你后续主会话自由填全部 spec/plan/tasks(参考 [`spec-driven §3.6.5`](../../docs/spec-driven.md#365-phase-a填-todos-的-ai-协作-sop)),完了跑 `/project-workflow:spec-quality-check`
+  (s)kip 7.X → 只走指定 sub-step(如 'skip 7.A' 跳过 Scope "不做"强约束 ── 不推荐)
 ```
 
-## Step 7 — (可选)Q&A 填 TODOs
+## Step 7 — (可选)Mission-critical 强约束 + adaptive hooks
 
-Step 6 末尾收到用户答 (y) / (n) / (s)。若 (n) → exit。若 (y) 或 (s),按下面顺序执行 7.1-7.6。
+> **Plugin 立场**:`/feature-init` 只做 scaffold + 强约束 checkpoints + audit safety net;**不预设 Q&A interview** ── feature 类型多样(CRUD / FE / job / refactor / infra / ML / event / webhook / CLI / etc.),固定 Q&A 不可能通用;**spec/plan/tasks 细节由 user 主会话跟 AI 对话填**(参考 [spec-driven.md §3.6.5 SOP](../../docs/spec-driven.md#365-phase-a填-todos-的-ai-协作-sop))。
 
-**贯穿 Step 7 的纪律**(对应 [`spec-driven.md §3.7`](../../docs/spec-driven.md#37-specplan-写完后的质量自检7-问-checklist) 7 问):
+Step 6 末尾用户答 (y) / (n) / (s)。若 (n) → exit。若 (y) / (s) → 走下面 5 个 sub-step。
 
-| Q | 内容 | Step 7 落实 |
-|---|---|---|
-| Q1 | spec.md 4 节齐(Outcomes / Scope / Constraints / Verification) | Step 7.1 + 7.3 + 7.4 强制走完 |
-| Q2 | 必有"不做"显式列出 | Step 7.4 末轮补 |
-| Q3 | Verification 可机械化(L1/L2/L3 / 具体测试场景)| spec.md §4 Verification 模板已含;Step 7.4 提醒确认 |
-| Q4 | Outcomes 具体(场景 + 动作)| Step 7.1 引导问 |
-| Q5 | Constraints 真假(硬数字 / 法规,不是 wish list)| Step 7.3 引导追问 |
-| Q6 | plan.md §1.1 Sibling Alignment(多模块时必填)| Step 7.6 引导(单模块 skip)|
-| Q7 | tasks verifiable | tasks.md 模板已 verifiable;Step 7 不重复 |
+### Step 7.A — 必走:Scope "不做"(workflow §3.7 Q2 强约束)
 
-### Step 7.1 — spec.md §1 Outcomes(~3-5 个引导问题)
-
-按顺序问用户(每问后等回答再下一问):
+`{{TODO}}` 占位中**最易遗漏 + 最贵的**就是 "Exclude / 不做" 清单 ── scope creep 防御主战场。无论 feature 类型,本 step **强制问一遍**:
 
 ```
-1. "这个 feature 的核心场景是什么?**谁、什么场景、能做什么** —— 具体动作,不要 'as a user I want'。"
-2. "有什么边界 case?(异常输入 / 时序问题 / 权限边缘 / 并发情况 / etc.)"
-3. (按需)"这个场景跟现有 features 有 overlap 吗?"
-```
-
-收齐答案 → 用 Edit 工具写进 spec.md §1。完成后 1 行确认:
-
-> "✅ §1 Outcomes 已填:<总结>。OK 进 plan §2 架构决策吗?"
-
-### Step 7.2 — plan.md §2 ── framing only,**不深问决策细节**
-
-> Q&A medium 不擅长收集 ≥ 20 项结构化决策(entity 字段 / API 契约 / 错误码 / pagination / etc.);Feature 类型多样(CRUD / FE / job / refactor / infra / ML),固定 Q&A 不通用。**Plugin 立场**:framing 由 Q&A,细节由 caller 文件编辑 + audit gate(Step 7.6b)catch plant + inconsistency。
-
-问 framing:
-
-```
-1. "本 feature 大致形状?"(1-2 句)
-   - HTTP API / 后台 job / 纯前端 / refactor / 其他?
-   - 涉及数据持久化?
-   - 涉及第三方库 / 外部 API?(若 yes 列已知)
-
-2. (按需)用户对 ORM / API 风格 / 库选型不确定 → 先查 `.claude/rules/<framework>.md` 有无定论;无 + 用户要研究 → dispatch [`tech-researcher`](../../agents/tech-researcher.md)
-
-3. (按需)plan §2 涉及多个外部库 / 不熟悉 API → 问"拉文档 reference?";yes → `context7` MCP(回退 `WebFetch`),关键部分摘进 plan.md §2
-```
-
-写 framing summary(2-3 句)进 plan.md §2 顶部 prose,**不**填具体字段 / 契约 / 错误码集。
-
-提示用户:
-
-> "✅ §2 framing 已记。具体架构决策(字段类型 / API 契约 / 错误码 / pagination / 算法)请**直接编辑 plan.md §2** placeholder;不确定细节用 `(待 ADR-NNNN-XXX)` defer,**不要 plant 'reasonable default'**;对照 `.claude/rules/<framework>.md` 项目已定 idiom 写。Step 7.6b audit 兜底。"
-
-### Step 7.3 — spec.md §3 Constraints(硬约束)
-
-```
-1. "有什么硬性能约束?(P95 时延 / 并发 / QPS 上限 / 等)"
-2. "有什么硬安全约束?(token 强度 / rate limit / 等)"
-3. "有什么硬合规约束?(GDPR / PCI / 数据驻留 / 等)"
-4. "有什么硬兼容性约束?(必须支持的浏览器 / Node 版本 / etc.)"
-```
-
-**关键纪律**:每条都追问"这是 wish 还是真约束?"(spec-driven §3.7 Q5)
-- 用户答"希望快" → "量化:P95 < 多少 ms?"
-- 用户答"安全要好" → "具体威胁模型 / 必守的合规项?"
-
-不能量化的**删掉**,不进 §3 Constraints。
-
-写进 spec.md §3。确认。
-
-### Step 7.4 — spec.md §2 Scope 末轮补"不做"(最关键的一步)
-
-**为什么单独最后做**:用户走完 §1 + plan §2 + §3 后才知道 scope 真实边界,**这时问"什么不做"答得最准**。
-
-```
-"现在你看了 §1 Outcomes + plan 架构决策 + §3 Constraints,有哪些**显式不做**的事?
- (例:'本版只支持 email 邀请,不发短信' / '不做 race condition 处理,假设单点写' / etc.)
- 
- 至少列 2-3 条 —— 这是 scope creep 防御。"
+"显式列至少 2-3 条本 feature 不做的事 ── 例:
+  - '本版只支持 email 邀请,不发短信'
+  - '不做 race condition 处理,假设单点写'
+  - '本 feature 不动权限模型,沿用现有 RBAC'"
 ```
 
 写进 spec.md §2 `**不做**:` 清单。
 
-### Step 7.5 — spec.md §4 Verification 复核(快确认)
+### Step 7.B — 多模块时必走:Sibling Alignment(workflow §3.7 Q6 强约束)
 
-模板已含 L1/L2/L3 + 单测 / 集成 / 手测 占位。问用户:
-
-```
-"§4 Verification 里需要补哪些 feature-specific 验证场景?
- (例:'单测 token 过期场景' / '集成 invite → register 完整流' / '手测真邮箱')"
-```
-
-补完确认。
-
-### Step 7.6 — plan.md §1.1 Sibling Alignment(仅多模块 feature)
-
-若 Step 4 检测到 feature 涉及多模块(跨 tier 或同 tier 多 module)→ 强制走;**单模块 feature 跳过**。
+仅当 Step 4 检测到本 feature 涉及多模块(跨 tier 或同 tier 多 module)── 强制问:
 
 ```
-"本 feature 影响多个模块,需要兄弟模块对齐分类:
-
-对每个兄弟模块,选 Align / Deviate / Codify 三选一:
+"本 feature 影响多个模块,每个兄弟模块选 Align / Deviate / Codify 三选一:
   - Align(沿用现有约定)
   - Deviate(本 feature 特例,写理由)
-  - Codify(本 feature 引入的新模式应该提升为约定 → 同步改 AGENTS.md)"
+  - Codify(本 feature 引入的新模式应该提升为约定 → 同步改 AGENTS.md / 加 .claude/rules/<topic>.md;否则后续 features 看不到)"
 ```
 
-写进 plan.md §1.1 表格。确认。
+写进 plan.md §1.1 表格。单模块 feature 跳过本 sub-step。
 
-### Step 7.6b — 决策完整性 audit(强制,workflow §1.12 Generation Discipline)
+### Step 7.C — Adaptive hooks(按需触发,不预设题)
 
-报告之前,dispatch [`decision-completeness-auditor`](../../agents/decision-completeness-auditor.md)(input/output 详见 agent doc)审 Step 7.1-7.6 累积填写:
+仅当对话中用户提到 / 暗示以下情况时**主动 dispatch**:
 
-- `files_to_audit`: `docs/specs/<NNN>-<slug>/{spec,plan}.md`(tasks.md 多为引用 spec/plan,通常不审 ── 除非 Step 7 也填了 tasks.md)
-- `qa_answers`: Step 7.1-7.6 所有 Q&A 答案(Outcomes 场景 / API endpoints / 字段 / Constraints / Verification 场景 / Sibling Alignment / etc.),dot-path keyed
+- 用户对 **stack / library 选型不确定** → 先查 `.claude/rules/<framework>.md` 有无定论;无 + 用户要研究 → dispatch [`tech-researcher`](../../agents/tech-researcher.md) sub-agent
+- 用户提到 **多外部库 / 不熟悉 API / 版本相关问题** → 问 "拉文档 reference?";yes → 用 `context7` MCP(回退 `WebFetch`)拉版本约束 / breaking changes / 推荐用法,摘进 plan.md §2(避免实施时 AI 猜 API 形状,workflow §3.1 决策清单 #3)
+
+**不主动追问**;**不预设题** ── caller / user 自然对话中触发即可。
+
+### Step 7.D — 其余 TODOs:**conversational fill mode**(plugin 不预设 Q&A)
+
+spec.md §1 Outcomes / §3 Constraints / §4 Verification / plan.md §2 架构决策 / plan.md §3 Prior decisions 等 TODOs ── **plugin 不预设 Q&A interview**。告诉 user:
+
+```
+"📝 spec.md / plan.md / tasks.md placeholder 已就位。剩余 TODOs 请**主会话跟 AI 对话填**:
+
+  1. 贴你的业务想法散文(1-2 段)给主会话 AI
+  2. AI 据 placeholder 引导你迭代填(参考 spec-driven.md §3.6.5 SOP)
+  3. 不确定 stack / library 时直接说 'research X vs Y for [context]' → AI 会用 tech-researcher
+  4. 不确定细节(字段类型 / API 契约 / 错误码 / etc.)用 `(待 ADR-NNNN-XXX)` defer 形式 ── **不要凭印象 plant 'reasonable default'**
+  5. 对照 `.claude/rules/<framework>.md` 中项目已定的 idiom 写,避免 drift
+
+填完后跑 `/project-workflow:spec-quality-check` 验已填内容是否合格(机械检 + 主观二审 + 决策完整性 audit 三层兜底)。"
+```
+
+→ **不预设 Q&A** 是 design choice ── feature 类型多样,固定 Q&A 必有 CRUD bias / 颗粒度 mismatch / caller plant 缺口;conversational mode 让 AI 据 user 真实业务上下文适应性 fill,更自然。
+
+### Step 7.E — 决策完整性 audit(强制,workflow §1.12 Generation Discipline)
+
+报告之前,dispatch [`decision-completeness-auditor`](../../agents/decision-completeness-auditor.md) 审 Step 7.A + 7.B 累积填写 + user 主会话填的内容(若已 commit 进文件):
+
+- `files_to_audit`: `docs/specs/<NNN>-<slug>/{spec,plan}.md`
+- `qa_answers`: Step 7.A 答案(Scope "不做")+ Step 7.B 答案(Sibling Alignment 若多模块)+ Step 6 / Step 4 框架决策(slug / NNN / module setup);若 user 已开始主会话 fill,加 user 在对话中明确给的业务事实
 - `language_conventions`: null
-- `plugin_hardcoded_defaults`: 最小集 — feature-level 主要审 plant **API path / 字段名 / 错误码 / library 选择**;`{value: "NNN-<slug>", source: "workflow.md §3 spec-driven", rationale: "feature 编号 + slug 约定"}` 一条即可
+- `plugin_hardcoded_defaults`: `{value: "NNN-<slug>", source: "workflow.md §3 spec-driven"}` 一条即可
 
 **典型 plant**(audit 应 catch):
-- API endpoint path 凭空(`/api/v1/foo` Q&A 没具体路径) → 🚫
-- 错误码具体值(401 / 404 / 422 Q&A 没问) → 🚫(若 .claude/rules/<framework>.md 规定则 ✅)
-- 字段名 / entity 名超出 Q&A → 🚫
-- HTTP method 推测(Q&A 答 "REST" 但具体 method / endpoint plant 出来) → 🚫
+- API endpoint path 凭空(`/api/v1/foo` 无 trace)→ 🚫
+- 错误码具体值无 trace → 🚫(若 `.claude/rules/<framework>.md` 规定则 ✅)
+- 字段名 / entity 名超出对话事实 → 🚫
+- HTTP method 推测 → 🚫
 
-**Block 规则**:🚫 > 0 不进 Step 7.7,按 agent 修正选项处理(回 Q&A 追问 / deferred / 删过具体处)后**重跑本 step**;⚠️ 不 block,Step 7.7 同时展示。
+**Block 规则**:🚫 > 0 → 提示 user 在主会话据 audit feedback 修后重跑 audit;⚠️ 不 block。
 
-### Step 7.7 — 报告 + 提示下一步
+### Step 7.F — 报告 + 提示下一步
 
 ```
-✅ spec §1 + plan §2 + spec §3 + spec §2 Exclude + spec §4 + plan §1.1 已 Q&A 填完。
-✅ 决策完整性 audit 通过(0 🚫;N ⚠️ 已展示)。
+✅ Step 7.A Scope "不做" 强约束已填
+✅ (若多模块)Step 7.B Sibling Alignment 已填
+✅ Step 7.E 决策完整性 audit 通过(N 🚫 / M ⚠️)
 
-下一步:跑 `/project-workflow:spec-quality-check` 验已填内容是否合格(机械检 + 主观二审)。
+📝 其余 TODOs 请主会话 conversational fill(见 Step 7.D 引导)。
+   填完后跑 `/project-workflow:spec-quality-check` 验收。
 ```
 
 ### Step 7 Failure modes
 
 | 错误 | 应对 |
 |---|---|
-| 用户 Q&A 中途想退出 | 保存已填部分,告诉用户 "已写到 §X,后续可以自己续填" |
-| 用户对某节业务概念完全没想清 | 跳过该节(填 `{{TODO — pending business decision: <topic>}}`),提示用户 quality-check 前要填 |
-| Step 7.2 dispatch tech-researcher 失败 | 退回 user 自答,不阻塞 fill 流程 |
-| 用户回答跟前面 §自相矛盾 | 提示 "§1 你说 X,§3 这里说 Y,是 X 还是 Y?",请求澄清 |
-| 多模块但用户拒填 §1.1 Sibling Alignment | 警告 "spec-quality-check 会标 Q6 fail";尊重用户决定但留警告 |
+| User 拒填 Step 7.A "不做" | 警告 "spec-quality-check Q2 会 fail";尊重用户决定但留警告;占位写 `{{TODO ── 用户主会话补 Exclude 清单}}` |
+| User 拒填 Step 7.B Sibling Alignment(多模块时)| 警告 "spec-quality-check Q6 会 fail";尊重但留警告 |
+| Step 7.C tech-researcher / context7 dispatch 失败 | 退回 user 自填,不阻塞流程 |
+| Step 7.E audit 标 🚫 | 告诉 user 在主会话据 audit 反馈修;skill 不主动重 audit(等 user 主动跑 `/spec-quality-check` 或本 skill 重入) |
 
 ## Notes
 
