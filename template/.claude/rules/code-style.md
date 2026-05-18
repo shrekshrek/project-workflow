@@ -11,10 +11,10 @@ globs: {{CODE_STYLE_GLOBS}}
 
 ## 通用
 
-- 命名:{{NAMING_CONVENTION}}(如 camelCase / snake_case / PascalCase)
-- 缩进:{{INDENT}}(如 2 空格 / 4 空格 / tab)
-- 行宽上限:{{LINE_LIMIT}}(如 100 / 120)
-- 注释纪律:**不写**"这段代码做了什么"(代码自身能说明);**写**"为什么这么做"(决策、约束、 workaround)
+> ⚠️ **命名 / 缩进 / 行宽**:default 跟 formatter / 语言惯例 (Python snake_case + 4 空格 / TS camelCase + 2 空格 / Black 88 / Prettier 80) ── **不写在这**(workflow §1.3 "标准通用约定不该收")。
+> 真覆盖了 default 才在下方加一条 + 同步 lint config(`pyproject.toml [tool.ruff]` / `eslint.config.js`)。
+
+- 注释纪律:**不写**"这段代码做了什么"(代码自身能说明);**写**"为什么这么做"(决策、约束、workaround)
 
 ## 函数 / 类
 

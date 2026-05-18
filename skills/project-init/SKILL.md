@@ -223,9 +223,6 @@ cp "$PLUGIN_ROOT/docs/gotchas.md" docs/gotchas.md
 |---|---|---|
 | `code-style.md` | `{{CODE_STYLE_DESCRIPTION}}` | 一句话(< 80 字符)说本文件管什么,如 `Code style — Python (Ruff) + TypeScript/Vue (ESLint)` |
 | `code-style.md` | `{{CODE_STYLE_GLOBS}}` | 据 Q&A 1.5 tier 命名 + 轮 2 语言推导,见下方"globs 推导" |
-| `code-style.md` | `{{NAMING_CONVENTION}}` | 据语言:Python snake_case / JS-TS camelCase + PascalCase classes |
-| `code-style.md` | `{{INDENT}}` | 据语言:Python 4 / JS-TS-Go 2 / Rust 4 |
-| `code-style.md` | `{{LINE_LIMIT}}` | 默认 100(Python 可 88) |
 | `testing.md` | `{{TESTING_DESCRIPTION}}` | 一句话(< 80 字符),如 `Testing conventions — pytest (backend) + Vitest (frontend) + Playwright (E2E)` |
 | `testing.md` | `{{TESTING_GLOBS}}` | 据 Q&A 1.5 tier 命名 + 轮 2 语言推导,见下方"globs 推导" |
 | `testing.md` | `{{UNIT_TEST_FRAMEWORK}}` / `{{INTEGRATION_TEST_FRAMEWORK}}` | mixed-lang fullstack → mini-Q&A;single-lang / 单 tier → Q&A 轮 2 共享答案 |
@@ -240,6 +237,8 @@ cp "$PLUGIN_ROOT/docs/gotchas.md" docs/gotchas.md
 - 每个 path-scoped rule(`code-style.md` / `testing.md` / 复制出的 framework starter)frontmatter **必须**含 `description:` 一行,< 80 字符,Claude Code `/rules` 列表展示用
 - `security.md`(always-on 全局规则)同样应含,描述 "Security baseline (always-loaded)"
 - 缺 `description:` 不算 silent fail(规则照常加载),但 hurt scalability / discoverability —— 多 path-scoped rule 时看不出每条管什么
+
+> ⚠️ **F-54 修(v2.9.5)**:`code-style.md` 中 `命名 / 缩进 / 行宽` 三项 placeholder 已从 template 删除 ── 跟 language / formatter default 一致的不该写(workflow §1.3 "标准通用约定不该收")。template 现在只留警告 prose 提示用户"真覆盖了 default 才在下方加一条 + 同步 lint config"。skill 不需要填这三项,只需复制 template 即可。
 
 ### 4.3 globs 推导(`{{CODE_STYLE_GLOBS}}` / `{{TESTING_GLOBS}}`)
 
