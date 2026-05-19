@@ -1,13 +1,17 @@
 ---
 name: feature-init
-description: Start a new feature spec — create docs/specs/<NNN>-<slug>/{spec,plan,tasks}.md from project template. Auto-detect if a new module is needed and add module setup to plan/tasks (per workflow §2 Module Setup sub-flow). Plugin = scaffold + chat-context pre-fill + reminders + decision-completeness audit. **Zero preset Q&A interview** — strong constraints (Scope "不做" / Sibling Alignment) are reminders here, gated by /spec-quality-check.
+description: Start a new feature spec — create docs/specs/<NNN>-<slug>/{spec,plan,tasks}.md from project template. Auto-detect if a new module is needed and add module setup to plan/tasks (per workflow §2 Module Setup sub-flow). Plugin = scaffold + conditional framework Q&A (slug / tier / module — info that can't be derived & can't be deferred) + chat-context pre-fill + reminders + adaptive hooks (passive) + decision-completeness audit. **No preset fixed Q&A interview** — business-detail strong constraints (Scope "不做" / Sibling Alignment) become reminders here, gated by /spec-quality-check.
 ---
 
 > **Response language**: Match the user's prompt language (中文 / English / etc.) in all natural-language output — headers, summaries, questions, progress messages. Code, commands, file paths, and `$ARGUMENTS` stay as-is.
 
 # Feature Init
 
-Start a new feature's spec/plan/tasks triplet (P2 entry point). Plugin produces **scaffold + chat-context pre-fill + reminders + decision-completeness audit**;**不预设 Q&A interview** ── 细节由 user 主会话 conversational fill(见 [spec-driven.md §3.6.5](../../docs/spec-driven.md#365-phase-a填-todos-的-ai-协作-sop))。7 问质量清单([§3.7](../../docs/spec-driven.md#37-specplan-写完后的质量自检7-问-checklist))由 `/spec-quality-check` gate 把关,**不由 feature-init 强问**。
+Start a new feature's spec/plan/tasks triplet (P2 entry point).
+
+**Plugin 哲学**:scaffold + **conditional framework Q&A**(slug / tier / module 不明时 ── audit 无法替代的 branch 决策)+ chat-context pre-fill + reminders + adaptive hooks(被动触发)+ decision-completeness audit。**不预设固定 Q&A interview** 替 user 决策业务细节(feature 类型多样,固定不通用;user 早期答不准 Scope 边界 / Sibling 对齐);business 细节由 user 主会话 conversational fill(见 [spec-driven.md §3.6.5](../../docs/spec-driven.md#365-phase-a填-todos-的-ai-协作-sop)),质量由 `/spec-quality-check` gate 把关([§3.7](../../docs/spec-driven.md#37-specplan-写完后的质量自检7-问-checklist) 7 问)。
+
+> **Framework Q&A vs business Q&A 区别**:framework = 影响整个 feature branch 的一次性 setup 决策(slug 错了 branch 全错;module 边界错了 sibling alignment 都错),user 当下能答 + 延后成本极高 → **必须条件性问**;business = 局部内容(Outcomes / 字段名 / endpoint path 等),user 早期答不准 + 后续 gate 可 cheaply catch → **conversational fill + gate**。
 
 **Use when**: P2 — starting a new feature; changes span 3+ files OR touch architecture / data model / API contract ([workflow.md §3.1](../../docs/workflow.md#31-规划阶段)).
 **Not for**: P0 project scaffolding (use `/project-workflow:project-init`) / mid-implementation spec revision (use `/project-workflow:spec-revise`) / endpoint delivery (use `/project-workflow:feature-done`).
@@ -183,4 +187,4 @@ Dispatch [`decision-completeness-auditor`](../../agents/decision-completeness-au
 
 - **Do not** generate code —— 本 skill 只产规划 artifact
 - **Do not** overwrite existing `docs/specs/<NNN>-<slug>/`(碰撞检测:报错退出)
-- **Zero preset Q&A**:plugin 不当 interviewer ── scaffold + reminders + adaptive hooks(被动触发)+ audit(safety net)是全部
+- **No preset fixed Q&A interview**:plugin 不替 user 决策业务细节;但条件性问 framework decisions(slug / tier / module 不明时)── 这些是 audit 无法替代的 branch 决策,延后成本极高
