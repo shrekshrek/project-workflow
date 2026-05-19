@@ -24,9 +24,10 @@ User input: `$ARGUMENTS` — feature slug + optional description.
 |---|---|---|
 | 仅 `<slug>` | `email-verification` | 直接用 |
 | `<slug>: <description>` | `email-verification: send verify link on register` | 拆 slug 和 description |
+| **`<NNN>-<slug>` 或 `<NNN>-<slug>: <desc>`** | `003-email-verification` | **NNN 前缀宽容**:user 习惯写完整目录名;检测到前导 `\d{3}-` → strip 后剩余作 slug,前缀 NNN 待 Step 2 校验(匹配 auto +1 → 静默继续;不匹配 → 提示 user 实际用 auto NNN 还是 user-given NNN)|
 | 空 | — | 问用户 "feature slug? (kebab-case)" 后继续 |
 
-Slug 要求:
+Slug 要求(strip NNN 前缀后):
 - kebab-case only(`a-z0-9-`)
 - 2-40 chars
 - 不能以 `-` 开头或结尾
@@ -40,6 +41,14 @@ ls docs/specs/ | grep -E '^[0-9]{3}-' | sort -rn | head -1
 ```
 
 取最大的前导编号 +1,补零到 3 位。若 `docs/specs/` 不存在或为空,从 `001` 起。
+
+**NNN 前缀冲突处理**(若 Step 1 user 给了 NNN 前缀):
+
+| 情形 | 处理 |
+|---|---|
+| User-given NNN == auto +1 | 静默继续(用户只是写了完整目录名)|
+| User-given NNN > auto +1(跳号)| 问 user:"用 auto NNN `<auto>` 还是 user-given `<given>`(跳号需理由,如 reserved for parallel feature)?" |
+| User-given NNN ≤ existing | 报 collision:"`docs/specs/<NNN-given>-*` 已存在 / 编号冲突,改用 auto NNN `<auto>` 或换个 slug?" |
 
 ## Step 3 — 读项目 context
 
@@ -182,6 +191,7 @@ Dispatch [`decision-completeness-auditor`](../../agents/decision-completeness-au
 | Step 5 chat context pre-fill 不确定 | 留 `{{TODO}}` 或 `(待 ADR-NNNN-XXX)`,不 plant default |
 | Step 6.3 audit 标 🚫 | 告诉 user 主会话据 audit 反馈修;skill 不主动重 audit(等 user 主动跑 `/spec-quality-check`) |
 | User 拒填 reminder 中的 mission-critical 项 | 不阻塞 ── `/spec-quality-check` Q2/Q6 会 gate,user 早晚要补 |
+| Step 1 user 带了 `NNN-` 前缀(`003-foo`)| **不报错**:strip 前缀作 slug;前缀 NNN 进 Step 2 校验(匹配 / 跳号 / 冲突 三种处理)|
 
 ## Notes
 
