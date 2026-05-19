@@ -43,6 +43,16 @@ Then in any project:
 /project-workflow:feature-init <feature-slug>
 ```
 
+### Without plugin (OpenCode / manual)
+
+For users who can't install the Claude Code plugin (e.g. OpenCode):
+
+```bash
+cp -r <path-to-this-repo>/template/. <your-project>/
+```
+
+Then edit `AGENTS.md` placeholders, `.claude/rules/*.md` for your stack, and `.claude/hooks/lint-on-edit.js` (uncomment the lint line for your stack). Note: `template/` is **methodology only** — Dockerfile / docker-compose / build scripts are your own to add per stack.
+
 ## Skills
 
 > Version follows `plugin.json`(currently 2.9.x);per-skill version columns removed to avoid drift。
@@ -81,7 +91,7 @@ Then in any project:
 - [`docs/gotchas.md`](docs/gotchas.md) — ⭐ 10 engineering pitfalls (from real validation)
 - [`docs/spec-driven.md`](docs/spec-driven.md) — spec/plan/tasks pattern detail
 - [`docs/dev-deploy.md`](docs/dev-deploy.md) — local dev + sync deploy pattern
-- [`docs/manual-setup.md`](docs/manual-setup.md) — manual `cp -r template/. .` flow (no plugin)
+- [`docs/tooling.md`](docs/tooling.md) — three-layer tool stack model + v2 vs Spec Kit / Superpowers / ECC / Symphony 对比(评估者 first read)
 
 ## Migration from v1
 
@@ -98,7 +108,7 @@ v1 source preserved at git tag [`v1.1.0`](../../tree/v1.1.0). Install via `git c
 
 ## Status
 
-v2.9.23 ships **11 skills + 6 sub-agents** covering the full P0→P2→P3→P4 lifecycle. `/feature-init` is validated end-to-end (produced a 316-line spec/plan/tasks triple for `email-verification` feature on the reference scaffold). The remaining skills are still gathering field hours — battle-testing welcome.
+v2.9.24 ships **11 skills + 6 sub-agents** covering the full P0→P2→P3→P4 lifecycle. `/feature-init` is validated end-to-end (produced a 316-line spec/plan/tasks triple for `email-verification` feature on the reference scaffold). The remaining skills are still gathering field hours — battle-testing welcome.
 
 The methodology docs (workflow.md / gotchas.md / spec-driven.md / dev-deploy.md) are complete and self-contained. A concrete instantiation exists at the public scaffold linked above, but the docs do not depend on it for authority.
 

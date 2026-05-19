@@ -162,42 +162,7 @@
 
 ---
 
-## 5. 本项目实际选择 + 理由
-
-### 5.1 当前已装(`~/.claude/plugins/installed_plugins.json` 实际状态)
-
-| 插件 | 范畴 | 状态 |
-|---|---|---|
-| `everything-claude-code` | 中层框架 | ⚠️ 装着,**计划外科手术保留 Go 相关**,其余淘汰 |
-| `context7` | 原生 | ✅ 保留 |
-| `commit-commands` | 原生 | ✅ 保留 |
-| `pr-review-toolkit` | 原生 | ✅ 保留 |
-| `rust-analyzer-lsp` | 原生 | ✅ 保留(Rust 项目用) |
-| `project-workflow`(自建) | 上层 | ⚠️ 装着,**计划完全推翻 v1**(本仓库是 v2 设计实验室,核心交付见 [workflow §3.3 proof bundle](workflow.md#33-交付阶段proof-bundle) 等)|
-
-### 5.2 已决定不装
-
-| 工具 | 不装原因 |
-|---|---|
-| Superpowers | process-owning,跟我们 workflow.md 哲学冲突 |
-| Spec Kit 工具链(`.specify/`) | 小项目偏重,我们已经手写三文件结构 |
-| Symphony 工具 | 早期 spec,借哲学即可 |
-
-### 5.3 待评估加入
-
-| 工具 | 评估状态 |
-|---|---|
-| Matt Pocock 精选 skills | 待跑一次手动验证(挑 3-5 个) |
-| 自建 `/agents-md-revise`(P4 主战场)| **✅ 已落地**(v2.3.3,2026-05-16)—— 见 `skills/agents-md-revise/SKILL.md` + workflow.md §5 |
-
-### 5.4 IDE / CLI 选择
-
-- **主用**:Claude Code(理由见 §2.2)
-- **备用**:Cursor(单文件 inline 改用)、Codex(CI 用)
-
----
-
-## 6. 加新工具前的决策清单
+## 5. 加新工具前的决策清单
 
 每次想装新东西,过一遍:
 
@@ -231,36 +196,36 @@
 
 ---
 
-## 7. 反模式
+## 6. 反模式
 
-### 7.1 叠加两个 process-owning 框架
+### 6.1 叠加两个 process-owning 框架
 **症状**:同时装 Superpowers + ECC,或 Superpowers + 自建 project-workflow
 **后果**:skill 命名冲突 / hook 互覆盖 / 心智负担,出问题难排查
 **修正**:挑一个 process-owning 工具(或自己写),其他用 Matt-派 small composable 补
 
-### 7.2 装一堆从不调用的 skill
+### 6.2 装一堆从不调用的 skill
 **症状**:`~/.claude/skills/` 下 50+ skill,实际每月用到不超过 5 个
 **后果**:skill list 过长,Claude 启动加载慢、context 浪费、找不着该用哪个
 **修正**:每月一次审查,3 个月没用的归档
 
-### 7.3 把上层投资沉在底层工具
+### 6.3 把上层投资沉在底层工具
 **症状**:把项目规则写进 Cursor 的 `.cursorrules`,而不是项目根 `CLAUDE.md`
 **后果**:换工具就丢,失去工具无关性
 **修正**:**协作约定写在工具无关位置**(`CLAUDE.md` / `docs/`),工具特定位置只放工具特异配置
 
-### 7.4 给框架开 admin 权限
+### 6.4 给框架开 admin 权限
 **症状**:把 process-owning 框架的所有 hook 都启用,所有命令都允许
 **后果**:框架"接管"了你的工作流,出 bug 你根本不知道是它做的
 **修正**:opt-in 启用,只开你真懂的部分
 
-### 7.5 只看 stars 不看适用性
+### 6.5 只看 stars 不看适用性
 **症状**:看到 Superpowers 18 万 stars 就装
 **后果**:18 万人不是你,他们的痛点不一定是你的
 **修正**:看哲学是否对,看 §3.2 五条是否过
 
 ---
 
-## 8. 参考与延伸
+## 7. 参考与延伸
 
 - 各框架 README 已在 [README 参考资料](../README.md#参考资料) 链接,本文档的"对比"基于那些 README + 本项目实际跑过的经验
 - Matt Pocock 哲学的展开:[`docs/spec-driven.md`](spec-driven.md) 用同样的"小、可读、可拥有"精神
