@@ -7,7 +7,7 @@ description: Verify a feature's proof bundle is complete — tests passing, L1/L
 
 # Proof Bundle
 
-Proof bundle = the **end-of-feature delivery checklist**. Borrowed from openai/symphony's "manage work, not agents" principle: verify the work produced the right outputs, not that the agent followed the right process.
+Proof bundle = end-of-feature delivery checklist。
 
 **Use when**: P2 endpoint, after L1 + L2 + L3 are run. Typically invoked by `/feature-done` (Step 6) as the final assembly step, but standalone-runnable.
 **Not for**: running the individual reviews (use `/l1-review` / `/l2-review` / `/l3-review`) / pre-implementation spec quality check (use `/spec-quality-check`).
@@ -28,8 +28,6 @@ The template (from `/feature-init` SKILL.md inline tasks.md § Proof Bundle):
 
 This skill **verifies** these items and **fills them in** at the bottom of `tasks.md`.
 
-> **Item 5a vs 5b 的区分**:5a 是 audit(已发生改动),5b 是 backlog(待处理建议)── 分开记让用户能区分 "我已改了什么" vs "还需改什么"。
-
 User input: `$ARGUMENTS` — feature slug or "current"
 
 ## Step 1 — 定位 feature
@@ -46,7 +44,7 @@ User input: `$ARGUMENTS` — feature slug or "current"
 
 ## Step 2 — 缓存校验(复用 L2/L3 前必跑)
 
-复用本 session 早期 L2 / L3 findings 之前,**必须确认仍然有效**。stale findings 在 v2.1.x 开发期间引发过多次 bug,本步是 mandatory。
+复用本 session 早期 L2 / L3 findings 之前,**必须确认仍然有效**。
 
 **L2**(A 类约定合规)缓存有效性:
 
@@ -119,13 +117,11 @@ git status --short  # uncommitted scope
 - ✅ "Spec match — N items verified, 0 missing/deviation"
 - ⚠️ "N deviations from spec.md(各 1 行)"
 
-**L2 + L3 都收到后,按 [workflow.md §6.4 L2/L3 Finding 重叠规则](../../docs/workflow.md#l2l3-finding-重叠时的去重规则)去重**:同一行被双 flag 且**同根因** → 以 L3 为准呈现,L2 标 "also flagged by L2";不同根因 → 两条都保留。
+**L2 + L3 去重**:同一行同根因 → 以 L3 为准 + L2 标 "also flagged by L2";不同根因 → 两条都保留(workflow.md §6.4)。
 
 ### Item 5a: A 类约定触动汇总(本 feature 实际改了哪几份)
 
-**Why this section exists**:feature 实施期常顺手改 A 类约定(`AGENTS.md` Boundaries / 模块结构,或 `.claude/rules/<framework>.md` 框架约定),但用户改完代码后**容易忘记自己改了哪几份**。本节给出显式 audit,让 reviewer / 自己复盘时能一眼看到。
-
-> **A 类范围**(workflow.md §0.3 / §1.3):AGENTS.md 多层嵌套 + `.claude/rules/*.md` 扁平 globs。两者都是 A 类约定 peer,drift 同等严重。
+A 类 = AGENTS.md 多层 + `.claude/rules/*.md`(workflow §0.3 / §1.3)。
 
 **计算方法**:
 
@@ -158,7 +154,7 @@ git status --short | awk '{print $2}' | grep -E "(^|/)(AGENTS|CLAUDE)\.md$|^\.cl
 - **(无 module CLAUDE.md 触动)**
 ```
 
-若**完全没有 A 类约定改动**(纯实施 feature 不动规则):写 "无 (none) — 本 feature 完全在现有 A 类约定(AGENTS.md + `.claude/rules/`)框架内,未触动任何规则文件"。
+若完全无 A 类约定改动:写 "无 (none)"。
 
 ### Item 5b: A 类约定 drift 建议(L2 提议但未应用)
 
@@ -172,16 +168,12 @@ L2 review 跑完会有"建议加规则但未落地"的 finding。这里抽出来
 
 输出:0-3 个 bullet。无则写 "无 (none)"。
 
-**跟 Item 5a 的区分**:5a = 已经改了的,5b = 还没改但建议改的。Item 5a 是 audit(已发生),Item 5b 是 backlog(待处理)。
-
-**末尾轻量 hint**(只在 5b 非空且 backlog 累积 ≥ 3 条时输出,**不强迫,不主动 nudge**):
+**末尾轻量 hint**(仅在 5b 非空且 backlog 累积 ≥ 3 条时输出):
 
 ```
 📝 累积 N 条 drift backlog(本 feature + 历史 tasks.md)。
    你方便的时候跑 `/project-workflow:agents-md-revise` 一次性 audit + apply。
 ```
-
-不要 phrase 成"建议立即跑"或"应该跑";只是顺手告诉用户工具存在。**用户已经在看 feature-done 报告**,提示在 context 内,不是脱离 context 的主动 ping。
 
 ### Item 6: 开放问题
 
@@ -255,4 +247,3 @@ Verdict 判定逻辑:
 - **不自动 fix 任何东西**。L2/L3 找到问题也只是报,用户修
 - **不 commit 任何东西**。本 skill 只把 proof bundle 写进 tasks.md + 报告
 - **幂等**:跑两次应该产出相同结果(除测试 re-run 的 timing 差异)
-- 本 skill 是 P2(feature dev)的**自然出口**。跑完后用户 commit + 开 PR

@@ -7,7 +7,7 @@ description: Run the project's L1 review — mechanical/automated checks (lint, 
 
 # L1 Review
 
-L1 in the project-workflow methodology = the **mechanical layer**: lint, type checks, unit tests. Stuff that machines can verify with zero ambiguity. This skill runs the project's defined "everything check" command and gives a focused report.
+L1 = mechanical layer: lint / typecheck / unit tests。Runs the project's check command + 给 focused report。
 
 **Use when**: P2 endpoint, or ad-hoc mechanical check during implementation. Typically invoked by `/feature-done` (Step 3) but standalone-runnable.
 **Not for**: convention compliance (use `/l2-review`) / spec compliance (use `/l3-review`) / proof bundle assembly (use `/proof-bundle`).

@@ -96,8 +96,6 @@ ls -la       # 此时 cwd 已是 target
 - **`<!-- @.claude/rules/security.md -->`** 注释 → AskUserQuestion(y/n)→ y → Edit 取消注释
 - **整行 missing** → 报告"建议手工追加 `@.claude/rules/security.md`(workflow §1.5)",不自动加(可能破坏 AGENTS.md 自定义结构)
 
-对应 project-init Step 4.5 同逻辑(`@import` 兜底以避 silent fail)。
-
 ## Step 4.A — 替换 scaffold default 值
 
 **扫描范围**(典型 scaffold 容易留 default 值的文件):
@@ -140,7 +138,7 @@ docker-compose.yml: container_name: scaffold_postgres
 
 ## Step 4.B — 补齐 tier-level AGENTS.md(双文件方案)
 
-**Preview Gate**(workflow §1.10):先扫描列 plan,AskUserQuestion 用户审完才执行 —— 不直接改文件。
+先扫描列 plan,AskUserQuestion 确认后才执行(不直接改文件)。
 
 ```bash
 # 扫描(只读),collect plan lines
@@ -187,12 +185,12 @@ sub-agent 返回结构化报告(detected scale / tier breakdown / frameworks / m
 - `files_to_audit`: 本次 personalize 涉及的所有文件(根 `AGENTS.md` + tier-level + `.claude/rules/*`)inline content
 - `qa_answers`: Step 2 用户选的 paths + Step 4.A scaffold 替换答案 + Step 4.B tier 答案 + Step 4.C 接受/拒绝 Project Structure 决定
 - `language_conventions`: null
-- `plugin_hardcoded_defaults`: per [workflow §1.10](https://github.com/shrekshrek/project-workflow/blob/main/docs/workflow.md#110-qa-设计project-setup-skill-问什么) 表,同 `/project-init` §4.5b 列表(branch naming / GitHub / conventional commits / coverage / 模块组织 / deploy deferred)
+- `plugin_hardcoded_defaults`: 同 `/project-init` §4.5b 列表
 - **Retrofit 模式标注**:`files_to_audit` 中已存在代码的决策(从 codebase 扫出的 framework / tier 命名)→ agent 标 `(retrofit: from existing code)`,视同 ✅
 
 **Block 规则**:🚫 > 0 不进 Step 5,按 agent 修正选项处理(deferred / 追问 / template-default 标注)后**重跑本 step**;⚠️ 不 block,Step 6 Summary 同时展示给用户。
 
-## Step 5 — Self-verify(强制,简化版对应 [workflow §1.11](https://github.com/shrekshrek/project-workflow/blob/main/docs/workflow.md#111-校验))
+## Step 5 — Self-verify(强制)
 
 跑下面静态检查,贴报告。任一 ❌ → 回头修后再走 Step 6。
 
@@ -207,12 +205,12 @@ head -10 .claude/rules/*.md 2>/dev/null
 # agent 据 V2 输出 + 实际目录对照判断
 ```
 
-加 2 项运行时校验(§1.11 #1 + #4):
+加 2 项运行时校验:
 
 | 项 | 此刻 | 说明 |
 |---|---|---|
-| V5 `/memory` 加载 | ✅ 必过 | 输出含根 + 各 tier AGENTS.md / CLAUDE.md;缺 → 嵌套层次错(§1.4)|
-| V8 AI 读 AGENTS.md 总结 | ✅ 必过 | 自问 "1 句话总结栈 + 命令",4 要素(类型 / 主栈 / 起服务 / 跑测试)全对;错漏 → personalize 后 AGENTS.md 不清晰,回去补 |
+| V5 `/memory` 加载 | ✅ 必过 | 输出含根 + 各 tier AGENTS.md / CLAUDE.md;缺则嵌套层次错 |
+| V8 AI 读 AGENTS.md 总结 | ✅ 必过 | 自问 "1 句话总结栈 + 命令",4 要素(类型 / 主栈 / 起服务 / 跑测试)全对 |
 
 报告格式:`V1✅ V2✅ V3✅ V5✅ V8✅`(retrofit 项目命令 / hook 通常已就位,不像 P0 那样标 deferred)
 
@@ -231,7 +229,7 @@ head -10 .claude/rules/*.md 2>/dev/null
 
 ### 还需手工 review
 
-- **AGENTS.md `## Boundaries` 节**:scaffold default 是合理 baseline(改 API / 加依赖 / 改迁移 / 改权限 → ⚠️ Ask first);**项目特定**的 ⚠️ Ask first 项(如"改 prompt template 必问 LLM ops team")只有你知道,扫一遍补上(workflow §1.10 不收集这部分)
+- **AGENTS.md `## Boundaries` 节**:scaffold default 是合理 baseline;项目特定的 ⚠️ Ask first 项(如"改 prompt template 必问 LLM ops team")只有你知道,扫一遍补上
 - AGENTS.md 全文扫一遍,确认 personalize 后的值都对
 - 跑 `wc -l AGENTS.md`,> 200 行的话精简([workflow.md §1.3](https://github.com/shrekshrek/project-workflow/blob/main/docs/workflow.md#13-agentsmd-的内容标准))
 - 想加 framework-specific rules(FastAPI / Vue / etc.):`cp "$CLAUDE_PLUGIN_ROOT/template/.claude/rules/_examples/<framework>.example.md" .claude/rules/<framework>.md`,然后改 frontmatter `globs:` + `description:`(说明见同目录 README.md)
@@ -254,6 +252,3 @@ head -10 .claude/rules/*.md 2>/dev/null
 | Step 4.C 扫描出来的 Project Structure 用户不满意 | 用户可选 "edit",手工调整建议后再应用 |
 | Git 工作树脏(已有未 commit 改动) | 警告:"建议先 commit 当前 changes 再跑 personalize,避免改动混合"(不强制) |
 
-## Notes
-
-- **方法论本体**:[`docs/workflow.md §1 P0`](https://github.com/shrekshrek/project-workflow/blob/main/docs/workflow.md#1-p0project-setup项目第一天) —— 不装 plugin 也能纯手工跑 P0 personalize。

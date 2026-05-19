@@ -7,7 +7,7 @@ description: Run the project's L2 review — verify code changes follow the AGEN
 
 # L2 Review
 
-L2 in the project-workflow methodology = **project-level A 类约定** (AGENTS.md 多层 + `.claude/rules/*.md`). This skill triggers a sub-agent to mechanically check changed code against those conventions. Designed to find: "you wrote `db.query(...)` but `backend/AGENTS.md` says 'never use 1.x query style'".
+L2 = **project-level A 类约定** (AGENTS.md 多层 + `.claude/rules/*.md`) compliance check via sub-agent。
 
 **Use when**: P2 endpoint review of project-convention compliance — typically dispatched by `/feature-done`,but standalone-runnable for ad-hoc check during implementation.
 **Not for**: mechanical checks(use `/l1-review`)/ spec compliance(use `/l3-review`)/ proof bundle 装配(use `/proof-bundle`)/ A 类约定主动 refresh(use `/agents-md-revise`)。
@@ -36,11 +36,9 @@ Project may have:
 - Root `AGENTS.md`
 - Tier-level: `backend/AGENTS.md`, `frontend/AGENTS.md`, etc.
 - Module-level: `<module>/AGENTS.md`(仅模块"反常"时存在,见 workflow.md §2.3)
-- **All `.claude/rules/*.md` files** —— `.claude/rules/` 是 A 类约定 peer to AGENTS.md(workflow.md §0.3 / §1.3),用 `globs:` frontmatter 做路径作用域而**不是** `@imports`。**全量传给 reviewer**;reviewer 自己判断每条规则是否命中 changed file。
+- **All `.claude/rules/*.md` files** —— 全量传给 reviewer;reviewer 自己按 frontmatter `globs:` 判每条规则的作用域。无 `globs:` 当全局规则。
 
-按 changed file 命中的 tier 过滤 `<tier>/AGENTS.md`(只改 backend 时不传 frontend AGENTS.md)。
-
-`.claude/rules/*.md` **不要在 skill 层做 globs 过滤** —— 原因:skill 是 orchestrator(Claude 自身),不是 deterministic glob 引擎,做 file-vs-globs 匹配不可靠。**全量传给 reviewer**,reviewer 在 agent 内部读每个 rule 文件的 frontmatter `globs:`,**用它判定**每条规则对应哪些 changed files。无 `globs:` 的规则(如 `security.md` 常无)按全局适用处理。
+按 changed file 命中的 tier 过滤 `<tier>/AGENTS.md`(只改 backend 时不传 frontend AGENTS.md)。`.claude/rules/*.md` **不在 skill 层做 globs 过滤**。
 
 若项目有 `docs/gotchas.md`,也一并传(工程陷阱清单对维护它的项目也算 L2 级)。
 
@@ -100,7 +98,4 @@ sub-agent 返回结构化 markdown 报告。**原样转发**给用户(不再 sum
 
 ## Notes
 
-- **L2 快**(~1-2 min agent 调用),前提 AGENTS.md 写得好 + scope 小
-- **L2 比人更可靠地抓 template drift** —— 如 "你设了 `container_name`,但 AGENTS.md 说别设" —— 人眼容易漏
-- L2 ≠ L3。用户问 "实现对不对?" → 那是 L3(`spec-reviewer`),不是 L2
-- 本 skill 是 **router**,智能在 `agents-md-reviewer` sub-agent 里
+- L2 快(~1-2 min agent 调用),前提 AGENTS.md 写得好 + scope 小

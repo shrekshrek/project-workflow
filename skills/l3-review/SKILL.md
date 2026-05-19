@@ -7,7 +7,7 @@ description: Run the project's L3 review — verify implementation matches the f
 
 # L3 Review
 
-L3 in the project-workflow methodology = **feature-spec compliance**. This is the only review level that checks "did you build what the spec said". Pairs naturally with `feature-init` (which created the spec).
+L3 = **feature-spec compliance**: 验 implementation vs `feature-init` 创建的 spec.md。
 
 **Use when**: P2 endpoint, after L1 + L2 are green. Typically invoked by `/feature-done` (Step 5) but standalone-runnable.
 **Not for**: spec-self quality check (use `/spec-quality-check` — that's pre-implementation) / convention compliance (use `/l2-review`) / mechanical checks (use `/l1-review`).
@@ -98,7 +98,6 @@ sub-agent 返回一份 markdown 报告(含 Missing / Deviations / Scope creep / 
 
 ## Notes
 
-- **L3 ≠ L2**。L2 问 "你遵循项目约定吗?",L3 问 "你建的是承诺的东西吗?"
-- **L3 是验 feature 交付最有价值的一层**,也最慢(~2-3 min agent 调用)
+- L3 较慢(~2-3 min agent 调用)
 - **L1 + L2 绿后再跑**。tests 都坏了去验 spec 合规没意义
 - **Spec ambiguities surface here**: agent's report may include a `📝 Spec ambiguities` section. Those are real signals — improve spec.md if they're recurring.

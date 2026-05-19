@@ -7,7 +7,7 @@ description: Pre-implementation gate that verifies a feature's spec/plan/tasks q
 
 # Spec Quality Check
 
-Run the 7-question quality checklist from [`spec-driven.md §3.7`](../../docs/spec-driven.md#37-specplan-写完后的质量自检7-问-checklist) as a **pre-implementation gate**. Catches "spec not ready" issues at the cheap stage (vs `/spec-revise` mid-implementation revision = 5-10x more expensive).
+Run the 7-question quality checklist from [`spec-driven.md §3.7`](../../docs/spec-driven.md#37-specplan-写完后的质量自检7-问-checklist) as a **pre-implementation gate**。
 
 **Use when**: `/feature-init` already ran + you filled in spec.md §3-5 / plan.md / tasks.md TODOs (via feature-init's Step 7 Q&A or main session) — **right before starting implementation**.
 
@@ -112,8 +112,6 @@ Sub-agent 返回结构化报告(Q3/Q4/Q5/Q7 各项 ✅/⚠️边缘/❌ + spec.m
 - ❌ Failed → 修完后**重跑** `/project-workflow:spec-quality-check` verify
 ```
 
-`workflow.md §3.0` 是 P2 全流程 single source of truth(规划期 → 实施期 → 端点 gate 的完整 skill 链)。本 skill 只管 gate verdict + 修复 loop,不重复 inline roadmap(避免 drift)。
-
 ## Failure modes
 
 | 错误 | 应对 |
@@ -125,7 +123,4 @@ Sub-agent 返回结构化报告(Q3/Q4/Q5/Q7 各项 ✅/⚠️边缘/❌ + spec.m
 
 ## Notes
 
-- **跟 `/feature-init` 关系**:feature-init 负责**创建** spec/plan/tasks 骨架 + 可选 Q&A 填 TODOs;spec-quality-check 负责**验收**已填写内容是否合格。两者职责互补,不交叠。
-- **跟 `/spec-revise` 关系**:quality-check 是**便宜阶段 gate**(implementation 前);spec-revise 是**贵阶段 fix**(implementation 中)。
-- **跟 `/l3-review` 关系**:quality-check 验 spec 自身质量(spec 内部);l3-review 验 code 是否符合 spec(spec vs code)。**两个不同问题**。
-- **Goal-driven**:服务 [§0.1 命题 1 Verification](../../docs/workflow.md#01-这本手册解决什么) —— 输入清晰度的最后一道 gate。
+- 互补:`/feature-init` 创建 spec/plan/tasks 骨架;本 skill 验收已填内容质量;`/spec-revise` = 贵阶段 fix(implementation 中);`/l3-review` = code vs spec(本 skill = spec 内部)
