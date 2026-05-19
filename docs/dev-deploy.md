@@ -4,7 +4,7 @@
 >
 > 适用场景:单服务器 / 小规模生产 / 单人或小团队。**不适用**:K8s 集群、多 region、企业级 CI/CD。
 >
-> 实证基础:[`shrekshrek/full-stack-scaffolding-fastapi-nuxt4`](https://github.com/shrekshrek/full-stack-scaffolding-fastapi-nuxt4)(Nuxt 4 版,生产实证)。
+> 本文以 **FastAPI + Nuxt 4 全栈** 为例展示三阶段模式(local dev → local prod validate → deploy)。模式本身跟具体栈无关,栈是例子。一个公开实例链接在文末"## 一个公开实例"。
 >
 > **配套**:具体的工程踩坑清单见 [`gotchas.md`](gotchas.md) —— Docker / pnpm / Pydantic / 测试基建 共 10 条。
 
@@ -83,7 +83,7 @@ docker-compose --env-file .env.production -f docker-compose.prod.yml ps
 - 没有 `CHANGE_THIS` 占位符
 - `POSTGRES_PASSWORD` 跟 `DATABASE_URL` 里嵌的密码一致
 
-CI 变量配置见脚手架的 [`docs/GITLAB_CI_VARIABLES.md`](https://github.com/shrekshrek/full-stack-scaffolding-fastapi-nuxt4/blob/main/docs/GITLAB_CI_VARIABLES.md)。
+CI 需要注入的变量:`PROJECT_NAME` / `POSTGRES_PASSWORD` / `DATABASE_URL` / `SECRET_KEY` / `NUXT_SESSION_PASSWORD` 等。具体变量名跟 `deploy-production.ts` 的环境校验对齐。CI 工具(GitLab CI / GitHub Actions / Jenkins)的变量注入语法各不同,按所用工具的官方文档配。
 
 ---
 
@@ -173,8 +173,6 @@ deploy 完了之后没有自动 curl `/health` 验证服务起来了。
 
 ---
 
-## 参考文档
+## 一个公开实例
 
-- [脚手架 DEPLOYMENT.md](https://github.com/shrekshrek/full-stack-scaffolding-fastapi-nuxt4/blob/main/DEPLOYMENT.md) — 三阶段部署原版
-- [脚手架 CONFIGURATION.md](https://github.com/shrekshrek/full-stack-scaffolding-fastapi-nuxt4/blob/main/docs/CONFIGURATION.md) — env 配置详解
-- [脚手架 GITLAB_CI_VARIABLES.md](https://github.com/shrekshrek/full-stack-scaffolding-fastapi-nuxt4/blob/main/docs/GITLAB_CI_VARIABLES.md) — CI 变量映射
+[`shrekshrek/full-stack-scaffolding-fastapi-nuxt4`](https://github.com/shrekshrek/full-stack-scaffolding-fastapi-nuxt4) —— 一个遵循本文三阶段模式的公开 FastAPI + Nuxt 4 全栈项目。可参考其 `DEPLOYMENT.md` / `docs/CONFIGURATION.md` / `docs/GITLAB_CI_VARIABLES.md` 看完整工程化落地。**仅作 example-of-one,本文逻辑独立自洽,不依赖该项目作权威来源。**

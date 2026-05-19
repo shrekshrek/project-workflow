@@ -1,6 +1,6 @@
 # project-workflow v2
 
-**Spec-driven feature development blueprint for AI-assisted coding** — methodology docs + starter template + reference implementation + Claude Code plugin.
+**Spec-driven feature development blueprint for AI-assisted coding** — methodology docs + starter template + Claude Code plugin.
 
 > v1 (5 slash commands forcing a workflow) is preserved at git tag `v1.1.0`.
 > v2 is a **complete rewrite**: docs-first, optional plugin, non-process-owning. See [Migration from v1](#migration-from-v1) below.
@@ -29,7 +29,7 @@ Full framing with sources: [`docs/workflow.md §0.1`](docs/workflow.md).
 | 🧰 **Starter template** | Pure methodology scaffolding (`AGENTS.md`, spec/plan/tasks, ADR, Issue/PR templates, hook skeleton) — language/framework-agnostic | [`template/`](template/) |
 | 🤖 **Claude Code plugin** | Slash commands automating high-ROI workflow actions | [`.claude-plugin/`](.claude-plugin/) + [`skills/`](skills/) |
 
-> **Reference implementation**: methodology is validated against a Vue 3 + Element Plus + FastAPI full-stack scaffold (Docker + Postgres + Alembic + 18 passing tests, end-to-end). The scaffold lives in a separate repo (TBD; currently maintained in a private dev playground while the plugin stabilizes). Once published, it'll be referenced from `docs/dev-deploy.md`.
+> **Concrete project example** (example-of-one, not authoritative source): [`shrekshrek/full-stack-scaffolding-fastapi-nuxt4`](https://github.com/shrekshrek/full-stack-scaffolding-fastapi-nuxt4) — a FastAPI + Nuxt 4 full-stack scaffold that follows v2 methodology. v2's own arguments are self-contained in `docs/`; the scaffold is just one concrete instantiation.
 
 ## Install (Claude Code plugin)
 
@@ -76,6 +76,7 @@ Then in any project:
 
 ## Read this first
 
+- [`docs/project-workflow-overview.drawio`](docs/project-workflow-overview.drawio) — ⭐ Visual one-page overview (2 tabs: Lifecycle + Skill ↔ Agent dispatch). Open in [draw.io](https://app.diagrams.net) or VS Code Draw.io Integration extension.
 - [`docs/workflow.md`](docs/workflow.md) — ⭐ Core 5-phase blueprint
 - [`docs/gotchas.md`](docs/gotchas.md) — ⭐ 10 engineering pitfalls (from real validation)
 - [`docs/spec-driven.md`](docs/spec-driven.md) — spec/plan/tasks pattern detail
@@ -97,9 +98,9 @@ v1 source preserved at git tag [`v1.1.0`](../../tree/v1.1.0). Install via `git c
 
 ## Status
 
-v2.9.20 ships **11 skills + 6 sub-agents** covering the full P0→P2→P3→P4 lifecycle. `/feature-init` is validated end-to-end (produced a 316-line spec/plan/tasks triple for `email-verification` feature on the reference scaffold). The remaining skills are still gathering field hours — battle-testing welcome.
+v2.9.22 ships **11 skills + 6 sub-agents** covering the full P0→P2→P3→P4 lifecycle. `/feature-init` is validated end-to-end (produced a 316-line spec/plan/tasks triple for `email-verification` feature on the reference scaffold). The remaining skills are still gathering field hours — battle-testing welcome.
 
-The methodology docs (workflow.md / gotchas.md / spec-driven.md / dev-deploy.md) are complete and have been validated against a working Vue 3 + FastAPI scaffold (kept in a private dev playground until publish).
+The methodology docs (workflow.md / gotchas.md / spec-driven.md / dev-deploy.md) are complete and self-contained. A concrete instantiation exists at the public scaffold linked above, but the docs do not depend on it for authority.
 
 ## License
 

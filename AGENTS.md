@@ -12,7 +12,7 @@
 2. `template/` —— 纯方法论 starter(语言中立)
 3. `.claude-plugin/` + `skills/` —— Claude Code 插件资产
 
-**工程参考实现**(Vue 3 + Element Plus + FastAPI 全栈、Docker、Alembic、18 个测试)在另一个仓库(待发布,目前在私有 dev playground 中)。
+**遵循 v2 方法论的一个具体项目示例**:[`shrekshrek/full-stack-scaffolding-fastapi-nuxt4`](https://github.com/shrekshrek/full-stack-scaffolding-fastapi-nuxt4) —— FastAPI + Nuxt 4 全栈脚手架,公开。仅作 example-of-one,v2 方法论自身的论据不依赖它。
 
 **v1 → v2**:完全重写。v1 是 5 个 process-owning slash command,v2 是文档主导 + 可选辅助命令。v1 保留在 git tag `v1.1.0`。
 

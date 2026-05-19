@@ -1577,11 +1577,13 @@ L2 / L3 reviewer 独立 dispatch,各看各的规则源(AGENTS.md vs spec.md),**�
 - [Anthropic — Best practices for Claude Code](https://code.claude.com/docs/en/best-practices)
 - [Anthropic — Hooks reference](https://code.claude.com/docs/en/hooks)
 - [Anthropic — Skills](https://code.claude.com/docs/en/skills)
+- [Anthropic Engineering — Multi-Agent Research System](https://www.anthropic.com/engineering/multi-agent-research-system) —— orchestrator-worker 模式官方 codify(v2 sub-agent 设计的依据)
 
 ### 业界实践(借鉴)
 
 **Verification 命题**:
 - [GitHub Spec Kit](https://github.com/github/spec-kit) —— 重型 spec 工具链
+- [Fission-AI OpenSpec](https://github.com/Fission-AI/OpenSpec) —— spec delta 流派(只记 per-feature 变化)+ 原生 AGENTS.md 集成;跟 v2 `docs/specs/<NNN>-<slug>/` 同构
 - [Addy Osmani — How to write a good spec for AI agents](https://addyosmani.com/blog/good-spec/) —— 轻量 spec 流派
 - [Spec-Driven Development arXiv 2602.00180](https://arxiv.org/abs/2602.00180) —— 110k+ bug 数据
 - [OpenAI Symphony](https://github.com/openai/symphony) —— manage work, not agents(proof bundle 概念源)
@@ -1597,6 +1599,7 @@ L2 / L3 reviewer 独立 dispatch,各看各的规则源(AGENTS.md vs spec.md),**�
 - [Your AI-written codebase is drifting — DEV Community](https://dev.to/skaaz/your-ai-written-codebase-is-drifting-heres-how-to-measure-it-f10) —— drift 度量方法
 
 **工作流哲学**:
+- [AGENTS.md](https://agents.md/) —— 跨工具 AI 协作约定标准(v2 整套约定层架在此之上;Martin Fowler 那条是观点,这条是标准本身)
 - [Addy Osmani — My LLM coding workflow 2026](https://medium.com/@addyosmani/my-llm-coding-workflow-going-into-2026-52fe1681325e)
 - [Matt Pocock — Skills for Real Engineers](https://github.com/mattpocock/skills) —— small composable 哲学
 - [Jesse Vincent — Superpowers](https://github.com/obra/superpowers) —— 反向参考(process-owning 风格)

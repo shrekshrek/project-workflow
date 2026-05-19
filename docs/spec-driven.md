@@ -544,12 +544,18 @@ docs/specs/
 
 ## 7. 维护工具
 
+按 feature 生命周期顺序,v2 ship 的工具:
+
 | 任务 | 工具 |
 |---|---|
-| 起新 feature 三文件 | [`/feature-init <slug>`](../skills/feature-init/SKILL.md) —— 自动创建 `docs/specs/<NNN>-<slug>/{spec,plan,tasks}.md` |
-| spec 不完整想 AI 帮你补 | GitHub Spec Kit `/speckit.clarify`(若装) —— Q&A 引导补全 |
-| L3 检查代码合规 | `pr-review-toolkit:review-pr`,提供 spec.md + plan.md 路径作 context,见 [workflow §6.4](workflow.md#64-按规则源分层验证three-layer-review-separation) |
-| A 类约定(AGENTS.md 多层 + `.claude/rules/`)主动 refresh | [`/project-workflow:agents-md-revise`](../skills/agents-md-revise/SKILL.md)(P4 主战场) |
+| 起新 feature 三文件 | [`/feature-init <slug>`](../skills/feature-init/SKILL.md) —— 自动创建 `docs/specs/<NNN>-<slug>/{spec,plan,tasks}.md`(+ chat context pre-fill) |
+| spec 写完后质量自检(实施前 gate) | [`/spec-quality-check`](../skills/spec-quality-check/SKILL.md) —— 机械化 §3.7 7 问 + dispatch [`spec-quality-reviewer`](../agents/spec-quality-reviewer.md) 做主观二审 |
+| spec / plan 实施中发现错 | [`/spec-revise`](../skills/spec-revise/SKILL.md) —— orchestrate [workflow.md §3.5](workflow.md#35-开发中发现-specplan-错怎么办) / [§2.6](workflow.md#26-module-中途变更feature-实施中发现边界要调整) SOP(ADR + `## 修订记录` + plan prior decisions + tasks rebalance) |
+| L3 spec 合规 review(实施后) | [`/l3-review`](../skills/l3-review/SKILL.md) —— dispatch [`spec-reviewer`](../agents/spec-reviewer.md) agent,按 §1 Outcomes / §2 Scope / §3 Constraints / §4 Verification 分组报告 |
+| A 类约定(AGENTS.md 多层 + `.claude/rules/`)主动 refresh | [`/agents-md-revise`](../skills/agents-md-revise/SKILL.md) —— P4 主战场 |
+
+**外部备选**(可选,跟 v2 工具并存):
+- GitHub Spec Kit `/speckit.clarify` —— Q&A 引导补全 spec(若装 Spec Kit)。v2 的等价路径是主会话 conversational fill(§3.6.5),不需要单独 skill。
 
 ---
 

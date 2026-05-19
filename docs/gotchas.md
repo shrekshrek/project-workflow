@@ -74,7 +74,7 @@ RUN --mount=type=cache,target=/root/.cache/uv uv sync --frozen --no-dev
 - `pydantic-core` / `bcrypt` / `cryptography` 全有 manylinux + macOS arm64 wheel
 - **先不装,缺什么 uv sync 报错再补**
 
-**Dockerfile 额外优化**(从 nuxt 脚手架抄):
+**Dockerfile 额外优化**(在 FastAPI + Nuxt 4 项目里验证过):
 - `UV_LINK_MODE=copy` —— 消除 `hardlink failed, falling back to copy` 警告(host fs 跟容器 fs 不同时 hardlink 失败)
 - `--mount=type=cache,target=/root/.cache/uv` —— 重 build 用缓存,需要 `# syntax=docker/dockerfile:1.7` 启 BuildKit
 - `PYTHONDONTWRITEBYTECODE=1` —— 容器里 `.pyc` 没用,挂载性能更好
@@ -137,7 +137,7 @@ services:
 
 > 适用 stack:**🌐 Monorepo / `package.json` scripts**(例子用 Node,思路通用 Makefile / justfile / Taskfile)
 
-**反例**(nuxt 脚手架的真实代码):
+**反例**(一个 FastAPI + Nuxt 4 项目里的真实代码):
 ```json
 {
   "be:test": "docker-compose up -d postgres_db redis && sleep 2 && pnpm be:test:setup && cd backend && uv run pytest"

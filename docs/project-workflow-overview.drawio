@@ -1,0 +1,363 @@
+<mxfile host="app.diagrams.net" type="device">
+  <diagram name="Lifecycle (P0→P4)" id="lifecycle">
+    <mxGraphModel dx="1800" dy="1200" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1700" pageHeight="1200" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <mxCell id="title" value="project-workflow v2 — Spec-driven AI development blueprint" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=22;fontStyle=1;fontColor=#1A237E;" vertex="1" parent="1">
+          <mxGeometry x="40" y="20" width="1620" height="32" as="geometry"/>
+        </mxCell>
+        <mxCell id="subtitle" value="11 skills + 6 sub-agents  ·  Claude Code-native plugin  ·  v2.9.22  ·  https://github.com/shrekshrek/project-workflow" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontColor=#546E7A;" vertex="1" parent="1">
+          <mxGeometry x="40" y="54" width="1620" height="20" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="prop_header" value="Tier-1 命题 — 为什么 v2 存在(每个阶段都为这三件事服务)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontStyle=2;fontColor=#37474F;" vertex="1" parent="1">
+          <mxGeometry x="40" y="86" width="1620" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="prop_v" value="&lt;b&gt;① Verification&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:11px;&#39;&gt;AI 生成快过人类验证 —&lt;br/&gt;用 spec.md 把契约钉死 + 三层 review 自动验&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFEBEE;strokeColor=#C62828;fontSize=12;align=left;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
+          <mxGeometry x="40" y="110" width="520" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="prop_c" value="&lt;b&gt;② Context-as-RAM&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:11px;&#39;&gt;上下文是有限预算,不是无底磁盘 —&lt;br/&gt;AGENTS.md 行数纪律 + 小 composable skill + @imports&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF3E0;strokeColor=#E65100;fontSize=12;align=left;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
+          <mxGeometry x="580" y="110" width="520" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="prop_d" value="&lt;b&gt;③ Drift&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:11px;&#39;&gt;规范在时间 / 空间 / 演进 三向漂移 —&lt;br/&gt;hooks 机械强制 + AGENTS.md 单一 source + P4 主动 refresh&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3E5F5;strokeColor=#6A1B9A;fontSize=12;align=left;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
+          <mxGeometry x="1120" y="110" width="540" height="70" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="lifecycle_header" value="5 阶段生命周期(skill = slash command,sub-agent = LLM-only 内部协作角色)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontStyle=2;fontColor=#37474F;" vertex="1" parent="1">
+          <mxGeometry x="40" y="200" width="1620" height="20" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="lane_p0" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1565C0;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="40" y="226" width="1620" height="110" as="geometry"/>
+        </mxCell>
+        <mxCell id="lane_p0_label" value="&lt;b&gt;P0&lt;/b&gt;&lt;br/&gt;Project Setup&lt;br/&gt;&lt;span style=&#39;font-size:10px;color:#546E7A;&#39;&gt;项目第一天&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=14;fontStyle=1;fontColor=#1565C0;" vertex="1" parent="1">
+          <mxGeometry x="50" y="240" width="140" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="p0_trigger" value="&lt;b&gt;Trigger&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:11px;&#39;&gt;新项目 / 已克隆 v2 scaffold / retrofit 既有 repo&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="210" y="240" width="220" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="skill_projinit" value="&lt;b&gt;/project-init&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;greenfield&lt;br/&gt;Q&amp;A → 10+ 文件&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1565C0;fontSize=11;align=center;" vertex="1" parent="1">
+          <mxGeometry x="450" y="246" width="170" height="68" as="geometry"/>
+        </mxCell>
+        <mxCell id="skill_projpers" value="&lt;b&gt;/project-personalize&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;scaffold / retrofit&lt;br/&gt;扫码 + 套配置&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1565C0;fontSize=11;align=center;" vertex="1" parent="1">
+          <mxGeometry x="640" y="246" width="170" height="68" as="geometry"/>
+        </mxCell>
+        <mxCell id="p0_out" value="&lt;b&gt;产出 (按文档类标记)&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:11px;&#39;&gt;&lt;b&gt;[A]&lt;/b&gt; AGENTS.md (项目 / tier / 模块 嵌套)  ·  &lt;b&gt;[A]&lt;/b&gt; .claude/rules/&lt;topic&gt;.md&lt;br/&gt;&lt;b&gt;[D]&lt;/b&gt; .claude/hooks/  ·  &lt;b&gt;[D]&lt;/b&gt; .claude/settings.json  ·  &lt;b&gt;[D]&lt;/b&gt; .gitignore&lt;br/&gt;&lt;b&gt;[B 骨架]&lt;/b&gt; docs/specs/_template/  ·  &lt;b&gt;[C 骨架]&lt;/b&gt; docs/adr/&lt;/span&gt;" style="text;html=1;strokeColor=#90A4AE;fillColor=#FAFAFA;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=11;spacing=8;rounded=0;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="840" y="240" width="800" height="80" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="lane_p2" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="40" y="346" width="1620" height="190" as="geometry"/>
+        </mxCell>
+        <mxCell id="lane_p2_label" value="&lt;b&gt;P2&lt;/b&gt;&lt;br/&gt;Feature Development&lt;br/&gt;&lt;span style=&#39;font-size:10px;color:#546E7A;&#39;&gt;每个功能(spec → impl → 交付)&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=14;fontStyle=1;fontColor=#2E7D32;" vertex="1" parent="1">
+          <mxGeometry x="50" y="360" width="140" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="p2_lane_label" value="主流程 →" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=11;fontColor=#546E7A;" vertex="1" parent="1">
+          <mxGeometry x="210" y="358" width="80" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="skill_featinit" value="&lt;b&gt;/feature-init&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;起 spec / plan / tasks&lt;br/&gt;chat 上下文 pre-fill&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2E7D32;fontSize=11;align=center;" vertex="1" parent="1">
+          <mxGeometry x="210" y="382" width="180" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="skill_specqc" value="&lt;b&gt;/spec-quality-check&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;Pre-impl gate&lt;br/&gt;7 问 quality 自检&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2E7D32;fontSize=11;align=center;" vertex="1" parent="1">
+          <mxGeometry x="430" y="382" width="180" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="step_impl" value="&lt;b&gt;Implement&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;主会话写代码&lt;br/&gt;hooks 实时校验 (P3 重叠)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F8E9;strokeColor=#558B2F;dashed=1;fontSize=11;align=center;" vertex="1" parent="1">
+          <mxGeometry x="650" y="382" width="180" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="skill_featdone" value="&lt;b&gt;/feature-done&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;Composite orchestrator&lt;br/&gt;L1 → L2 → L3 → proof-bundle&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2E7D32;strokeWidth=2;fontSize=11;align=center;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="870" y="382" width="220" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="step_deliver" value="&lt;b&gt;READY / NEEDS WORK / BLOCKED&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;端点验证结果 → 交付 or 回 implement&lt;/span&gt;" style="text;html=1;strokeColor=#90A4AE;fillColor=#FAFAFA;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=11;rounded=0;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="1130" y="386" width="290" height="56" as="geometry"/>
+        </mxCell>
+        <mxCell id="featdone_decompose" value="&lt;span style=&#39;font-size:10px;color:#558B2F;&#39;&gt;= &lt;b&gt;/l1-review&lt;/b&gt; (lint/typecheck/test)  ·  &lt;b&gt;/l2-review&lt;/b&gt; (AGENTS.md 合规)  ·  &lt;b&gt;/l3-review&lt;/b&gt; (spec 合规)  ·  &lt;b&gt;/proof-bundle&lt;/b&gt; (装配交付清单) ── 可单步分别跑&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=10;fontColor=#558B2F;" vertex="1" parent="1">
+          <mxGeometry x="600" y="450" width="930" height="20" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="callout_specrevise" value="&lt;b&gt;⚠ /spec-revise&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;Mid-impl 发现 spec/plan/module 错&lt;br/&gt;&lt;b&gt;[C]&lt;/b&gt; ADR + &lt;b&gt;[B]&lt;/b&gt; 修订记录 + &lt;b&gt;[B]&lt;/b&gt; tasks rebalance&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF8E1;strokeColor=#F57F17;fontSize=10;align=center;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="210" y="475" width="220" height="55" as="geometry"/>
+        </mxCell>
+        <mxCell id="callout_subflow" value="&lt;b&gt;⚙ Module Setup sub-flow&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;/feature-init 自动检测 → 加边界进 &lt;b&gt;[B]&lt;/b&gt; plan.md / 骨架进 &lt;b&gt;[B]&lt;/b&gt; tasks.md&lt;br/&gt;&amp;quot;反常&amp;quot;时 + &lt;b&gt;[A]&lt;/b&gt; &amp;lt;module&amp;gt;/AGENTS.md (workflow §2.3)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF8E1;strokeColor=#F57F17;fontSize=10;align=center;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="450" y="475" width="500" height="55" as="geometry"/>
+        </mxCell>
+        <mxCell id="p2_out" value="&lt;b&gt;产出 (按文档类标记)&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;&lt;b&gt;[B]&lt;/b&gt; docs/specs/&lt;NNN&gt;-&lt;slug&gt;/{spec, plan, tasks}.md  ·  代码  ·  &lt;b&gt;[B]&lt;/b&gt; tasks.md § Proof Bundle (L1/L2/L3 结果 + drift 建议)&lt;/span&gt;" style="text;html=1;strokeColor=#90A4AE;fillColor=#FAFAFA;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=11;spacing=8;rounded=0;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="970" y="475" width="670" height="55" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="lane_p3" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF3E0;strokeColor=#E65100;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="40" y="546" width="1620" height="100" as="geometry"/>
+        </mxCell>
+        <mxCell id="lane_p3_label" value="&lt;b&gt;P3&lt;/b&gt;&lt;br/&gt;Continuous Maintenance&lt;br/&gt;&lt;span style=&#39;font-size:10px;color:#546E7A;&#39;&gt;开发期间常驻 (跟 P2 重叠)&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=14;fontStyle=1;fontColor=#E65100;" vertex="1" parent="1">
+          <mxGeometry x="50" y="556" width="140" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="p3_mech1" value="&lt;b&gt;hooks 机械强制&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;PreToolUse / PostToolUse / Stop&lt;br/&gt;auto-format · typecheck · console.log 拦截&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#E65100;fontSize=11;align=center;" vertex="1" parent="1">
+          <mxGeometry x="210" y="565" width="280" height="65" as="geometry"/>
+        </mxCell>
+        <mxCell id="p3_mech2" value="&lt;b&gt;端点 review (= /feature-done)&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;每 feature 完成时跑;backlog/drift 建议自动入 proof-bundle&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#E65100;fontSize=11;align=center;" vertex="1" parent="1">
+          <mxGeometry x="510" y="565" width="280" height="65" as="geometry"/>
+        </mxCell>
+        <mxCell id="p3_mech3" value="&lt;b&gt;协作走平台原生&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;backlog / 讨论 → GitHub Issues / Discussions&lt;br/&gt;不进 repo 文件 (§4.4 / §7.8)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#E65100;fontSize=11;align=center;" vertex="1" parent="1">
+          <mxGeometry x="810" y="565" width="280" height="65" as="geometry"/>
+        </mxCell>
+        <mxCell id="p3_note" value="&lt;span style=&#39;font-size:10px;color:#546E7A;&#39;&gt;P3 不是新一组 skill —— 是 hooks (D) + 跟 P2 端点 review (/feature-done) 的&lt;b&gt;持续运行态&lt;/b&gt;&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="1110" y="572" width="530" height="50" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="lane_p4" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3E5F5;strokeColor=#6A1B9A;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="40" y="656" width="1620" height="100" as="geometry"/>
+        </mxCell>
+        <mxCell id="lane_p4_label" value="&lt;b&gt;P4&lt;/b&gt;&lt;br/&gt;Drift Refresh&lt;br/&gt;&lt;span style=&#39;font-size:10px;color:#546E7A;&#39;&gt;主动 / 周期性&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=14;fontStyle=1;fontColor=#6A1B9A;" vertex="1" parent="1">
+          <mxGeometry x="50" y="666" width="140" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="p4_trigger" value="&lt;b&gt;Trigger&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:11px;&#39;&gt;用户感知 drift / 周期到 / 大依赖升级&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="210" y="672" width="220" height="65" as="geometry"/>
+        </mxCell>
+        <mxCell id="skill_amdrevise" value="&lt;b&gt;/agents-md-revise&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;扫 A 约定 全集 vs 项目实际状态&lt;br/&gt;客观 drift → 逐条 yes/no/ignore → apply + commit 草稿&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#6A1B9A;fontSize=11;align=center;" vertex="1" parent="1">
+          <mxGeometry x="450" y="672" width="320" height="65" as="geometry"/>
+        </mxCell>
+        <mxCell id="p4_out" value="&lt;b&gt;产出 (按文档类标记)&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:11px;&#39;&gt;&lt;b&gt;[A 修订]&lt;/b&gt; AGENTS.md / .claude/rules/*.md 的 patch  ·  commit message 草稿 (`chore: refresh A 类约定`)&lt;/span&gt;" style="text;html=1;strokeColor=#90A4AE;fillColor=#FAFAFA;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=11;spacing=8;rounded=0;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="790" y="672" width="850" height="65" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="arrow_p0_p2" style="endArrow=classic;html=1;rounded=0;strokeColor=#37474F;strokeWidth=2;" edge="1" parent="1" source="lane_p0" target="lane_p2">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="arrow_p2_p3" style="endArrow=classic;html=1;rounded=0;strokeColor=#37474F;strokeWidth=2;" edge="1" parent="1" source="lane_p2" target="lane_p3">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="arrow_p3_p4" style="endArrow=classic;html=1;rounded=0;strokeColor=#37474F;strokeWidth=2;" edge="1" parent="1" source="lane_p3" target="lane_p4">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="arrow_p2_init_qc" style="endArrow=classic;html=1;rounded=0;strokeColor=#2E7D32;strokeWidth=1;" edge="1" parent="1" source="skill_featinit" target="skill_specqc">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="arrow_p2_qc_impl" style="endArrow=classic;html=1;rounded=0;strokeColor=#2E7D32;strokeWidth=1;" edge="1" parent="1" source="skill_specqc" target="step_impl">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="arrow_p2_impl_done" style="endArrow=classic;html=1;rounded=0;strokeColor=#2E7D32;strokeWidth=1;" edge="1" parent="1" source="step_impl" target="skill_featdone">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="arrow_p2_done_deliver" style="endArrow=classic;html=1;rounded=0;strokeColor=#2E7D32;strokeWidth=1;" edge="1" parent="1" source="skill_featdone" target="step_deliver">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="arrow_specrevise" style="endArrow=classic;html=1;dashed=1;rounded=0;strokeColor=#F57F17;strokeWidth=1;" edge="1" parent="1" source="step_impl" target="callout_specrevise">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="740" y="470"/>
+              <mxPoint x="320" y="470"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="pillars_header" value="4 支柱(方法论)— 每条原则同时降伏多个命题" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontStyle=2;fontColor=#37474F;" vertex="1" parent="1">
+          <mxGeometry x="40" y="790" width="1620" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="pillar_61" value="&lt;b&gt;§6.1 Spec-driven&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;契约先于代码 (spec.md 冻结 what)&lt;br/&gt;主服务:① Verification&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECEFF1;strokeColor=#455A64;fontSize=11;align=left;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
+          <mxGeometry x="40" y="815" width="395" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="pillar_62" value="&lt;b&gt;§6.2 Context Budget&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;AGENTS.md 行数纪律 + @imports + 小 skill&lt;br/&gt;主服务:② Context&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECEFF1;strokeColor=#455A64;fontSize=11;align=left;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
+          <mxGeometry x="445" y="815" width="395" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="pillar_63" value="&lt;b&gt;§6.3 Env-Enforced Rules&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;hooks 把 review 自动化、不依赖人类记得&lt;br/&gt;主服务:③ Drift (实时)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECEFF1;strokeColor=#455A64;fontSize=11;align=left;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
+          <mxGeometry x="850" y="815" width="395" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="pillar_64" value="&lt;b&gt;§6.4 Three-Layer Review&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;按规则源分层 L1 / L2 / L3 — 正交不互感&lt;br/&gt;主服务:① Verification + ③ Drift (端点)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECEFF1;strokeColor=#455A64;fontSize=11;align=left;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
+          <mxGeometry x="1255" y="815" width="385" height="70" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="doc_header" value="文档物理位置(代码组织维度)— 4 类正交职责  &lt;span style=&#39;font-weight:normal;font-size:10px;color:#78909C;&#39;&gt;(↑ phase lanes 产出框中的 [A] [B] [C] [D] 标签对应这 4 类)&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontStyle=2;fontColor=#37474F;" vertex="1" parent="1">
+          <mxGeometry x="40" y="905" width="1620" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="doc_a" value="&lt;b&gt;A · 约定 (Conventions)&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;AGENTS.md (项目/tier/模块 3 层嵌套) + .claude/rules/*.md (globs 路径触发) + CLAUDE.md 1 行 alias&lt;br/&gt;时间维度:&lt;b&gt;当前态&lt;/b&gt; — 我们现在怎么工作?&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E1F5FE;strokeColor=#0277BD;fontSize=11;align=left;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
+          <mxGeometry x="40" y="930" width="395" height="75" as="geometry"/>
+        </mxCell>
+        <mxCell id="doc_b" value="&lt;b&gt;B · 任务 (Specs)&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;docs/specs/&lt;NNN&gt;-&lt;slug&gt;/{spec, plan, tasks}.md&lt;br/&gt;时间维度:&lt;b&gt;per-feature 生命周期&lt;/b&gt; — 这个 feature 做什么 + 怎么做 + 步骤?&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;fontSize=11;align=left;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
+          <mxGeometry x="445" y="930" width="395" height="75" as="geometry"/>
+        </mxCell>
+        <mxCell id="doc_c" value="&lt;b&gt;C · 决策 (ADR)&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;docs/adr/NNNN-&lt;title&gt;.md  (扁平,不嵌套)&lt;br/&gt;时间维度:&lt;b&gt;时间戳快照,append-only&lt;/b&gt; — 当时为什么这么选?trade-off?&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF8E1;strokeColor=#F57F17;fontSize=11;align=left;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
+          <mxGeometry x="850" y="930" width="395" height="75" as="geometry"/>
+        </mxCell>
+        <mxCell id="doc_d" value="&lt;b&gt;D · 工具基础设施 (Infra)&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;.claude/{hooks, settings.json} + .gitignore&lt;br/&gt;时间维度:&lt;b&gt;跟项目演化&lt;/b&gt; — 工具自动跑什么?&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3E5F5;strokeColor=#6A1B9A;fontSize=11;align=left;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
+          <mxGeometry x="1255" y="930" width="385" height="75" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="legend_header" value="图例 · 术语" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontStyle=2;fontColor=#37474F;" vertex="1" parent="1">
+          <mxGeometry x="40" y="1025" width="200" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="legend_skill" value="&lt;b&gt;Skill&lt;/b&gt; = Claude Code slash command (/xxx),用户调用" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#37474F;fontSize=10;align=left;spacing=6;" vertex="1" parent="1">
+          <mxGeometry x="40" y="1050" width="395" height="32" as="geometry"/>
+        </mxCell>
+        <mxCell id="legend_agent" value="&lt;b&gt;Sub-agent&lt;/b&gt; = LLM 内部协作角色,只能由 skill dispatch (见 Tab 2)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF8E1;strokeColor=#F57F17;fontSize=10;align=left;spacing=6;" vertex="1" parent="1">
+          <mxGeometry x="445" y="1050" width="395" height="32" as="geometry"/>
+        </mxCell>
+        <mxCell id="legend_dashed" value="&lt;b&gt;⬚ dashed 框&lt;/b&gt; = 产出 / 状态,不是 skill" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FAFAFA;strokeColor=#90A4AE;dashed=1;fontSize=10;align=left;spacing=6;" vertex="1" parent="1">
+          <mxGeometry x="850" y="1050" width="395" height="32" as="geometry"/>
+        </mxCell>
+        <mxCell id="legend_callout" value="&lt;b&gt;⚠ 黄底虚线&lt;/b&gt; = conditional / 异常分支 (spec-revise, module sub-flow)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF8E1;strokeColor=#F57F17;dashed=1;fontSize=10;align=left;spacing=6;" vertex="1" parent="1">
+          <mxGeometry x="1255" y="1050" width="385" height="32" as="geometry"/>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+
+  <diagram name="Dispatch network (skills ↔ agents)" id="dispatch">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="1000" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <mxCell id="title2" value="Skill ↔ Sub-agent dispatch network" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=20;fontStyle=1;fontColor=#1A237E;" vertex="1" parent="1">
+          <mxGeometry x="40" y="20" width="1320" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="subtitle2" value="11 skills (左) 调用 6 sub-agents (右)。Sub-agent 只能由 skill 触发,上下文独立、read-only 主导。" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontColor=#546E7A;" vertex="1" parent="1">
+          <mxGeometry x="40" y="54" width="1320" height="20" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="col_skills" value="Skills (slash commands)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=13;fontStyle=2;fontColor=#37474F;" vertex="1" parent="1">
+          <mxGeometry x="60" y="90" width="380" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="col_agents" value="Sub-agents (LLM-only)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=13;fontStyle=2;fontColor=#37474F;" vertex="1" parent="1">
+          <mxGeometry x="960" y="90" width="380" height="24" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="s_projinit" value="&lt;b&gt;/project-init&lt;/b&gt; · P0" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1565C0;fontSize=11;align=left;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
+          <mxGeometry x="60" y="130" width="380" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="s_projpers" value="&lt;b&gt;/project-personalize&lt;/b&gt; · P0" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1565C0;fontSize=11;align=left;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
+          <mxGeometry x="60" y="180" width="380" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="s_featinit" value="&lt;b&gt;/feature-init&lt;/b&gt; · P2" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;fontSize=11;align=left;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
+          <mxGeometry x="60" y="230" width="380" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="s_specqc" value="&lt;b&gt;/spec-quality-check&lt;/b&gt; · P2 pre-impl gate" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;fontSize=11;align=left;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
+          <mxGeometry x="60" y="280" width="380" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="s_specrevise" value="&lt;b&gt;/spec-revise&lt;/b&gt; · P2 mid-impl" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;fontSize=11;align=left;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
+          <mxGeometry x="60" y="330" width="380" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="s_l1" value="&lt;b&gt;/l1-review&lt;/b&gt; · 机械层 (lint/typecheck/test)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;fontSize=11;align=left;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
+          <mxGeometry x="60" y="380" width="380" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="s_l2" value="&lt;b&gt;/l2-review&lt;/b&gt; · AGENTS.md 合规层" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;fontSize=11;align=left;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
+          <mxGeometry x="60" y="430" width="380" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="s_l3" value="&lt;b&gt;/l3-review&lt;/b&gt; · spec.md 合规层" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;fontSize=11;align=left;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
+          <mxGeometry x="60" y="480" width="380" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="s_proof" value="&lt;b&gt;/proof-bundle&lt;/b&gt; · 装配交付清单" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;fontSize=11;align=left;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
+          <mxGeometry x="60" y="530" width="380" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="s_featdone" value="&lt;b&gt;/feature-done&lt;/b&gt; · 端点 composite (= L1+L2+L3+proof)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;fontSize=11;align=left;verticalAlign=middle;spacing=8;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="60" y="580" width="380" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="s_amdrevise" value="&lt;b&gt;/agents-md-revise&lt;/b&gt; · P4 drift refresh" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3E5F5;strokeColor=#6A1B9A;fontSize=11;align=left;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
+          <mxGeometry x="60" y="630" width="380" height="40" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="a_techres" value="&lt;b&gt;tech-researcher&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;Q&amp;A 中&amp;quot;不确定&amp;quot;时调研 2-3 候选 + 推荐&lt;br/&gt;Tools: WebSearch, WebFetch, Read, Grep, Glob, Bash&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF8E1;strokeColor=#F57F17;fontSize=11;align=left;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
+          <mxGeometry x="960" y="130" width="380" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="a_codebase" value="&lt;b&gt;codebase-explorer&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;扫已有 codebase → 推荐 Project Structure 节&lt;br/&gt;Tools: Read, Grep, Glob, Bash&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF8E1;strokeColor=#F57F17;fontSize=11;align=left;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
+          <mxGeometry x="960" y="220" width="380" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="a_dcaudit" value="&lt;b&gt;decision-completeness-auditor&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;Preview Gate 前 trace 每个 plant 决策 → Q&amp;A / 栈惯例 / null&lt;br/&gt;Tools: Read, Grep, Glob  ·  Read-only&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF8E1;strokeColor=#F57F17;strokeWidth=2;fontSize=11;align=left;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
+          <mxGeometry x="960" y="310" width="380" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="a_specqr" value="&lt;b&gt;spec-quality-reviewer&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;spec 自身主观二审 (Outcomes/Constraints/Verification 真假)&lt;br/&gt;4-phase methodology  ·  Read-only&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF8E1;strokeColor=#F57F17;fontSize=11;align=left;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
+          <mxGeometry x="960" y="400" width="380" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="a_amdrev" value="&lt;b&gt;agents-md-reviewer&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;扫代码 vs AGENTS.md 规则 (4-phase: extract→enumerate→matrix→calibrate)&lt;br/&gt;只引用 AGENTS.md 显式规则,不评设计&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF8E1;strokeColor=#F57F17;fontSize=11;align=left;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
+          <mxGeometry x="960" y="490" width="380" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="a_specrev" value="&lt;b&gt;spec-reviewer&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;扫代码 vs feature spec.md (4-phase)&lt;br/&gt;按 Outcomes/Scope/Constraints/Verification 分组报告&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF8E1;strokeColor=#F57F17;fontSize=11;align=left;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
+          <mxGeometry x="960" y="580" width="380" height="70" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="e_init_tech" style="endArrow=classic;html=1;rounded=0;strokeColor=#1565C0;strokeWidth=1.5;" edge="1" parent="1" source="s_projinit" target="a_techres">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_init_dc" style="endArrow=classic;html=1;rounded=0;strokeColor=#1565C0;strokeWidth=1.5;" edge="1" parent="1" source="s_projinit" target="a_dcaudit">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_pers_cb" style="endArrow=classic;html=1;rounded=0;strokeColor=#1565C0;strokeWidth=1.5;" edge="1" parent="1" source="s_projpers" target="a_codebase">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_pers_tech" style="endArrow=classic;html=1;rounded=0;strokeColor=#1565C0;strokeWidth=1.5;dashed=1;" edge="1" parent="1" source="s_projpers" target="a_techres">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_pers_dc" style="endArrow=classic;html=1;rounded=0;strokeColor=#1565C0;strokeWidth=1.5;" edge="1" parent="1" source="s_projpers" target="a_dcaudit">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_feat_dc" style="endArrow=classic;html=1;rounded=0;strokeColor=#2E7D32;strokeWidth=1.5;" edge="1" parent="1" source="s_featinit" target="a_dcaudit">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_qc_specqr" style="endArrow=classic;html=1;rounded=0;strokeColor=#2E7D32;strokeWidth=1.5;" edge="1" parent="1" source="s_specqc" target="a_specqr">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_l2_amdrev" style="endArrow=classic;html=1;rounded=0;strokeColor=#2E7D32;strokeWidth=1.5;" edge="1" parent="1" source="s_l2" target="a_amdrev">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_l3_specrev" style="endArrow=classic;html=1;rounded=0;strokeColor=#2E7D32;strokeWidth=1.5;" edge="1" parent="1" source="s_l3" target="a_specrev">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_amdrevise_dc" style="endArrow=classic;html=1;rounded=0;strokeColor=#6A1B9A;strokeWidth=1.5;" edge="1" parent="1" source="s_amdrevise" target="a_dcaudit">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="composite_note" value="&lt;b&gt;/feature-done&lt;/b&gt; orchestrates 4 个 review skill (skill→skill,虚线):&lt;br/&gt;&lt;span style=&#39;font-size:10px;color:#546E7A;&#39;&gt;/l1-review → /l2-review → /l3-review → /proof-bundle ── 各自结果在 proof-bundle 聚合,L2/L3 重叠的 finding 在装配时去重 (workflow §6.4)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F8E9;strokeColor=#558B2F;fontSize=11;align=left;verticalAlign=middle;spacing=8;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="60" y="700" width="1280" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_done_l1" style="endArrow=classic;html=1;dashed=1;rounded=0;strokeColor=#558B2F;strokeWidth=1;" edge="1" parent="1" source="s_featdone" target="s_l1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="500" y="600"/>
+              <mxPoint x="500" y="400"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_done_l2" style="endArrow=classic;html=1;dashed=1;rounded=0;strokeColor=#558B2F;strokeWidth=1;" edge="1" parent="1" source="s_featdone" target="s_l2">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="520" y="600"/>
+              <mxPoint x="520" y="450"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_done_l3" style="endArrow=classic;html=1;dashed=1;rounded=0;strokeColor=#558B2F;strokeWidth=1;" edge="1" parent="1" source="s_featdone" target="s_l3">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="540" y="600"/>
+              <mxPoint x="540" y="500"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_done_proof" style="endArrow=classic;html=1;dashed=1;rounded=0;strokeColor=#558B2F;strokeWidth=1;" edge="1" parent="1" source="s_featdone" target="s_proof">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="560" y="600"/>
+              <mxPoint x="560" y="550"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="legend2_header" value="图例 · 关键观察" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=12;fontStyle=2;fontColor=#37474F;" vertex="1" parent="1">
+          <mxGeometry x="60" y="790" width="200" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="legend2_a" value="&lt;b&gt;实线&lt;/b&gt; skill 必定 dispatch agent  ·  &lt;b&gt;虚线&lt;/b&gt; 条件 dispatch / skill→skill orchestration" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="60" y="815" width="1280" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="legend2_b" value="&lt;b&gt;decision-completeness-auditor&lt;/b&gt; 是唯一被 4 个 generator skill 共用的 agent — 实施 workflow §1.12 generation discipline (Preview Gate 前 trace plant 决策)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="60" y="838" width="1280" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="legend2_c" value="&lt;b&gt;/l1-review / /spec-revise&lt;/b&gt; 不 dispatch agent — l1 是纯 shell 包装,spec-revise 是 ADR / 修订记录 编排 (orchestration only)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="60" y="861" width="1280" height="20" as="geometry"/>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
