@@ -107,7 +107,7 @@ v1 source preserved at git tag [`v1.1.0`](../../tree/v1.1.0). Install via `git c
 
 ## Status
 
-v2.9.25 ships **11 skills + 6 sub-agents** covering the full P0→P2→P3→P4 lifecycle. `/feature-init` is validated end-to-end (produced a 316-line spec/plan/tasks triple for `email-verification` feature on the reference scaffold). The remaining skills are still gathering field hours — battle-testing welcome.
+v2.9.26 ships **11 skills + 6 sub-agents** covering the full P0→P2→P3→P4 lifecycle. `/feature-init` is validated end-to-end (produced a 316-line spec/plan/tasks triple for `email-verification` feature on the reference scaffold). The remaining skills are still gathering field hours — battle-testing welcome.
 
 The methodology docs (workflow.md / spec-driven.md / gotchas.md / tooling.md) are complete and self-contained. A concrete instantiation exists at the public scaffold linked above, but the docs do not depend on it for authority.
 
