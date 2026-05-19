@@ -47,7 +47,7 @@ Then in any project:
 
 | Skill | Version | What it does |
 |---|---|---|
-| `/project-workflow:project-init` | v2.3.0 | P0 greenfield initialization — Q&A walks through stack and conventions, generates 10+ files (AGENTS.md / .claude/ / docs/adr/ / etc.). "不确定" answers trigger `tech-researcher` sub-agent for parallel research. Auto-handles fullstack tier structure. Spec templates stay plugin-canonical (`/feature-init` cps at feature-creation time). |
+| `/project-workflow:project-init` | v2.3.0 | P0 greenfield initialization — Q&A walks through stack and conventions, generates 10+ files (AGENTS.md / .claude/ / docs/adr/ / etc.). "不确定" answers trigger `tech-researcher` sub-agent for parallel research. Auto-handles fullstack tier structure. |
 | `/project-workflow:project-personalize` | v2.3.0 | P0 scaffold-cloned / retrofit — adapts existing v2-shaped project to user's values. Replaces scaffold defaults, completes tier-level AGENTS.md (双文件 scheme), dispatches `codebase-explorer` sub-agent to scan existing structure. |
 | `/project-workflow:feature-init` | v2.3.2 | Start a new feature spec — creates `docs/specs/<NNN>-<slug>/{spec,plan,tasks}.md` with module-setup auto-detection (per workflow §2). **Step 7** = mission-critical 强约束(Scope "不做" + Sibling Alignment if multi-module)+ adaptive hooks(tech-researcher / context7)+ decision-completeness audit. **Chat-as-context**: 若 user 已在 session 中讨论过 feature 细节,据对话 pre-fill placeholder。其余 TODOs 走主会话 conversational fill(per spec-driven §3.6.5)。 |
 | `/project-workflow:spec-quality-check` | v2.3.2 | **Pre-implementation gate** — verify spec/plan/tasks quality per spec-driven.md §3.7 7-q checklist. Mechanical checks + dispatches `spec-quality-reviewer` sub-agent for subjective items. |
@@ -58,6 +58,8 @@ Then in any project:
 | `/project-workflow:proof-bundle` | v2.1.0 | Verify proof bundle completeness and write to `tasks.md` § Proof Bundle |
 | `/project-workflow:feature-done` | v2.1.0 | Composite: L1 → L2 → L3 → proof-bundle, single READY/NEEDS WORK/BLOCKED verdict |
 | `/project-workflow:agents-md-revise` | v2.3.3 | **P4 main tool** — proactively audit A 类约定 (AGENTS.md 多层 + `.claude/rules/`) vs project actual state; report objective drifts (commands / deps / dirs / versions / config), per-item yes/no/ignore-forever, apply + commit draft. Critical-only, no subjective signals, no hook auto-trigger. |
+
+> Spec templates (`docs/specs/_template/{spec,plan,tasks}.md`) are plugin-canonical — `/feature-init` cps from `$CLAUDE_PLUGIN_ROOT/template/` at feature-creation time. To customize, fork the plugin and edit `template/docs/specs/_template/`.
 
 ## Sub-agents
 

@@ -1,6 +1,6 @@
 ---
 name: project-init
-description: Initialize a project's v2 starter kit (AGENTS.md + .claude/ + tier-level AGENTS.md if fullstack). Q&A driven, language/stack agnostic. Dispatches tech-researcher sub-agent for "不确定" answers. Accepts optional `$ARGUMENTS` = target directory path (defaults to current working directory). Spec templates live in `/feature-init` skill bundle (plugin canonical, not per-project customizable). Claude Code-native. Use at P0 (project's first day). Not for adding features mid-project — use /feature-init for that.
+description: Initialize a project's v2 starter kit (AGENTS.md + .claude/ + tier-level AGENTS.md if fullstack). Q&A driven, language/stack agnostic. Dispatches tech-researcher sub-agent for "不确定" answers. Accepts optional `$ARGUMENTS` = target directory path (defaults to current working directory). Claude Code-native. Use at P0 (project's first day). Not for adding features mid-project — use /feature-init for that.
 ---
 
 **Response language**: Match the user's prompt language (中文 / English / etc.) for all natural-language output. Generated file content stays in the language of the source template (Chinese for v2).
@@ -107,20 +107,7 @@ Task tool 调用:
   """
 ```
 
-sub-agent 返回结构化报告(2-3 candidates + recommendation + 理由)→ project-init 把 recommendation 回填进 Q&A 答案,跟用户确认后继续下一问。
-
-**例(用户视角)**:
-
-> 用户: "ORM 用什么不确定"
-> project-init: (dispatch tech-researcher) ...
-> tech-researcher 返回报告 → project-init 给用户看:
->   "✅ tech-researcher 调研结果:
->    - SQLAlchemy 2.0: 成熟 strict types,生态最深 / 学习曲线陡
->    - Tortoise ORM: async-native API 像 Django / 生态小
->    - Prisma: 类型生成强 / Python 支持远不如 TS
->    推荐 **SQLAlchemy 2.0** —— 跟 Pydantic v2 + FastAPI 生态契合最深。OK?"
-> 用户: "OK"
-> → 填进 Q&A 答案,继续下一问
+sub-agent 返回结构化报告(2-3 candidates + recommendation + 理由)→ project-init 把 recommendation 展示给 user 确认后回填进 Q&A 答案,继续下一问。
 
 **何时不 dispatch tech-researcher**:
 - 用户直接给答案(不问"推荐")
@@ -545,7 +532,7 @@ agent 看上面输出 + Q&A 答案对照 3 项:
 
 按 Q&A 答案动态列举(示例,fullstack Python + TS):
 
-> ⚠️ **命令产出层级不对称**:`uv init` / `poetry init` 只产 Python 包骨架(`pyproject.toml` + `__init__.py`),**不**产 framework app 主入口;前端 `pnpm create vite` 例外,产完整 SPA 含 `src/main.ts` + 入口 HTML。下表把"包骨架"与"app 主入口"拆开,避免用户跑完 `uv init` 后撞 `ModuleNotFoundError: app`。
+> ⚠️ **Python/Node 命令产出不对称**:`uv init` / `poetry init` 只产包骨架(`pyproject.toml`),不产 app 主入口;`pnpm create vite` 例外产完整 SPA。下表已拆"包骨架"vs"app 主入口"。
 
 | 文件 | 怎么获得 |
 |---|---|

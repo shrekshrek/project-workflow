@@ -9,8 +9,6 @@ description: Adapt a scaffold-cloned or v2-shaped existing project to user's spe
 
 Adapt a project that **already has** v2 baseline files (AGENTS.md / `.claude/`)—typically because you cloned a v2 scaffold or are retrofitting an existing project—to your specific values, tier structure, and codebase reality.
 
-> `docs/specs/_template/` 不是 v2 baseline ── 模板由 `/feature-init` 从 plugin canonical 直接 cp,不支持 per-project 定制。
-
 **Use when**:
 - You cloned a v2-shaped scaffold(如 [`shrekshrek/full-stack-scaffolding-fastapi-nuxt4`](https://github.com/shrekshrek/full-stack-scaffolding-fastapi-nuxt4))
 - 既有项目想 retrofit 进 v2(已有 AGENTS.md 但需要清理)
@@ -42,8 +40,6 @@ cd "$TARGET_DIR"
 ```
 
 **后续所有 Step 的 `ls -la` / `find` / Edit / Write 都对此 target 目录操作**。省略 `$ARGUMENTS` 完全 backward-compatible(沿用原 cwd 行为)。
-
-> **跟 `/project-init` 的区别**:project-init 允许 target 不存在(可创建);project-personalize **要求 target 已存在且有 v2 baseline**(scaffold-cloned 或既有项目)。
 
 ## Step 1 — Detect existing state
 
@@ -260,5 +256,4 @@ head -10 .claude/rules/*.md 2>/dev/null
 
 ## Notes
 
-- **跟 `/project-init` 区别**:`/project-init` 在**空目录**起 v2 baseline;`/project-personalize` 在**已有 v2 baseline 的目录**做 personalize / retrofit。**两者不互替**。
 - **方法论本体**:[`docs/workflow.md §1 P0`](https://github.com/shrekshrek/project-workflow/blob/main/docs/workflow.md#1-p0project-setup项目第一天) —— 不装 plugin 也能纯手工跑 P0 personalize。
