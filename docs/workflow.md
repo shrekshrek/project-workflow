@@ -804,14 +804,12 @@ v2 对模块**长什么样**有 opinionated 偏好(不强制):
 ─────────── 规划阶段(§3.1)───────────
 /project-workflow:feature-init <slug>
    ├─ 创建 docs/specs/<NNN>-<slug>/{spec,plan,tasks}.md
-   ├─ 检测 Module Setup(§2 sub-flow);新模块时反常判定(§2.3)
+   ├─ 检测 Module Setup(§2 sub-flow);新模块时反常判定**不预问**(99% n)→ 作 reminder 输出
    ├─ (若 user 已在本 session chat 讨论过 feature)读 chat 上下文 → 据已讨论事实 pre-fill placeholder
-   └─ (可选)Step 7:mission-critical 强约束 + adaptive hooks + audit
-        ├─ 7.A Scope "不做"(必走;chat 已覆盖则直接填)
-        ├─ 7.B Sibling Alignment(多模块时;chat 已覆盖则直接填)
-        ├─ 7.C 按需 dispatch tech-researcher / context7(stack 不确定 / 拉外部库文档)
-        ├─ 7.D 其余 TODOs 走主会话 conversational fill(参 spec-driven.md §3.6.5)
-        └─ 7.E decision-completeness-auditor 兜底
+   └─ 报告 + reminders + audit(**零强制 Q&A**)
+        ├─ Mission-critical reminders:Scope "不做"(Q2)+ (多模块)Sibling Alignment(Q6)── user 自判,不预问
+        ├─ Conversational fill 引导:tech-researcher / context7 等 adaptive hooks 在主会话**被动触发**
+        └─ decision-completeness-auditor 审 chat pre-fill 内容(纯空骨架则跳过)
         │
         ▼
    主会话 conversational fill 剩余 TODOs(primary mode;chat-as-context 已 pre-fill 的则跳过)
