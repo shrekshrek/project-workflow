@@ -47,7 +47,6 @@ docs/                  方法论文档
 ├── workflow.md        ⭐ 5 阶段 + 4 支柱(核心)
 ├── gotchas.md         ⭐ 10 工程陷阱
 ├── spec-driven.md     spec/plan/tasks 详解
-├── dev-deploy.md      本地开发 + 同步部署
 ├── tooling.md         工具链对比
 └── proposals/         详细提案(> 200 行的提案;真 backlog 走 GitHub Issues per §7.8)
 template/              方法论 starter
