@@ -125,36 +125,28 @@ ls docs/adr/ | grep -E '^[0-9]{4}-' | sort -rn | head -1
 
 跟用户确认每条变化,用 Edit 工具更新 `tasks.md`。
 
-## Step 7.5 — 决策完整性 audit(强制,workflow §1.12 Generation Discipline)
+## Step 7.5 — 决策完整性 audit(强制,workflow §1.12)
 
-Step 5-7 Edit 已落盘 ── 在提示 user `git commit` 前 dispatch [`decision-completeness-auditor`](../../agents/decision-completeness-auditor.md) 审本次 revision 累积修改(catch ADR Decision 落地时引入的 plant):
+Dispatch [`decision-completeness-auditor`](../../agents/decision-completeness-auditor.md):
 
-- `files_to_audit`: 本次 revision 涉及的所有文件 ── `docs/specs/<NNN>-<slug>/{spec,plan,tasks}.md` + `docs/adr/<NNNN>-<topic>.md` +(若 Step 5.5 触发)`<module>/AGENTS.md` + `<tier>/AGENTS.md` + `.claude/rules/<topic>.md`
-- `qa_answers`: Step 2 触发发现(user 简述) + Step 4 ADR 三节(Context / Decision / Consequences) + Step 5/5.5/6/7 各步 user 确认的具体改动
+- `files_to_audit`: `docs/specs/<NNN>-<slug>/{spec,plan,tasks}.md` + `docs/adr/<NNNN>-<topic>.md` +(若 Step 5.5 触发)`<module>/AGENTS.md` + `<tier>/AGENTS.md` + `.claude/rules/<topic>.md`
+- `qa_answers`: Step 2 触发发现 + Step 4 ADR 三节 + Step 5/5.5/6/7 user 确认改动
 - `language_conventions`: null
-- `plugin_hardcoded_defaults`: `{value: "<NNNN>-<topic>", source: "spec-revise Step 3 ADR numbering convention"}`
+- `plugin_hardcoded_defaults`: `{value: "<NNNN>-<topic>", source: "Step 3 ADR numbering"}`
 
-**典型 plant**(audit 应 catch):
-- 新引入的 entity / 字段名超出 ADR Decision 明示
-- API endpoint path 凭空(spec.md / plan.md §2 改动里出现 user 没说的 path)
-- 错误码 / HTTP method 凭印象 plant
-- module 路径 / `.claude/rules/<topic>` 命名超出 §5.5 Codify Decision
+**Block 规则**:🚫 > 0 → 报 user,提示 `git checkout HEAD -- <file>` 回退 + 据 feedback 重跑;⚠️ 不 block。
 
-**Block 规则**:🚫 > 0 → 报告给 user,提示 `git checkout HEAD -- <file>` 回退后据 audit feedback 重跑 spec-revise;⚠️ 不 block,Step 7.6 同时展示。
+## Step 7.6 — Diff Review Gate(强制)
 
-## Step 7.6 — Diff Review Gate(强制,落盘已完成 → user 决定 commit / revert)
-
-跑 `git diff HEAD -- <files-touched>` 显示本次 revision 全部跨文件改动 + 附 Step 7.5 audit 摘要(`✅ N / ⚠️ M / 🚫 K`)。
+跑 `git diff HEAD -- <files-touched>` + 附 7.5 audit 摘要(`✅ N / ⚠️ M / 🚫 K`)。
 
 AskUserQuestion:
 
 | 选项 | 处理 |
 |---|---|
-| ✅ 全部接受 | 进 Step 8(改动已 commit-ready)|
-| ⚠️ 某项要调 | 指明 + 改完**重跑 Step 7.5 audit + 7.6 review** |
-| 🚫 全 revert | `git checkout HEAD -- <files-touched>` 回退,提示重新跑 spec-revise(从 Step 2 起)|
-
-> spec-revise 是**贵阶段** 修订(改 spec/plan/tasks/ADR/module/rules 多个 A 类约定文件,跨文件 inconsistency 风险高)── audit + diff review 双 gate 兜底,避免 plant 偷偷进 commit。
+| ✅ 接受 | 进 Step 8 |
+| ⚠️ 改某项 | 改完重跑 7.5 + 7.6 |
+| 🚫 revert | `git checkout HEAD -- <files-touched>` + 退回 Step 2 |
 
 ## Step 8 — 总结
 

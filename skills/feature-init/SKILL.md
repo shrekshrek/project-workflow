@@ -1,17 +1,13 @@
 ---
 name: feature-init
-description: Start a new feature spec — create docs/specs/<NNN>-<slug>/{spec,plan,tasks}.md from project template. Auto-detect if a new module is needed and add module setup to plan/tasks (per workflow §2 Module Setup sub-flow). Plugin = scaffold + conditional framework Q&A (slug / tier / module — info that can't be derived & can't be deferred) + chat-context pre-fill + reminders + adaptive hooks (passive) + decision-completeness audit. **No preset fixed Q&A interview** — business-detail strong constraints (Scope "不做" / Sibling Alignment) become reminders here, gated by /spec-quality-check.
+description: Start a new feature spec — create docs/specs/<NNN>-<slug>/{spec,plan,tasks}.md from project template. Auto-detect if a new module is needed and add module setup to plan/tasks (per workflow §2 Module Setup sub-flow). Scaffold + chat-context pre-fill + reminders + decision-completeness audit; conditional framework Q&A only (slug / tier / module).
 ---
 
 > **Response language**: Match the user's prompt language (中文 / English / etc.) in all natural-language output — headers, summaries, questions, progress messages. Code, commands, file paths, and `$ARGUMENTS` stay as-is.
 
 # Feature Init
 
-Start a new feature's spec/plan/tasks triplet (P2 entry point).
-
-**Plugin 哲学**:scaffold + **conditional framework Q&A**(slug / tier / module 不明时 ── audit 无法替代的 branch 决策)+ chat-context pre-fill + reminders + adaptive hooks(被动触发)+ decision-completeness audit。**不预设固定 Q&A interview** 替 user 决策业务细节(feature 类型多样,固定不通用;user 早期答不准 Scope 边界 / Sibling 对齐);business 细节由 user 主会话 conversational fill(见 [spec-driven.md §3.6.5](../../docs/spec-driven.md#365-phase-a填-todos-的-ai-协作-sop)),质量由 `/spec-quality-check` gate 把关([§3.7](../../docs/spec-driven.md#37-specplan-写完后的质量自检7-问-checklist) 7 问)。
-
-> **Framework Q&A vs business Q&A 区别**:framework = 影响整个 feature branch 的一次性 setup 决策(slug 错了 branch 全错;module 边界错了 sibling alignment 都错),user 当下能答 + 延后成本极高 → **必须条件性问**;business = 局部内容(Outcomes / 字段名 / endpoint path 等),user 早期答不准 + 后续 gate 可 cheaply catch → **conversational fill + gate**。
+Start a new feature's spec/plan/tasks triplet (P2 entry point)。Business 细节走主会话 conversational fill(见 [spec-driven.md §3.6.5](../../docs/spec-driven.md#365-phase-a填-todos-的-ai-协作-sop));质量由 `/spec-quality-check` 把关。
 
 **Use when**: P2 — starting a new feature; changes span 3+ files OR touch architecture / data model / API contract ([workflow.md §3.1](../../docs/workflow.md#31-规划阶段)).
 **Not for**: P0 project scaffolding (use `/project-workflow:project-init`) / mid-implementation spec revision (use `/project-workflow:spec-revise`) / endpoint delivery (use `/project-workflow:feature-done`).
@@ -24,7 +20,7 @@ User input: `$ARGUMENTS` — feature slug + optional description.
 |---|---|---|
 | 仅 `<slug>` | `email-verification` | 直接用 |
 | `<slug>: <description>` | `email-verification: send verify link on register` | 拆 slug 和 description |
-| **`<NNN>-<slug>` 或 `<NNN>-<slug>: <desc>`** | `003-email-verification` | **NNN 前缀宽容**:user 习惯写完整目录名;检测到前导 `\d{3}-` → strip 后剩余作 slug,前缀 NNN 待 Step 2 校验(匹配 auto +1 → 静默继续;不匹配 → 提示 user 实际用 auto NNN 还是 user-given NNN)|
+| `<NNN>-<slug>` 或 `<NNN>-<slug>: <desc>` | `003-email-verification` | 检测到前导 `\d{3}-` → strip 作 slug,前缀 NNN 进 Step 2 校验 |
 | 空 | — | 问用户 "feature slug? (kebab-case)" 后继续 |
 
 Slug 要求(strip NNN 前缀后):
@@ -42,13 +38,13 @@ ls docs/specs/ | grep -E '^[0-9]{3}-' | sort -rn | head -1
 
 取最大的前导编号 +1,补零到 3 位。若 `docs/specs/` 不存在或为空,从 `001` 起。
 
-**NNN 前缀冲突处理**(若 Step 1 user 给了 NNN 前缀):
+**NNN 前缀冲突处理**(若 Step 1 给了 NNN 前缀):
 
 | 情形 | 处理 |
 |---|---|
-| User-given NNN == auto +1 | 静默继续(用户只是写了完整目录名)|
-| User-given NNN > auto +1(跳号)| 问 user:"用 auto NNN `<auto>` 还是 user-given `<given>`(跳号需理由,如 reserved for parallel feature)?" |
-| User-given NNN ≤ existing | 报 collision:"`docs/specs/<NNN-given>-*` 已存在 / 编号冲突,改用 auto NNN `<auto>` 或换个 slug?" |
+| User-given == auto +1 | 静默继续 |
+| User-given > auto +1 | 问 user:"用 auto `<auto>` 还是 user-given `<given>`?" |
+| User-given ≤ existing | 报 collision:"`docs/specs/<NNN-given>-*` 已存在,改用 auto `<auto>` 或换 slug?" |
 
 ## Step 3 — 读项目 context
 
@@ -197,4 +193,4 @@ Dispatch [`decision-completeness-auditor`](../../agents/decision-completeness-au
 
 - **Do not** generate code —— 本 skill 只产规划 artifact
 - **Do not** overwrite existing `docs/specs/<NNN>-<slug>/`(碰撞检测:报错退出)
-- **No preset fixed Q&A interview**:plugin 不替 user 决策业务细节;但条件性问 framework decisions(slug / tier / module 不明时)── 这些是 audit 无法替代的 branch 决策,延后成本极高
+- **Conditional framework Q&A only**:仅在 slug / tier / module 不明时问;business 细节走主会话 conversational fill
