@@ -10,20 +10,21 @@ description: Verify a feature's proof bundle is complete — tests passing, L1/L
 Proof bundle = end-of-feature delivery checklist。
 
 **Use when**: P2 endpoint, after L1 + L2 + L3 are run. Typically invoked by `/feature-done` (Step 6) as the final assembly step, but standalone-runnable.
-**Not for**: running the individual reviews (use `/l1-review` / `/l2-review` / `/l3-review`) / pre-implementation spec quality check (use `/spec-quality-check`).
+**Not for**: replacing the individual reviews (use `/l1-review` / `/l2-review` / `/l3-review`) / pre-implementation spec quality check (use `/spec-quality-check`).
 
 > Full P2 flow: [workflow.md §3.0](../../docs/workflow.md#30-p2-流程全景skill-视角).
 
-The template (from `/feature-init` SKILL.md inline tasks.md § Proof Bundle):
+The template (from `template/docs/specs/_template/tasks.md` § Proof Bundle):
 
 ```
 - [ ] Diff 摘要:(新建/改了什么)
-- [ ] Tests:<X>/<Y> passed, coverage <Z>%
-- [ ] L2 合规(reviewer 提供 AGENTS.md 作 context 跑过):
-- [ ] L3 合规(reviewer 提供 spec.md 作 context 跑过):
-- [ ] AGENTS.md 触动汇总(本 feature 实际改了哪几份):
-- [ ] AGENTS.md drift 建议(L2 提议但未应用,如有):
-- [ ] 开放问题(如有):
+- [ ] Tests:`<X>/<Y>` passed, coverage `<Z>%`
+- [ ] L1 合规
+- [ ] L2 合规(reviewer 提供 AGENTS.md 作 context 跑过)
+- [ ] L3 合规(reviewer 提供 spec.md 作 context 跑过)
+- [ ] AGENTS.md 实际改动审计(item 5a)
+- [ ] AGENTS.md drift 建议(item 5b)
+- [ ] 开放问题(如有)
 ```
 
 This skill **verifies** these items and **fills them in** at the bottom of `tasks.md`.
@@ -42,7 +43,17 @@ User input: `$ARGUMENTS` — feature slug or "current"
 
 校验三文件齐:spec.md / plan.md / tasks.md。
 
-## Step 2 — 缓存校验(复用 L2/L3 前必跑)
+## Step 2 — Review result intake + 缓存校验
+
+Proof bundle 优先**复用**本 session 或 `/feature-done` 刚产生的 L1 / L2 / L3 结果:
+
+| Review | 默认行为 |
+|---|---|
+| L1 | 复用最近一次 `/l1-review` 或 `/feature-done` Step 3 的结果;若缺失,提示用户先跑 `/l1-review` 或确认由本 skill 跑测试子集 |
+| L2 | 复用最近一次 `/l2-review` 或 `/feature-done` Step 4 的结果;缓存失效才 fresh 跑 |
+| L3 | 复用最近一次 `/l3-review` 或 `/feature-done` Step 5 的结果;缓存失效才 fresh 跑 |
+
+本 skill 的主责是**装配和写入证据**,不是替代 L1/L2/L3。Standalone 运行时可以补跑缺失项,但必须在报告头部声明哪些是 reused,哪些是 fresh。
 
 复用本 session 早期 L2 / L3 findings 之前,**必须确认仍然有效**。
 
@@ -88,9 +99,15 @@ git status --short  # uncommitted scope
 
 简短(5-10 行)。
 
-### Item 2: Tests <X>/<Y> passed, coverage <Z>%
+### Item 2: Tests <X>/<Y> passed, coverage <Z>% + L1 合规
 
-从 AGENTS.md 读项目 `check` 命令(同 `/l1-review`)。**只跑测试部分**:
+优先复用 L1 结果:
+
+- 若 `/feature-done` 或 `/l1-review` 刚跑过且缓存有效,直接写入其 tests / coverage / L1 verdict
+- 若没有 L1 结果,从 AGENTS.md 读项目 `check` 命令(同 `/l1-review`)并询问用户是否允许本 skill 跑测试子集
+- 不静默跑完整 L1;完整机械检查归 `/l1-review`
+
+用户确认本 skill 补跑测试子集时:
 
 ```bash
 <test-command>  # 如 `pnpm be:test:cov`
@@ -100,7 +117,7 @@ git status --short  # uncommitted scope
 - 总 passed / total / skipped
 - coverage 百分比(若有)
 
-若用户刚跑过 `/l1-review` 还在绿,可复用结果跳过重跑。否则 fresh 跑。
+若无法确定测试命令或用户不允许补跑,Item 2 / L1 合规写为 "缺失:请先跑 `/project-workflow:l1-review`",总体 verdict 至少为 NEEDS WORK。
 
 ### Item 3: L2 合规
 

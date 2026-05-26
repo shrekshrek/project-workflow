@@ -41,4 +41,4 @@
 - [ ] L3 合规(reviewer 提供 spec.md 作 context 跑过)
 - [ ] AGENTS.md 实际改动审计(item 5a)
 - [ ] AGENTS.md drift 建议(item 5b)
-- [ ] 手测确认 happy path 跑通
+- [ ] 开放问题(如有)

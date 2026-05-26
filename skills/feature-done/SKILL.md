@@ -29,7 +29,7 @@ User input: `$ARGUMENTS` — feature slug or "current"
 
 ## Step 2 — 缓存检查(无改动则复用上次 review)
 
-若 L2 / L3 / proof-bundle 本 session 已跑过(对话历史可见)且**之后代码无改动**,则复用结果不重跑。
+若 L2 / L3 本 session 已跑过(对话历史可见)且**之后代码无改动**,则复用结果不重跑。Proof bundle 会写 `tasks.md`,所以每次 `/feature-done` 都 fresh 运行。
 
 **缓存失效条件**(任一命中则该步重跑):
 1. 用户显式要求重跑(`/feature-done <slug> --fresh` 或同义)
@@ -82,10 +82,11 @@ proof-bundle: re-run (writes tasks.md, so always re-run to refresh)
 ## Step 6 — proof-bundle(总是 fresh —— 写 tasks.md)
 
 调 proof-bundle skill:
-- 计算 diff 摘要
-- 聚合上面 L1 / L2 / L3 结果(不重跑)
-- **计算 A 类约定 audit**(对应 proof-bundle Item 5a):列出本 feature 实际改动的 **AGENTS.md / CLAUDE.md / `.claude/rules/*.md`** 文件,按 root / tier / module / path-rule 四档分类,标注 Align / Deviate / Codify(若 plan.md §1.1 已声明)
+- 传入/复用上面 L1 / L2 / L3 的 verdict 摘要和关键 findings
+- 让 proof-bundle 自己计算 diff / A 类约定触动 / drift 建议 / 开放问题
 - 写入 tasks.md
+
+**边界**:本 skill 是 orchestrator,不重复定义 proof-bundle 每一项的计算细节。Proof Bundle 的 canonical checklist 和写入逻辑只维护在 [`/proof-bundle`](../proof-bundle/SKILL.md)。
 
 ## Step 7 — 聚合报告
 

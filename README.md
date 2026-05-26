@@ -21,6 +21,22 @@ Full framing with sources: [`docs/workflow.md §0.1`](docs/workflow.md).
 
 ---
 
+## Project goal
+
+project-workflow helps real projects move from **chat-driven AI coding** to **spec-driven, reviewable, maintainable AI-assisted development**.
+
+| Need | project-workflow answer |
+|---|---|
+| Start a project with shared conventions | P0 starter kit: `AGENTS.md`, `.claude/rules/`, hooks, ADR/spec templates |
+| Start a feature without losing requirements in chat | P2 `spec.md` / `plan.md` / `tasks.md` |
+| Keep implementation aligned while coding | spec revise SOP, module-boundary handling, environment-enforced rules |
+| Know whether a feature is ready | L1/L2/L3 review + proof bundle |
+| Keep the codebase from drifting over months | P4 `agents-md-revise` refresh of project conventions |
+
+The intended outcome is practical: fewer repeated reminders, fewer unreviewed AI changes, clearer handoff artifacts, and project rules that stay close to the codebase as it evolves.
+
+---
+
 ## What's in v2
 
 | Layer | What | Where |
@@ -61,7 +77,7 @@ Then edit `AGENTS.md` placeholders, `.claude/rules/*.md` for your stack, and `.c
 |---|---|
 | `/project-workflow:project-init` | P0 greenfield initialization — Q&A walks through stack and conventions, generates 10+ files (AGENTS.md / .claude/ / docs/adr/ / etc.). "不确定" answers trigger `tech-researcher` sub-agent for parallel research. Auto-handles fullstack tier structure. |
 | `/project-workflow:project-personalize` | P0 scaffold-cloned / retrofit — adapts existing v2-shaped project to user's values. Replaces scaffold defaults, completes tier-level AGENTS.md (双文件 scheme), dispatches `codebase-explorer` sub-agent to scan existing structure. |
-| `/project-workflow:feature-init` | Start a new feature spec — creates `docs/specs/<NNN>-<slug>/{spec,plan,tasks}.md` with module-setup auto-detection (per workflow §2). **Pure scaffold + chat-context pre-fill + reminders + decision-completeness audit** ── **zero preset Q&A interview**. Mission-critical strong constraints (Scope "不做" / Sibling Alignment) become reminders gated by `/spec-quality-check`, not required Q&A. Adaptive hooks (tech-researcher / context7) trigger passively in main session. All TODOs filled via conversational mode (per spec-driven §3.6.5). |
+| `/project-workflow:feature-init` | Start a new feature spec — creates `docs/specs/<NNN>-<slug>/{spec,plan,tasks}.md` with module-setup auto-detection (per workflow §2). **Pure scaffold + chat-context pre-fill + reminders + decision-completeness audit** ── **zero preset Q&A interview**. Mission-critical strong constraints (Scope "不做" / Sibling Alignment) become reminders gated by `/spec-quality-check`, not required Q&A. Adaptive reminders tell the main session when to use `tech-researcher` / `context7`; the skill itself does not pre-run research. All TODOs filled via conversational mode (per spec-driven §3.6.5). |
 | `/project-workflow:spec-quality-check` | **Pre-implementation gate** — verify spec/plan/tasks quality per spec-driven.md §3.7 7-q checklist. Mechanical checks + dispatches `spec-quality-reviewer` sub-agent for subjective items. |
 | `/project-workflow:spec-revise` | **Mid-implementation revision** — orchestrate spec/plan/module change SOP per workflow.md §3.5 / §2.6 (ADR + spec.md 修订记录 + plan.md prior decisions + tasks.md rebalance) + `decision-completeness-auditor` 兜底 (Step 7.5) + Diff Review Gate with revert hatch (Step 7.6)。 |
 | `/project-workflow:l1-review` | Run project's `check` command (lint/typecheck/test) and report pass/fail with concise summary |
@@ -82,11 +98,12 @@ Then edit `AGENTS.md` placeholders, `.claude/rules/*.md` for your stack, and `.c
 | `tech-researcher` | `/project-init` Q&A | Researches stack/library choices (2-3 candidates + pros/cons + recommendation). Read-only. Triggers when user answers "不确定" / "帮我选" in Q&A. |
 | `codebase-explorer` | `/project-personalize` Path C | Surveys existing codebase structure → recommends `## Project Structure` content. Read-only, no edits. |
 | `spec-quality-reviewer` | `/spec-quality-check` | Subjective spec quality assessment (Outcomes specificity / Constraints真假 / tasks verifiable). 4-phase methodology, cite-or-skip discipline. Read-only. |
-| `decision-completeness-auditor` | `/project-init`, `/project-personalize`, `/feature-init`, `/agents-md-revise` | Pre-Preview-Gate plant-decision audit (workflow.md §1.12). Traces every specific-string decision (module name / path / broker / port / package name / host) back to Q&A answers or stack conventions; flags unanchored plants 🚫 must-fix. Read-only. |
+| `decision-completeness-auditor` | `/project-init`, `/project-personalize`, `/feature-init`, `/spec-revise`, `/agents-md-revise` | Pre-Preview-Gate plant-decision audit (workflow.md §1.12). Traces every specific-string decision (module name / path / broker / port / package name / host) back to Q&A answers or stack conventions; flags unanchored plants 🚫 must-fix. Read-only. |
 
 ## Read this first
 
 - [`docs/project-workflow-overview.drawio`](docs/project-workflow-overview.drawio) — ⭐ Visual one-page overview (2 tabs: Lifecycle + Skill ↔ Agent dispatch). Open in [draw.io](https://app.diagrams.net) or VS Code Draw.io Integration extension.
+- [`docs/quickstart.md`](docs/quickstart.md) — shortest daily path for using project-workflow in a real project
 - [`docs/workflow.md`](docs/workflow.md) — ⭐ Core 5-phase blueprint
 - [`docs/gotchas.md`](docs/gotchas.md) — ⭐ 10 engineering pitfalls (from real validation)
 - [`docs/spec-driven.md`](docs/spec-driven.md) — spec/plan/tasks pattern detail
@@ -107,7 +124,7 @@ v1 source preserved at git tag [`v1.1.0`](../../tree/v1.1.0). Install via `git c
 
 ## Status
 
-v2.9.27 ships **11 skills + 6 sub-agents** covering the full P0→P2→P3→P4 lifecycle. `/feature-init` is validated end-to-end (produced a 316-line spec/plan/tasks triple for `email-verification` feature on the reference scaffold). The remaining skills are still gathering field hours — battle-testing welcome.
+v2.9.28 ships **11 skills + 6 sub-agents** covering the full P0→P2→P3→P4 lifecycle. The remaining skills are still gathering field hours — battle-testing welcome.
 
 The methodology docs (workflow.md / spec-driven.md / gotchas.md / tooling.md) are complete and self-contained. A concrete instantiation exists at the public scaffold linked above, but the docs do not depend on it for authority.
 

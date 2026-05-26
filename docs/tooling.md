@@ -85,6 +85,7 @@
 | **Superpowers**(Jesse Vincent) | 方法论先行,六步法 | 数十 | 团队要严格流程 | process-owning,出问题难排查 |
 | **Everything Claude Code (ECC)** | kitchen-sink,什么都给 | 182 | 多语言、覆盖广 | 大部分用不到,膨胀 |
 | **GitHub Spec Kit** | spec/plan/tasks 工具链 | 6 个 slash | 流程纪律强的团队 | 工具链开销大 |
+| **OpenSpec** | spec delta / change lifecycle | CLI / slash | 想把每个 change 显式规格化的项目 | 主要解决 change 层,不覆盖项目规则长期治理 |
 | **OpenAI Symphony** | manage work, not agents | (规范) | 高自动化场景 | 早期,实证少 |
 
 详细对比与适用场景判断:
@@ -118,12 +119,19 @@
 - **缺点**:`.specify/` 目录工具链,小项目偏重
 - **本项目决定**:不装工具链,**借结构和 `/speckit.clarify` 的 Q&A 概念**(已落地在 [`/spec-quality-check`](../skills/spec-quality-check/SKILL.md) + [`/agents-md-revise`](../skills/agents-md-revise/SKILL.md) 的 Q&A 形态)
 
+#### Fission-AI OpenSpec
+
+- **核心**:把每个 change 的意图、设计、任务显式化,避免需求只留在聊天记录里
+- **优点**:轻量、偏 brownfield、原生关注 AGENTS.md,跟 v2 的 per-feature `docs/specs/<NNN>-<slug>/` 思路相近
+- **缺点**:主要覆盖 change/spec lifecycle;项目启动、项目约定长期漂移、端点三层 review、proof bundle 这几块不是它的主战场
+- **本项目决定**:借鉴 spec delta / change lifecycle 思想,但不复制 CLI 或目录结构。project-workflow 的边界更宽:从 P0 项目基线到 P2 feature spec,再到 P3 交付验证和 P4 规则刷新
+
 #### OpenAI Symphony
 
-- **核心**:isolated autonomous runs + proof artifact 交付
-- **优点**:"manage work, not agents" 哲学影响深远(本项目 [workflow §3.3 proof bundle](workflow.md#33-交付阶段proof-bundle) 借此)
+- **核心**:managed work item / handoff state / isolated autonomous runs
+- **优点**:"manage work, not agents" 哲学影响深远(本项目 [workflow §3.3 proof bundle](workflow.md#33-交付阶段proof-bundle) 受其工作交接思想启发)
 - **缺点**:目前是 spec 而非可装即用工具,实证少
-- **本项目决定**:借哲学(end-of-task gate / proof bundle),不装工具
+- **本项目决定**:借哲学(end-of-task gate / handoff artifacts),不装工具
 
 ### 3.2 决策原则
 
@@ -227,6 +235,6 @@
 
 ## 7. 参考与延伸
 
-- 各框架 README 已在 [README 参考资料](../README.md#参考资料) 链接,本文档的"对比"基于那些 README + 本项目实际跑过的经验
+- 各框架官网 / README 链接见 [`workflow.md §参考与延伸`](workflow.md#参考与延伸),本文档的"对比"基于那些 README + 本项目实际跑过的经验
 - Matt Pocock 哲学的展开:[`docs/spec-driven.md`](spec-driven.md) 用同样的"小、可读、可拥有"精神
 - 工具链方法论(怎么投资上层、怎么对待中层):[`workflow.md §6 方法论支柱`](workflow.md#6-方法论支柱4-条) 4 条原则

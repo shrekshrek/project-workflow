@@ -42,7 +42,7 @@ agents/                Sub-agents(被 skills dispatch)
 ├── spec-quality-reviewer.md         spec 自身质量主观二审(by /spec-quality-check)
 ├── tech-researcher.md               技术选型调研(by /project-init Q&A,opt-in)
 ├── codebase-explorer.md             既有 codebase 结构扫描(by /project-personalize Path C)
-└── decision-completeness-auditor.md plant 决策追溯审计(by /project-init / /project-personalize / /feature-init / /agents-md-revise,Preview Gate 之前)— 实施 workflow.md §1.12
+└── decision-completeness-auditor.md plant 决策追溯审计(by /project-init / /project-personalize / /feature-init / /spec-revise / /agents-md-revise,Preview Gate 之前)— 实施 workflow.md §1.12
 docs/                  方法论文档
 ├── workflow.md        ⭐ 5 阶段 + 4 支柱(核心)
 ├── gotchas.md         ⭐ 10 工程陷阱

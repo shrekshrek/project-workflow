@@ -9,7 +9,7 @@ description: Pre-implementation gate that verifies a feature's spec/plan/tasks q
 
 Run the 7-question quality checklist from [`spec-driven.md §3.7`](../../docs/spec-driven.md#37-specplan-写完后的质量自检7-问-checklist) as a **pre-implementation gate**。
 
-**Use when**: `/feature-init` already ran + you filled in spec.md §3-5 / plan.md / tasks.md TODOs (via feature-init's Step 7 Q&A or main session) — **right before starting implementation**.
+**Use when**: `/feature-init` already ran + you filled in spec.md / plan.md / tasks.md TODOs in the main conversational session — **right before starting implementation**.
 
 **Not for**: spec creation (use `/feature-init`) / mid-implementation revision (use `/spec-revise`) / code-vs-spec compliance review (use `/l3-review`).
 
@@ -33,9 +33,9 @@ User input: `$ARGUMENTS` — `<feature-slug>` or empty (use most recent feature)
 | # | 检查 | 实现 |
 |---|---|---|
 | **M1** | spec.md 六要素是否齐(§1 Outcomes / §2 Scope / §3 Constraints / §4 Verification + plan.md `Prior decisions` + plan.md `§1 模块影响范围`)| grep `^## ` 节标题,核对清单 |
-| **M2** | spec.md `## 2. Scope` 是否有 `**Include**` + `**Exclude/不做**` 两个清单 | grep markdown bullet 在 `## 2.` 节内 |
+| **M2** | spec.md `## 2. Scope` 是否有 `**做**`(或 `**Include**`) + `**不做**`(或 `**Exclude**`) 两个清单 | 在 `## 2.` 节内分别检查 include/do 与 exclude/not-do 小节,且各自至少 1 条非 `{{TODO}}` bullet |
 | **M3** | spec.md `## 4. Verification` 至少含 3 条具体可测项(plugin default,项目可调)| 数 `- [ ]` 或 `-` bullet |
-| **M4** | plan.md `§1.1 Sibling Alignment`(若多模块时)是否填(非 placeholder) | grep `Align` / `Deviate` / `Codify` 三选一关键词 |
+| **M4** | plan.md `§1.1 Sibling Alignment`(若多模块时)是否填(非 placeholder) | 只统计表格数据行;必须出现非 `<sibling-module>` 的模块名 + `Align` / `Deviate` / `Codify` 三选一 + 非 `{{TODO}}` 备注。模板占位行不算通过 |
 | **M5** | tasks.md 任务数 ≥ 3(plugin default,项目可调)且不全是 `## TODO`(用户填了具体内容) | grep `- [ ]` 数量 + 检 `{{TODO}}` 残留 |
 
 任一失败 → 报告给用户 + 提供修法建议(指向具体节)。

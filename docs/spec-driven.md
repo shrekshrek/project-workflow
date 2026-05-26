@@ -375,7 +375,7 @@ docs/specs/
 | # | 问题 | 不通过的修法 |
 |---|---|---|
 | 1 | spec.md 六要素是否齐?(Outcomes / Scope / Constraints / Verification + plan.md 的 Prior decisions / 模块影响)| 缺的回去补 —— 这 6 节是 spec 契约的最小集 |
-| 2 | spec.md §2 Scope 是否显式写了 **`Include` 清单 + `Exclude / 不做` 清单两份**?| **必写"不做"** —— 不写 AI 会自动加,scope creep 最大单一来源(见 [workflow.md §7.5](workflow.md#75-不要让-specmd-和-planmd-内容混淆)) |
+| 2 | spec.md §2 Scope 是否显式写了 **`做 / Include` 清单 + `不做 / Exclude` 清单两份**?| **必写"不做"** —— 不写 AI 会自动加,scope creep 最大单一来源(见 [workflow.md §7.5](workflow.md#75-不要让-specmd-和-planmd-内容混淆)) |
 | 3 | spec.md §4 Verification 是否能**机械化**(写出 test 能覆盖 / API 能 curl 测 / 数据可断言)?| 不可测的改成可测;留"人眼判断"等于没 verification |
 | 4 | spec.md §1 Outcomes 是不是**具体场景**而不是模糊愿望?| "提升用户体验"→模糊;"用户邀请流 < 3 次点击完成"→具体 |
 | 5 | spec.md §3 Constraints 是**真约束**还是 wish list?| "必须 Vue 3"→真约束;"希望响应快"→wish(扔掉或具体化:"P95 < 200ms")|
