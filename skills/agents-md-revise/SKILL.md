@@ -195,8 +195,6 @@ chore: refresh A 类约定(N 条 Critical drift)
 
 ## Notes
 
-- **不自动 commit**:任何 patch 应用都留给用户最终决定
 - **可中断**(`q`uit):已 apply 的保留,未决的丢弃
 - **`.claude/refresh-ignore` 默认进 git**(团队共享 ignored drift 决策);需要私有时手动加 `.gitignore`
 - **互补**:`/spec-revise` = in-feature reactive;`/proof-bundle` Item 5b = per-feature backlog;本 skill = project-wide phase audit
-- **ADR 孤儿 advisory(Step 3.5)是只读 advisory,不进客观 drift 的零误报 apply 流** —— 供人判、不自动改 ADR;只抓被遗忘的孤儿(零引用 + 老,客观),不抓"反复 defer 可能过时"那类弱关联(违本 skill ❌ 列表)

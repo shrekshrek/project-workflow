@@ -56,8 +56,6 @@ For each `## 4. Verification` bullet, judge whether the assertion is **mechanica
 
 For each ⚠️ / ❌, cite spec.md original text + line + suggest rewrite to mechanical form.
 
-> **跟 M3 的分工**:M3(skill 机械跑)只数 verification 项数量 ≥ N;Q3(本 agent)验**每条**是否真可测。两者互补,本 Q3 是 Q4/Q5/Q7 之外的第 4 个主观维度。
-
 #### Q4: Outcomes specificity
 
 For each Outcome bullet / paragraph, judge:
