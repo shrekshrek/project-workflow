@@ -1,5 +1,6 @@
 ---
 name: agents-md-revise
+model: sonnet
 description: P4 phase tool — scan A 类约定 (AGENTS.md 多层嵌套 + .claude/rules/*.md) against actual project state, detect objective drift (commands / deps / dir structure / framework versions / config), generate diff suggestions, apply approved patches with a commit message draft. Critical-only (no subjective suggestions, no hook auto-trigger). Use periodically (every 2-4 weeks / month) or when sensing reproducible drift signal.
 ---
 

@@ -1,5 +1,6 @@
 ---
 name: l2-review
+model: sonnet
 description: Run the project's L2 review — verify code changes follow the AGENTS.md conventions for this project (module structure, naming, Pydantic/SQLAlchemy/etc style rules, API endpoint conventions, test discipline). Delegates the actual review to the `agents-md-reviewer` sub-agent, which can ONLY cite rules explicitly in AGENTS.md.
 ---
 

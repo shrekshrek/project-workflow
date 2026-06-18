@@ -1,5 +1,6 @@
 ---
 name: project-personalize
+model: sonnet
 description: Adapt a scaffold-cloned or v2-shaped existing project to user's specifics. Replaces scaffold defaults (project name / DB / etc.), completes tier-level AGENTS.md per 双文件 scheme, dispatches codebase-explorer sub-agent to scan existing structure. Accepts optional `$ARGUMENTS` = target directory path (defaults to current working directory) — useful for monorepos where the v2-shaped sub-project isn't the cwd. Claude Code-native. Use when you've cloned a v2 scaffold or want to retrofit an existing project; **if you want ready-to-run full stack starting from a scaffold, this is the right tool — don't use /project-init for that** (project-init is conventions-only, doesn't scaffold code). Not for greenfield empty directories — use /project-init for that.
 ---
 

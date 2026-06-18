@@ -1,5 +1,6 @@
 ---
 name: feature-done
+model: sonnet
 description: One-shot end-of-feature gate. Runs L1 (mechanical checks) → L2 (AGENTS.md compliance) → L3 (spec.md compliance) → proof-bundle in sequence, aggregates results, gives a single READY/NEEDS WORK/BLOCKED verdict. Replaces manually running the four steps.
 ---
 

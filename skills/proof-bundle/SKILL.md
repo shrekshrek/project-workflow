@@ -1,5 +1,6 @@
 ---
 name: proof-bundle
+model: sonnet
 description: Verify a feature's proof bundle is complete — tests passing, L1/L2/L3 reviewed, diff summary, drift suggestions. Fills/updates the Proof Bundle section at the bottom of tasks.md. Use at end of P2 feature delivery.
 ---
 

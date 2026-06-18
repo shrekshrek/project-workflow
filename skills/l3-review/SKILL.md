@@ -1,5 +1,6 @@
 ---
 name: l3-review
+model: sonnet
 description: Run the project's L3 review — verify implementation matches the feature's spec.md (Outcomes, Scope, Constraints, Verification). Delegates to the `spec-reviewer` sub-agent. Use after L1 (mechanical) and L2 (AGENTS.md) are green.
 ---
 

@@ -1,5 +1,6 @@
 ---
 name: feature-init
+model: sonnet
 description: Start a new feature spec — create docs/specs/<NNN>-<slug>/{spec,plan,tasks}.md from project template. Auto-detect if a new module is needed and add module setup to plan/tasks (per workflow §2 Module Setup sub-flow). Scaffold + chat-context pre-fill + reminders + decision-completeness audit; conditional framework Q&A only (slug / tier / module).
 ---
 

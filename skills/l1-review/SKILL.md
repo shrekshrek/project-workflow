@@ -1,5 +1,6 @@
 ---
 name: l1-review
+model: sonnet
 description: Run the project's L1 review — mechanical/automated checks (lint, typecheck, tests). Reads the project's `check` command from AGENTS.md (or package.json scripts) and reports pass/fail with a concise summary, not the full stdout dump.
 ---
 
