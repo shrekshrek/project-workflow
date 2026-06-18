@@ -26,7 +26,7 @@ User input: `$ARGUMENTS` — feature slug or "current"
 | `<slug>` | `docs/specs/<NNN>-<slug>/` |
 | `current` 或空 | 最近的 `docs/specs/<NNN>-*/` |
 
-校验 spec.md 存在。不存在则报 "No spec found. Run `/project-workflow:feature-init <slug>` first." 退出。
+校验 `tasks.md` 存在。**车道判定**:`spec.md` 存在 = 全道;缺失(仅 tasks.md)= 轻车道(L3 跳过,见 Step 5;[spec-driven §3.2.5](../../docs/spec-driven.md#325-轻车道小改免-frozen-spec--plan))。两者都无则报 "No spec found. Run `/project-workflow:feature-init <slug>` first." 退出。
 
 ## Step 2 — 缓存检查(无改动则复用上次 review)
 
@@ -73,6 +73,8 @@ proof-bundle: re-run (writes tasks.md, so always re-run to refresh)
 **L2 clean 或仅 partials**: 继续。
 
 ## Step 5 — L3 spec 合规(缓存有效则复用,见 Step 2)
+
+**轻车道(无 spec.md)→ 跳过 L3**,记 `L3: N/A(轻车道)`,直接到 Step 6(proof-bundle 的 Item 1.5 不变量反核仍跑)。全道:
 
 调 L3 skill(其内部 dispatch `spec-reviewer` agent):
 - 把 spec.md / plan.md / tasks.md / changed-files scope 传给 agent
@@ -149,8 +151,7 @@ Closes: <issue # if known>
 
 Re-run `/project-workflow:feature-done <slug>` after fixes.
 
-<if proof bundle Item 5b 累积 ≥ 3 条(本 feature + 历史 tasks.md):>
-📝 累积 <N> 条 A 类约定 drift backlog。方便时跑 `/project-workflow:agents-md-revise` 一次性 audit + apply(不催)。
+<§5b drift 重现 hint 归 proof-bundle(Step 6)输出,本 orchestrator 不重复——见 proof-bundle Item 5b。>
 ```
 
 ## Step 8 — Verdict 判定逻辑
@@ -164,6 +165,8 @@ Re-run `/project-workflow:feature-done <slug>` after fixes.
 | ✅ | ✅ | ✅ | 🟢 READY |
 
 Spec scope creep(🚫)= 🟡 NEEDS WORK(用户裁实施 或 改 spec §2 二选一)。
+
+**轻车道**:L3 = N/A(无 frozen spec)。L1 ✅ + L2 ✅/🟡 + proof 通过 = 🟢 READY;proof 的 Item 1.5 **不变量反核命中** = 🟡 NEEDS WORK(误分类,应补全道 spec)。
 
 ## Notes
 

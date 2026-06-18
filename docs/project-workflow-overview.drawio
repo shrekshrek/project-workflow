@@ -8,7 +8,7 @@
         <mxCell id="title" value="project-workflow v2 — Spec-driven AI development blueprint" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=22;fontStyle=1;fontColor=#1A237E;" vertex="1" parent="1">
           <mxGeometry x="40" y="20" width="1620" height="32" as="geometry"/>
         </mxCell>
-        <mxCell id="subtitle" value="11 skills + 6 sub-agents  ·  Claude Code-native plugin  ·  v2.9.32  ·  https://github.com/shrekshrek/project-workflow" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontColor=#546E7A;" vertex="1" parent="1">
+        <mxCell id="subtitle" value="11 skills + 6 sub-agents  ·  Claude Code-native plugin  ·  v2.9.33  ·  https://github.com/shrekshrek/project-workflow" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontColor=#546E7A;" vertex="1" parent="1">
           <mxGeometry x="40" y="54" width="1620" height="20" as="geometry"/>
         </mxCell>
 

@@ -42,7 +42,7 @@ User input: `$ARGUMENTS` — feature slug or "current"
 | `current` 或空 | 最近的 `docs/specs/<NNN>-*/` |
 | `<full-path>` | 直接用 |
 
-校验三文件齐:spec.md / plan.md / tasks.md。
+校验文件:`tasks.md` 必在。**车道判定**:`spec.md` 存在 = 全道;缺失 = **轻车道**(只 tasks.md,见 [spec-driven.md §3.2.5](../../docs/spec-driven.md#325-轻车道小改免-frozen-spec--plan))—— 轻车道下 L3 跳过、增不变量反核(见 Item 1.5 / Item 4)。
 
 ## Step 2 — Review result intake + 缓存校验
 
@@ -100,6 +100,17 @@ git status --short  # uncommitted scope
 
 简短(5-10 行)。
 
+### Item 1.5: 轻车道不变量反核(仅轻车道,§3.2.5 安全闸 2)
+
+仅当本 feature 是**轻车道**(Step 1 判定无 spec.md):用 Item 1 的实际改动文件列表 grep 根 `AGENTS.md`「灾难性不变量 / 高爆破半径路径」节声明的 glob。**命中** → 报:
+
+```
+🚨 轻车道误分类:实际改动触达不变量路径 <path> —— 本 feature 应走全道。
+   停止轻车道交付,重跑 /feature-init 选全道补 spec.md + §4 验证。
+```
+
+→ Overall verdict 至少 NEEDS WORK。无声明节 / 未命中 / 全道 feature → 跳过本项。
+
 ### Item 2: Tests <X>/<Y> passed, coverage <Z>% + L1 合规
 
 优先复用 L1 结果:
@@ -129,6 +140,8 @@ git status --short  # uncommitted scope
 - 🔴 "<N> violations —— 列单行摘要"
 
 ### Item 4: L3 合规
+
+**轻车道(无 spec.md)→ L3 跳过**,写 `L3: N/A(轻车道无 frozen spec)`;全道按下:
 
 同样模式,调 `spec-reviewer` agent(或 `/project-workflow:l3-review <slug>`):
 
@@ -188,17 +201,17 @@ L2 review 跑完会有"建议加规则但未落地"的 finding。这里抽出来
 
 **末尾 hint(重现感知,基于 ledger)**:
 
-对本 feature 每条 5b 建议算语义指纹(`drift-5b|<文件类别>|<主题slug>`),upsert 到 `.claude/drift-ledger.json`(不存在则创建):append 当前 feature NNN 到 `occurrences`、更新 `last_seen`。然后:
+对本 feature 每条 5b 建议算语义指纹(`drift-5b|<文件类别>|<主题slug>`),upsert 到 `.claude/drift-ledger.json`(不存在则创建,结构 `{fingerprint: {occurrences:[NNN…], last_seen}}`):append 当前 feature NNN 到 `occurrences`、更新 `last_seen`。然后:
 
-- 本 feature 任一 5b 指纹 `occurrences ≥ 2`(同一缺口又来了)→ 强 hint:
+- 本 feature 任一 5b 指纹 `occurrences ≥ 2`(同一缺口又来了)→ hint:
   ```
   🔁 「<gist>」已在 <NNN,NNN,…> 共 N 个 feature 重现。别再逐 feature 重登 —— codify 它:
      · 客观漂移(命令/版本/路径)→ /project-workflow:agents-md-revise
      · 模式该文档化(module/framework 约定)→ /project-workflow:spec-revise 或手改 AGENTS.md/rules
   ```
-- 否则有 open entry 距上次 codify ≥ 5 个 feature → 弱 hint(原广度口径)。
-- 连续 3 个 feature 未 `last_seen` 的 open entry → status 自动转 `resolved`(codify 后自然老化)。
 - 无则不输出。
+
+> codify 后该缺口不再被列 5b,指纹自然停增 —— 无需额外 status / 老化逻辑。
 
 ### Item 6: 开放问题
 
@@ -231,23 +244,6 @@ L2 review 跑完会有"建议加规则但未落地"的 finding。这里抽出来
 
 用 Edit 工具 atomic 更新 tasks.md —— 单次 edit 替换整个 proof-bundle 节。
 
-## Step 4.5 — Gate-log 记录 + 空转检测(§7.9 数据底座)
-
-把本 feature 的 gate 产出 **upsert** 到 `.claude/gate-log.json`(不存在则创建,**按 NNN 去重保幂等**):
-
-```
-{ "<NNN>": { "l2": {"must_fix": M, "partial": P}, "l3": {"deviation": D, "missing": X}, "date": "<ISO,首次写时取>" } }
-```
-
-然后查 [workflow.md §7.9](../../docs/workflow.md#79-不要让-review-门空转太安静) 空转信号:gate-log 里**连续 N(默认 5)个已记录 feature 的 l2+l3 findings 全为 0(含 partial/ambiguity)** → Step 5 附提示:
-
-```
-🪫 L2/L3 已连续 N 个 feature 零 findings(含 partial/ambiguity)—— 可能门空转(§7.9)。
-   考虑精简该门 / 退轻车道。(注意:若约定刚成熟,这可能正常,自行判断。)
-```
-
-> 只做 §7.9(空转/太安静)。§7.10(门太吵/dismissal-rate)需要"标 finding 为误报"的采集点,尚未建 —— 见 workflow.md §7.10,单独设计。
-
 ## Step 5 — 报告
 
 tasks.md 更新后,输出:
@@ -277,8 +273,6 @@ Address the items marked above and re-run `/project-workflow:proof-bundle`.
 
 <If 本 feature 任一 5b 指纹 occurrences ≥ 2(重现):>
 🔁 「<gist>」已在 <NNN,…> 共 N 个 feature 重现 —— codify 它(客观漂移→agents-md-revise;模式→spec-revise/手改),别再重登。
-<Else if open entry 距上次 codify ≥ 5 feature:>
-📝 累积 drift backlog 已 N 个 feature 未消化。方便时跑 `/project-workflow:agents-md-revise`(不催)。
 ```
 
 Verdict 判定逻辑:

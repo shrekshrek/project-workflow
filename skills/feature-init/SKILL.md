@@ -10,7 +10,7 @@ description: Start a new feature spec — create docs/specs/<NNN>-<slug>/{spec,p
 
 Start a new feature's spec/plan/tasks triplet (P2 entry point)。Business 细节走主会话 conversational fill(见 [spec-driven.md §3.6.5](../../docs/spec-driven.md#365-phase-a填-todos-的-ai-协作-sop));质量由 `/spec-quality-check` 把关。
 
-**Use when**: P2 — starting a new feature; changes span 3+ files OR touch architecture / data model / API contract ([workflow.md §3.1](../../docs/workflow.md#31-规划阶段)).
+**Use when**: P2 — starting a new feature; changes span 3+ files OR touch architecture / data model / API contract ([workflow.md §3.1](../../docs/workflow.md#31-规划阶段))。小改(bugfix / polish / additive)自动走**轻车道**(仅 tasks.md,见 Step 4.5 / [spec-driven §3.2.5](../../docs/spec-driven.md#325-轻车道小改免-frozen-spec--plan))。
 **Not for**: P0 project scaffolding (use `/project-workflow:project-init`) / mid-implementation spec revision (use `/project-workflow:spec-revise`) / endpoint delivery (use `/project-workflow:feature-done`).
 
 User input: `$ARGUMENTS` — feature slug + optional description.
@@ -87,24 +87,44 @@ ls docs/specs/ | grep -E '^[0-9]{3}-' | sort -rn | head -1
 
 新建模块时:plan/tasks 加 skeleton 项。**反常判定(新模块跟父级约定是否不同)不预问** ── 99% 选 n;作为 Step 6.2 reminder 输出给 user 自判(workflow.md §2.3)。
 
-## Step 5 — 生成三个文件(从 plugin 模板 cp + Edit placeholder)
+## Step 4.5 — 车道分类(全道 / 轻车道)
 
-**模板源**:`$PLUGIN_ROOT/template/docs/specs/_template/{spec,plan,tasks}.md`(3 个文件,内容跟 [spec-driven.md §3.3](../../docs/spec-driven.md) 一致)。
+> 小改免三件套仪式。**分类只在此发生,开工后不重判**(堵 scope-creep 中途逃生舱)。判据见 [spec-driven.md §3.2.5](../../docs/spec-driven.md#325-轻车道小改免-frozen-spec--plan)。
+
+3 道 trip,**全 yes 才轻车道;任一 no / 不确定 → 全道**(保守默认):
+
+| # | 判据 | no / 不确定 → |
+|---|------|------|
+| 1 规模 | 改动 ≤ ~1 模块 / 少量文件,**且 Step 4 未判定要新建模块** | 全道 |
+| 2 可逆性 | additive / bugfix / polish,易回滚;**非**数据迁移 / API 或 schema 契约变更 | 全道 |
+| 3 爆破半径 | **不触达**项目声明的灾难性不变量路径(读根 `AGENTS.md`「灾难性不变量 / 高爆破半径路径」节;**该节缺失则问用户保守判**) | 全道 |
+
+结果带进 Step 5。**模糊默认全道** —— 轻车道是优化不是逃生舱。
+
+## Step 5 — 生成 spec 文件(按 Step 4.5 车道)
+
+**模板源**:`$PLUGIN_ROOT/template/docs/specs/_template/`。全道 = `{spec,plan,tasks}.md` 三件套;轻车道 = 仅 `tasks-light.md` → `tasks.md`(内容见 [spec-driven.md §3.2.5](../../docs/spec-driven.md#325-轻车道小改免-frozen-spec--plan))。
 
 ```bash
 PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT:-$(ls -d ~/.claude/plugins/cache/project-workflow/project-workflow/*/ 2>/dev/null | sort -V | tail -1)}"
 SRC="$PLUGIN_ROOT/template/docs/specs/_template"
+mkdir -p "docs/specs/$NNN-$SLUG"        # 两道都建目录(编号连续 + 引用一致)
 
-mkdir -p "docs/specs/$NNN-$SLUG"
+# 全道(默认):
 cp "$SRC/spec.md"  "docs/specs/$NNN-$SLUG/spec.md"
 cp "$SRC/plan.md"  "docs/specs/$NNN-$SLUG/plan.md"
 cp "$SRC/tasks.md" "docs/specs/$NNN-$SLUG/tasks.md"
+
+# 轻车道(改为只此一行,不建 spec.md / plan.md):
+# cp "$SRC/tasks-light.md" "docs/specs/$NNN-$SLUG/tasks.md"
 ```
 
-复制后用 Edit 工具替换 3 个 placeholder(对 3 个文件分别处理):
+复制后用 Edit 工具替换 placeholder:
 - `<NNN>` → 实际编号(如 `001`)
 - `<slug>` → 实际 slug(如 `email-verification`)
-- `<TODAY>` → 今天日期(YYYY-MM-DD;仅 spec.md 有)
+- `<TODAY>` → 今天日期(YYYY-MM-DD;仅全道 spec.md 有)
+
+**轻车道**:只处理 tasks.md 的 `<NNN>` / `<slug>`(无 spec.md / plan.md,`<TODAY>` 不适用)。
 
 `{{TODO ...}}` markers **保留**,留给用户后续 conversational fill。
 
@@ -121,10 +141,13 @@ pre-fill 时在对应位置 inline 标注 `<!-- pre-filled from chat: <quote> --
 ### 6.1 文件 ready 报告
 
 ```
-✅ Spec created: docs/specs/<NNN>-<slug>/
+✅ Spec created: docs/specs/<NNN>-<slug>/  (车道:{{全道 / 轻车道}})
+   <全道:>
    ├── spec.md  —— §1 Outcomes / §2 Scope / §3 Constraints / §4 Verification
    ├── plan.md  —— §1 模块影响 / §2 架构决策 / §3 Prior decisions
    └── tasks.md —— §1 任务清单(30min-2h 颗粒度)
+   <轻车道:>
+   └── tasks.md —— 目标/边界 + 验证(§4 等价)+ tasks + proof(无 frozen spec/plan)
 
 📌 Module decision: {{以下之一}}
    - 扩展既有 `<module>`(不建新模块)
@@ -155,7 +178,7 @@ pre-fill 时在对应位置 inline 标注 `<!-- pre-filled from chat: <quote> --
 
 Dispatch [`decision-completeness-auditor`](../../agents/decision-completeness-auditor.md) 审 Step 5 chat pre-fill 的内容(若有 pre-fill;若纯空骨架则可跳过):
 
-- `files_to_audit`: `docs/specs/<NNN>-<slug>/{spec,plan}.md`
+- `files_to_audit`: 全道 `docs/specs/<NNN>-<slug>/{spec,plan}.md`;轻车道 `docs/specs/<NNN>-<slug>/tasks.md`(无 spec/plan)
 - `qa_answers`: Step 4 框架决策(slug / NNN / module setup)+ Step 3 chat context 中 user 明确给的业务事实
 - `language_conventions`: null
 - `plugin_hardcoded_defaults`: `{value: "NNN-<slug>", source: "workflow.md §3 spec-driven"}` 一条即可
@@ -195,3 +218,4 @@ Dispatch [`decision-completeness-auditor`](../../agents/decision-completeness-au
 - **Do not** generate code —— 本 skill 只产规划 artifact
 - **Do not** overwrite existing `docs/specs/<NNN>-<slug>/`(碰撞检测:报错退出)
 - **Conditional framework Q&A only**:仅在 slug / tier / module 不明时问;business 细节走主会话 conversational fill
+- **车道**(Step 4.5):全道(三件套)/ 轻车道(仅 tasks.md);保守默认全道。完整判据 + 安全闸(验证保留 / 事后反核)见 [spec-driven §3.2.5](../../docs/spec-driven.md#325-轻车道小改免-frozen-spec--plan)

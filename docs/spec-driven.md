@@ -116,6 +116,26 @@ docs/specs/
 - 目录名 `<NNN>-<slug>`,编号便于排序和引用
 - 完成后**整个目录归档,不删、不改**;后续变更起新目录引用旧的(见 §5)
 
+### 3.2.5 轻车道(小改:免 frozen spec + plan)
+
+不是所有 feature 都值三件套。**bugfix / polish / additive 小改**走轻车道:`<NNN>-<slug>/` 目录下**只一个 `tasks.md`**(目标/边界 + 验证 + tasks + proof),无 frozen spec.md、无 plan.md。仍建目录(编号连续 + 引用一致),只是少两个文件。
+
+**入口分流**(`/feature-init` Step 4.5 自动判,3 道 trip 全 yes 才轻车道,模糊默认全道):
+
+| 轴 | 全 yes 才轻车道 |
+|---|---|
+| 规模 | ≤ ~1 模块 / 少量文件,无新模块 |
+| 可逆性 | additive / bugfix / polish,非数据迁移 / API 或 schema 契约变更 |
+| 爆破半径 | 不触达项目声明的灾难性不变量路径(项目在根 AGENTS.md 声明) |
+
+**为什么这条边界**:三件套对小改是过度仪式(同 [workflow.md §7.4](workflow.md#74-不要为了用-ai-拒绝键盘改-5-行代码) 的精神);但**砍的是文档仪式,不是验证** —— 轻车道仍保留 `## 验证`(spec §4 等价)+ Proof bundle,仍跑 L1 + L2 + proof(L3 因无 frozen spec 跳过)。
+
+**两道安全闸**(防轻车道变逃生舱):
+1. **保守默认**:3 道 trip 任一 no / 不确定 → 全道;分类只在 feature-init 发生,**开工后不重判**。
+2. **事后反核**:proof-bundle 对轻车道 feature grep 实际 diff vs 项目声明的不变量路径;命中 → 报"误分类,应走全道"(治"自报不碰不变量但实际碰了",如 014 式 backfill)。
+
+**升级**:轻车道实施中发现需 spec(触达不变量 / 要契约变更)→ 停,重跑 `/feature-init` 选全道补 spec.md。
+
 ### 3.3 `spec.md` 写法(WHAT,冻结)
 
 **包含 4 节**:Outcomes / Scope boundaries / Constraints / Verification。
