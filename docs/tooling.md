@@ -1,6 +1,6 @@
 # 工具链对比与使用经验
 
-> [README 议题 5](../README.md#5-工具链对比与使用经验) 的展开。聚焦 **AI 辅助编码**(Concern A)的工具栈,不涉及构建 LLM 产品的工具(LangChain / DSPy / agent 框架等 —— Concern B)。
+> [README](../README.md) 里工具链主题的展开。聚焦 **AI 辅助编码**(Concern A)的工具栈,不涉及构建 LLM 产品的工具(LangChain / DSPy / agent 框架等 —— Concern B)。
 >
 > **强意见,不假装中立**:本文档反映本项目的实际取舍,不是综述。
 

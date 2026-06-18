@@ -1054,7 +1054,7 @@ PR 阶段     人 + 自动化           CI(覆盖率、lint 全量、e2e)
 P3.3 的 proof bundle 内含的 review 在这里跑:
 - **L2 合规**:reviewer 拿 AGENTS.md 作 context
 - **L3 合规**:reviewer 拿 spec.md 作 context
-- **AGENTS.md drift 建议**:衔接 [§5.2 P4 模式 B 端点反思](#52-三种触发模式)
+- **AGENTS.md drift 建议**:衔接 [§5.2 触发模式](#52-两种触发模式)
 
 ### 4.4 backlog 与讨论(走平台,不进 repo 文件)
 

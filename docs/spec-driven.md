@@ -1,6 +1,6 @@
 # 规约驱动开发(Spec-Driven Development)实践指南
 
-> [README 议题 1](../README.md#1-spec-driven-development规约驱动开发) 的展开。
+> [README](../README.md) 里 spec-driven 主题的展开。
 >
 > 与 [workflow.md §1 P0 Project Setup](workflow.md#1-p0project-setup项目第一天) 和 [§3 P2 Feature Development](workflow.md#3-p2feature-development每个功能) 互补:
 > workflow 说"启动时该做这件事",本文档说"具体怎么写、怎么用、怎么更新"。
@@ -347,20 +347,21 @@ docs/specs/
 #### 顺序:按节依次填,不跳
 
 ```
-§3 User Scenarios → §4 Data Model → §5 API Contract → §6 Verification → §2 Scope 末轮补"不做"
+§1 Outcomes(场景)→ §3 Constraints → §4 Verification → §2 Scope 末轮补"不做"
 ```
 
-**为什么 §2 末轮补**:用户走完 §3-5 才知道 scope 真实边界,**此时问"什么不做"答得最准**。
+> 数据模型 / API 契约 / 架构细节属 plan.md(HOW),不在 spec.md(WHAT);见 §3.1。
+
+**为什么 §2 末轮补**:用户走完 §1/§3/§4 才知道 scope 真实边界,**此时问"什么不做"答得最准**。
 
 #### 每节用 §3.7 quality 标准作引导问题
 
 | 填的节 | AI 引导问题(对应 §3.7 哪条质量标准)|
 |---|---|
-| §3 User Scenarios | "具体场景是什么?边界 case?"(→ §3.7 Q4 具体度)|
-| §4 Data Model | "核心实体 + 关系?关键字段?"|
-| §5 API Contract | "endpoint method + path + payload?**错误路径** 401/404/422?"(→ §3.7 Q3 可测)|
+| §1 Outcomes | "具体场景?谁在哪做什么、看到什么?边界 case?"(→ §3.7 Q4 具体度)|
+| §3 Constraints | "真约束还是希望?如'希望快'→量化成'P95 < 200ms'"(→ §3.7 Q5 真假)|
+| §4 Verification | "怎么机验?关键场景 + **错误路径** 401/404/422 的测试?"(→ §3.7 Q3 可测)|
 | §2 Scope(末轮)| "现在你知道边界了——**显式不做**哪些?至少列 2-3 条"(→ §3.7 Q2 必有"不做")|
-| §3 Constraints | "这是真约束还是希望?如'希望快'→量化成'P95 < 200ms'"(→ §3.7 Q5 真假)|
 
 #### 每节填完做 1 行确认
 

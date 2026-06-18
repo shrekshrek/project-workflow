@@ -124,7 +124,7 @@ v1 source preserved at git tag [`v1.1.0`](../../tree/v1.1.0). Install via `git c
 
 ## Status
 
-v2.9.33 ships **11 skills + 6 sub-agents** covering the full P0→P2→P3→P4 lifecycle. The remaining skills are still gathering field hours — battle-testing welcome.
+v2.9.34 ships **11 skills + 6 sub-agents** covering the full P0→P2→P3→P4 lifecycle. The remaining skills are still gathering field hours — battle-testing welcome.
 
 The methodology docs (workflow.md / spec-driven.md / gotchas.md / tooling.md) are complete and self-contained. A concrete instantiation exists at the public scaffold linked above, but the docs do not depend on it for authority.
 
