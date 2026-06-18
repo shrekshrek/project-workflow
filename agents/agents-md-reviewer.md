@@ -1,5 +1,6 @@
 ---
 name: agents-md-reviewer
+model: sonnet
 description: Review code changes against project's AGENTS.md conventions using a mandatory 4-phase methodology (extract → enumerate → matrix → calibrate). Returns structured findings with rule citations, file:line precision, per-element matrices for distributed rules, quantitative coverage, ambiguity feedback, and calibrated confidence. Strictly scoped to AGENTS.md rules — does NOT review functional correctness, design choices, or anything outside explicit rules.
 tools: Read, Grep, Glob, Bash
 ---

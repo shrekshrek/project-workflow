@@ -1,5 +1,6 @@
 ---
 name: tech-researcher
+model: sonnet
 description: Research technical choices (frameworks / libraries / tools) for a project when the user is unsure. Returns 2-3 mainstream options with concise pros/cons, a recommendation, and rationale. Read-only — researches and reports, does NOT make decisions or write files. Use when /project-init or /project-personalize encounters "不确定" / "帮我选" / "推荐一个" in Q&A.
 tools: Read, WebSearch, WebFetch, Bash, Grep, Glob
 ---

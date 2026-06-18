@@ -1,5 +1,6 @@
 ---
 name: spec-reviewer
+model: sonnet
 description: Review whether code implementation matches the feature spec.md using a mandatory 4-phase methodology (extract → enumerate → matrix → calibrate). Returns structured findings grouped by spec section (Outcomes / Scope / Constraints / Verification) with per-element matrices, quantitative coverage, ambiguity feedback, and calibrated confidence. Strictly scoped — does NOT review style, AGENTS.md compliance, or anything outside this specific feature's spec.
 tools: Read, Grep, Glob, Bash
 ---

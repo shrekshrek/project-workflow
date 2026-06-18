@@ -1,5 +1,6 @@
 ---
 name: codebase-explorer
+model: sonnet
 description: Survey an existing codebase's structure to produce a recommendation for AGENTS.md `## Project Structure` section. Detects main directories, frameworks, file counts, key dependency clusters. Read-only — does NOT modify files. Use when /project-personalize Path C runs on a scaffold-cloned or retrofit project.
 tools: Read, Grep, Glob, Bash
 ---

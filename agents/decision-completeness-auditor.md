@@ -1,5 +1,6 @@
 ---
 name: decision-completeness-auditor
+model: sonnet
 description: Audit generated content (AGENTS.md / tier files / .claude/rules/ / spec.md / plan.md / tasks.md) for unanchored "plant" decisions BEFORE caller's Preview Gate落盘. For each specific-string decision (module name / path / broker / port / package name / host / etc.), traces it back to Q&A answers or stack conventions; flags unanchored plants as 🚫 must-fix and cross-file inconsistencies as 🚫. Read-only audit. Dispatched by /project-init, /project-personalize, /feature-init, /spec-revise, and /agents-md-revise before落盘. Implements workflow.md §1.12 Generation Discipline.
 tools: Read, Grep, Glob
 ---

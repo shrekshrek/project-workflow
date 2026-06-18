@@ -1,5 +1,6 @@
 ---
 name: spec-quality-reviewer
+model: sonnet
 description: Subjective spec/plan quality reviewer. Assesses whether spec.md Verification §4 items are mechanically verifiable (not "human judgement"), Outcomes are specific scenarios (vs vague wishes), Constraints are real (vs wish list), and tasks.md steps are verifiable. Read-only, structured findings with cited evidence. Used by /spec-quality-check skill for the 4 subjective questions (Q3/Q4/Q5/Q7) in spec-driven.md §3.7. Does NOT review code-vs-spec compliance (that's spec-reviewer).
 tools: Read, Grep, Glob, Bash
 ---
