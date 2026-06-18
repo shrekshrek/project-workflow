@@ -231,6 +231,23 @@ L2 review 跑完会有"建议加规则但未落地"的 finding。这里抽出来
 
 用 Edit 工具 atomic 更新 tasks.md —— 单次 edit 替换整个 proof-bundle 节。
 
+## Step 4.5 — Gate-log 记录 + 空转检测(§7.9 数据底座)
+
+把本 feature 的 gate 产出 **upsert** 到 `.claude/gate-log.json`(不存在则创建,**按 NNN 去重保幂等**):
+
+```
+{ "<NNN>": { "l2": {"must_fix": M, "partial": P}, "l3": {"deviation": D, "missing": X}, "date": "<ISO,首次写时取>" } }
+```
+
+然后查 [workflow.md §7.9](../../docs/workflow.md#79-不要让-review-门空转太安静) 空转信号:gate-log 里**连续 N(默认 5)个已记录 feature 的 l2+l3 findings 全为 0(含 partial/ambiguity)** → Step 5 附提示:
+
+```
+🪫 L2/L3 已连续 N 个 feature 零 findings(含 partial/ambiguity)—— 可能门空转(§7.9)。
+   考虑精简该门 / 退轻车道。(注意:若约定刚成熟,这可能正常,自行判断。)
+```
+
+> 只做 §7.9(空转/太安静)。§7.10(门太吵/dismissal-rate)需要"标 finding 为误报"的采集点,尚未建 —— 见 workflow.md §7.10,单独设计。
+
 ## Step 5 — 报告
 
 tasks.md 更新后,输出:
