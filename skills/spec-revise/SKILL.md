@@ -29,6 +29,8 @@ User input: `$ARGUMENTS` — optional `<feature-slug>` and/or `--spec` / `--modu
 
 读该 feature 的 `spec.md` + `plan.md` + `tasks.md`,为后续步骤准备 context。
 
+**车道判定**:`spec.md` 缺失 = **轻车道**(只 tasks.md)。`/spec-revise` 改 frozen spec + 起 ADR,**只适用全道** → 报 "轻车道无 frozen spec 可修订。若本次变更需要 spec(触达不变量 / 契约变更),先重跑 `/feature-init <slug>` 选全道补 spec.md + plan.md 再回来"(升级路径见 [spec-driven §3.2.5](../../docs/spec-driven.md#325-轻车道小改免-frozen-spec--plan))退出。
+
 ## Step 2 — 判定是否需要 revision(走 §3.5 判断表)
 
 Ask user: "什么发现触发了这次 revision?简述。"

@@ -28,7 +28,7 @@ User input: `$ARGUMENTS` — feature slug or path to spec.md
 | `docs/specs/.../spec.md`(完整路径)| 直接用 |
 | 空 | 找最近的 `docs/specs/<NNN>-*/spec.md`(按 `ls -t` 或 NNN 排序)|
 
-spec.md 缺失 → 报 "Spec not found. Run `/project-workflow:feature-init <slug>` first." 退出。
+spec.md 缺失:同目录有 `tasks.md` = **轻车道**(L3 不适用,见 [spec-driven §3.2.5](../../docs/spec-driven.md#325-轻车道小改免-frozen-spec--plan))→ 报 "Light-lane feature — L3 N/A;交付验证走 `/project-workflow:proof-bundle`" 退出;整个目录都没有 → 报 "Spec not found. Run `/project-workflow:feature-init <slug>` first." 退出。
 
 找到了 → 一并定位 sibling 的 `plan.md` 和 `tasks.md`(作 context 传给 agent)。
 

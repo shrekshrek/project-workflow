@@ -160,9 +160,11 @@ pre-fill 时在对应位置 inline 标注 `<!-- pre-filled from chat: <quote> --
 ### 6.2 Reminders(user 自判,不预问)
 
 ```
-⚠️ Mission-critical checkpoints(`/spec-quality-check` 会 gate,不填进不了实施):
+⚠️ Mission-critical checkpoints:
+  <全道(`/spec-quality-check` 会 gate,不填进不了实施):>
   - spec.md §2 `**不做**:` 至少 2-3 条(Q2 强约束)── scope creep 防御主战场
   - (若多模块)plan.md §1.1 Sibling Alignment ── 每个兄弟模块选 Align / Deviate / Codify(Q6 强约束)
+  <轻车道:tasks.md `## 目标/边界` 至少 1 条"不做" + `## 验证` 至少 1 条可机验项(spec-quality-check 不适用轻车道)>
 
 📌 (若 Step 4 建了新模块)新模块 `<path>` 若反常(不同存储 / 特殊并发 / 公共 API 契约 / 不同第三方库范式)── 后续记得加 `<path>/AGENTS.md`(差量于父级)+ `<path>/CLAUDE.md` 1 行 alias。99% 模块跟父级一致,不反常就不加(workflow.md §2.3)。
 

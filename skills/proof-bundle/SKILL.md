@@ -201,7 +201,7 @@ L2 review 跑完会有"建议加规则但未落地"的 finding。这里抽出来
 
 **末尾 hint(重现感知,基于 ledger)**:
 
-对本 feature 每条 5b 建议算语义指纹(`drift-5b|<文件类别>|<主题slug>`),upsert 到 `.claude/drift-ledger.json`(不存在则创建,结构 `{fingerprint: {occurrences:[NNN…], last_seen}}`):append 当前 feature NNN 到 `occurrences`、更新 `last_seen`。然后:
+对本 feature 每条 5b 建议算语义指纹(`drift-5b|<文件类别>|<主题slug>`),upsert 到 `.claude/drift-ledger.json`(不存在则创建,结构 `{fingerprint: {occurrences:[NNN…]}}`):append 当前 feature NNN 到 `occurrences`。然后:
 
 - 本 feature 任一 5b 指纹 `occurrences ≥ 2`(同一缺口又来了)→ hint:
   ```

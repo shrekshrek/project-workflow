@@ -27,6 +27,8 @@ User input: `$ARGUMENTS` — `<feature-slug>` or empty (use most recent feature)
 
 读 `spec.md` + `plan.md` + `tasks.md`。
 
+**车道判定**:`spec.md` 缺失 = **轻车道**(只 tasks.md,见 [spec-driven §3.2.5](../../docs/spec-driven.md#325-轻车道小改免-frozen-spec--plan))。本质量门验的是 frozen spec 的 §3.7 七问,**只适用全道** → 报 "N/A(轻车道无 frozen spec;验证靠 tasks.md `## 验证` + `/proof-bundle`)" 并退出,不跑 M1-M5 / sub-agent。
+
 ## Step 2 — Mechanical checks (skill 自己跑,不 dispatch)
 
 逐条机械验证,产出 ✅ / ❌ + 失败原因:
@@ -119,7 +121,7 @@ Sub-agent 返回结构化报告(Q3/Q4/Q5/Q7 各项 ✅/⚠️边缘/❌ + spec.m
 |---|---|
 | 找不到 feature 目录 | 提示用户列 `ls docs/specs/` 自选 |
 | spec.md 缺六要素中的一个 | M1 ❌,sub-agent 不跑(没意义)|
-| spec.md 是空骨架(全是 `{{TODO}}`)| 提示用户 "spec 还没填,先跟 AI 在对话里填 §3-5,再跑 quality-check" |
+| spec.md 是空骨架(全是 `{{TODO}}`)| 提示用户 "spec 还没填,先跟 AI 在对话里填 §1/§3/§4,再跑 quality-check" |
 | Sub-agent 返回 "Outcomes 模糊但可接受" | 标 ⚠️ borderline,不强制改 |
 
 ## Notes
