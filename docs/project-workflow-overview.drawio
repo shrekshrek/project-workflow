@@ -8,7 +8,7 @@
         <mxCell id="title" value="project-workflow v2 — Spec-driven AI development blueprint" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=22;fontStyle=1;fontColor=#1A237E;" vertex="1" parent="1">
           <mxGeometry x="40" y="20" width="1620" height="32" as="geometry"/>
         </mxCell>
-        <mxCell id="subtitle" value="11 skills + 6 sub-agents  ·  Claude Code-native plugin  ·  v2.9.38  ·  https://github.com/shrekshrek/project-workflow" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontColor=#546E7A;" vertex="1" parent="1">
+        <mxCell id="subtitle" value="11 skills + 6 sub-agents  ·  Claude Code-native plugin  ·  v2.9.39  ·  https://github.com/shrekshrek/project-workflow" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontColor=#546E7A;" vertex="1" parent="1">
           <mxGeometry x="40" y="54" width="1620" height="20" as="geometry"/>
         </mxCell>
 
@@ -74,6 +74,9 @@
         </mxCell>
         <mxCell id="featdone_decompose" value="&lt;span style=&#39;font-size:10px;color:#558B2F;&#39;&gt;= &lt;b&gt;/l1-review&lt;/b&gt; (lint/typecheck/test)  ·  &lt;b&gt;/l2-review&lt;/b&gt; (AGENTS.md 合规)  ·  &lt;b&gt;/l3-review&lt;/b&gt; (spec 合规)  ·  &lt;b&gt;/proof-bundle&lt;/b&gt; (装配交付清单) ── 可单步分别跑&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=10;fontColor=#558B2F;" vertex="1" parent="1">
           <mxGeometry x="600" y="450" width="930" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="lightlane_note" value="🔀 &lt;b&gt;轻车道(小改 bugfix/polish/additive)&lt;/b&gt;:/feature-init Step 4.5 自动判 → 仅 tasks.md(免 frozen spec/plan)· 跳 /spec-quality-check + L3 · /proof-bundle 收尾(含不变量反核)。判据/安全闸见 spec-driven §3.2.5" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F8E9;strokeColor=#558B2F;dashed=1;fontSize=9;align=left;verticalAlign=middle;spacing=4;fontColor=#558B2F;" vertex="1" parent="1">
+          <mxGeometry x="200" y="446" width="395" height="28" as="geometry"/>
         </mxCell>
 
         <mxCell id="callout_specrevise" value="&lt;b&gt;⚠ /spec-revise&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;Mid-impl 发现 spec/plan/module 错&lt;br/&gt;&lt;b&gt;[C]&lt;/b&gt; ADR + &lt;b&gt;[B]&lt;/b&gt; 修订记录 + &lt;b&gt;[B]&lt;/b&gt; tasks rebalance&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF8E1;strokeColor=#F57F17;fontSize=10;align=center;dashed=1;" vertex="1" parent="1">
