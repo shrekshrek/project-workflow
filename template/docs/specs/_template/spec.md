@@ -1,6 +1,6 @@
 # <NNN> <slug> — Spec
 
-> 创建于 <TODAY> · 状态:**草稿** / 评审中 / 已确认 / 已实现 / 已上线
+> 创建于 <TODAY> · 状态:**草稿** / 评审中 / 已确认
 >
 > **本文件回答 WHAT —— 做什么、为什么。评审通过后冻结,需变更则起新功能 spec。**
 > 写法详见 [project-workflow / spec-driven.md](https://github.com/shrekshrek/project-workflow/blob/main/docs/spec-driven.md)。
@@ -27,12 +27,9 @@
 
 ## 4. Verification
 
-> 上线前怎么验证。具体、可执行,**不要**写"覆盖率 80%"这种空话。
+> 上线前怎么验证。具体、可执行,**不要**写"覆盖率 80%"这种空话。**本节即 L3 review 基线。**
 
 - 单测:{{TODO 测什么场景}}
 - 集成:{{TODO 测什么端到端流程}}
 - 手测:{{TODO 运行什么命令验证什么}}
 - 上线指标:{{若适用}}
-- L1 review(`/project-workflow:l1-review`)pass
-- L2 review(`/project-workflow:l2-review`)pass
-- L3 review(`/project-workflow:l3-review`)pass —— 本文件是 L3 基线

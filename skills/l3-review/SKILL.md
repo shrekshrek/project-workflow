@@ -39,13 +39,8 @@ spec.md 缺失:同目录有 `tasks.md` = **轻车道**(L3 不适用,见 [spec-dr
 判定本 feature 实施时改了哪些文件:
 
 1. **优先**:解析 `tasks.md`,提取任务项里显式提到的文件路径
-2. **后备**:git history —— 找引用 feature slug 的 commits:
-   ```bash
-   git log --oneline --all --grep="<slug>"
-   git log --name-only -p -- $(git diff --name-only HEAD~N HEAD)
-   ```
-3. **最后手段**:若用户说"since last commit",用 `git diff --name-only HEAD~1`
-4. **仍不明** → 问用户:"which commit range or file list scopes this feature?"
+2. **后备**:`git diff --name-only <base>...HEAD`(用户给 base ref / 分支);"since last commit" 用 `git diff --name-only HEAD~1`
+3. **仍不明** → 问用户:"which commit range or file list scopes this feature?"
 
 ## Step 3 — Dispatch spec-reviewer sub-agent
 

@@ -98,16 +98,9 @@ Sub-agent 返回结构化报告(Q3/Q4/Q5/Q7 各项 ✅/⚠️边缘/❌ + spec.m
   - ≥1 failed → ❌ Do not implement yet — fix failures first
 ```
 
-## Step 5 — 询问是否修复
+## Step 5 — 建议下一步
 
-对每个 ❌ failed / ⚠️ borderline,问用户:
-- "Q2 Scope 没'不做',我帮你打开 spec.md §2 加 '**不做**:' 子节,你列具体项?(yes/no)"
-- 用户 yes → 用 Edit 工具加结构占位 + 让用户填具体
-- 用户 no → 跳过(用户后续手工)
-
-**不强制修**——quality check 是 gate,**用户判断要不要 ship**;skill 不替用户决定。
-
-## Step 6 — 建议下一步
+> 本 gate **不强制修**:Step 4 verdict 已含每条失败的修法指引(指向具体节);用户自行判断是否 ship / 修,skill 不替用户决定、不再逐条追问。
 
 ```markdown
 📋 下一步:
