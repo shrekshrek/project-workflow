@@ -186,12 +186,19 @@ L2 review 跑完会有"建议加规则但未落地"的 finding。这里抽出来
 
 输出:0-3 个 bullet。无则写 "无 (none)"。
 
-**末尾轻量 hint**(仅在 5b 非空且 backlog 累积 ≥ 3 条时输出):
+**末尾 hint(重现感知,基于 ledger)**:
 
-```
-📝 累积 N 条 drift backlog(本 feature + 历史 tasks.md)。
-   你方便的时候跑 `/project-workflow:agents-md-revise` 一次性 audit + apply。
-```
+对本 feature 每条 5b 建议算语义指纹(`drift-5b|<文件类别>|<主题slug>`),upsert 到 `.claude/drift-ledger.json`(不存在则创建):append 当前 feature NNN 到 `occurrences`、更新 `last_seen`。然后:
+
+- 本 feature 任一 5b 指纹 `occurrences ≥ 2`(同一缺口又来了)→ 强 hint:
+  ```
+  🔁 「<gist>」已在 <NNN,NNN,…> 共 N 个 feature 重现。别再逐 feature 重登 —— codify 它:
+     · 客观漂移(命令/版本/路径)→ /project-workflow:agents-md-revise
+     · 模式该文档化(module/framework 约定)→ /project-workflow:spec-revise 或手改 AGENTS.md/rules
+  ```
+- 否则有 open entry 距上次 codify ≥ 5 个 feature → 弱 hint(原广度口径)。
+- 连续 3 个 feature 未 `last_seen` 的 open entry → status 自动转 `resolved`(codify 后自然老化)。
+- 无则不输出。
 
 ### Item 6: 开放问题
 
@@ -251,8 +258,10 @@ Next: commit + open PR. tasks.md proof bundle is already filled — use it as th
 <If NEEDS WORK / BLOCKED:>
 Address the items marked above and re-run `/project-workflow:proof-bundle`.
 
-<If Item 5b 累积 ≥ 3 条(本 feature + 历史 tasks.md 总和):>
-📝 累积 <N> 条 A 类约定 drift backlog。方便时跑 `/project-workflow:agents-md-revise` 一次性 audit + apply(不催)。
+<If 本 feature 任一 5b 指纹 occurrences ≥ 2(重现):>
+🔁 「<gist>」已在 <NNN,…> 共 N 个 feature 重现 —— codify 它(客观漂移→agents-md-revise;模式→spec-revise/手改),别再重登。
+<Else if open entry 距上次 codify ≥ 5 feature:>
+📝 累积 drift backlog 已 N 个 feature 未消化。方便时跑 `/project-workflow:agents-md-revise`(不催)。
 ```
 
 Verdict 判定逻辑:

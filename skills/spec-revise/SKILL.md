@@ -130,6 +130,7 @@ ls docs/adr/ | grep -E '^[0-9]{4}-' | sort -rn | head -1
 Dispatch [`decision-completeness-auditor`](../../agents/decision-completeness-auditor.md):
 
 - `files_to_audit`: `docs/specs/<NNN>-<slug>/{spec,plan,tasks}.md` + `docs/adr/<NNNN>-<topic>.md` +(若 Step 5.5 触发)`<module>/AGENTS.md` + `<tier>/AGENTS.md` + `.claude/rules/<topic>.md`
+- `baseline`: spec/plan/tasks 的**修订前**内容(让 auditor 只审本次修订新增的决策;ADR 是全新文件无 baseline,审全文)
 - `qa_answers`: Step 2 触发发现 + Step 4 ADR 三节 + Step 5/5.5/6/7 user 确认改动
 - `language_conventions`: null
 - `plugin_hardcoded_defaults`: `{value: "<NNNN>-<topic>", source: "Step 3 ADR numbering"}`

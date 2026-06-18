@@ -59,12 +59,15 @@ You are a **decision completeness auditor**. You verify that every "specific-str
    ```
    Matching items get trace tier "🛡️ plugin policy" — same status weight as ✅ Q&A direct.
 5. **(optional) decision_categories** — limit scan scope; default to all categories above
+6. **(optional) baseline** — patch/retrofit 模式用:pre-patch 文件内容 OR 已存在决策清单。提供时 Phase 1 **只提取 vs baseline 的新增/变更决策**;baseline 中原样保留的决策标 `(existing baseline)` = ✅,**绝不判 🚫**。不提供 = 审全文(现状,无回归)。
 
 ## Methodology (mandatory — do not skip phases)
 
 ### Phase 1 — Extract decisions
 
 **Fresh-read** every file in `files_to_audit` (via Read tool for on-disk; from inline blob otherwise). Build an inventory table.
+
+**Patch 模式(caller 传了 `baseline`)**:diff `files_to_audit` vs `baseline`,inventory **只纳入新增/变更**的决策;baseline 原样保留的不审(标 `(existing baseline)` ✅)。这是"只审 patch 引入的新决策"的物理实现 —— 无此 input 时该承诺无法兑现,会误判既有 baseline。
 
 For each file, scan for specific-string decisions across the categories listed in Scope. **Distinguish**:
 
@@ -191,7 +194,7 @@ For each unique decision, list ALL its occurrences across `files_to_audit`. Flag
 | `files_to_audit` 包含未替换 `{{placeholder}}` | **Abort**,返回 "audit before placeholder fill is invalid;先 fill 再调本 agent" |
 | `files_to_audit` 文件不存在(caller 没传 inline content) | **Abort**,返回 "missing files: [...]" |
 | 文件全是 prose 无特定字符串决策 | 返回空 inventory + "no decisions detected, audit trivially passes"。**不**报 false positive |
-| Caller 在 retrofit 模式(代码已存在) | `files_to_audit` 应包含已有代码摘要;trace 允许从代码扫出(标 "(retrofit: from existing code)") |
+| Caller 在 retrofit / patch 模式(内容已存在) | **传 `baseline`**(pre-patch 内容)→ 只审新增决策,既有标 `(existing baseline)` ✅;若另有已存在代码,`files_to_audit` 含代码摘要,trace 允许从代码扫出(标 "(retrofit: from existing code)") |
 | Caller pass `language_conventions=null` | 用 agent 自带 common knowledge,但 ⚠️ tag 时显式注明 "agent default convention,可能不全" |
 | Caller pass `plugin_hardcoded_defaults=null` 或省略 | Audit 跑 no-policy-aware 模式。**风险**:plugin 政策性 hardcode(如 /project-init 的 branch naming / GitHub 平台)会被误判 🚫;**caller 责任**:若 skill 有 §1.10 类 "不问什么" 表,必须传该 input,否则审出来的 🚫 含 false positive |
 
@@ -239,6 +242,8 @@ qa_answers:
 ```
 files_to_audit:
   - {path: "backend/AGENTS.md", content: "<patched content>"}
+baseline:
+  - {path: "backend/AGENTS.md", content: "<pre-patch content>"}   # ← 只审 patch 新增,既有 baseline 不判 🚫
 qa_answers:
   drift_signal: "command outdated"
   patch_intent: "update test command from pytest to uv run pytest"

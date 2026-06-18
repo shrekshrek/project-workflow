@@ -108,6 +108,21 @@ git log --since="30 days ago" --pretty=format:"%s" 2>/dev/null | head -30
 
 **`.claude/refresh-ignore` 跳过列表**:若存在该文件,每行是一条 drift fingerprint(`<file>:<line>:<old>→<new>` 的哈希)。Step 3 计算时跳过 fingerprint 命中的项。
 
+## Step 3.6 — ADR 孤儿 advisory(只读,不进 apply 流)
+
+> 范围:只抓**被遗忘的孤儿 ADR**(模式 A)。**不抓**被反复 defer 但从未实现的 ADR(模式 B,如某决策被多个 spec 的"不做"引用)—— 那是后续半机械检查,本步不覆盖。
+
+1. `ls docs/adr/*.md`(无目录则跳过本步)。逐个解析 frontmatter `状态`。
+2. `Deprecated` / `Superseded by NNNN` → 已闭环,跳过。
+3. `Accepted` / `Proposed` 的 ADR:全仓库 grep 反向引用(`ADR-NNNN` / `ADR NNNN` / `<NNNN>-<topic>` 文件名,扫 docs/specs、plan、源码)。
+4. **零反向引用 AND age(ADR 日期或 mtime)> 60 天** → 列入 advisory。
+5. 输出独立 advisory 块(不进 Step 4 的 y/n/apply,纯供人判):
+   ```
+   🗂️ ADR 孤儿 advisory(N 条,需人判,非客观 drift):
+      · ADR-0003「<title>」Accepted,60+ 天无任何引用 —— 仍有效?该 Superseded?
+   ```
+   零孤儿则不输出。
+
 ## Step 4 — 用户逐条决定
 
 报告全部 drift(≤ 5 条 / 轮,多就分批)。每条问:
@@ -127,6 +142,7 @@ git log --since="30 days ago" --pretty=format:"%s" 2>/dev/null | head -30
 应用 patches 之前,dispatch [`decision-completeness-auditor`](../../agents/decision-completeness-auditor.md)(input/output 详见 agent doc)审待打 patch 内容:
 
 - `files_to_audit`: 每个待 patch 文件的**应用后 inline content**(用 Step 4 用户答 y 的 patches 模拟 apply,**不实际改盘**)
+- `baseline`: 每个待 patch 文件的 **pre-patch on-disk 内容** —— 让 auditor 只审 patch 新增决策,不误判既有 baseline(如既有 `--concurrency=50`)
 - `qa_answers`: Step 3 drift 报告里的"为什么改"原因 + Step 4 用户 y/n 决定 + Step 2 扫到的项目客观状态(commands / deps / dir structure / etc.)dot-path keyed
 - `language_conventions`: null
 - `plugin_hardcoded_defaults`: 跟项目原 AGENTS.md baseline 一致(项目自身约定就是 hardcode);此外加 workflow §1.10 plugin policy(branch naming / GitHub / 等,若项目沿用)
@@ -186,3 +202,4 @@ chore: refresh A 类约定(N 条 Critical drift)
 - **可中断**(`q`uit):已 apply 的保留,未决的丢弃
 - **`.claude/refresh-ignore` 默认进 git**(团队共享 ignored drift 决策);需要私有时手动加 `.gitignore`
 - **互补**:`/spec-revise` = in-feature reactive;`/proof-bundle` Item 5b = per-feature backlog;本 skill = project-wide phase audit
+- **ADR 孤儿 advisory(Step 3.6)是只读 advisory,不进客观 drift 的零误报 apply 流** —— 供人判、不自动改 ADR;只覆盖被遗忘的孤儿(模式 A),不覆盖被反复 defer 的 ADR(模式 B,后续)
