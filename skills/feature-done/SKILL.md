@@ -19,12 +19,14 @@ User input: `$ARGUMENTS` — feature slug or "current"
 
 ## Step 1 — 定位 feature
 
-跟 `/l3-review` 和 `/proof-bundle` 同逻辑:
+**输入形式与 `/l3-review`、`/proof-bundle` 一致(三处同步改)**:
 
 | 输入 | 处理 |
 |---|---|
-| `<slug>` | `docs/specs/<NNN>-<slug>/` |
-| `current` 或空 | 最近的 `docs/specs/<NNN>-*/` |
+| `<slug>`(如 `email-verification`)| `docs/specs/<NNN>-<slug>/`(取最新匹配 NNN)|
+| `<NNN>` / `<NNN>-<slug>`(如 `002`)| `docs/specs/<NNN>-*/` |
+| `current` / 空 | 最近的 `docs/specs/<NNN>-*/`(mtime / NNN 最新)|
+| `<full-path>` | 直接用 |
 
 校验 `tasks.md` 存在。**车道判定**:`spec.md` 存在 = 全道;缺失(仅 tasks.md)= 轻车道(L3 跳过,见 Step 5;[spec-driven §3.2.5](../../docs/spec-driven.md#325-轻车道小改免-frozen-spec--plan))。两者都无则报 "No spec found. Run `/project-workflow:feature-init <slug>` first." 退出。
 
@@ -37,7 +39,7 @@ User input: `$ARGUMENTS` — feature slug or "current"
 2. `git status --short` 显示 scope 内文件在上次 review 时间戳之后被改
 3. 上次 review 距今 > 24 小时
 4. 对话上下文显示在上次 review 之后对 scope 文件做过 Edit / Write
-5. **scope 目录整体 untracked**(`?? <dir>/` 出现在 `git status`,整目录还没进 git)。这种情形 `git status` **看不到目录内部文件变化**,只报 dir untracked。**强制 fresh 重跑**,除非能用 file mtime 比对证明无相关变化(`find <scope> -name "AGENTS.md" -o -name "spec.md" -newer <previous-review-time> 2>/dev/null`)
+5. **scope 目录整体 untracked**(`?? <dir>/` 出现在 `git status`,整目录还没进 git)。这种情形 `git status` **看不到目录内部文件变化**,只报 dir untracked。**强制 fresh 重跑**,除非能用 file mtime 比对证明无相关变化(`find <scope> -name "*.md" -newer <previous-review-time> 2>/dev/null`)
 
 **每步独立判定**:L1 一般重跑;L2/L3 cache 有效时复用。
 

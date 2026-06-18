@@ -34,12 +34,13 @@ User input: `$ARGUMENTS` — feature slug or "current"
 
 ## Step 1 — 定位 feature
 
-跟 `/l3-review` 同逻辑:
+**输入形式与 `/l3-review`、`/feature-done` 一致(三处同步改)**:
 
 | 输入 | 处理 |
 |---|---|
-| `<slug>` | `docs/specs/<NNN>-<slug>/` |
-| `current` 或空 | 最近的 `docs/specs/<NNN>-*/` |
+| `<slug>`(如 `email-verification`)| `docs/specs/<NNN>-<slug>/`(取最新匹配 NNN)|
+| `<NNN>` / `<NNN>-<slug>`(如 `002`)| `docs/specs/<NNN>-*/` |
+| `current` / 空 | 最近的 `docs/specs/<NNN>-*/`(mtime / NNN 最新)|
 | `<full-path>` | 直接用 |
 
 校验文件:`tasks.md` 必在。**车道判定**:`spec.md` 存在 = 全道;缺失 = **轻车道**(只 tasks.md,见 [spec-driven.md §3.2.5](../../docs/spec-driven.md#325-轻车道小改免-frozen-spec--plan))—— 轻车道下 L3 跳过、增不变量反核(见 Item 1.5 / Item 4)。
@@ -68,7 +69,7 @@ Proof bundle 优先**复用**本 session 或 `/feature-done` 刚产生的 L1 / L
    - scope 内任何源代码文件(实施)
 3. **特例**:若 project scope(如刚加但还没 `git add` 的 sub-project 目录)**整体 untracked**(`?? <dir>/` 出现在 git status —— 整目录还没进 git),`git status` 看不到目录内部变化。**这种情况强制 fresh 跑 L2**,因为 git 无法跟踪 untracked 目录内的变化。必要时退到 file mtime 比对:
    ```bash
-   find <scope> -name "AGENTS.md" -o -name "*.md" -newer <last-review-marker> 2>/dev/null
+   find <scope> -name "*.md" -newer <last-review-marker> 2>/dev/null
    ```
 
 **L3**(spec.md 合规)缓存有效性:

@@ -19,14 +19,16 @@ User input: `$ARGUMENTS` — feature slug or path to spec.md
 
 ## Step 1 — 定位 spec
 
-把 `$ARGUMENTS` 解析为 spec.md 路径:
+把 `$ARGUMENTS` 解析为 feature 目录(**输入形式与 `/proof-bundle`、`/feature-done` 一致,三处同步改**):
 
 | 输入 | 处理 |
 |---|---|
-| `email-verification` | `docs/specs/<NNN>-email-verification/spec.md`(取最新匹配 NNN)|
-| `002` 或 `002-email-verification` | `docs/specs/002-*/spec.md` |
-| `docs/specs/.../spec.md`(完整路径)| 直接用 |
-| 空 | 找最近的 `docs/specs/<NNN>-*/spec.md`(按 `ls -t` 或 NNN 排序)|
+| `<slug>`(如 `email-verification`)| `docs/specs/<NNN>-<slug>/`(取最新匹配 NNN)|
+| `<NNN>` / `<NNN>-<slug>`(如 `002`)| `docs/specs/<NNN>-*/` |
+| `current` / 空 | 最近的 `docs/specs/<NNN>-*/`(mtime / NNN 最新)|
+| `<full-path>` | 直接用 |
+
+定位目录内 `spec.md`。
 
 spec.md 缺失:同目录有 `tasks.md` = **轻车道**(L3 不适用,见 [spec-driven §3.2.5](../../docs/spec-driven.md#325-轻车道小改免-frozen-spec--plan))→ 报 "Light-lane feature — L3 N/A;交付验证走 `/project-workflow:proof-bundle`" 退出;整个目录都没有 → 报 "Spec not found. Run `/project-workflow:feature-init <slug>` first." 退出。
 
