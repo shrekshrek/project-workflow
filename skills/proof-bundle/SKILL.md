@@ -245,6 +245,12 @@ L2 review 跑完会有"建议加规则但未落地"的 finding。这里抽出来
 
 用 Edit 工具 atomic 更新 tasks.md —— 单次 edit 替换整个 proof-bundle 节。
 
+### Step 4.5 — Overall READY 时翻 spec 状态 → 已实现
+
+仅当 **Overall = 🟢 READY 且全道**(有 `spec.md`):把 `spec.md` 顶部状态行的粗体标记挪到 `已实现`(只动这一个粗体,不改措辞;幂等)。轻车道 / 非 READY → 跳过。
+
+> 这是状态标记不是契约修订,不走 SOP —— 见 [spec-driven.md §3.8](../../docs/spec-driven.md#38-spec-编辑边界只有-1-条线)。
+
 ## Step 5 — 报告
 
 tasks.md 更新后,输出:
@@ -266,7 +272,8 @@ tasks.md 更新后,输出:
 
 Overall: **<🟢 READY / 🟡 NEEDS WORK / 🔴 BLOCKED>**
 
-<If READY:>
+<If READY 且全道:>
+✅ spec.md 状态 → **已实现**。
 Next: commit + open PR. tasks.md proof bundle is already filled — use it as the PR body summary.
 
 <If NEEDS WORK / BLOCKED:>
@@ -284,5 +291,5 @@ Verdict 判定逻辑:
 ## Notes
 
 - **不自动 fix 任何东西**。L2/L3 找到问题也只是报,用户修
-- **不 commit 任何东西**。本 skill 只把 proof bundle 写进 tasks.md + 报告
+- **不 commit 任何东西**。本 skill 只把 proof bundle 写进 tasks.md(+ READY 全道时翻 spec.md 状态行)+ 报告
 - **幂等**:跑两次应该产出相同结果(除测试 re-run 的 timing 差异)
