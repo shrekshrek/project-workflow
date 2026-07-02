@@ -18,13 +18,13 @@ Canonical action spec: `../../docs/actions/project-init.md`. Follow that file fo
    - If this appears to be the `project-workflow` repository itself, warn and ask before continuing.
 
 2. Ask only baseline questions needed to fill durable project conventions.
-   - Ask incrementally in chat: one baseline question or tightly coupled question group at a time, then wait for the user's answer before continuing.
-   - Do not batch the full setup interview unless the user explicitly asks for automatic inference or a one-pass setup.
+   - Use Codex chat ergonomics: ask one baseline question or one tightly coupled question group, wait for the user's answer, then continue.
+   - Do not dump a long static questionnaire. Compact grouped prompts are fine when they reduce turns without mixing unrelated decisions.
    - Question 1: project type: fullstack, backend, frontend, CLI/library, mobile, or other.
    - Question 1.5, only for multi-tier projects: tier names and paths.
    - Question 2: main language/framework and package manager per tier when needed.
    - Question 3, only when not inferable from manifests or stack defaults: test, lint, and check commands.
-   - Reduce interruptions only when the user explicitly asks for automatic inference and the answer is objectively inferable from project manifests or prior chat context.
+   - Reduce interruptions when answers are objectively inferable from project manifests, prior chat context, or an explicit user preference for automatic setup.
    - If the user is unsure about stack or tool choices, prefer a separate Codex subagent running `../../docs/reviewers/tech-researcher.md`; otherwise run the research in the main session.
    - Do not ask business-domain questions; feature details belong in `$feature-init`.
 

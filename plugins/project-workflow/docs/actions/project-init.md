@@ -17,7 +17,7 @@ Do not use for a copied scaffold or existing project that already has `AGENTS.md
 
 Do not ask feature or business-domain questions. Those belong to [`feature-init`](feature-init.md).
 
-Ask setup questions incrementally: one baseline question or tightly coupled question group at a time, then wait for the user's answer before continuing. The adapter may reduce interruptions only when the user explicitly asks for automatic inference and the answer is objectively inferable from project manifests or prior chat context.
+Ask setup questions interactively, not as a long static questionnaire. Each adapter should use the cadence that fits its host environment: ask one baseline question or one tightly coupled question group, wait for the answer, then continue. Adapters may reduce interruptions when answers are objectively inferable from project manifests, prior chat context, or an explicit user preference for automatic setup.
 
 ## Outputs
 
