@@ -7,7 +7,7 @@
 | Action | Canonical spec | Claude Code adapter | Codex / manual fallback |
 |---|---|---|---|
 | 初始化项目约定 | [`project-init`](actions/project-init.md) / [`project-personalize`](actions/project-personalize.md) | `/project-workflow:project-init` 或 `/project-workflow:project-personalize` | Codex:`$project-init` / `$project-personalize`;manual:复制 `template/`,按 action spec 填 `AGENTS.md` / path-scoped rules / hooks |
-| 开始功能 | [`feature-init`](actions/feature-init.md) | `/project-workflow:feature-init <slug>` | Codex:`$feature-init <slug>`;manual:创建 `docs/specs/<NNN>-<slug>/{spec,plan,tasks}.md` |
+| 开始功能 | [`feature-init`](actions/feature-init.md) | `/project-workflow:feature-init <slug>` | Codex:`$feature-init <slug>`;manual:全道创建 `docs/specs/<NNN>-<slug>/{spec,plan,tasks}.md`,轻车道只创建 `tasks.md` |
 | 实施前质量门 | [`spec-quality-check`](actions/spec-quality-check.md) | `/project-workflow:spec-quality-check <slug>` | Codex:`$spec-quality-check <slug>`;manual:按 action spec + `spec-driven.md §3.7` 7 问检查 |
 | 中途修订 | [`spec-revise`](actions/spec-revise.md) | `/project-workflow:spec-revise <slug>` | Codex:`$spec-revise <slug>`;manual:按 action spec 修 spec、ADR、plan、tasks |
 | 完成交付 | [`feature-done`](actions/feature-done.md) | `/project-workflow:feature-done <slug>` | Codex:`$feature-done <slug>`;manual:手动跑 L1/L2/L3 + proof bundle |
@@ -27,7 +27,7 @@
 /project-workflow:project-personalize
 ```
 
-预期结果:在功能开发前,项目里已有 `AGENTS.md`、路径级规则语义、hooks、ADR 模板和 spec 模板。Claude Code adapter 默认把路径级规则 materialize 为 `.claude/rules/`;Codex adapter 优先通过嵌套 `AGENTS.md` / `AGENTS.override.md` 和显式规则章节承载同一语义,并用 `.codex/hooks.json` 映射 runtime enforcement。必要时只把 `.claude/rules/` 当兼容输入读取。
+预期结果:在功能开发前,项目里已有 `AGENTS.md`、路径级规则语义、hooks 和 ADR 模板。Feature spec 模板保留在 plugin 内,由 `feature-init` 在创建具体 `docs/specs/<NNN>-<slug>/` 时复制;目标项目默认不保留 `docs/specs/_template/`。Claude Code adapter 默认把路径级规则 materialize 为 `.claude/rules/`;Codex adapter 优先通过嵌套 `AGENTS.md` 和显式规则章节承载同一语义,并用 `.codex/hooks.json` 映射 runtime enforcement。必要时只把 `.claude/rules/` 当兼容输入读取。
 
 ## 2. 开始一个功能
 
@@ -35,11 +35,13 @@
 /project-workflow:feature-init <feature-slug>
 ```
 
-然后补全:
+全道 feature 然后补全:
 
 - `docs/specs/<NNN>-<slug>/spec.md`:结果、范围、约束、验证方式
 - `docs/specs/<NNN>-<slug>/plan.md`:模块影响、Sibling Alignment、技术决策
 - `docs/specs/<NNN>-<slug>/tasks.md`:可验证的实施步骤
+
+轻车道小改只有 `tasks.md`,补全目标/边界、验证、任务和 proof bundle;不跑 `spec-quality-check`。
 
 写代码前先跑:
 
@@ -88,7 +90,7 @@ Claude Code adapter 还保留 `l1-review` / `l2-review` / `l3-review` / `proof-b
 /project-workflow:agents-md-revise
 ```
 
-它会让 `AGENTS.md` 和路径级规则语义跟真实项目保持接近,避免约定只留在聊天记录里。Claude Code adapter 会检查 `.claude/rules/`;Codex adapter 会优先检查嵌套 `AGENTS.md` / `AGENTS.override.md` 和显式规则章节。
+它会让 `AGENTS.md` 和路径级规则语义跟真实项目保持接近,避免约定只留在聊天记录里。Claude Code adapter 会检查 `.claude/rules/`;Codex adapter 会优先检查嵌套 `AGENTS.md` 和显式规则章节。
 
 ## 什么时候可以跳过完整流程
 

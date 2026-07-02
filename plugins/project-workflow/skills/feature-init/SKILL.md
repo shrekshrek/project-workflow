@@ -24,7 +24,7 @@ Canonical action spec: `../../docs/actions/feature-init.md`. Follow that file fo
 
 3. Read project context before creating files.
    - Required: `AGENTS.md`. If absent, stop and tell the user to initialize the project baseline first.
-   - Optional: nested `AGENTS.md` / `AGENTS.override.md`, explicit rule sections in those files, `.claude/rules/` compatibility files if present, and the current conversation for explicit user-provided feature facts.
+   - Optional: nested `AGENTS.md`, explicit rule sections in those files, `.claude/rules/` compatibility files if present, and the current conversation for explicit user-provided feature facts.
    - Do not invent endpoints, entities, field names, errors, module paths, or technology choices that are not in project context or the user prompt.
 
 4. Classify the lane.

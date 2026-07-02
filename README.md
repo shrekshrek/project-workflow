@@ -122,7 +122,7 @@ $feature-done <feature-slug>
 $agents-md-revise
 ```
 
-Run `$project-init` once per target project to materialize `AGENTS.md`, `docs/specs`, ADR templates, hooks, Claude compatibility assets, and Codex hook config into that project.
+Run `$project-init` once per target project to materialize `AGENTS.md`, ADR templates, hooks, Claude compatibility assets, and Codex hook config into that project. Feature spec templates stay in the plugin and are copied into concrete `docs/specs/<NNN>-<slug>/` directories by `$feature-init`.
 
 ### Manual fallback
 
@@ -167,7 +167,7 @@ These helper skills remain useful for ad-hoc debugging or partial reruns in Clau
 | `/project-workflow:l3-review` | Review implementation against one feature's `spec.md` via `spec-reviewer`. |
 | `/project-workflow:proof-bundle` | Assemble or repair the proof bundle section in `tasks.md` after reviews are already available. |
 
-> Spec templates (`docs/specs/_template/{spec,plan,tasks}.md`) are plugin-canonical — `/feature-init` cps from `$CLAUDE_PLUGIN_ROOT/template/` at feature-creation time. To customize, fork the plugin and edit `template/docs/specs/_template/`.
+> Spec templates (`docs/specs/_template/{spec,plan,tasks}.md`) are plugin-canonical — `feature-init` copies them from the installed plugin template at feature-creation time. To customize, fork the plugin and edit `template/docs/specs/_template/`.
 
 ## Reviewer Agents
 

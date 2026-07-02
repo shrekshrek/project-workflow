@@ -59,11 +59,13 @@ project-workflow 分两层:
 | Methodology need | Claude Code adapter | Codex adapter | Manual fallback |
 |---|---|---|---|
 | Persistent project guidance | `AGENTS.md` + `CLAUDE.md` 1 行 alias | `AGENTS.md` discovery | 读 `AGENTS.md` |
-| Path-scoped rules | `.claude/rules/*.md` with `globs:` | Nested `AGENTS.md` / `AGENTS.override.md` plus explicit rule sections; `.claude/rules/` may be read as compatibility input but is not Codex-native | 在 `AGENTS.md` 引用相关规则 |
+| Path-scoped rules | `.claude/rules/*.md` with `globs:` | Nested `AGENTS.md` plus explicit scoped rule sections; `.claude/rules/` may be read as compatibility input but is not Codex-native | 在 `AGENTS.md` 引用相关规则 |
 | Reusable workflows | `.claude-plugin` + `skills/`, each referencing `docs/actions/` | Installable `plugins/project-workflow/` Codex plugin; skills reference bundled copies of the same `docs/actions/` semantics | 按 `docs/actions/` 手工执行 |
 | Hooks | `.claude/settings.json` + `.claude/hooks/` | `.codex/hooks.json` or `.codex/config.toml` | 端点手动跑 check |
 | Sub-agent review | Claude Code sub-agent files in `agents/`, each referencing `docs/reviewers/` | Prefer a Codex subagent running bundled `docs/reviewers/`; custom-agent name dispatch is optional and not part of the core package | 主会话按 `docs/reviewers/` 执行 |
 | Plugin distribution | Claude plugin marketplace | Codex plugin marketplace | Copy `template/` and docs |
+
+Codex supports additional instruction override filenames, but project-workflow does not generate or recommend them. Use nested `AGENTS.md` for scoped guidance so Claude Code, Codex, and manual flows share the same four documentation surfaces: feature specs, ADRs, `AGENTS.md`, and `.claude/rules/` as the Claude path-scoped adapter.
 
 Adapter 设计必须遵守一个约束:**不要复制 methodology core**。例如 Claude 和 Codex 可以各有 hook 配置,但 action 的触发/输入/输出/不变量只能在 `docs/actions/` 定义一次;reviewer 的任务方法只能在 `docs/reviewers/` 定义一次;L1/L2/L3 的含义只能在 core 文档定义一次。
 

@@ -78,7 +78,7 @@
 
 | Capability | Project mapping | Methodology source |
 |---|---|---|
-| Persistent project guidance | `AGENTS.md` plus nested `AGENTS.md` / `AGENTS.override.md` when needed | A 类项目约定 |
+| Persistent project guidance | `AGENTS.md` plus nested `AGENTS.md` when needed | A 类项目约定 |
 | Workflow skills | `plugins/project-workflow/skills/<action>/SKILL.md` | `docs/actions/<action>.md` |
 | Reviewer execution | Codex plugin skills read `docs/reviewers/*.md`; optional runtime subagents when available | `docs/reviewers/*.md` |
 | Hooks/settings | `.codex/hooks.json` or `.codex/config.toml` | D 类 runtime enforcement |
@@ -189,7 +189,7 @@ Codex adapter 不应该照搬 Claude Code 的文件布局,而应该复用 method
 
 | 能力 | Codex 载体 | project-workflow 用法 |
 |---|---|---|
-| Persistent guidance | `AGENTS.md` + nested `AGENTS.override.md` / `AGENTS.md` discovery | 直接复用 core 的项目约定 source of truth;用嵌套文件承载 scoped guidance |
+| Persistent guidance | `AGENTS.md` + nested `AGENTS.md` discovery | 直接复用 core 的项目约定 source of truth;用嵌套文件承载 scoped guidance |
 | Skills | `plugins/project-workflow/skills` | default public action adapter:project-init / project-personalize / feature-init / spec-quality-check / spec-revise / feature-done / agents-md-revise;方法定义来自 `docs/actions/` |
 | Reviewer execution | plugin skill + bundled `docs/reviewers/*.md` | 若当前 Codex surface 支持 subagent,优先用 subagent 执行 reviewer spec;否则主会话执行同一 spec |
 | Plugin packaging | `plugins/project-workflow/` + `.agents/plugins/marketplace.json` | Codex App / CLI 的安装分发入口;plugin 内 `docs/` 与 `template/` 是 release artifact,不能独立 fork methodology |

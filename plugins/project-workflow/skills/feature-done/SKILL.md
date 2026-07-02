@@ -31,7 +31,7 @@ Canonical action spec: `../../docs/actions/feature-done.md`. Follow that file fo
 4. L2 project convention review.
    - Prefer a separate Codex subagent running `../../docs/reviewers/agents-md-reviewer.md`; otherwise run the review in the main session.
    - Read root and relevant nested `AGENTS.md`.
-   - Also read scoped guidance if present: nested `AGENTS.md` / `AGENTS.override.md` and explicit rule sections first; `.claude/rules/` only as a Claude-adapter compatibility source.
+   - Also read scoped guidance if present: nested `AGENTS.md` and explicit rule sections first; `.claude/rules/` only as a Claude-adapter compatibility source.
    - Review changed files against project conventions.
    - Classify findings as critical violations, non-critical partials, or clean.
 

@@ -14,7 +14,7 @@ Canonical action spec: `../../docs/actions/agents-md-revise.md`. Follow that fil
 1. Collect A-class convention sources.
    - Root `AGENTS.md` is required.
    - Include nested `AGENTS.md` files under relevant tiers/modules.
-   - Include nested `AGENTS.md` / `AGENTS.override.md` files as Codex-native scoped guidance.
+   - Include nested `AGENTS.md` files as Codex-native scoped guidance.
    - Include `.claude/rules/` only as Claude-adapter compatibility input when present.
    - Treat these files as current project convention sources, not historical records.
 

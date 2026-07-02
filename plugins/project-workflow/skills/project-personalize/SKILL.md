@@ -21,7 +21,7 @@ Canonical action spec: `../../docs/actions/project-personalize.md`. Follow that 
    - Replace scaffold defaults such as project name, package name, DB name, container names, domains, and placeholder paths.
    - Complete tier-level `AGENTS.md` files where tier rules differ from root.
    - Update `## Project Structure` from the actual codebase.
-   - Fill or remove leftover path-scoped rule placeholders in nested `AGENTS.md` / `AGENTS.override.md` rule sections, or `.claude/rules/` compatibility files.
+   - Fill or remove leftover path-scoped rule placeholders in nested `AGENTS.md` rule sections, or `.claude/rules/` compatibility files.
    - Clean stale Claude-only aliases only when they conflict with `AGENTS.md` as source of truth.
 
 3. Scan objective evidence before editing.

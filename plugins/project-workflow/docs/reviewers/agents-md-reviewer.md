@@ -7,7 +7,7 @@ Canonical L2 reviewer for checking changed code against project conventions.
 Review only against explicit A-class conventions:
 
 - root `AGENTS.md`
-- nested tier/module `AGENTS.md` or `AGENTS.override.md`
+- nested tier/module `AGENTS.md`
 - path-scoped rules when present
 - adapter compatibility inputs such as Claude `.claude/rules/*.md`
 - `docs/gotchas.md` only when the caller includes it as a convention source
@@ -20,7 +20,7 @@ Do not review functional correctness, design taste, feature-spec compliance, gen
 - convention source files
 - optional feature/spec path for context only
 
-For Claude, path-scoped rules may arrive as `.claude/rules/*.md` with `globs:` frontmatter. For Codex, scoped guidance should primarily come from nested `AGENTS.md` / `AGENTS.override.md` and explicit rule sections; `.claude/rules/` is compatibility input only.
+For Claude, path-scoped rules may arrive as `.claude/rules/*.md` with `globs:` frontmatter. For Codex, scoped guidance should primarily come from nested `AGENTS.md` and explicit rule sections; `.claude/rules/` is compatibility input only.
 
 ## Method
 
@@ -101,4 +101,3 @@ Coverage: <X>% (<verified>/<total>; <sampled> sampled; <skipped> skipped)
 - Do not make edits.
 - Keep findings precise with file:line references where possible.
 - Surface ambiguous conventions as feedback to the caller.
-
