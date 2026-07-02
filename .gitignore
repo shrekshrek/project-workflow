@@ -16,6 +16,9 @@ Thumbs.db
 !template/.claude/**
 !demo/.claude/
 !demo/.claude/**
+# 例外:Codex plugin 包内 bundled template 的 .claude/ 副本(sync-codex-plugin.js 生成的 release artifact)
+!plugins/project-workflow/template/.claude/
+!plugins/project-workflow/template/.claude/**
 
 # Personal project-specific instructions (not for team)
 CLAUDE.local.md
