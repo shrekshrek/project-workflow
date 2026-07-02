@@ -1,7 +1,7 @@
 ---
 name: feature-init
 model: sonnet
-description: Start a new feature spec — create docs/specs/<NNN>-<slug>/{spec,plan,tasks}.md from project template. Auto-detect if a new module is needed and add module setup to plan/tasks (per workflow §2 Module Setup sub-flow). Scaffold + chat-context pre-fill + reminders + decision-completeness audit; conditional framework Q&A only (slug / tier / module).
+description: Create a feature artifact only when the task needs new project-workflow tracking. Full lane creates docs/specs/<NNN>-<slug>/{spec,plan,tasks}.md; light lane creates tasks.md only. Tiny bugfixes, wording/style tweaks, local test fixes, low-risk docs, and work already covered by an accepted spec should skip this skill.
 ---
 
 > **Response language**: Match the user's prompt language (中文 / English / etc.) in all natural-language output — headers, summaries, questions, progress messages. Code, commands, file paths, and `$ARGUMENTS` stay as-is.
@@ -10,9 +10,9 @@ description: Start a new feature spec — create docs/specs/<NNN>-<slug>/{spec,p
 
 Canonical action spec: `docs/actions/feature-init.md`. Follow that file for methodology rules; this skill adds Claude Code execution details.
 
-Start a new feature's spec/plan/tasks triplet (P2 entry point)。Business 细节走主会话 conversational fill(见 [spec-driven.md §3.6.5](../../docs/spec-driven.md#365-phase-a填-todos-的-ai-协作-sop));质量由 `/spec-quality-check` 把关。
+Start a tracked feature artifact when the task needs project-workflow. Business 细节走主会话 conversational fill(见 [spec-driven.md §3.6.5](../../docs/spec-driven.md#365-phase-a填-todos-的-ai-协作-sop));全道质量由 `/spec-quality-check` 把关。
 
-**Use when**: P2 — starting a new feature or a change worth tracking; full lane is for cross-module/cross-boundary work or architecture / data model / API contract changes ([workflow.md §3.1](../../docs/workflow.md#31-规划阶段))。同一模块内小改(bugfix / polish / additive)自动走**轻车道**(仅 tasks.md,见 Step 4.5 / [spec-driven §3.2.5](../../docs/spec-driven.md#325-轻车道小改免-frozen-spec--plan));键盘级局部改可直接做。
+**Use when**: P2 — starting a new feature or a change worth tracking; full lane is for cross-module/cross-boundary work or architecture / data model / API contract changes ([workflow.md §3.1](../../docs/workflow.md#31-规划阶段))。同一模块内小改(bugfix / polish / additive)可走**轻车道**(仅 tasks.md,见 Step 4.5 / [spec-driven §3.2.5](../../docs/spec-driven.md#325-入口分流先判是否需要-project-workflow));键盘级局部改 / 文案样式 / 局部测试修复 / 低风险文档编辑不要启动 project-workflow,直接做。已确认 spec 下的实施任务继续原 `tasks.md`;若 spec/plan 错,走 `/project-workflow:spec-revise`。
 **Not for**: P0 project scaffolding (use `/project-workflow:project-init`) / mid-implementation spec revision (use `/project-workflow:spec-revise`) / endpoint delivery (use `/project-workflow:feature-done`).
 
 User input: `$ARGUMENTS` — feature slug + optional description.
@@ -33,7 +33,9 @@ Slug 要求(strip NNN 前缀后):
 
 不合法 → 请用户改正再继续。
 
-## Step 2 — 确定 NNN 编号
+## Step 2 — 预备 NNN 编号(仅 artifact 情况使用)
+
+本步只是算候选编号。若 Step 4.5 判定无需新 artifact,不分配编号、不创建目录。
 
 ```bash
 ls docs/specs/ | grep -E '^[0-9]{3}-' | sort -rn | head -1
@@ -89,23 +91,42 @@ ls docs/specs/ | grep -E '^[0-9]{3}-' | sort -rn | head -1
 
 新建模块时:plan/tasks 加 skeleton 项。**反常判定(新模块跟父级约定是否不同)不预问** ── 99% 选 n;作为 Step 6.2 reminder 输出给 user 自判(workflow.md §2.3)。
 
-## Step 4.5 — 车道分类(全道 / 轻车道)
+## Step 4.5 — 入口分流(无需新 artifact / 轻车道 / 全道)
 
-> 小改免三件套仪式。**分类只在此发生,开工后不重判**(堵 scope-creep 中途逃生舱)。判据见 [spec-driven.md §3.2.5](../../docs/spec-driven.md#325-轻车道小改免-frozen-spec--plan)。
+> 先判**是否需要新 project-workflow artifact**。无需新 artifact 不是一条 lane;它的意思是:不要创建 `docs/specs/`,直接做,最后说明验证结果。判据见 [spec-driven.md §3.2.5](../../docs/spec-driven.md#325-入口分流先判是否需要-project-workflow)。
 
-3 道 trip,**全 yes 才轻车道;任一 no / 不确定 → 全道**(保守默认):
+**不启动 project-workflow**:
+- 小 bugfix
+- 文案 / 样式微调
+- 局部测试期望修复
+- 低风险文档编辑
+- 键盘级局部改
+- 已确认 spec 下的实施任务(继续原 `tasks.md`;spec/plan 错则走 `/project-workflow:spec-revise`)
 
-| # | 判据 | no / 不确定 → |
+命中这些情况 → 输出 "No new project-workflow artifact needed; continue directly and close with checks." 然后停止本 skill,不建编号目录。直接做仍遵守 `AGENTS.md` / path rules 和相关 lint / type / test / hook。
+
+需要 artifact 时,正式 lane 只有两条:全道 / 轻车道。
+
+3 道 trip,**全 yes 才轻车道;任一 no → 全道**:
+
+| # | 判据 | no → |
 |---|------|------|
 | 1 规模 | 改动在 ≤ ~1 个内聚模块 / 单一职责范围内,**且 Step 4 未判定要新建模块**;文件数只作辅助信号 | 全道 |
 | 2 可逆性 | additive / bugfix / polish,易回滚;**非**数据迁移 / API 或 schema 契约变更 | 全道 |
 | 3 爆破半径 | **不触达**项目声明的灾难性不变量路径(读根 `AGENTS.md`「灾难性不变量 / 高爆破半径路径」节;**该节缺失则问用户保守判**) | 全道 |
 
-结果带进 Step 5。**模糊默认全道** —— 轻车道是优化不是逃生舱。
+**不确定时分级**:
+- 不确定是否触达 API / DB / security / auth / permissions / multi-tenant / data migration / 跨模块契约 / 高爆破半径 → 全道
+- 不确定 UI 文案 / 样式 / 组件拆分 / 局部 refactor 形状 / 测试写法 → 不因此升级全道;可直接做或走轻车道
+- 不确定业务目标 / outcome → 生成文件前先问用户,不要建 spec
+
+**Bundle rule**:多个相关小改应合成一个中等 feature,不要碎 spec。例如按钮状态、表格列、详情抽屉都服务同一个 run history 体验时,用一个 `workflow-run-history` feature。
+
+结果带进 Step 5。轻车道是优化不是逃生舱;高风险不降级。直接实施或轻车道中发现触达 API / DB / security / multi-tenant / evidence invariants / 跨模块契约 / 高爆破半径 → 停,补 light/full artifact 后再继续。
 
 ## Step 5 — 生成 spec 文件(按 Step 4.5 车道)
 
-**模板源**:`$PLUGIN_ROOT/template/docs/specs/_template/`。全道 = `{spec,plan,tasks}.md` 三件套;轻车道 = 仅 `tasks-light.md` → `tasks.md`(内容见 [spec-driven.md §3.2.5](../../docs/spec-driven.md#325-轻车道小改免-frozen-spec--plan))。
+**模板源**:`$PLUGIN_ROOT/template/docs/specs/_template/`。全道 = `{spec,plan,tasks}.md` 三件套;轻车道 = 仅 `tasks-light.md` → `tasks.md`(内容见 [spec-driven.md §3.2.5](../../docs/spec-driven.md#325-入口分流先判是否需要-project-workflow))。
 
 ```bash
 PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT:-$(ls -d ~/.claude/plugins/cache/project-workflow/project-workflow/*/ 2>/dev/null | sort -V | tail -1)}"
@@ -222,4 +243,4 @@ Dispatch [`decision-completeness-auditor`](../../agents/decision-completeness-au
 - **Do not** generate code —— 本 skill 只产规划 artifact
 - **Do not** overwrite existing `docs/specs/<NNN>-<slug>/`(碰撞检测:报错退出)
 - **Conditional framework Q&A only**:仅在 slug / tier / module 不明时问;business 细节走主会话 conversational fill
-- **车道**(Step 4.5):全道(三件套)/ 轻车道(仅 tasks.md);保守默认全道。完整判据 + 安全闸(验证保留 / 事后反核)见 [spec-driven §3.2.5](../../docs/spec-driven.md#325-轻车道小改免-frozen-spec--plan)
+- **车道**(Step 4.5):先判是否需要 project-workflow;需要 artifact 时再选全道(三件套)/轻车道(仅 tasks.md)。完整判据 + 安全闸(验证保留 / 事后反核)见 [spec-driven §3.2.5](../../docs/spec-driven.md#325-入口分流先判是否需要-project-workflow)

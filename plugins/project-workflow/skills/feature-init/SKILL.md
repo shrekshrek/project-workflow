@@ -1,6 +1,6 @@
 ---
 name: feature-init
-description: Start a project-workflow feature in Codex by creating the numbered feature spec folder with spec, plan, and tasks files, or a light-lane tasks file, from the repository template. Use when beginning a feature, API/data-model/architecture change, or multi-file work that needs a spec before implementation. Not for mid-implementation spec revision or final delivery review.
+description: Create a project-workflow feature artifact in Codex only when the task needs new durable tracking. Full lane creates spec, plan, and tasks files; light lane creates tasks only. Tiny bugfixes, wording/style tweaks, local test fixes, low-risk docs, and work already covered by an accepted spec should skip this skill.
 ---
 
 # Feature Init
@@ -17,20 +17,23 @@ Canonical action spec: `../../docs/actions/feature-init.md`. Follow that file fo
    - Require kebab-case: `a-z0-9-`, 2-40 chars, no leading/trailing dash.
    - If missing or invalid, ask for a corrected slug before writing files.
 
-2. Determine the feature number.
-   - Inspect `docs/specs/` for directories matching `^[0-9]{3}-`.
-   - Use the max number + 1; start at `001` if none exist.
-   - If the user supplied an `NNN` prefix that collides with an existing directory, stop and ask whether to use the next available number.
-
-3. Read project context before creating files.
+2. Read project context before creating files.
    - Required: `AGENTS.md`. If absent, stop and tell the user to initialize the project baseline first.
    - Optional: nested `AGENTS.md`, explicit rule sections in those files, `.claude/rules/` compatibility files if present, and the current conversation for explicit user-provided feature facts.
    - Do not invent endpoints, entities, field names, errors, module paths, or technology choices that are not in project context or the user prompt.
 
-4. Classify the lane.
-   - Use full lane by default.
+3. Classify the entry.
+   - First decide whether the task needs a new project-workflow artifact at all. If it is a tiny bugfix, wording/style tweak, local test expectation fix, low-risk documentation edit, or work already covered by an accepted spec, stop and report: "No new project-workflow artifact needed; continue directly and close with checks."
+   - If an artifact is useful, use full lane for API/schema, DB/data migration, security, auth/permissions, multi-tenant behavior, cross-module contract, architecture, user-visible product contract, new module work, or high-blast-radius paths.
    - Use light lane only when all are true: small/reversible change within one cohesive module or responsibility area, no new module, no API/schema/data migration/architecture contract change, and no disaster-invariant/high-blast-radius path from `AGENTS.md`. File count alone is not decisive.
-   - If uncertain, use full lane.
+   - Uncertainty rule: uncertain about high-risk impact means full; uncertain about UI wording/styling/component split/local refactor/test shape does not force full; uncertain business outcome means ask before creating artifacts.
+   - Bundle related small changes into one tracked feature instead of creating fragmentary specs.
+   - Implementation without a new artifact still follows `AGENTS.md`, path rules, and relevant lint/type/test/hooks. If that work or light-lane work later touches API/schema, DB/data migration, security, multi-tenant behavior, evidence/data invariants, cross-module contracts, or high-blast-radius paths, stop and upgrade to the appropriate artifact flow.
+
+4. Determine the feature number only if creating light or full lane artifacts.
+   - Inspect `docs/specs/` for directories matching `^[0-9]{3}-`.
+   - Use the max number + 1; start at `001` if none exist.
+   - If the user supplied an `NNN` prefix that collides with an existing directory, stop and ask whether to use the next available number.
 
 5. Create the spec directory from templates.
    - Template source: bundled `../../template/docs/specs/_template/`.

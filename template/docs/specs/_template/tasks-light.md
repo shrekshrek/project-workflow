@@ -1,7 +1,7 @@
 # <NNN> <slug> — Tasks(轻车道)
 
-> **轻车道**:bugfix / polish / additive 小改,无 frozen spec.md / plan.md。判据见 [spec-driven.md §3.2.5](https://github.com/shrekshrek/project-workflow/blob/main/docs/spec-driven.md#325-轻车道小改免-frozen-spec--plan)。
-> ⚠️ 实施中若发现**触达灾难性不变量** / 需契约或数据迁移 → 停,重跑 `/feature-init` 选全道补 spec.md。
+> **轻车道**:bugfix / polish / additive 小改,无 frozen spec.md / plan.md。判据见 [spec-driven.md §3.2.5](https://github.com/shrekshrek/project-workflow/blob/main/docs/spec-driven.md#325-入口分流先判是否需要-project-workflow)。
+> ⚠️ 实施中若触达 API / DB / security / multi-tenant / evidence invariants / 跨模块契约 / 高爆破半径 → 停,补全道 spec.md。
 
 ## 目标 / 边界
 

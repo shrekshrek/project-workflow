@@ -52,7 +52,7 @@
 ### 本项目采用混合
 
 - **项目级约定**(A 类):agents.md 风格 → 根 `AGENTS.md`(workflow §1.3)
-- **功能级 spec**(B 类):Spec Kit 简化版 → `docs/specs/<NNN>-<slug>/` 三文件(本文档 §3 起)
+- **功能级 artifact**(B 类):Spec Kit 简化版 → `docs/specs/<NNN>-<slug>/`(全道三件套;轻车道仅 `tasks.md`)
 - **架构决策**(C 类):Michael Nygard ADR 模板 → `docs/adr/`(详见 workflow.md §1.8,本文档不展开)
 - **哲学**:学术 SDD 的"spec-as-contract"精神,**不上** Spec Kit 的工具链负担
 
@@ -81,11 +81,11 @@
 
 ---
 
-## 3. 功能级 spec(`docs/specs/<NNN>-<feature>/`,三文件)
+## 3. 功能级 artifact(`docs/specs/<NNN>-<feature>/`)
 
 > **写 spec 前先看**:[§3.8 Spec 编辑边界](#38-spec-编辑边界只有-1-条线) —— 是否已 git commit + 实施开始,决定 spec.md 能否直接改 vs 必走 SOP。这条边界规则是 §3 全章的前置假设。
 
-每个新功能一个**目录**,目录下三个文件,按生命周期分工。模板由 [`/feature-init`](../skills/feature-init/SKILL.md) 提供,项目本地默认不持有。
+需要追踪的 feature 一个**目录**。全道使用 spec / plan / tasks 三件套;轻车道只使用 tasks.md。模板由 [`/feature-init`](../skills/feature-init/SKILL.md) 提供,项目本地默认不持有。
 
 ### 3.1 三文件分工
 
@@ -116,11 +116,19 @@ docs/specs/
 - 目录名 `<NNN>-<slug>`,编号便于排序和引用
 - 完成后**整个目录归档,不删、不改**;后续变更起新目录引用旧的(见 §5)
 
-### 3.2.5 轻车道(小改:免 frozen spec + plan)
+### 3.2.5 入口分流:先判是否需要 project-workflow
+<a id="325-轻车道小改免-frozen-spec--plan"></a>
 
-不是所有 feature 都值三件套。**bugfix / polish / additive 小改**走轻车道:`<NNN>-<slug>/` 目录下**只一个 `tasks.md`**(目标/边界 + 验证 + tasks + proof),无 frozen spec.md、无 plan.md。仍建目录(编号连续 + 引用一致),只是少两个文件。
+不是所有任务都应该启动 project-workflow。无需新 artifact 的任务不是一条 lane,而是直接不调用 `/feature-init`:小 bugfix、文案、样式、局部测试修复、低风险文档编辑,以及已确认 spec 下的实施任务,直接做并说明验证结果。直接做仍必须遵守 `AGENTS.md` / path rules,并跑相关 lint / type / test / hook。
 
-**入口分流**(`/feature-init` Step 4.5 自动判,3 道 trip 全 yes 才轻车道,模糊默认全道):
+一旦决定需要 artifact,才进入 `docs/specs/<NNN>-<slug>/`,正式 artifact lane 只有两条:
+
+| Lane | Artifact | 适用 |
+|---|---|---|
+| **Light lane** | `tasks.md` | 小而内聚、有验证/风险记录价值,但无 frozen spec / plan |
+| **Full lane** | `spec.md + plan.md + tasks.md` | API/DB/security/auth/permissions/multi-tenant/data migration/跨模块契约/架构/用户承诺变化、新模块、高爆破半径路径 |
+
+**Light lane 判据**(`/feature-init` Step 4.5 自动判,3 道 trip 全 yes 才 light):
 
 | 轴 | 全 yes 才轻车道 |
 |---|---|
@@ -128,13 +136,21 @@ docs/specs/
 | 可逆性 | additive / bugfix / polish,非数据迁移 / API 或 schema 契约变更 |
 | 爆破半径 | 不触达项目声明的灾难性不变量路径(项目在根 AGENTS.md 声明) |
 
+**不确定时分级**,不要一律 full:
+
+- 不确定是否影响 API / DB / security / auth / permissions / multi-tenant / data migration / 跨模块契约 / 高爆破半径 → **Full lane**
+- 不确定 UI 文案 / 样式 / 组件拆分 / 局部 refactor 形状 / 测试写法 → 不因此升级 Full;可直接做或 Light lane
+- 不确定业务目标 / user-visible outcome → **先问用户**,不建 artifact
+
 **为什么这条边界**:三件套对小改是过度仪式(同 [workflow.md §7.4](workflow.md#74-不要为了用-ai-拒绝键盘改-5-行代码) 的精神);同一模块内即使碰到 2-4 个配套文件,只要可逆、无契约变化、无高爆破半径,也可以轻车道。**砍的是文档仪式,不是验证** —— 轻车道仍保留 `## 验证`(spec §4 等价)+ Proof bundle,仍跑 L1 + L2 + proof(L3 因无 frozen spec 跳过)。
 
+**组合规则**:多个相关小改应合成一个中等 feature,不要碎 spec。例如不要开 "按钮状态"、"表格列"、"详情抽屉" 三个 spec;应开一个 `workflow-run-history` feature。
+
 **两道安全闸**(防轻车道变逃生舱):
-1. **保守默认**:3 道 trip 任一 no / 不确定 → 全道;分类只在 feature-init 发生,**开工后不重判**。
+1. **高风险保守**:3 道 trip 任一 no,或不确定是否触达高风险项 → 全道;分类只在 feature-init 发生,**开工后不重判**。
 2. **事后反核**:proof-bundle 对轻车道 feature grep 实际 diff vs 项目声明的不变量路径;命中 → 报"误分类,应走全道"(治"自报不碰不变量但实际碰了",如 014 式 backfill)。
 
-**升级**:轻车道实施中发现需 spec(触达不变量 / 要契约变更)→ 停,重跑 `/feature-init` 选全道补 spec.md。
+**升级**:直接实施或轻车道中发现触达 API / DB / security / multi-tenant / evidence/data invariants / 跨模块契约 / 高爆破半径 → 停,补 light/full artifact;若需 frozen spec,重跑 `/feature-init` 选全道补 spec.md。
 
 ### 3.3 `spec.md` 写法(WHAT,冻结)
 
@@ -576,7 +592,7 @@ docs/specs/
 
 | 任务 | 工具 |
 |---|---|
-| 起新 feature 三文件 | [`/feature-init <slug>`](../skills/feature-init/SKILL.md) —— 自动创建 `docs/specs/<NNN>-<slug>/{spec,plan,tasks}.md`(+ chat context pre-fill) |
+| 起新 feature artifact | [`/feature-init <slug>`](../skills/feature-init/SKILL.md) —— 全道创建 `spec/plan/tasks`;轻车道只创建 `tasks.md` |
 | spec 写完后质量自检(实施前 gate) | [`/spec-quality-check`](../skills/spec-quality-check/SKILL.md) —— 机械化 §3.7 7 问 + dispatch [`spec-quality-reviewer`](../agents/spec-quality-reviewer.md) 做主观二审 |
 | spec / plan 实施中发现错 | [`/spec-revise`](../skills/spec-revise/SKILL.md) —— orchestrate [workflow.md §3.5](workflow.md#35-开发中发现-specplan-错怎么办) / [§2.6](workflow.md#26-module-中途变更feature-实施中发现边界要调整) SOP(ADR + `## 修订记录` + plan prior decisions + tasks rebalance) |
 | 完成交付(实施后) | [`/feature-done`](../skills/feature-done/SKILL.md) —— 默认端点门禁:L1 / L2 / L3 / proof bundle 聚合成一个 READY / NEEDS WORK / BLOCKED verdict |

@@ -25,31 +25,34 @@ project-workflow 分两层:
 
 无论使用 Claude Code、Codex,还是手工执行,以下不变量保持不变:
 
-1. **A 类约定是项目当前规则源**  
+1. **A 类约定是项目当前规则源**
    `AGENTS.md` 是跨工具 canonical 入口。路径级规则可以有工具适配形式,但规则内容仍属于 A 类约定。
 
-2. **Feature 以 spec artifact 承载**  
+2. **无需新 artifact 的任务不启动 project-workflow**
+   小 bugfix、文案、样式、局部测试修复、低风险文档编辑,以及已确认 spec 下的实施任务,不新建 feature artifact;直接做时仍遵守 `AGENTS.md` / path rules 和相关检查。
+
+3. **Feature artifact 只有 Full / Light 两类**
    全道 feature 使用 `docs/specs/<NNN>-<slug>/{spec,plan,tasks}.md`;轻车道使用同目录下的 `tasks.md`。
 
-3. **Spec quality gate 在实施前发生**  
+4. **Spec quality gate 在实施前发生**
    全道 feature 开始实现前必须通过 7 问质量检查。Failed 项阻断实施;borderline 项允许继续,但要显式记录风险和修法。
 
-4. **中途改 frozen spec 走修订 SOP**  
+5. **中途改 frozen spec 走修订 SOP**
    已确认并开始实施后,修改 `spec.md` 必须有 ADR、修订记录、plan/tasks 同步。Draft 阶段自由编辑。
 
-5. **交付验证按规则源分层**  
+6. **交付验证按规则源分层**
    L1 机械检查、L2 项目约定、L3 feature spec 分开跑,proof bundle 负责聚合证据和 verdict。
 
-6. **Drift refresh 只处理 A 类约定**  
+7. **Drift refresh 只处理 A 类约定**
    P4 更新 `AGENTS.md` / 路径规则,不回写历史 spec,也不把 backlog 放进 repo 文件。
 
-7. **Workflow action 有唯一权威层**  
+8. **Workflow action 有唯一权威层**
    `docs/actions/` 定义每个 public workflow action 的触发、输入、输出、不变量和验证。Claude Code skills、Codex skills、shell scripts、手工流程只能增加 runtime 执行细节,不能重新定义 action。
 
-8. **Reviewer 方法有唯一权威层**  
+9. **Reviewer 方法有唯一权威层**
    `docs/reviewers/` 定义 reviewer、auditor、researcher 的任务边界、输入、检查方法和输出形状。Claude `agents/` 与 Codex plugin skills 只是 adapter,不能各自维护一套 reviewer 方法。
 
-9. **Public action 和 helper surface 分开**  
+10. **Public action 和 helper surface 分开**
    默认跨工具 action 是 `project-init` / `project-personalize` / `feature-init` / `spec-quality-check` / `spec-revise` / `feature-done` / `agents-md-revise`。L1/L2/L3/proof-bundle 可以作为某个 adapter 的调试或局部复查入口存在,但不能变成第二套默认流程。
 
 ---

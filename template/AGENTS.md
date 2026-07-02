@@ -24,7 +24,7 @@ CLAUDE.md                  thin pointer: @AGENTS.md
 ├── hooks.json
 └── hooks/                 thin wrappers over shared hook scripts
 docs/
-├── specs/<NNN>-<slug>/    实际功能 spec(每开发任务一个目录,由 /feature-init 创建)
+├── specs/<NNN>-<slug>/    需追踪的 feature artifact(由 /feature-init 创建)
 ├── adr/                   架构决策记录
 └── (其他业务文档)
 <!-- Fullstack 项目追加 tier 占位:
@@ -61,7 +61,7 @@ docs/
 <!-- 目录约定:源码、测试、文档放哪儿。Claude 能从代码读出来的不写 -->
 - `{{SRC_DIR}}/`  源码
 - `{{TEST_DIR}}/` 测试
-- `docs/specs/` 功能级 spec(每开发任务一个目录)
+- `docs/specs/` 功能级 artifact(仅需追踪时创建)
 - `docs/adr/` 架构决策记录
 
 <!-- 项目特异约定 -->
