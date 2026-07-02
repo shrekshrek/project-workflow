@@ -37,6 +37,8 @@ Record at least:
 
 For light lane, also re-check that actual diff did not touch declared high-blast-radius paths; if it did, report misclassification.
 
+For full-lane `READY`, move the top `spec.md` status marker to `已实现`. This is a delivery status update, not a contract revision; do not change spec body content, and skip this for light-lane or non-READY results.
+
 ## Verdict
 
 - `READY`: L1 passes, no blocking L2/L3 findings, proof bundle written.

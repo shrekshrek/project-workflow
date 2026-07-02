@@ -1,8 +1,8 @@
 # <NNN> <slug> — Spec
 
-> 创建于 <TODAY> · 状态:**草稿** / 评审中 / 已确认 / 已实现
+> 创建于 <TODAY> · 状态:**草稿** / 已确认 / 已实现
 >
-> **本文件回答 WHAT —— 做什么、为什么。评审通过后冻结,需变更则起新功能 spec。**
+> **本文件回答 WHAT —— 做什么、为什么。确认并开始实施后冻结,需变更则起新功能 spec。**
 > 写法详见 [project-workflow / spec-driven.md](https://github.com/shrekshrek/project-workflow/blob/main/docs/spec-driven.md)。
 
 ## 1. Outcomes

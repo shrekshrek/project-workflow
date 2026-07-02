@@ -45,6 +45,7 @@ Canonical action spec: `../../docs/actions/feature-done.md`. Follow that file fo
    - Update `tasks.md ## Proof Bundle`.
    - Include diff summary, L1/L2/L3 results, test evidence, AGENTS/rule drift suggestions, and open questions.
    - Preserve existing task history; replace stale proof-bundle content only.
+   - If the final verdict is `READY` and this is full lane, update the top `spec.md` status marker to `已实现` by moving the bold marker only. Do not change contract text. Skip for light lane or non-READY results.
 
 7. Return the canonical verdict.
    - L1 failure: `BLOCKED`.

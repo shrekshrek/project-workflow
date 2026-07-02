@@ -36,6 +36,8 @@ Mechanical checks may detect missing sections and placeholders; subjective check
 - `BORDERLINE`: implementation may proceed only with explicitly recorded risk and follow-up.
 - `BLOCKED`: at least one failed check that must be fixed before implementation.
 
+`spec.md` status handling: this gate does not automatically mark `已确认`. That status means the user has accepted the spec and is starting implementation. After `READY`, or after accepted `BORDERLINE` risk is recorded, adapters should tell the user to mark `已确认` before implementation; update the status only when the user explicitly asks.
+
 ## Invariants
 
 - This gate validates the artifact, not the implementation.

@@ -37,6 +37,7 @@ Canonical action spec: `../../docs/actions/spec-quality-check.md`. Follow that f
    - `Failed > 0`: `BLOCKED`; do not start implementation.
    - `Failed = 0` and `Borderline > 0`: implementation may proceed only if risks/acceptance/follow-up are recorded in `plan.md ## 4. 风险与未决` or `tasks.md ## 2. 实施记录`.
    - All pass: ready for implementation.
+   - Do not automatically mark `spec.md` as `已确认`; that status is the user's acceptance/freeze marker. If the user accepts the verdict and starts implementation, tell them to mark `已确认`, or update it only when explicitly asked.
 
 5. Output a compact report.
    - Passed / Borderline / Failed grouped lists.
