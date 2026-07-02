@@ -1,7 +1,7 @@
 {
   "name": "project-workflow",
   "description": "Spec-driven feature development blueprint for AI-assisted coding (Claude Code-native). Skills: /project-init, /project-personalize, /feature-init, /spec-quality-check, /spec-revise, /l1-review, /l2-review, /l3-review, /proof-bundle, /feature-done, /agents-md-revise. Agents: agents-md-reviewer, spec-reviewer, spec-quality-reviewer, tech-researcher, codebase-explorer, decision-completeness-auditor.",
-  "version": "2.10.1",
+  "version": "2.10.2",
   "author": {
     "name": "shrek.wang"
   },
