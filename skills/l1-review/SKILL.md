@@ -1,16 +1,18 @@
 ---
 name: l1-review
 model: sonnet
-description: Run the project's L1 review — mechanical/automated checks (lint, typecheck, tests). Reads the project's `check` command from AGENTS.md (or package.json scripts) and reports pass/fail with a concise summary, not the full stdout dump.
+description: Claude Code helper surface for the feature-done endpoint action. Run only the L1 mechanical/automated checks (lint, typecheck, tests) for ad-hoc verification or partial reruns. Reads the project's `check` command from AGENTS.md (or package.json scripts) and reports pass/fail concisely. For normal feature delivery, use feature-done.
 ---
 
 > **Response language**: Match the user's prompt language (中文 / English / etc.) in all natural-language output — headers, summaries, questions, progress messages. Code, commands, file paths, and tool output stay as-is.
 
 # L1 Review
 
+Canonical action spec: `docs/actions/feature-done.md`. L1 is a helper surface for that endpoint action, not a standalone methodology action; this skill adds Claude Code execution details.
+
 L1 = mechanical layer: lint / typecheck / unit tests。Runs the project's check command + 给 focused report。
 
-**Use when**: P2 endpoint, or ad-hoc mechanical check during implementation. Typically invoked by `/feature-done` (Step 3) but standalone-runnable.
+**Use when**: ad-hoc mechanical check during implementation, or a partial rerun after `/feature-done` identified an L1 issue. Typically invoked by `/feature-done` (Step 3) but standalone-runnable for debugging.
 **Not for**: convention compliance (use `/l2-review`) / spec compliance (use `/l3-review`) / proof bundle assembly (use `/proof-bundle`).
 
 User input: `$ARGUMENTS` (optional — usually empty; could be a sub-scope like "backend only")

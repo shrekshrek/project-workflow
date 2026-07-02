@@ -8,6 +8,8 @@ description: Pre-implementation gate that verifies a feature's spec/plan/tasks q
 
 # Spec Quality Check
 
+Canonical action spec: `docs/actions/spec-quality-check.md`. Follow that file for methodology rules; this skill adds Claude Code execution details.
+
 Run the 7-question quality checklist from [`spec-driven.md §3.7`](../../docs/spec-driven.md#37-specplan-写完后的质量自检7-问-checklist) as a **pre-implementation gate**。
 
 **Use when**: `/feature-init` already ran + you filled in spec.md / plan.md / tasks.md TODOs in the main conversational session — **right before starting implementation**.

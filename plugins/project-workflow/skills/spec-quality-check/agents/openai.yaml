@@ -1,0 +1,4 @@
+interface:
+  display_name: "Spec Quality Check"
+  short_description: "Gate a feature spec before implementation"
+  default_prompt: "Use $spec-quality-check to validate this feature spec before implementation."

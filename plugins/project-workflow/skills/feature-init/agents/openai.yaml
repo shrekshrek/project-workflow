@@ -1,0 +1,4 @@
+interface:
+  display_name: "Feature Init"
+  short_description: "Create a project-workflow feature spec"
+  default_prompt: "Use $feature-init to create the spec artifacts for this feature."

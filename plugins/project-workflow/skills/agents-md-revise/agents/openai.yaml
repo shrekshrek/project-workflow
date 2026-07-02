@@ -1,0 +1,4 @@
+interface:
+  display_name: "Agents Md Revise"
+  short_description: "Refresh AGENTS.md from objective drift"
+  default_prompt: "Use $agents-md-revise to audit conventions against the current project state."

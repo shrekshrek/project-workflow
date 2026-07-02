@@ -1,14 +1,16 @@
 ---
 name: agents-md-revise
 model: sonnet
-description: P4 phase tool — scan A 类约定 (AGENTS.md 多层嵌套 + .claude/rules/*.md) against actual project state, detect objective drift (commands / deps / dir structure / framework versions / config), generate diff suggestions, apply approved patches with a commit message draft. Critical-only (no subjective suggestions, no hook auto-trigger). Use periodically (every 2-4 weeks / month) or when sensing reproducible drift signal.
+description: P4 phase tool — scan A 类约定 (AGENTS.md 多层嵌套 + path-scoped rules; Claude materialization is .claude/rules/*.md) against actual project state, detect objective drift (commands / deps / dir structure / framework versions / config), generate diff suggestions, apply approved patches with a commit message draft. Critical-only (no subjective suggestions, no hook auto-trigger). Use periodically (every 2-4 weeks / month) or when sensing reproducible drift signal.
 ---
 
 > **Response language**: Match the user's prompt language (中文 / English / etc.) in all natural-language output — headers, drift descriptions, decisions. Code, commands, file paths stay as-is.
 
 # Agents-md Revise
 
-P4 phase 工具 —— 主动 audit **A 类约定全集**(`AGENTS.md` 多层嵌套 + `.claude/rules/*.md`,见 [workflow.md §0.3](../../docs/workflow.md#03-概念区分钉死再读后续) / [§1.3](../../docs/workflow.md#13-a-类约定的内容标准agentsmd--claude-rules))跟项目实际状态的**客观 drift**,生成 diff 提议,用户决定后 apply。
+Canonical action spec: `docs/actions/agents-md-revise.md`. Follow that file for methodology rules; this skill adds Claude Code execution details.
+
+P4 phase 工具 —— 主动 audit **A 类约定全集**(`AGENTS.md` 多层嵌套 + path-scoped rules;Claude materialization 为 `.claude/rules/*.md`,见 [workflow.md §0.3](../../docs/workflow.md#03-概念区分钉死再读后续) / [§1.3](../../docs/workflow.md#13-a-类约定的内容标准agentsmd--claude-rules))跟项目实际状态的**客观 drift**,生成 diff 提议,用户决定后 apply。
 
 **Use when**: P4 phase — 周期(每 2-4 周 / 月)主动 audit;或感知到 "反复跟 AI 提醒同一件事 ≥ 2 次" 的 drift 信号。仅做**客观可验证 drift**(命令 / 依赖 / 目录 / 版本 / 配置不一致),零误报。
 

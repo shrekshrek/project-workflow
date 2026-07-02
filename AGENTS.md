@@ -5,12 +5,13 @@
 
 ## 仓库性质
 
-**project-workflow v2** —— spec-driven feature development blueprint + Claude Code plugin。
+**project-workflow v2** —— spec-driven feature development blueprint + runtime adapters。
 
-三件套(本仓库):
-1. `docs/` —— 方法论文档(5 阶段、4 支柱、spec 三件套、10 工程陷阱)
-2. `template/` —— 纯方法论 starter(语言中立)
-3. `.claude-plugin/` + `skills/` —— Claude Code 插件资产
+四层资产(本仓库):
+1. `docs/` —— 方法论文档(5 阶段、4 支柱、canonical actions、spec 三件套、10 工程陷阱)
+2. `template/` —— starter scaffold(方法论核心 + Claude compatibility assets,语言中立但非 tool-empty)
+3. `.claude-plugin/` + `skills/` —— Claude Code adapter 资产(当前最成熟)
+4. `plugins/project-workflow/` + `.agents/plugins/` —— Codex plugin 分发资产(installable plugin package + local marketplace)
 
 **遵循 v2 方法论的一个具体项目示例**:[`shrekshrek/full-stack-scaffolding-fastapi-nuxt4`](https://github.com/shrekshrek/full-stack-scaffolding-fastapi-nuxt4) —— FastAPI + Nuxt 4 全栈脚手架,公开。仅作 example-of-one,v2 方法论自身的论据不依赖它。
 
@@ -36,7 +37,16 @@ skills/                Claude Code skills
 ├── feature-done/         /project-workflow:feature-done        (P2 端点 orchestrator)
 └── agents-md-revise/     /project-workflow:agents-md-revise    (P4 主动 refresh A 类约定)
 
-agents/                Sub-agents(被 skills dispatch)
+.agents/plugins/      Codex local marketplace metadata
+└── marketplace.json
+plugins/
+└── project-workflow/ Codex installable plugin package
+    ├── .codex-plugin/plugin.json
+    ├── skills/
+    ├── docs/
+    └── template/      release artifact copied from root template/
+
+agents/                Claude Code sub-agent adapters(thin wrappers over docs/reviewers/)
 ├── agents-md-reviewer.md            L2 AGENTS.md 合规 review(by /l2-review)
 ├── spec-reviewer.md                 L3 spec.md 合规 review(by /l3-review)
 ├── spec-quality-reviewer.md         spec 自身质量主观二审(by /spec-quality-check)
@@ -44,17 +54,25 @@ agents/                Sub-agents(被 skills dispatch)
 ├── codebase-explorer.md             既有 codebase 结构扫描(by /project-personalize Path C)
 └── decision-completeness-auditor.md plant 决策追溯审计(by /project-init / /project-personalize / /feature-init / /spec-revise / /agents-md-revise,Preview Gate 之前)— 实施 workflow.md §1.12
 docs/                  方法论文档
+├── actions/           workflow action canonical specs
+├── reviewers/         reviewer/auditor/researcher canonical specs
 ├── workflow.md        ⭐ 5 阶段 + 4 支柱(核心)
+├── cross-tool-methodology.md  core vs runtime adapter 边界
 ├── gotchas.md         ⭐ 10 工程陷阱
 ├── spec-driven.md     spec/plan/tasks 详解
 ├── tooling.md         工具链对比
 └── proposals/         详细提案(> 200 行的提案;真 backlog 走 GitHub Issues per §7.8)
-template/              方法论 starter
+template/              starter scaffold(core files + Claude compatibility assets)
+scripts/
+└── sync-codex-plugin.js  sync/check Codex plugin release artifacts
 ```
 
 ## 修改纪律
 
-- **方法论 vs 工程化分层**:本仓库**只放方法论**(`docs/` + `template/` + plugin)。工程化样例(具体栈代码)放在另一个仓库,不进本仓库
+- **方法论 vs 工程化分层**:本仓库**只放方法论与 adapter 资产**(`docs/` + `template/` + plugin / skills)。工程化样例(具体栈代码)放在另一个仓库,不进本仓库
+- **Action source of truth**:workflow action 的触发、输入、输出、不变量、验证写在 `docs/actions/`;修改 Claude/Codex skill 前先改对应 action spec
+- **Reviewer source of truth**:L2/L3/research/audit 的方法写在 `docs/reviewers/`;修改 `agents/` 或 Codex plugin reviewer 调用前先改对应 reviewer spec
+- **Codex plugin release artifact**:`plugins/project-workflow/docs/` 和 `plugins/project-workflow/template/` 是安装包副本,不要手改;改源目录后运行 `node scripts/sync-codex-plugin.js`
 - **不在方法论里塞栈细节**(workflow.md / gotchas.md 通用,具体命令样例引用外部仓库)
 - **plugin skill 简洁**:每个 SKILL.md < 200 行,职责单一
 - **skill description 写好**:Claude 据此判断何时自动调用

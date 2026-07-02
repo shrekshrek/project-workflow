@@ -1,0 +1,35 @@
+{
+  "name": "project-workflow",
+  "version": "2.9.41",
+  "description": "Spec-driven project workflow for Codex and Claude Code with project initialization, feature specs, reviews, and delivery gates.",
+  "author": {
+    "name": "shrek.wang"
+  },
+  "homepage": "https://github.com/shrekshrek/project-workflow",
+  "repository": "https://github.com/shrekshrek/project-workflow.git",
+  "license": "MIT",
+  "keywords": [
+    "spec-driven",
+    "workflow",
+    "agents",
+    "codex",
+    "claude-code"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Project Workflow",
+    "shortDescription": "Run spec-driven project workflow in Codex.",
+    "longDescription": "Project Workflow packages project initialization, feature spec scaffolding, pre-implementation quality checks, spec revision, convention drift refresh, and end-of-feature review gates for Codex. It keeps AGENTS.md, specs, ADRs, Claude compatibility assets, and Codex hooks aligned around one methodology.",
+    "developerName": "shrek.wang",
+    "category": "Productivity",
+    "capabilities": [
+      "Write",
+      "Review"
+    ],
+    "defaultPrompt": [
+      "Use $project-init to initialize this repository.",
+      "Use $feature-init to start a new feature spec.",
+      "Use $feature-done to review completed feature work."
+    ]
+  }
+}

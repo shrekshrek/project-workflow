@@ -7,6 +7,8 @@ description: Orchestrate mid-implementation spec/plan/module revision per workfl
 
 # Spec Revise
 
+Canonical action spec: `docs/actions/spec-revise.md`. Follow that file for methodology rules; this skill adds Claude Code execution details.
+
 Orchestrate the mid-implementation revision SOP from [`workflow.md §3.5`](../../docs/workflow.md#35-开发中发现-specplan-错怎么办) (spec/plan errors) and [`workflow.md §2.6`](../../docs/workflow.md#26-module-中途变更feature-实施中发现边界要调整) (module boundary changes).
 
 **Use when**: implementation reveals real spec error, verification not testable, scope missed item, or module boundary needs adjustment.
@@ -98,7 +100,7 @@ ls docs/adr/ | grep -E '^[0-9]{4}-' | sort -rn | head -1
 1. 重审 plan.md `§1.1 Sibling Alignment` —— 这次往往触发 "Codify"
 2. 若 module **反常**(参见 [§2.3](../../docs/workflow.md#23-反常判定何时该写模块-agentsmd) 判定)→ 写 / 改 `<module>/AGENTS.md`(主文件)+ `<module>/CLAUDE.md`(1 行 `@AGENTS.md` alias)
 3. (如适用)起 tier-level AGENTS.md 调整(若 codify 出来的规则属于 tier 级)
-4. (如适用)若 codify 出来的规则属 framework / topic 级 → 加 / 改 `.claude/rules/<topic>.md`(A 类 peer to AGENTS.md,见 [§1.3](../../docs/workflow.md#13-a-类约定的内容标准agentsmd--clauderules))
+4. (如适用)若 codify 出来的规则属 framework / topic 级 → 加 / 改 path-scoped rules(Claude materialization 为 `.claude/rules/<topic>.md`;见 [§1.3](../../docs/workflow.md#13-a-类约定的内容标准agentsmd--claude-rules))
 
 每步跟用户确认改了什么。
 

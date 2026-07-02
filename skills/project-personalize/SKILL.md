@@ -8,6 +8,8 @@ description: Adapt a scaffold-cloned or v2-shaped existing project to user's spe
 
 # Project Personalize
 
+Canonical action spec: `docs/actions/project-personalize.md`. Follow that file for methodology rules; this skill adds Claude Code execution details.
+
 Adapt a project that **already has** v2 baseline files (AGENTS.md / `.claude/`)—typically because you cloned a v2 scaffold or are retrofitting an existing project—to your specific values, tier structure, and codebase reality.
 
 **Use when**:
@@ -252,4 +254,3 @@ head -10 .claude/rules/*.md 2>/dev/null
 | Step 4.B tier 都已有 AGENTS.md | 报告 "tier-level 双文件方案已齐,无需补" |
 | Step 4.C 扫描出来的 Project Structure 用户不满意 | 用户可选 "edit",手工调整建议后再应用 |
 | Git 工作树脏(已有未 commit 改动) | 警告:"建议先 commit 当前 changes 再跑 personalize,避免改动混合"(不强制) |
-

@@ -17,17 +17,17 @@
 ## 1. 三层工具栈
 
 ```
-┌─ 上层:协作约定 ───────────────── workflow.md / CLAUDE.md / specs/
+┌─ 上层:协作约定 ───────────────── workflow.md / AGENTS.md / specs/
 │   你和 AI 之间的"契约",项目内自定义
 │
 ├─ 中层:Skill / Plugin 框架 ────── Matt Pocock / Superpowers / ECC / Spec Kit / 原生
 │   在 AI 编码助手之上的能力扩展(slash command / agent / hook)
 │
-└─ 底层:IDE / CLI ────────────── Claude Code / Cursor / Codex
+└─ 底层:IDE / CLI / App ──────── Claude Code / Codex / Cursor
     跟 AI 对话的入口,提供文件读写、bash、LSP 集成等基础能力
 ```
 
-**关键洞察**:**底层和中层都不是你的核心资产,上层才是**。底层换工具(Claude Code → Cursor)、中层换框架(ECC → Matt)都是 weeks-级别迁移;上层(你写的 spec、CLAUDE.md、规则)是 months-级别投入。
+**关键洞察**:**底层和中层都不是你的核心资产,上层才是**。底层换工具(Claude Code → Codex / Cursor)、中层换框架(ECC → Codex skills / Claude plugin)都是 weeks-级别迁移;上层(你写的 `docs/actions/`、spec、AGENTS.md、ADR、proof bundle)是 months-级别投入。
 
 逻辑推论:**底层和中层选择应该最优先服务上层**,反过来就本末倒置。
 
@@ -37,39 +37,52 @@
 
 ### 2.1 横向对比
 
-| 维度 | Claude Code | Cursor | Codex(OpenAI CLI) |
+| 维度 | Claude Code | Codex | Cursor |
 |---|---|---|---|
-| 形态 | CLI + IDE 扩展(VS Code / JetBrains) | 独立 IDE(VS Code fork) | 纯 CLI |
-| 模型 | Claude(Anthropic) | 多模型(GPT/Claude/Gemini) | GPT |
-| 主交互 | 对话式 + 工具调用 | 编辑器内 inline + chat | 对话式 |
-| Hook 系统 | ✅ 完整(PreToolUse/PostToolUse/Stop) | ❌ 无原生 hook | ⚠️ 有限 |
-| Plugin 生态 | ✅ 增长快(2026 年大量第三方) | ⚠️ 主要靠 IDE 扩展 | ⚠️ 较少 |
-| Worktree 隔离 | ✅ 原生支持 | ❌ 需手动 | ⚠️ 可脚本 |
-| Skill / Memory 持久化 | ✅ `~/.claude/skills`、`memory/` | ⚠️ 靠 .cursorrules | ⚠️ 靠 prompt |
+| 形态 | CLI + IDE 扩展 | CLI + IDE extension + Codex app/cloud | 独立 IDE(VS Code fork) |
+| 模型 | Claude(Anthropic) | GPT(OpenAI) | 多模型(GPT/Claude/Gemini) |
+| 主交互 | 对话式 + 工具调用 | 对话式 + app/CLI/IDE 多入口 | 编辑器内 inline + chat |
+| Persistent guidance | `CLAUDE.md` / `AGENTS.md` alias | `AGENTS.md` discovery | `.cursorrules` / 项目规则 |
+| Hook 系统 | ✅ `.claude/settings.json` + hooks | ✅ `.codex/hooks.json` / `.codex/config.toml` | ❌ 无原生 hook |
+| Skill / Plugin | ✅ Claude Code plugin / skills | ✅ Codex plugin + bundled skills | ⚠️ 主要靠 IDE 扩展 |
+| Worktree / parallel work | ✅ 原生支持 | ✅ worktrees / subagents / cloud threads | ❌ 需手动 |
 
 ### 2.2 选择理由
 
-**本项目主用 Claude Code**:
-- Hook 系统是 [workflow §6.3 规则由环境强制](workflow.md#63-规则由环境强制environment-enforced-rules) 的关键基础设施,Cursor / Codex 没有等价物
-- Worktree 原生支持是探索性 spike / 架构变更隔离的关键(见 [workflow §9 何时偏离](workflow.md#9-何时偏离手册))
-- skill / memory 文件系统让"上层资产"显式化,容易迁移
+**本项目当前主 adapter 是 Claude Code**:
+- 已有 `.claude-plugin` / `skills/` / `agents/` 实现,成熟度最高
+- Hook 系统是 [workflow §6.3 规则由环境强制](workflow.md#63-规则由环境强制environment-enforced-rules) 的关键基础设施
+- Worktree / sub-agent 体验已经被本项目验证过
+
+**Codex 的定位**:
+- `AGENTS.md`、skills、plugins、hooks 都有官方机制,适合做第二个正式 adapter
+- 与 Claude Code 的差异主要在配置格式和触发入口,不在 methodology core
+- 正式安装分发包在 `plugins/project-workflow/`;canonical action 定义仍在 `docs/actions/`
 
 **Cursor 的优势**(本项目不主用):
 - 编辑器内 inline 编辑体感更快,适合**单文件小修改**
 - 多模型切换适合不同任务用不同模型
 - 适合人为本(你主导,AI 辅助)风格
 
-**何时用 Codex**(纯 CLI):
-- CI 环境,无 IDE
-- 简单脚本生成,不需要 hook / worktree
-
 ### 2.3 关键判定
 
 | 问题 | 答案 |
 |---|---|
 | 装多个 IDE 工具会冲突吗? | 不会(它们读同一份代码) |
-| 该选一个主用吗? | 是。`~/.claude/rules/`、CLAUDE.md 等约定**只跟主工具打通**,多入口会稀释投资 |
-| 切换工具的成本? | 低(weeks),前提是上层资产保持工具无关 |
+| 该选一个主 adapter 吗? | 是。先让一个 adapter 稳定,再移植到另一个;不要两边同时发明流程 |
+| Claude/Codex 能共用什么? | `AGENTS.md`, `docs/actions/`, `docs/reviewers/`, `docs/specs/`, ADR, proof bundle, L1/L2/L3 语义 |
+| Claude/Codex 不能共用什么? | plugin manifest、hook 配置、skill 安装路径、sub-agent 配置格式 |
+| 切换工具的成本? | 低到中(weeks),前提是上层资产保持工具无关 |
+
+### 2.4 Codex native adapter surface
+
+| Capability | Project mapping | Methodology source |
+|---|---|---|
+| Persistent project guidance | `AGENTS.md` plus nested `AGENTS.md` / `AGENTS.override.md` when needed | A 类项目约定 |
+| Workflow skills | `plugins/project-workflow/skills/<action>/SKILL.md` | `docs/actions/<action>.md` |
+| Reviewer execution | Codex plugin skills read `docs/reviewers/*.md`; optional runtime subagents when available | `docs/reviewers/*.md` |
+| Hooks/settings | `.codex/hooks.json` or `.codex/config.toml` | D 类 runtime enforcement |
+| Plugin packaging | `plugins/project-workflow/.codex-plugin/plugin.json` + `.agents/plugins/marketplace.json` | Adapter distribution only |
 
 ---
 
@@ -149,17 +162,19 @@
 
 ---
 
-## 4. Anthropic 原生 plugin
+## 4. Runtime 原生能力
 
-这一层 Anthropic 直接维护,质量稳定,本项目主要依赖:
+### 4.1 Claude Code / Anthropic 原生能力
+
+这一层 Anthropic 直接维护,质量稳定,Claude Code adapter 主要依赖:
 
 | 插件 | 作用 | 本项目用法 |
 |---|---|---|
 | `context7` | 拉取库文档(MCP) | 任何外部库版本相关问题先问它 |
-| `pr-review-toolkit` | 5+ 种 reviewer agent(code / type / silent-failure / 等) | proof bundle 阶段必跑 |
+| `pr-review-toolkit` | 5+ 种 reviewer agent(code / type / silent-failure / 等) | Claude adapter 可用;proof bundle 阶段必须有等价 reviewer |
 | `commit-commands` | `/commit`、`/commit-push-pr` 等 | 标准化 git 流程 |
 | `rust-analyzer-lsp` | Rust LSP 集成 | Rust 项目实时类型检查 |
-| `/init`(原生) | 扫描代码库生成初始 CLAUDE.md | 新项目第一步;后续维护用 [`/project-workflow:agents-md-revise`](../skills/agents-md-revise/SKILL.md) |
+| `/init`(原生) | 扫描代码库生成初始 CLAUDE.md | Claude adapter 新项目可用;生成内容应收敛到 `AGENTS.md` source of truth,后续维护用 [`/project-workflow:agents-md-revise`](../skills/agents-md-revise/SKILL.md) |
 | `/security-review`(原生) | 安全审查 | 涉及认证/输入/密钥时跑 |
 | `/review`(原生) | 通用代码审查 | 备用 |
 
@@ -167,6 +182,21 @@
 - 维护可信(Anthropic 自己升级,不会突然废弃)
 - 跟模型版本协调(新模型出来 plugin 同步优化)
 - 命名空间独立,不容易冲突
+
+### 4.2 Codex / OpenAI 原生能力
+
+Codex adapter 不应该照搬 Claude Code 的文件布局,而应该复用 methodology core,再映射到 Codex 原生机制:
+
+| 能力 | Codex 载体 | project-workflow 用法 |
+|---|---|---|
+| Persistent guidance | `AGENTS.md` + nested `AGENTS.override.md` / `AGENTS.md` discovery | 直接复用 core 的项目约定 source of truth;用嵌套文件承载 scoped guidance |
+| Skills | `plugins/project-workflow/skills` | default public action adapter:project-init / project-personalize / feature-init / spec-quality-check / spec-revise / feature-done / agents-md-revise;方法定义来自 `docs/actions/` |
+| Reviewer execution | plugin skill + bundled `docs/reviewers/*.md` | 若当前 Codex surface 支持 subagent,优先用 subagent 执行 reviewer spec;否则主会话执行同一 spec |
+| Plugin packaging | `plugins/project-workflow/` + `.agents/plugins/marketplace.json` | Codex App / CLI 的安装分发入口;plugin 内 `docs/` 与 `template/` 是 release artifact,不能独立 fork methodology |
+| Hooks | `.codex/hooks.json` / `.codex/config.toml` | 复用同一 L1 脚本语义,配置格式按 Codex 写 |
+| App/cloud threads | Codex app / cloud | 适合并行 feature 或长任务 handoff,proof bundle 仍回写 repo |
+
+迁移原则:只翻译入口、安装方式、hook 配置和 reviewer 调用方式;不要 fork `workflow.md` / `spec-driven.md` 的定义。
 
 ---
 
@@ -217,9 +247,9 @@
 **修正**:每月一次审查,3 个月没用的归档
 
 ### 6.3 把上层投资沉在底层工具
-**症状**:把项目规则写进 Cursor 的 `.cursorrules`,而不是项目根 `CLAUDE.md`
+**症状**:把项目规则只写进 Cursor 的 `.cursorrules` 或 Claude 的 `CLAUDE.md`,而不是项目根 `AGENTS.md`
 **后果**:换工具就丢,失去工具无关性
-**修正**:**协作约定写在工具无关位置**(`CLAUDE.md` / `docs/`),工具特定位置只放工具特异配置
+**修正**:**协作约定写在工具无关位置**(`AGENTS.md` / `docs/`),工具特定位置只放工具特异配置
 
 ### 6.4 给框架开 admin 权限
 **症状**:把 process-owning 框架的所有 hook 都启用,所有命令都允许

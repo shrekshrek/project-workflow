@@ -8,7 +8,7 @@
         <mxCell id="title" value="project-workflow v2 — Spec-driven AI development blueprint" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=22;fontStyle=1;fontColor=#1A237E;" vertex="1" parent="1">
           <mxGeometry x="40" y="20" width="1620" height="32" as="geometry"/>
         </mxCell>
-        <mxCell id="subtitle" value="11 skills + 6 sub-agents  ·  Claude Code-native plugin  ·  v2.9.41  ·  https://github.com/shrekshrek/project-workflow" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontColor=#546E7A;" vertex="1" parent="1">
+        <mxCell id="subtitle" value="methodology core + Claude/Codex adapters  ·  Claude: 11 skills + 6 sub-agents  ·  Codex: plugin with 7 workflow skills  ·  v2.9.41" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontColor=#546E7A;" vertex="1" parent="1">
           <mxGeometry x="40" y="54" width="1620" height="20" as="geometry"/>
         </mxCell>
 
@@ -44,7 +44,7 @@
         <mxCell id="skill_projpers" value="&lt;b&gt;/project-personalize&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;scaffold / retrofit&lt;br/&gt;扫码 + 套配置&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1565C0;fontSize=11;align=center;" vertex="1" parent="1">
           <mxGeometry x="640" y="246" width="170" height="68" as="geometry"/>
         </mxCell>
-        <mxCell id="p0_out" value="&lt;b&gt;产出 (按文档类标记)&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:11px;&#39;&gt;&lt;b&gt;[A]&lt;/b&gt; AGENTS.md (项目 / tier / 模块 嵌套)  ·  &lt;b&gt;[A]&lt;/b&gt; .claude/rules/&lt;topic&gt;.md&lt;br/&gt;&lt;b&gt;[D]&lt;/b&gt; .claude/hooks/  ·  &lt;b&gt;[D]&lt;/b&gt; .claude/settings.json  ·  &lt;b&gt;[D]&lt;/b&gt; .gitignore&lt;br/&gt;&lt;b&gt;[B 骨架]&lt;/b&gt; docs/specs/_template/  ·  &lt;b&gt;[C 骨架]&lt;/b&gt; docs/adr/&lt;/span&gt;" style="text;html=1;strokeColor=#90A4AE;fillColor=#FAFAFA;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=11;spacing=8;rounded=0;dashed=1;" vertex="1" parent="1">
+        <mxCell id="p0_out" value="&lt;b&gt;产出 (按文档类标记)&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:11px;&#39;&gt;&lt;b&gt;[A]&lt;/b&gt; AGENTS.md (项目 / tier / 模块 嵌套)  ·  &lt;b&gt;[A]&lt;/b&gt; path-scoped rules (Claude: .claude/rules/)&lt;br/&gt;&lt;b&gt;[D]&lt;/b&gt; adapter hooks/settings (Claude: .claude/)  ·  &lt;b&gt;[D]&lt;/b&gt; .gitignore&lt;br/&gt;&lt;b&gt;[B 骨架]&lt;/b&gt; docs/specs/_template/  ·  &lt;b&gt;[C 骨架]&lt;/b&gt; docs/adr/&lt;/span&gt;" style="text;html=1;strokeColor=#90A4AE;fillColor=#FAFAFA;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=11;spacing=8;rounded=0;dashed=1;" vertex="1" parent="1">
           <mxGeometry x="840" y="240" width="800" height="80" as="geometry"/>
         </mxCell>
 
@@ -72,10 +72,10 @@
         <mxCell id="step_deliver" value="&lt;b&gt;READY / NEEDS WORK / BLOCKED&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;端点验证结果 → 交付 or 回 implement&lt;/span&gt;" style="text;html=1;strokeColor=#90A4AE;fillColor=#FAFAFA;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=11;rounded=0;dashed=1;" vertex="1" parent="1">
           <mxGeometry x="1130" y="386" width="290" height="56" as="geometry"/>
         </mxCell>
-        <mxCell id="featdone_decompose" value="&lt;span style=&#39;font-size:10px;color:#558B2F;&#39;&gt;= &lt;b&gt;/l1-review&lt;/b&gt; (lint/typecheck/test)  ·  &lt;b&gt;/l2-review&lt;/b&gt; (AGENTS.md 合规)  ·  &lt;b&gt;/l3-review&lt;/b&gt; (spec 合规)  ·  &lt;b&gt;/proof-bundle&lt;/b&gt; (装配交付清单) ── 可单步分别跑&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=10;fontColor=#558B2F;" vertex="1" parent="1">
+        <mxCell id="featdone_decompose" value="&lt;span style=&#39;font-size:10px;color:#558B2F;&#39;&gt;= L1 (lint/typecheck/test)  ·  L2 (AGENTS.md 合规)  ·  L3 (spec 合规)  ·  proof bundle (装配交付清单) ── Claude helper 可单步重跑&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=10;fontColor=#558B2F;" vertex="1" parent="1">
           <mxGeometry x="600" y="450" width="930" height="20" as="geometry"/>
         </mxCell>
-        <mxCell id="lightlane_note" value="🔀 &lt;b&gt;轻车道(小改 bugfix/polish/additive)&lt;/b&gt;:/feature-init Step 4.5 自动判 → 仅 tasks.md(免 frozen spec/plan)· 跳 /spec-quality-check + L3 · /proof-bundle 收尾(含不变量反核)。判据/安全闸见 spec-driven §3.2.5" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F8E9;strokeColor=#558B2F;dashed=1;fontSize=9;align=left;verticalAlign=middle;spacing=4;fontColor=#558B2F;" vertex="1" parent="1">
+        <mxCell id="lightlane_note" value="🔀 &lt;b&gt;轻车道(小改 bugfix/polish/additive)&lt;/b&gt;:/feature-init Step 4.5 自动判 → 仅 tasks.md(免 frozen spec/plan)· 跳 /spec-quality-check + L3 · /feature-done 收尾(含不变量反核)。判据/安全闸见 spec-driven §3.2.5" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F8E9;strokeColor=#558B2F;dashed=1;fontSize=9;align=left;verticalAlign=middle;spacing=4;fontColor=#558B2F;" vertex="1" parent="1">
           <mxGeometry x="200" y="446" width="395" height="28" as="geometry"/>
         </mxCell>
 
@@ -120,7 +120,7 @@
         <mxCell id="skill_amdrevise" value="&lt;b&gt;/agents-md-revise&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;扫 A 约定 全集 vs 项目实际状态&lt;br/&gt;客观 drift → 逐条 yes/no/ignore → apply + commit 草稿&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#6A1B9A;fontSize=11;align=center;" vertex="1" parent="1">
           <mxGeometry x="450" y="672" width="320" height="65" as="geometry"/>
         </mxCell>
-        <mxCell id="p4_out" value="&lt;b&gt;产出 (按文档类标记)&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:11px;&#39;&gt;&lt;b&gt;[A 修订]&lt;/b&gt; AGENTS.md / .claude/rules/*.md 的 patch  ·  commit message 草稿 (`chore: refresh A 类约定`)&lt;/span&gt;" style="text;html=1;strokeColor=#90A4AE;fillColor=#FAFAFA;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=11;spacing=8;rounded=0;dashed=1;" vertex="1" parent="1">
+        <mxCell id="p4_out" value="&lt;b&gt;产出 (按文档类标记)&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:11px;&#39;&gt;&lt;b&gt;[A 修订]&lt;/b&gt; AGENTS.md / path-scoped rules 的 patch  ·  commit message 草稿 (`chore: refresh A 类约定`)&lt;/span&gt;" style="text;html=1;strokeColor=#90A4AE;fillColor=#FAFAFA;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=11;spacing=8;rounded=0;dashed=1;" vertex="1" parent="1">
           <mxGeometry x="790" y="672" width="850" height="65" as="geometry"/>
         </mxCell>
 
@@ -174,7 +174,7 @@
         <mxCell id="doc_header" value="文档物理位置(代码组织维度)— 4 类正交职责  &lt;span style=&#39;font-weight:normal;font-size:10px;color:#78909C;&#39;&gt;(↑ phase lanes 产出框中的 [A] [B] [C] [D] 标签对应这 4 类)&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontStyle=2;fontColor=#37474F;" vertex="1" parent="1">
           <mxGeometry x="40" y="905" width="1620" height="20" as="geometry"/>
         </mxCell>
-        <mxCell id="doc_a" value="&lt;b&gt;A · 约定 (Conventions)&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;AGENTS.md (项目/tier/模块 3 层嵌套) + .claude/rules/*.md (globs 路径触发) + CLAUDE.md 1 行 alias&lt;br/&gt;时间维度:&lt;b&gt;当前态&lt;/b&gt; — 我们现在怎么工作?&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E1F5FE;strokeColor=#0277BD;fontSize=11;align=left;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
+        <mxCell id="doc_a" value="&lt;b&gt;A · 约定 (Conventions)&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;AGENTS.md (项目/tier/模块 3 层嵌套) + path-scoped rules (Claude: .claude/rules/*.md) + adapter alias&lt;br/&gt;时间维度:&lt;b&gt;当前态&lt;/b&gt; — 我们现在怎么工作?&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E1F5FE;strokeColor=#0277BD;fontSize=11;align=left;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
           <mxGeometry x="40" y="930" width="395" height="75" as="geometry"/>
         </mxCell>
         <mxCell id="doc_b" value="&lt;b&gt;B · 任务 (Specs)&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;docs/specs/&lt;NNN&gt;-&lt;slug&gt;/{spec, plan, tasks}.md&lt;br/&gt;时间维度:&lt;b&gt;per-feature 生命周期&lt;/b&gt; — 这个 feature 做什么 + 怎么做 + 步骤?&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;fontSize=11;align=left;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
@@ -242,16 +242,16 @@
         <mxCell id="s_specrevise" value="&lt;b&gt;/spec-revise&lt;/b&gt; · P2 mid-impl" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;fontSize=11;align=left;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
           <mxGeometry x="60" y="330" width="380" height="40" as="geometry"/>
         </mxCell>
-        <mxCell id="s_l1" value="&lt;b&gt;/l1-review&lt;/b&gt; · 机械层 (lint/typecheck/test)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;fontSize=11;align=left;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
+        <mxCell id="s_l1" value="L1 · 机械层 (Claude helper:/l1-review)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;fontSize=11;align=left;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
           <mxGeometry x="60" y="380" width="380" height="40" as="geometry"/>
         </mxCell>
-        <mxCell id="s_l2" value="&lt;b&gt;/l2-review&lt;/b&gt; · AGENTS.md 合规层" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;fontSize=11;align=left;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
+        <mxCell id="s_l2" value="L2 · AGENTS.md 合规层 (helper:/l2-review)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;fontSize=11;align=left;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
           <mxGeometry x="60" y="430" width="380" height="40" as="geometry"/>
         </mxCell>
-        <mxCell id="s_l3" value="&lt;b&gt;/l3-review&lt;/b&gt; · spec.md 合规层" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;fontSize=11;align=left;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
+        <mxCell id="s_l3" value="L3 · spec.md 合规层 (helper:/l3-review)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;fontSize=11;align=left;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
           <mxGeometry x="60" y="480" width="380" height="40" as="geometry"/>
         </mxCell>
-        <mxCell id="s_proof" value="&lt;b&gt;/proof-bundle&lt;/b&gt; · 装配交付清单" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;fontSize=11;align=left;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
+        <mxCell id="s_proof" value="proof bundle · 写交付证据 (helper:/proof-bundle)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;fontSize=11;align=left;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
           <mxGeometry x="60" y="530" width="380" height="40" as="geometry"/>
         </mxCell>
         <mxCell id="s_featdone" value="&lt;b&gt;/feature-done&lt;/b&gt; · 端点 composite (= L1+L2+L3+proof)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;fontSize=11;align=left;verticalAlign=middle;spacing=8;fontStyle=1;" vertex="1" parent="1">
@@ -311,7 +311,7 @@
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
 
-        <mxCell id="composite_note" value="&lt;b&gt;/feature-done&lt;/b&gt; orchestrates 4 个 review skill (skill→skill,虚线):&lt;br/&gt;&lt;span style=&#39;font-size:10px;color:#546E7A;&#39;&gt;/l1-review → /l2-review → /l3-review → /proof-bundle ── 各自结果在 proof-bundle 聚合,L2/L3 重叠的 finding 在装配时去重 (workflow §6.4)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F8E9;strokeColor=#558B2F;fontSize=11;align=left;verticalAlign=middle;spacing=8;dashed=1;" vertex="1" parent="1">
+        <mxCell id="composite_note" value="&lt;b&gt;/feature-done&lt;/b&gt; orchestrates endpoint gate:&lt;br/&gt;&lt;span style=&#39;font-size:10px;color:#546E7A;&#39;&gt;L1 → L2 → L3 → proof bundle ── verdict 在 feature-done 聚合,proof-bundle 只写交付证据,L2/L3 重叠 finding 在装配时去重 (workflow §6.4)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F8E9;strokeColor=#558B2F;fontSize=11;align=left;verticalAlign=middle;spacing=8;dashed=1;" vertex="1" parent="1">
           <mxGeometry x="60" y="700" width="1280" height="60" as="geometry"/>
         </mxCell>
         <mxCell id="e_done_l1" style="endArrow=classic;html=1;dashed=1;rounded=0;strokeColor=#558B2F;strokeWidth=1;" edge="1" parent="1" source="s_featdone" target="s_l1">

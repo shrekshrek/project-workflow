@@ -1,4 +1,4 @@
-name: plugin.json version sync check
+name: plugin package sync check
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
   pull_request:
     branches: [main]
 
-# 防止 commit msg "v2.X.Y" 跟 .claude-plugin/plugin.json `version` 漂移。
+# 防止 commit msg "v2.X.Y" 跟 plugin manifests `version` 漂移。
 # 历史背景:维护期间 commit msg 先升版,plugin.json `version` 字段忘改 →
 # cache 目录命名 / changelog tooling / `/plugin info` 显示错版本。
 # 见 workflow.md §1.12 末尾 "给 plugin 实施者的提示"。
@@ -32,22 +32,34 @@ jobs:
           fi
           echo "commit_ver=$COMMIT_VER" >> "$GITHUB_OUTPUT"
 
-      - name: Extract version from plugin.json
-        id: json_version
+      - name: Extract version from plugin manifests
+        id: manifest_versions
         if: steps.commit_version.outputs.skip != 'true'
         run: |
-          JSON_VER=$(jq -r .version .claude-plugin/plugin.json)
-          echo "json_ver=$JSON_VER" >> "$GITHUB_OUTPUT"
+          CLAUDE_VER=$(jq -r .version .claude-plugin/plugin.json)
+          CODEX_VER=$(jq -r .version plugins/project-workflow/.codex-plugin/plugin.json)
+          echo "claude_ver=$CLAUDE_VER" >> "$GITHUB_OUTPUT"
+          echo "codex_ver=$CODEX_VER" >> "$GITHUB_OUTPUT"
 
       - name: Compare versions
         if: steps.commit_version.outputs.skip != 'true'
         run: |
           COMMIT_VER="${{ steps.commit_version.outputs.commit_ver }}"
-          JSON_VER="${{ steps.json_version.outputs.json_ver }}"
+          CLAUDE_VER="${{ steps.manifest_versions.outputs.claude_ver }}"
+          CODEX_VER="${{ steps.manifest_versions.outputs.codex_ver }}"
           echo "Commit msg version: $COMMIT_VER"
-          echo "plugin.json version: $JSON_VER"
-          if [ "$COMMIT_VER" != "$JSON_VER" ]; then
-            echo "::error::Version drift detected. Commit msg says v$COMMIT_VER but plugin.json says $JSON_VER. Either bump plugin.json or drop the version token from commit msg."
+          echo "Claude plugin version: $CLAUDE_VER"
+          echo "Codex plugin version: $CODEX_VER"
+          if [ "$COMMIT_VER" != "$CLAUDE_VER" ]; then
+            echo "::error::Version drift detected. Commit msg says v$COMMIT_VER but .claude-plugin/plugin.json says $CLAUDE_VER. Either bump plugin.json or drop the version token from commit msg."
+            exit 1
+          fi
+          if [ "$COMMIT_VER" != "$CODEX_VER" ]; then
+            echo "::error::Version drift detected. Commit msg says v$COMMIT_VER but plugins/project-workflow/.codex-plugin/plugin.json says $CODEX_VER. Either bump plugin.json or drop the version token from commit msg."
             exit 1
           fi
           echo "::notice::Version sync OK: v$COMMIT_VER"
+
+      - name: Check Codex plugin release artifacts
+        run: |
+          node scripts/sync-codex-plugin.js --check

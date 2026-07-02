@@ -8,6 +8,8 @@ description: Start a new feature spec — create docs/specs/<NNN>-<slug>/{spec,p
 
 # Feature Init
 
+Canonical action spec: `docs/actions/feature-init.md`. Follow that file for methodology rules; this skill adds Claude Code execution details.
+
 Start a new feature's spec/plan/tasks triplet (P2 entry point)。Business 细节走主会话 conversational fill(见 [spec-driven.md §3.6.5](../../docs/spec-driven.md#365-phase-a填-todos-的-ai-协作-sop));质量由 `/spec-quality-check` 把关。
 
 **Use when**: P2 — starting a new feature; changes span 3+ files OR touch architecture / data model / API contract ([workflow.md §3.1](../../docs/workflow.md#31-规划阶段))。小改(bugfix / polish / additive)自动走**轻车道**(仅 tasks.md,见 Step 4.5 / [spec-driven §3.2.5](../../docs/spec-driven.md#325-轻车道小改免-frozen-spec--plan))。
@@ -49,14 +51,14 @@ ls docs/specs/ | grep -E '^[0-9]{3}-' | sort -rn | head -1
 
 ## Step 3 — 读项目 context
 
-> A 类约定有两个载体(workflow.md §0.3 / §1.3):**AGENTS.md** 多层 + **`.claude/rules/*.md`** 扁平 globs 路径触发。两者都是项目约定 source-of-truth。
+> A 类约定有两个 core 载体(workflow.md §0.3 / §1.3):**AGENTS.md** 多层 + **path-scoped rules** 扁平路径触发。Claude adapter 的 path-scoped rules materialization 是 `.claude/rules/*.md`。
 
 **必读**(不存在则中止):
 - `AGENTS.md` — 项目级约定。**若缺**:报 "项目无 v2 baseline。先跑 `/project-workflow:project-init`(空目录)或 `/project-workflow:project-personalize`(已 clone scaffold)。" 然后中止。
 
 **选读**(缺失则静默跳过):
 - `<tier>/AGENTS.md` 每个检测到的 tier —— 拿 tier 特异约定
-- **`.claude/rules/*.md` 全集** —— A 类 peer to AGENTS.md(典型:`code-style.md` / `testing.md` / `security.md` + 可能的 `<framework>.md`)。读每个文件 frontmatter `globs:`,记下"哪条规则约束哪些路径",Step 5 pre-fill + Step 6 reminders 按此对照本 feature scope 提示 user
+- **`.claude/rules/*.md` 全集** —— Claude adapter 的 path-scoped rules materialization(典型:`code-style.md` / `testing.md` / `security.md` + 可能的 `<framework>.md`)。读每个文件 frontmatter `globs:`,记下"哪条规则约束哪些路径",Step 5 pre-fill + Step 6 reminders 按此对照本 feature scope 提示 user
 - **本 session 早期对话**(workflow `Phase 1 → 2` 桥)── 若 user 已跟 AI 讨论过本 feature(outcomes / scope / constraints / 架构方向 / edge cases / 业务事实 / etc.),提取**用户明确给的细节**作 Step 5 placeholder pre-fill input
 
 ### 扫描项目结构(tier-aware)

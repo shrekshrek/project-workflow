@@ -1,16 +1,18 @@
 ---
 name: l3-review
 model: sonnet
-description: Run the project's L3 review — verify implementation matches the feature's spec.md (Outcomes, Scope, Constraints, Verification). Delegates to the `spec-reviewer` sub-agent. Use after L1 (mechanical) and L2 (AGENTS.md) are green.
+description: Claude Code helper surface for the feature-done endpoint action. Run only the L3 implementation-vs-spec review for ad-hoc verification or partial reruns. Verifies implementation matches the feature's spec.md and delegates to the `spec-reviewer` sub-agent. For normal feature delivery, use feature-done.
 ---
 
 > **Response language**: Match the user's prompt language (中文 / English / etc.) in all natural-language output — headers, summaries, questions. Pass-through agent reports preserve the agent's own language choice (which also follows this rule). Code, commands, file paths stay as-is.
 
 # L3 Review
 
+Canonical action spec: `docs/actions/feature-done.md`. L3 is a helper surface for that endpoint action, not a standalone methodology action; this skill adds Claude Code execution details.
+
 L3 = **feature-spec compliance**: 验 implementation vs `feature-init` 创建的 spec.md。
 
-**Use when**: P2 endpoint, after L1 + L2 are green. Typically invoked by `/feature-done` (Step 5) but standalone-runnable.
+**Use when**: ad-hoc code-vs-spec review, or a partial rerun after `/feature-done` identified an L3 issue. Typically invoked by `/feature-done` (Step 5) but standalone-runnable for debugging.
 **Not for**: spec-self quality check (use `/spec-quality-check` — that's pre-implementation) / convention compliance (use `/l2-review`) / mechanical checks (use `/l1-review`).
 
 User input: `$ARGUMENTS` — feature slug or path to spec.md

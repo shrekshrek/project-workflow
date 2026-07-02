@@ -1,16 +1,18 @@
 ---
 name: l2-review
 model: sonnet
-description: Run the project's L2 review — verify code changes follow the AGENTS.md conventions for this project (module structure, naming, Pydantic/SQLAlchemy/etc style rules, API endpoint conventions, test discipline). Delegates the actual review to the `agents-md-reviewer` sub-agent, which can ONLY cite rules explicitly in AGENTS.md.
+description: Claude Code helper surface for the feature-done endpoint action. Run only the L2 project-convention review for ad-hoc verification or partial reruns. Verifies changed code against AGENTS.md and path-scoped conventions, then delegates to the `agents-md-reviewer` sub-agent. For normal feature delivery, use feature-done.
 ---
 
 > **Response language**: Match the user's prompt language (中文 / English / etc.) in all natural-language output — headers, summaries, questions. Pass-through agent reports preserve the agent's own language choice (which also follows this rule). Code, commands, file paths stay as-is.
 
 # L2 Review
 
-L2 = **project-level A 类约定** (AGENTS.md 多层 + `.claude/rules/*.md`) compliance check via sub-agent。
+Canonical action spec: `docs/actions/feature-done.md`. L2 is a helper surface for that endpoint action, not a standalone methodology action; this skill adds Claude Code execution details.
 
-**Use when**: P2 endpoint review of project-convention compliance — typically dispatched by `/feature-done`,but standalone-runnable for ad-hoc check during implementation.
+L2 = **project-level A 类约定** (AGENTS.md 多层 + path-scoped rules;Claude materialization 为 `.claude/rules/*.md`) compliance check via sub-agent。
+
+**Use when**: ad-hoc project-convention review during implementation, or a partial rerun after `/feature-done` identified an L2 issue. Typically dispatched by `/feature-done`, but standalone-runnable for debugging.
 **Not for**: mechanical checks(use `/l1-review`)/ spec compliance(use `/l3-review`)/ proof bundle 装配(use `/proof-bundle`)/ A 类约定主动 refresh(use `/agents-md-revise`)。
 
 User input: `$ARGUMENTS` (optional — feature slug or "current" to scope to most-recent feature)
@@ -49,7 +51,7 @@ Project may have:
 
 传:
 - Scope(changed files 列表)
-- A 类约定路径全集(AGENTS.md 多层 + `.claude/rules/*.md` 全量)
+- A 类约定路径全集(AGENTS.md 多层 + path-scoped rules;Claude materialization 为 `.claude/rules/*.md` 全量)
 - (可选)spec.md 路径作 context —— 但 agent **不能**做 spec 合规,只做 A 类约定
 
 任务 prompt 示例:

@@ -1,14 +1,16 @@
 ---
 name: feature-done
 model: sonnet
-description: One-shot end-of-feature gate. Runs L1 (mechanical checks) → L2 (AGENTS.md compliance) → L3 (spec.md compliance) → proof-bundle in sequence, aggregates results, gives a single READY/NEEDS WORK/BLOCKED verdict. Replaces manually running the four steps.
+description: Default end-of-feature gate. Runs L1 (mechanical checks) → L2 (AGENTS.md compliance) → L3 (spec.md compliance) → proof bundle in sequence, aggregates results, and gives a single READY/NEEDS WORK/BLOCKED verdict. Use for normal feature delivery instead of manually running L1/L2/L3/proof-bundle helper skills.
 ---
 
 > **Response language**: Match the user's prompt language (中文 / English / etc.) in all natural-language output — headers, summaries, verdict explanations, suggested commit message hints. Sub-skills/agents called from here inherit the same rule. Code, commands, file paths stay as-is.
 
 # Feature Done
 
-Composite skill: chains L1 → L2 → L3 → proof-bundle for end-of-P2 delivery verification。
+Canonical action spec: `docs/actions/feature-done.md`. Follow that file for methodology rules; this skill adds Claude Code execution details.
+
+Default endpoint skill: chains L1 → L2 → L3 → proof bundle for end-of-P2 delivery verification。
 
 **Use when**: P2 endpoint — feature implementation complete, ready for the four-check gate before commit / PR.
 **Not for**: starting a feature (use `/feature-init`) / mid-implementation partial review (run individual `/l1-review` or `/l2-review` for ad-hoc check) / spec revision (use `/spec-revise`).
@@ -66,7 +68,7 @@ proof-bundle: re-run (writes tasks.md, so always re-run to refresh)
 ## Step 4 — L2 A 类约定 合规(缓存有效则复用,见 Step 2)
 
 调 L2 skill(其内部 dispatch `agents-md-reviewer` agent):
-- 收集 A 类约定全集:AGENTS.md 多层 + `.claude/rules/*.md` 全集
+- 收集 A 类约定全集:AGENTS.md 多层 + path-scoped rules(Claude materialization 为 `.claude/rules/*.md` 全集)
 - 全集传给 agent;agent 自己按 frontmatter `globs:` 判作用域(skill 层不过滤)
 - 拿到 findings
 
@@ -86,12 +88,12 @@ proof-bundle: re-run (writes tasks.md, so always re-run to refresh)
 
 ## Step 6 — proof-bundle(总是 fresh —— 写 tasks.md)
 
-调 proof-bundle skill:
+执行 proof-bundle step(Claude Code 可复用 `/proof-bundle` helper 逻辑):
 - 传入/复用上面 L1 / L2 / L3 的 verdict 摘要和关键 findings
 - 让 proof-bundle 自己计算 diff / A 类约定触动 / drift 建议 / 开放问题
 - 写入 tasks.md
 
-**边界**:本 skill 是 orchestrator,不重复定义 proof-bundle 每一项的计算细节。Proof Bundle 的 canonical checklist 和写入逻辑只维护在 [`/proof-bundle`](../proof-bundle/SKILL.md)。
+**边界**:本 skill 是 orchestrator,不重复定义 proof-bundle 每一项的计算细节。Proof Bundle 的详细写入逻辑维护在 [`/proof-bundle`](../proof-bundle/SKILL.md) helper;方法论 verdict 仍以 `docs/actions/feature-done.md` 为准。
 
 ## Step 7 — 聚合报告
 
@@ -111,7 +113,7 @@ proof-bundle: re-run (writes tasks.md, so always re-run to refresh)
 ### L1 — Mechanical (<duration>)
 <one-line: ✅ all green / ❌ N failures listed below>
 
-### L2 — A 类约定 compliance(AGENTS.md + `.claude/rules/`)(<duration>)
+### L2 — A 类约定 compliance(AGENTS.md + path-scoped rules;Claude: `.claude/rules/`)(<duration>)
 <one-line: ✅ no violations / 🟡 N partials / 🔴 N violations>
 
 <if 🔴/🟡, list the worst 3 findings>

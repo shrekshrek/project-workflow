@@ -1,6 +1,6 @@
 # project-workflow v2
 
-**Spec-driven feature development blueprint for AI-assisted coding** — methodology docs + starter template + Claude Code plugin.
+**Spec-driven feature development blueprint for AI-assisted coding** — methodology docs + starter template + runtime adapters.
 
 > v1 (5 slash commands forcing a workflow) is preserved at git tag `v1.1.0`.
 > v2 is a **complete rewrite**: docs-first, optional plugin, non-process-owning. See [Migration from v1](#migration-from-v1) below.
@@ -25,9 +25,16 @@ Full framing with sources: [`docs/workflow.md §0.1`](docs/workflow.md).
 
 project-workflow helps real projects move from **chat-driven AI coding** to **spec-driven, reviewable, maintainable AI-assisted development**.
 
+v2 separates **methodology core** from **runtime adapters**:
+
+- Core: `AGENTS.md`, `docs/specs/`, ADR, proof bundle, L1/L2/L3 review model, canonical workflow actions in `docs/actions/`, and canonical reviewer specs in `docs/reviewers/`.
+- Adapters: Claude Code plugin is mature; Codex is distributed as a separate Codex plugin package. Both adapters use the same core docs and template, but their installed artifacts are separate.
+
+See [`docs/cross-tool-methodology.md`](docs/cross-tool-methodology.md).
+
 | Need | project-workflow answer |
 |---|---|
-| Start a project with shared conventions | P0 starter kit: `AGENTS.md`, `.claude/rules/`, hooks, ADR/spec templates |
+| Start a project with shared conventions | P0 starter kit: `AGENTS.md`, path-scoped rules, hooks, ADR/spec templates |
 | Start a feature without losing requirements in chat | P2 `spec.md` / `plan.md` / `tasks.md` |
 | Keep implementation aligned while coding | spec revise SOP, module-boundary handling, environment-enforced rules |
 | Know whether a feature is ready | L1/L2/L3 review + proof bundle |
@@ -41,70 +48,157 @@ The intended outcome is practical: fewer repeated reminders, fewer unreviewed AI
 
 | Layer | What | Where |
 |---|---|---|
-| 📘 **Methodology docs** | 5-phase blueprint (P0 Project Setup / P2 Feature / P3 Maintenance / P4 Drift Refresh) + 4 pillars + spec-driven 3-file template + 10 工程陷阱 | [`docs/`](docs/) |
-| 🧰 **Starter template** | Pure methodology scaffolding (`AGENTS.md`, spec/plan/tasks, ADR, Issue/PR templates, hook skeleton) — language/framework-agnostic | [`template/`](template/) |
-| 🤖 **Claude Code plugin** | Slash commands automating high-ROI workflow actions | [`.claude-plugin/`](.claude-plugin/) + [`skills/`](skills/) |
+| 📘 **Methodology core** | 5-phase blueprint (P0 Project Setup / P2 Feature / P3 Maintenance / P4 Drift Refresh) + canonical action specs + 4 pillars + cross-tool boundaries + spec-driven 3-file template + 10 工程陷阱 | [`docs/`](docs/) |
+| 🧰 **Starter template** | Baseline project scaffold: portable core files plus current runtime enforcement assets (`CLAUDE.md`, `.claude/` rules/hooks, `.codex/` hooks). It is language/framework-agnostic, but not tool-empty. | [`template/`](template/) |
+| 🤖 **Claude Code adapter** | Slash commands automating high-ROI workflow actions | [`.claude-plugin/`](.claude-plugin/) + [`skills/`](skills/) |
+| 🧩 **Codex adapter** | Installable Codex plugin package for public workflow actions | [`plugins/project-workflow/`](plugins/project-workflow/) + [`.agents/plugins/`](.agents/plugins/) |
 
 > **Concrete project example** (example-of-one, not authoritative source): [`shrekshrek/full-stack-scaffolding-fastapi-nuxt4`](https://github.com/shrekshrek/full-stack-scaffolding-fastapi-nuxt4) — a FastAPI + Nuxt 4 full-stack scaffold that follows v2 methodology. v2's own arguments are self-contained in `docs/`; the scaffold is just one concrete instantiation.
 
-## Install (Claude Code plugin)
+## Install
 
-```
+### Claude Code plugin
+
+Install the GitHub version in Claude Code:
+
+```text
 /plugin marketplace add shrekshrek/project-workflow
-/plugin install project-workflow
+/plugin install project-workflow@project-workflow
 ```
 
 Then in any project:
-```
+
+```text
 /project-workflow:feature-init <feature-slug>
 ```
 
-### Without plugin (OpenCode / manual)
+Claude Code exposes 7 primary actions plus 4 helper skills. Normal feature delivery should use `/project-workflow:feature-done`; helper skills are for partial reruns and debugging.
 
-For users who can't install the Claude Code plugin (e.g. OpenCode):
+### Codex plugin
+
+The Codex plugin package lives at [`plugins/project-workflow/`](plugins/project-workflow/), and this repo exposes it through [`.agents/plugins/marketplace.json`](.agents/plugins/marketplace.json). Codex exposes only the 7 primary workflow actions.
+
+Install the GitHub version in Codex:
 
 ```bash
-cp -r <path-to-this-repo>/template/. <your-project>/
+codex plugin marketplace add shrekshrek/project-workflow
+codex plugin add project-workflow@project-workflow
 ```
 
-Then edit `AGENTS.md` placeholders, `.claude/rules/*.md` for your stack, and `.claude/hooks/lint-on-edit.js` (uncomment the lint line for your stack). Note: `template/` is **methodology only** — Dockerfile / docker-compose / build scripts are your own to add per stack.
+Or in Codex App: open **Plugins**, add the GitHub marketplace source `shrekshrek/project-workflow`, then install **Project Workflow**, then start a new thread in the target repository.
 
-## Skills
+Update to the latest pushed version:
+
+```bash
+codex plugin marketplace upgrade project-workflow
+codex plugin add project-workflow@project-workflow
+```
+
+<details>
+<summary>Local development install (repo contributors only)</summary>
+
+Point Codex at your working copy instead of GitHub while iterating on this repo itself:
+
+```bash
+codex plugin marketplace add <path-to-this-repo>
+codex plugin add project-workflow@project-workflow
+```
+
+Or in Codex App: open **Plugins**, add or open the local marketplace at `<path-to-this-repo>/.agents/plugins/marketplace.json`, then install **Project Workflow**.
+
+Do not add both the local development source and the GitHub release source at the same time — both provide plugin name `project-workflow`, and Codex will not distinguish which one a bare `project-workflow` reference means. Run `codex plugin marketplace remove <name>` on one of them first if you need to switch.
+
+</details>
+
+Installed Codex skills are invoked as:
+
+```text
+$project-init
+$project-personalize
+$feature-init <feature-slug>
+$spec-quality-check <feature-slug>
+$spec-revise <feature-slug>
+$feature-done <feature-slug>
+$agents-md-revise
+```
+
+Run `$project-init` once per target project to materialize `AGENTS.md`, `docs/specs`, ADR templates, hooks, Claude compatibility assets, and Codex hook config into that project.
+
+### Manual fallback
+
+For tools without plugin support, copy the starter template:
+
+```bash
+rsync -a \
+  --exclude '_multi_tier_examples/' \
+  --exclude '.claude/rules/_examples/' \
+  <path-to-this-repo>/template/ <your-project>/
+```
+
+Then edit `AGENTS.md` placeholders and adapt path-scoped rules / hooks for your runtime. Note: `template/` contains methodology files plus Claude compatibility assets and a Codex hook mapping; Dockerfile / docker-compose / build scripts are your own to add per stack.
+
+### Source naming rule
+
+The plugin identity is `project-workflow` for both Claude Code and Codex. Local and remote sources should not be installed simultaneously under that same plugin name. For normal use, install the GitHub release source. For local development, replace it with the local source rather than installing both.
+
+## Primary workflow actions
 
 > Version follows `plugin.json`(currently 2.9.x);per-skill version columns removed to avoid drift。
+> These are the default public workflow actions. Claude Code exposes them as `/project-workflow:*`; Codex exposes the same action set as `$skill` after installing the Codex plugin. Manual users follow the canonical specs in [`docs/actions/`](docs/actions/).
 
-| Skill | What it does |
+| Action | Claude Code adapter | Codex adapter | What it does |
+|---|---|---|---|
+| `project-init` | `/project-workflow:project-init` | `$project-init` | P0 greenfield initialization — Q&A walks through stack and conventions, generates the project baseline (`AGENTS.md`, adapter hooks/rules, ADR/spec templates, etc.). "不确定" answers may route to `tech-researcher`. |
+| `project-personalize` | `/project-workflow:project-personalize` | `$project-personalize` | P0 scaffold-cloned / retrofit — adapts an existing v2-shaped project to actual names, commands, tiers, and conventions; may use `codebase-explorer` for structure survey. |
+| `feature-init` | `/project-workflow:feature-init` | `$feature-init` | Start a numbered feature artifact. Full lane creates `spec.md` / `plan.md` / `tasks.md`; light lane creates `tasks.md`. Scaffold + chat-context pre-fill + reminders + decision-completeness audit; no fixed business interview. |
+| `spec-quality-check` | `/project-workflow:spec-quality-check` | `$spec-quality-check` | Pre-implementation gate for full-lane specs: mechanical checks plus subjective review against the 7-question checklist. Failed items block implementation. |
+| `spec-revise` | `/project-workflow:spec-revise` | `$spec-revise` | Mid-implementation revision SOP for frozen spec / plan / module-boundary changes: ADR, spec revision record, plan prior decisions, tasks rebalance, and traceability audit. |
+| `feature-done` | `/project-workflow:feature-done` | `$feature-done` | Default end-of-feature gate: L1 → L2 → L3 → proof bundle, with one READY / NEEDS WORK / BLOCKED verdict. |
+| `agents-md-revise` | `/project-workflow:agents-md-revise` | `$agents-md-revise` | P4 convention refresh: audit A 类约定 (AGENTS.md + path-scoped rules) against objective project state, propose user-approved updates, and summarize drift. |
+
+### Claude Code helper skills
+
+These helper skills remain useful for ad-hoc debugging or partial reruns in Claude Code, but they are not separate methodology actions and are not part of the default Codex plugin surface. For normal feature delivery, run `feature-done`.
+
+| Helper | Purpose |
 |---|---|
-| `/project-workflow:project-init` | P0 greenfield initialization — Q&A walks through stack and conventions, generates 10+ files (AGENTS.md / .claude/ / docs/adr/ / etc.). "不确定" answers trigger `tech-researcher` sub-agent for parallel research. Auto-handles fullstack tier structure. |
-| `/project-workflow:project-personalize` | P0 scaffold-cloned / retrofit — adapts existing v2-shaped project to user's values. Replaces scaffold defaults, completes tier-level AGENTS.md (双文件 scheme), dispatches `codebase-explorer` sub-agent to scan existing structure. |
-| `/project-workflow:feature-init` | Start a new feature spec — creates `docs/specs/<NNN>-<slug>/{spec,plan,tasks}.md` with module-setup auto-detection (per workflow §2). **Pure scaffold + chat-context pre-fill + reminders + decision-completeness audit** ── **zero preset Q&A interview**. Mission-critical strong constraints (Scope "不做" / Sibling Alignment) become reminders gated by `/spec-quality-check`, not required Q&A. Adaptive reminders tell the main session when to use `tech-researcher` / `context7`; the skill itself does not pre-run research. All TODOs filled via conversational mode (per spec-driven §3.6.5). |
-| `/project-workflow:spec-quality-check` | **Pre-implementation gate** — verify spec/plan/tasks quality per spec-driven.md §3.7 7-q checklist. Mechanical checks + dispatches `spec-quality-reviewer` sub-agent for subjective items. |
-| `/project-workflow:spec-revise` | **Mid-implementation revision** — orchestrate spec/plan/module change SOP per workflow.md §3.5 / §2.6 (ADR + spec.md 修订记录 + plan.md prior decisions + tasks.md rebalance) + `decision-completeness-auditor` 兜底 (Step 7.5) + Diff Review Gate with revert hatch (Step 7.6)。 |
-| `/project-workflow:l1-review` | Run project's `check` command (lint/typecheck/test) and report pass/fail with concise summary |
-| `/project-workflow:l2-review` | A 类约定 compliance review (AGENTS.md 多层 + `.claude/rules/*.md`) via `agents-md-reviewer` sub-agent — finds rule violations on changed files |
-| `/project-workflow:l3-review` | spec.md compliance review via `spec-reviewer` sub-agent — finds missing items, deviations, scope creep |
-| `/project-workflow:proof-bundle` | Verify proof bundle completeness and write to `tasks.md` § Proof Bundle |
-| `/project-workflow:feature-done` | Composite: L1 → L2 → L3 → proof-bundle, single READY/NEEDS WORK/BLOCKED verdict |
-| `/project-workflow:agents-md-revise` | **P4 main tool** — proactively audit A 类约定 (AGENTS.md 多层 + `.claude/rules/`) vs project actual state; report objective drifts (commands / deps / dirs / versions / config), per-item yes/no/ignore-forever, apply + commit draft. Critical-only, no subjective signals, no hook auto-trigger. |
+| `/project-workflow:l1-review` | Run the project's check command (lint/typecheck/test) and report pass/fail concisely. |
+| `/project-workflow:l2-review` | Review changed code against A 类约定 via `agents-md-reviewer`. |
+| `/project-workflow:l3-review` | Review implementation against one feature's `spec.md` via `spec-reviewer`. |
+| `/project-workflow:proof-bundle` | Assemble or repair the proof bundle section in `tasks.md` after reviews are already available. |
 
 > Spec templates (`docs/specs/_template/{spec,plan,tasks}.md`) are plugin-canonical — `/feature-init` cps from `$CLAUDE_PLUGIN_ROOT/template/` at feature-creation time. To customize, fork the plugin and edit `template/docs/specs/_template/`.
 
-## Sub-agents
+## Reviewer Agents
 
-| Agent | Used by | Scope |
-|---|---|---|
-| `agents-md-reviewer` | `/l2-review` | Reads AGENTS.md (+ tier-level + `.claude/rules/`), checks changed code for rule violations |
-| `spec-reviewer` | `/l3-review` | Reads feature's spec.md, checks implementation matches §1 Outcomes / §2 Scope / §3 Constraints / §4 Verification |
-| `tech-researcher` | `/project-init` Q&A | Researches stack/library choices (2-3 candidates + pros/cons + recommendation). Read-only. Triggers when user answers "不确定" / "帮我选" in Q&A. |
-| `codebase-explorer` | `/project-personalize` Path C | Surveys existing codebase structure → recommends `## Project Structure` content. Read-only, no edits. |
-| `spec-quality-reviewer` | `/spec-quality-check` | Subjective spec quality assessment (Outcomes specificity / Constraints真假 / tasks verifiable). 4-phase methodology, cite-or-skip discipline. Read-only. |
-| `decision-completeness-auditor` | `/project-init`, `/project-personalize`, `/feature-init`, `/spec-revise`, `/agents-md-revise` | Pre-Preview-Gate plant-decision audit (workflow.md §1.12). Traces every specific-string decision (module name / path / broker / port / package name / host) back to Q&A answers or stack conventions; flags unanchored plants 🚫 must-fix. Read-only. |
+Canonical reviewer/auditor methodology lives in [`docs/reviewers/`](docs/reviewers/). Claude files in [`agents/`](agents/) are thin runtime adapters that point back to those specs. Codex plugin skills read the same reviewer specs directly and may use any available Codex subagent; custom-agent name dispatch is not required for correctness.
+
+| Role | Canonical spec | Claude adapter | Codex adapter | Used by |
+|---|---|---|---|---|
+| L2 project convention review | `docs/reviewers/agents-md-reviewer.md` | `agents/agents-md-reviewer.md` | plugin skill reads reviewer spec | `/l2-review`, `$feature-done` |
+| L3 spec compliance review | `docs/reviewers/spec-reviewer.md` | `agents/spec-reviewer.md` | plugin skill reads reviewer spec | `/l3-review`, `$feature-done` |
+| Spec quality subjective review | `docs/reviewers/spec-quality-reviewer.md` | `agents/spec-quality-reviewer.md` | plugin skill reads reviewer spec | `/spec-quality-check`, `$spec-quality-check` |
+| Decision completeness audit | `docs/reviewers/decision-completeness-auditor.md` | `agents/decision-completeness-auditor.md` | plugin skill reads reviewer spec | init/revise/refresh actions |
+| Stack/library research | `docs/reviewers/tech-researcher.md` | `agents/tech-researcher.md` | plugin skill reads reviewer spec | `/project-init`, `$project-init` |
+| Codebase structure survey | `docs/reviewers/codebase-explorer.md` | `agents/codebase-explorer.md` | plugin skill reads reviewer spec | `/project-personalize`, `$project-personalize` |
+
+## Maintaining the Codex package
+
+The Codex plugin contains a bundled copy of core docs and `template/` because installed Codex plugins do not share the Claude Code plugin install directory. Treat those bundled files as release artifacts. After changing `docs/actions/`, `docs/reviewers/`, selected core docs, or `template/`, run:
+
+```bash
+node scripts/sync-codex-plugin.js
+node scripts/sync-codex-plugin.js --check
+```
 
 ## Read this first
 
 - [`docs/project-workflow-overview.drawio`](docs/project-workflow-overview.drawio) — ⭐ Visual one-page overview (2 tabs: Lifecycle + Skill ↔ Agent dispatch). Open in [draw.io](https://app.diagrams.net) or VS Code Draw.io Integration extension.
 - [`docs/quickstart.md`](docs/quickstart.md) — shortest daily path for using project-workflow in a real project
+- [`docs/actions/`](docs/actions/) — canonical workflow action specs used by all runtime adapters
+- [`docs/reviewers/`](docs/reviewers/) — canonical reviewer/auditor/researcher specs used by Claude and Codex agent adapters
 - [`docs/workflow.md`](docs/workflow.md) — ⭐ Core 5-phase blueprint
+- [`docs/cross-tool-methodology.md`](docs/cross-tool-methodology.md) — core vs runtime adapter boundaries for Claude Code / Codex / manual use
 - [`docs/gotchas.md`](docs/gotchas.md) — ⭐ 10 engineering pitfalls (from real validation)
 - [`docs/spec-driven.md`](docs/spec-driven.md) — spec/plan/tasks pattern detail
 - [`docs/tooling.md`](docs/tooling.md) — three-layer tool stack model + v2 vs Spec Kit / Superpowers / ECC / Symphony 对比(评估者 first read)
@@ -124,9 +218,9 @@ v1 source preserved at git tag [`v1.1.0`](../../tree/v1.1.0). Install via `git c
 
 ## Status
 
-v2.9.41 ships **11 skills + 6 sub-agents** covering the full P0→P2→P3→P4 lifecycle. The remaining skills are still gathering field hours — battle-testing welcome.
+v2.9.41 ships a mature **Claude Code adapter** with **11 skills + 6 sub-agents** covering the full P0→P2→P3→P4 lifecycle, plus an action-complete **Codex plugin** with 7 public workflow skills for P0 setup, P2 feature flow, and P4 convention refresh.
 
-The methodology docs (workflow.md / spec-driven.md / gotchas.md / tooling.md) are complete and self-contained. A concrete instantiation exists at the public scaffold linked above, but the docs do not depend on it for authority.
+The methodology docs (`workflow.md` / `actions/` / `reviewers/` / `cross-tool-methodology.md` / `spec-driven.md` / `gotchas.md` / `tooling.md`) are complete and self-contained. A concrete instantiation exists at the public scaffold linked above, but the docs do not depend on it for authority.
 
 ## License
 

@@ -1,16 +1,18 @@
 ---
 name: proof-bundle
 model: sonnet
-description: Verify a feature's proof bundle is complete — tests passing, L1/L2/L3 reviewed, diff summary, drift suggestions. Fills/updates the Proof Bundle section at the bottom of tasks.md. Use at end of P2 feature delivery.
+description: Claude Code helper surface for the feature-done endpoint action. Assemble or repair only the proof bundle after L1/L2/L3 evidence already exists. Fills/updates the Proof Bundle section at the bottom of tasks.md with tests, review verdicts, diff summary, and drift suggestions. For normal feature delivery, use feature-done.
 ---
 
 > **Response language**: Match the user's prompt language (中文 / English / etc.) in all natural-language output — headers, summaries, questions. Tasks.md proof-bundle section content follows the existing language used in that tasks.md file (preserve consistency). Code, commands, file paths stay as-is.
 
 # Proof Bundle
 
+Canonical action spec: `docs/actions/feature-done.md`. Proof bundle is a helper surface for that endpoint action, not a standalone methodology action; this skill adds Claude Code execution details.
+
 Proof bundle = end-of-feature delivery checklist。
 
-**Use when**: P2 endpoint, after L1 + L2 + L3 are run. Typically invoked by `/feature-done` (Step 6) as the final assembly step, but standalone-runnable.
+**Use when**: after L1 + L2 + L3 evidence is already available and only the proof section needs assembly or repair. Typically invoked by `/feature-done` (Step 6) as the final assembly step, but standalone-runnable for debugging.
 **Not for**: replacing the individual reviews (use `/l1-review` / `/l2-review` / `/l3-review`) / pre-implementation spec quality check (use `/spec-quality-check`).
 
 > Full P2 flow: [workflow.md §3.0](../../docs/workflow.md#30-p2-流程全景skill-视角).
@@ -153,12 +155,12 @@ git status --short  # uncommitted scope
 
 ### Item 5a: A 类约定触动汇总(本 feature 实际改了哪几份)
 
-A 类 = AGENTS.md 多层 + `.claude/rules/*.md`(workflow §0.3 / §1.3)。
+A 类 = AGENTS.md 多层 + path-scoped rules(workflow §0.3 / §1.3;Claude materialization 为 `.claude/rules/*.md`)。
 
 **计算方法**:
 
 ```bash
-# 找出本 feature 触动的 A 类约定文件(AGENTS.md / CLAUDE.md / .claude/rules/*.md)
+# 找出本 feature 触动的 A 类约定文件(AGENTS.md / CLAUDE.md / .claude/rules/*.md;后者是 Claude path-scoped rules materialization)
 git diff --name-only <base>...HEAD 2>/dev/null | grep -E "(^|/)(AGENTS|CLAUDE)\.md$|^\.claude/rules/.*\.md$"
 # 未 commit 的 scope:
 git status --short | awk '{print $2}' | grep -E "(^|/)(AGENTS|CLAUDE)\.md$|^\.claude/rules/.*\.md$"
@@ -192,10 +194,10 @@ git status --short | awk '{print $2}' | grep -E "(^|/)(AGENTS|CLAUDE)\.md$|^\.cl
 
 L2 review 跑完会有"建议加规则但未落地"的 finding。这里抽出来跟 Item 5a(已应用)区分。
 
-把项目 A 类约定(AGENTS.md 多层 + `.claude/rules/`)跟实际 impl 对照,看:
+把项目 A 类约定(AGENTS.md 多层 + path-scoped rules;Claude materialization 为 `.claude/rules/`)跟实际 impl 对照,看:
 
 - 代码里违反 AGENTS.md / `.claude/rules/` 的 → 不是 drift(那是 L2 issue)
-- 代码里出现但 A 类约定**没提该提的**(如新 module pattern 未文档化、新 framework 约定不在 `.claude/rules/<framework>.md`)→ drift 建议
+- 代码里出现但 A 类约定**没提该提的**(如新 module pattern 未文档化、新 framework 约定不在 path-scoped rules;Claude 为 `.claude/rules/<framework>.md`)→ drift 建议
 - `package.json` 里命令变了但 AGENTS.md `Commands` 没同步 → drift
 
 输出:0-3 个 bullet。无则写 "无 (none)"。

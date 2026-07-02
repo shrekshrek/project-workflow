@@ -1,0 +1,4 @@
+interface:
+  display_name: "Spec Revise"
+  short_description: "Revise a frozen feature spec safely"
+  default_prompt: "Use $spec-revise to update a frozen spec with ADR and cross-file consistency."

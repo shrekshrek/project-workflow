@@ -7,6 +7,8 @@ description: Initialize a project's v2 starter kit (AGENTS.md + .claude/ + tier-
 
 # Project Init
 
+Canonical action spec: `docs/actions/project-init.md`. Follow that file for methodology rules; this skill adds Claude Code execution details.
+
 Initialize a new (or existing-but-no-AGENTS.md) project's v2 baseline. Q&A walks the user through stack and conventions, then writes 10+ files in one pass.
 
 **Use when**: P0 — project's first day, no AGENTS.md yet.
@@ -422,7 +424,7 @@ cp "$PLUGIN_ROOT/template/_multi_tier_examples/${TIER_CATEGORY}.CLAUDE.md.exampl
 
 ### Step 5.3:填 tier-level AGENTS.md placeholder + framework split
 
-逐个替换 `{{TIER_NAME}}` / `{{TIER_DEV_COMMAND}}` / `{{TIER_FRAMEWORK}}` 等(详见 [_multi_tier_examples/README.md](../template/_multi_tier_examples/README.md))。
+逐个替换 `{{TIER_NAME}}` / `{{TIER_DEV_COMMAND}}` / `{{TIER_FRAMEWORK}}` 等(详见 [_multi_tier_examples/README.md](../../template/_multi_tier_examples/README.md))。
 
 **Source Layout 渲染**:
 - `{{TIER_SRC_DIR}}` / `{{TIER_ENTRY_POINT}}` / `{{TIER_TEST_DIR}}` 据 Step 5.1 题 4 答案渲染(每语言 ✨ default 或用户自定)
