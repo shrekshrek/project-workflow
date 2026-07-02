@@ -5,7 +5,7 @@ Canonical P0 action for creating a greenfield project-workflow baseline in a tar
 ## Use When
 
 - Starting a new project or an empty target directory.
-- The user wants project-level conventions, path-scoped rules, ADR/spec templates, and optional tier-level guidance.
+- The user wants project-level conventions, path-scoped rules, ADR templates, and optional tier-level guidance.
 
 Do not use for a copied scaffold or existing project that already has `AGENTS.md`; use [`project-personalize`](project-personalize.md).
 
@@ -26,7 +26,6 @@ Minimum baseline:
 - path-scoped rule files where the adapter supports them
 - hook/check configuration where the adapter supports it
 - `docs/adr/`
-- `docs/specs/_template/`
 - `docs/gotchas.md`
 - `.gitignore`
 
@@ -36,12 +35,14 @@ For multi-tier projects, create tier-level `AGENTS.md` files only when there is 
 
 - `AGENTS.md` is the cross-tool convention entry point.
 - Tool-specific files are adapter assets, not methodology core.
+- Source templates may contain stack-rendering placeholders; generated active files may not. After initialization, active `AGENTS.md`, path-scoped rules, and hook config must be concrete for the target stack.
 - Commands must come from user answers, manifests, or conservative stack conventions. Unknown deployment commands stay deferred.
-- No unresolved scaffold placeholders may remain outside intentional templates.
+- Path-scoped rule files must be stack-adapted, including `description:` and `globs:`. Do not use broad catch-all globs as a substitute for real language/tier matching.
+- No unresolved scaffold placeholders may remain in generated project-workflow files.
 - No application code is generated.
 
 ## Validation
 
-- Search for unresolved `{{...}}` placeholders, excluding intentional templates.
+- Search generated markdown for unresolved `{{...}}` placeholders; plugin-only templates and example assets should not exist in the target project.
 - Verify generated rule files have clear descriptions and sensible path scopes.
 - Summarize created files, known deferred decisions, and next action.

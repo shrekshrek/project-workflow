@@ -181,6 +181,7 @@ cp "$PLUGIN_ROOT/docs/gotchas.md" docs/gotchas.md
 - `docs/gotchas.md`
 - `.gitignore`
 - **不**该出现 `_multi_tier_examples/`(plugin asset,Step 5 按需读)
+- **不**该出现 `docs/specs/_template/`(feature 模板由 `/feature-init` 从 plugin 读取,项目本地默认不持有)
 
 ## Step 4 — 填 placeholder(根 AGENTS.md + `.claude/rules/`)
 

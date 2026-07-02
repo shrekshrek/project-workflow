@@ -12,7 +12,7 @@ Canonical action spec: `docs/actions/feature-init.md`. Follow that file for meth
 
 Start a new feature's spec/plan/tasks triplet (P2 entry point)。Business 细节走主会话 conversational fill(见 [spec-driven.md §3.6.5](../../docs/spec-driven.md#365-phase-a填-todos-的-ai-协作-sop));质量由 `/spec-quality-check` 把关。
 
-**Use when**: P2 — starting a new feature; changes span 3+ files OR touch architecture / data model / API contract ([workflow.md §3.1](../../docs/workflow.md#31-规划阶段))。小改(bugfix / polish / additive)自动走**轻车道**(仅 tasks.md,见 Step 4.5 / [spec-driven §3.2.5](../../docs/spec-driven.md#325-轻车道小改免-frozen-spec--plan))。
+**Use when**: P2 — starting a new feature or a change worth tracking; full lane is for cross-module/cross-boundary work or architecture / data model / API contract changes ([workflow.md §3.1](../../docs/workflow.md#31-规划阶段))。同一模块内小改(bugfix / polish / additive)自动走**轻车道**(仅 tasks.md,见 Step 4.5 / [spec-driven §3.2.5](../../docs/spec-driven.md#325-轻车道小改免-frozen-spec--plan));键盘级局部改可直接做。
 **Not for**: P0 project scaffolding (use `/project-workflow:project-init`) / mid-implementation spec revision (use `/project-workflow:spec-revise`) / endpoint delivery (use `/project-workflow:feature-done`).
 
 User input: `$ARGUMENTS` — feature slug + optional description.
@@ -97,7 +97,7 @@ ls docs/specs/ | grep -E '^[0-9]{3}-' | sort -rn | head -1
 
 | # | 判据 | no / 不确定 → |
 |---|------|------|
-| 1 规模 | 改动 ≤ ~1 模块 / 少量文件,**且 Step 4 未判定要新建模块** | 全道 |
+| 1 规模 | 改动在 ≤ ~1 个内聚模块 / 单一职责范围内,**且 Step 4 未判定要新建模块**;文件数只作辅助信号 | 全道 |
 | 2 可逆性 | additive / bugfix / polish,易回滚;**非**数据迁移 / API 或 schema 契约变更 | 全道 |
 | 3 爆破半径 | **不触达**项目声明的灾难性不变量路径(读根 `AGENTS.md`「灾难性不变量 / 高爆破半径路径」节;**该节缺失则问用户保守判**) | 全道 |
 

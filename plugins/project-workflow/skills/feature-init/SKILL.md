@@ -29,12 +29,12 @@ Canonical action spec: `../../docs/actions/feature-init.md`. Follow that file fo
 
 4. Classify the lane.
    - Use full lane by default.
-   - Use light lane only when all are true: small/reversible change, no new module, no API/schema/data migration/architecture contract change, and no disaster-invariant/high-blast-radius path from `AGENTS.md`.
+   - Use light lane only when all are true: small/reversible change within one cohesive module or responsibility area, no new module, no API/schema/data migration/architecture contract change, and no disaster-invariant/high-blast-radius path from `AGENTS.md`. File count alone is not decisive.
    - If uncertain, use full lane.
 
 5. Create the spec directory from templates.
-   - Template source: prefer target-project `docs/specs/_template/`. If missing, use bundled `../../template/docs/specs/_template/` as a fallback.
-   - If neither template source exists, stop and tell the user to run `$project-init` or restore the spec templates.
+   - Template source: bundled `../../template/docs/specs/_template/`.
+   - Do not require or create target-project `docs/specs/_template/`; project-local default templates are intentionally not part of the generated baseline.
    - Full lane: copy `spec.md`, `plan.md`, and `tasks.md`.
    - Light lane: copy `tasks-light.md` to `tasks.md`; do not create `spec.md` or `plan.md`.
    - Replace `<NNN>`, `<slug>`, and `<TODAY>` where present.

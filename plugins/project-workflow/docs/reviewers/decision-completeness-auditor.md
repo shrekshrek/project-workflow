@@ -36,7 +36,7 @@ Fresh-read files or inline blobs. Build an inventory:
 file:line | decision | category | context
 ```
 
-Abort if unresolved placeholders such as `{{...}}` remain in audited output outside intentional templates.
+Abort if unresolved placeholders such as `{{...}}` remain in audited output unless the calling action explicitly declares that file or section as an intentional template/draft placeholder.
 
 ### Phase 2: Trace Each Decision
 
@@ -92,4 +92,3 @@ verified=<N>, warnings=<N>, must-fix=<N>, total=<N>, confidence=<high/medium/low
 - Do not edit files.
 - Be strict about unanchored infra/module/package/port choices.
 - Use high confidence only when must-fix is zero and all decisions are inventoried.
-

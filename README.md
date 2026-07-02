@@ -34,7 +34,7 @@ See [`docs/cross-tool-methodology.md`](docs/cross-tool-methodology.md).
 
 | Need | project-workflow answer |
 |---|---|
-| Start a project with shared conventions | P0 starter kit: `AGENTS.md`, path-scoped rules, hooks, ADR/spec templates |
+| Start a project with shared conventions | P0 starter kit: `AGENTS.md`, path-scoped rules, hooks, ADR template |
 | Start a feature without losing requirements in chat | P2 `spec.md` / `plan.md` / `tasks.md` |
 | Keep implementation aligned while coding | spec revise SOP, module-boundary handling, environment-enforced rules |
 | Know whether a feature is ready | L1/L2/L3 review + proof bundle |
@@ -148,7 +148,7 @@ The plugin identity is `project-workflow` for both Claude Code and Codex. Local 
 
 | Action | Claude Code adapter | Codex adapter | What it does |
 |---|---|---|---|
-| `project-init` | `/project-workflow:project-init` | `$project-init` | P0 greenfield initialization — Q&A walks through stack and conventions, generates the project baseline (`AGENTS.md`, adapter hooks/rules, ADR/spec templates, etc.). "不确定" answers may route to `tech-researcher`. |
+| `project-init` | `/project-workflow:project-init` | `$project-init` | P0 greenfield initialization — Q&A walks through stack and conventions, generates the project baseline (`AGENTS.md`, adapter hooks/rules, ADR template, etc.). "不确定" answers may route to `tech-researcher`. |
 | `project-personalize` | `/project-workflow:project-personalize` | `$project-personalize` | P0 scaffold-cloned / retrofit — adapts an existing v2-shaped project to actual names, commands, tiers, and conventions; may use `codebase-explorer` for structure survey. |
 | `feature-init` | `/project-workflow:feature-init` | `$feature-init` | Start a numbered feature artifact. Full lane creates `spec.md` / `plan.md` / `tasks.md`; light lane creates `tasks.md`. Scaffold + chat-context pre-fill + reminders + decision-completeness audit; no fixed business interview. |
 | `spec-quality-check` | `/project-workflow:spec-quality-check` | `$spec-quality-check` | Pre-implementation gate for full-lane specs: mechanical checks plus subjective review against the 7-question checklist. Failed items block implementation. |

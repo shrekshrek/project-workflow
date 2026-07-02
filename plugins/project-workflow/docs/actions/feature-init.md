@@ -19,7 +19,7 @@ Do not use for mid-implementation frozen-spec changes; use [`spec-revise`](spec-
 
 Use full lane by default. Use light lane only when all are true:
 
-- small change, about one module or a few files
+- small change within one cohesive module or responsibility area; file count alone is not decisive
 - additive, bugfix, or polish; no API/schema/data migration/architecture contract change
 - no new module
 - no declared disaster-invariant or high-blast-radius path is touched

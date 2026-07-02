@@ -1,6 +1,6 @@
 ---
 name: project-init
-description: Initialize a project-workflow v2 baseline in Codex for a new project that does not yet have AGENTS.md. Use at P0 to copy the starter template, create project conventions, path-scoped rules, hooks, ADR and spec templates, and fill stack-specific placeholders. Not for an existing v2-shaped project.
+description: Initialize a project-workflow v2 baseline in Codex for a new project that does not yet have AGENTS.md. Use at P0 to copy the starter template, create project conventions, path-scoped rules, hooks, ADR templates, and fill stack-specific placeholders. Not for an existing v2-shaped project.
 ---
 
 # Project Init
@@ -27,9 +27,10 @@ Canonical action spec: `../../docs/actions/project-init.md`. Follow that file fo
 
 3. Copy the starter template.
    - Source: bundled `../../template/`.
-   - Exclude example-only folders: `_multi_tier_examples/` and `.claude/rules/_examples/`.
+   - Exclude plugin-only folders: `_multi_tier_examples/`, `.claude/rules/_examples/`, and `docs/specs/_template/`.
    - Copy bundled `../../docs/gotchas.md` if it is not already present in the template output.
-   - Ensure these exist afterward: `AGENTS.md`, `CLAUDE.md`, `.claude/settings.json`, `.gitignore`, `docs/adr/`, and `docs/specs/_template/`.
+   - Ensure these exist afterward: `AGENTS.md`, `CLAUDE.md`, `.claude/settings.json`, `.gitignore`, and `docs/adr/`.
+   - Do not leave `docs/specs/_template/` in the target project. Feature templates are plugin assets read by `$feature-init`, not project-local default files.
    - Keep `CLAUDE.md` as a one-line alias to `AGENTS.md` for Claude compatibility; Codex reads `AGENTS.md`.
 
 4. Fill placeholders conservatively.
@@ -37,9 +38,14 @@ Canonical action spec: `../../docs/actions/project-init.md`. Follow that file fo
    - Leave deployment as deferred if not actually known.
    - Keep root `AGENTS.md` short; put tier-specific conventions in tier `AGENTS.md` files when applicable.
    - For Codex, `AGENTS.md` is the shared source of truth; `.claude/` files are compatibility assets, not methodology core.
+   - Render `.claude/rules/code-style.md` and `.claude/rules/testing.md` for the actual stack instead of leaving generic template markers.
+     - `description:` must name the concrete rule scope, for example `Code style — Python (Ruff)` or `Testing — Vitest + Playwright`.
+     - `globs:` must match the actual language and tier paths, for example `backend/**/*.py` or `frontend/**/*.{ts,tsx,vue}`. Do not use a broad all-language catch-all glob as fake adaptation.
+     - Testing framework, layout, naming, run command, coverage command, and E2E command must come from user answers, manifests, or conservative stack defaults. If unknown, write a concrete deferred note, not `{{...}}`.
+   - Source templates may contain `{{...}}`; generated active files may not. After project init, there should be no unresolved `{{...}}` placeholders in target project markdown except user-authored docs unrelated to project-workflow.
 
 5. Verify the baseline.
-   - Search for unresolved `{{...}}` placeholders in generated markdown, excluding intentional templates under `docs/specs/_template/` and example-only assets if any remain.
+   - Search for unresolved `{{...}}` placeholders in generated markdown; `docs/specs/_template/` and example-only assets should not exist in the generated target.
    - Confirm path-scoped rule files have clear descriptions and sensible path matching if present.
    - Before finalizing generated convention files, prefer a separate Codex subagent running `../../docs/reviewers/decision-completeness-auditor.md`; otherwise run the audit in the main session.
    - Summarize the loaded conventions: project type, main stack, check command, test command, and tier layout.
