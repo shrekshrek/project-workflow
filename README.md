@@ -143,7 +143,7 @@ The plugin identity is `project-workflow` for both Claude Code and Codex. Local 
 
 ## Primary workflow actions
 
-> Version follows `plugin.json`(currently 2.9.x);per-skill version columns removed to avoid drift。
+> Version follows the Claude and Codex plugin manifests; per-skill version columns are intentionally omitted to avoid drift.
 > These are the default public workflow actions. Claude Code exposes them as `/project-workflow:*`; Codex exposes the same action set as `$skill` after installing the Codex plugin. Manual users follow the canonical specs in [`docs/actions/`](docs/actions/).
 
 | Action | Claude Code adapter | Codex adapter | What it does |
@@ -218,7 +218,7 @@ v1 source preserved at git tag [`v1.1.0`](../../tree/v1.1.0). Install via `git c
 
 ## Status
 
-v2.10.0 ships a mature **Claude Code adapter** with **11 skills + 6 sub-agents** covering the full P0→P2→P3→P4 lifecycle, plus an action-complete **Codex plugin** with 7 public workflow skills for P0 setup, P2 feature flow, and P4 convention refresh.
+The current release ships a mature **Claude Code adapter** with **11 skills + 6 sub-agents** covering the full P0→P2→P3→P4 lifecycle, plus an action-complete **Codex plugin** with 7 public workflow skills for P0 setup, P2 feature flow, and P4 convention refresh.
 
 The methodology docs (`workflow.md` / `actions/` / `reviewers/` / `cross-tool-methodology.md` / `spec-driven.md` / `gotchas.md` / `tooling.md`) are complete and self-contained. A concrete instantiation exists at the public scaffold linked above, but the docs do not depend on it for authority.
 
