@@ -218,7 +218,7 @@ v1 source preserved at git tag [`v1.1.0`](../../tree/v1.1.0). Install via `git c
 
 ## Status
 
-v2.9.41 ships a mature **Claude Code adapter** with **11 skills + 6 sub-agents** covering the full P0→P2→P3→P4 lifecycle, plus an action-complete **Codex plugin** with 7 public workflow skills for P0 setup, P2 feature flow, and P4 convention refresh.
+v2.10.0 ships a mature **Claude Code adapter** with **11 skills + 6 sub-agents** covering the full P0→P2→P3→P4 lifecycle, plus an action-complete **Codex plugin** with 7 public workflow skills for P0 setup, P2 feature flow, and P4 convention refresh.
 
 The methodology docs (`workflow.md` / `actions/` / `reviewers/` / `cross-tool-methodology.md` / `spec-driven.md` / `gotchas.md` / `tooling.md`) are complete and self-contained. A concrete instantiation exists at the public scaffold linked above, but the docs do not depend on it for authority.
 
