@@ -42,6 +42,8 @@ User input: `$ARGUMENTS` — 空 = 清扫模式;或 feature slug / NNN / "curren
 
 无 pending 的 feature 跳过本步直接归档。
 
+`$PLUGIN_ROOT` 解析同其他 skill:优先 `PROJECT_WORKFLOW_PLUGIN_ROOT` / `CLAUDE_PLUGIN_ROOT` / `CODEX_PLUGIN_ROOT`;否则在 `~/.claude/plugins/cache` 与 `~/.codex/plugins/cache` 下查找包含 `template/` 的 project-workflow plugin 根目录。解析不到则停止,不要临时在目标项目创建模板。
+
 ## Step 3 — 被取代老 spec 标记(如有)
 
 本次交付**取代**了某早期 spec 方向(不只是叠加)时,跟用户逐份确认:

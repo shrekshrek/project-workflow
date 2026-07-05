@@ -101,7 +101,11 @@ Slug 要求(strip 后):kebab-case(`a-z0-9-`)、2-40 chars、不以 `-` 开头结
 模板源 `$PLUGIN_ROOT/template/docs/specs/changes/_template/`。全道 = `{spec,plan,tasks}.md`;轻车道 = 仅 `tasks-light.md` → `tasks.md`。
 
 ```bash
-PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT:-$(ls -d ~/.claude/plugins/cache/project-workflow/project-workflow/*/ 2>/dev/null | sort -V | tail -1)}"
+PLUGIN_ROOT="${PROJECT_WORKFLOW_PLUGIN_ROOT:-${CLAUDE_PLUGIN_ROOT:-${CODEX_PLUGIN_ROOT:-}}}"
+if [ -z "$PLUGIN_ROOT" ] || [ ! -d "$PLUGIN_ROOT/template" ]; then
+  PLUGIN_ROOT="$(find "$HOME/.claude/plugins/cache" "$HOME/.codex/plugins/cache" -type d -path '*/project-workflow*/template' -print 2>/dev/null | sort | tail -1 | sed 's#/template$##')"
+fi
+[ -n "$PLUGIN_ROOT" ] && [ -d "$PLUGIN_ROOT/template" ] || { echo "Cannot resolve project-workflow plugin root"; exit 1; }
 SRC="$PLUGIN_ROOT/template/docs/specs/changes/_template"
 mkdir -p "docs/specs/changes/$NNN-$SLUG"
 # 全道 —— 按 Step 3.5 SPEC_SHAPE 选 change spec 模板:
