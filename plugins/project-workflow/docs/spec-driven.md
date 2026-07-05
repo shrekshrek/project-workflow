@@ -33,7 +33,7 @@
 | **A. 约定** — 项目级常识 / Tier 级约定 / 模块级反常 / 路径级 topic 详规则 | 根 `AGENTS.md` + tier `<tier>/AGENTS.md` + 模块 `<module>/AGENTS.md` + path-scoped rules(Claude materialization 为 `.claude/rules/*.md`) | §2 速查,详 workflow.md §1.3 |
 | **B. 变更** — 功能级 change spec / plan / tasks | `docs/specs/changes/<NNN>-<slug>/{spec,plan,tasks}.md` | **§3 起本文档主题** |
 | **C. 决策** — 架构选择 + trade-off | `docs/adr/NNNN-<title>.md` | 不在本文档,见 workflow.md §1.8 |
-| **D. 工具基础设施** — hook / lint / settings | `.claude/{hooks,settings.json}` + `.gitignore`(`.github/` 模板 v2 默认不预置,见 workflow.md §1.9) | 不在本文档,见 workflow.md §1.6 / §1.7 |
+| **D. 工具基础设施** — hook / lint / settings | `.claude/{hooks,settings.json}` + `.gitignore`(`.github/` 模板默认不预置,见 workflow.md §1.9) | 不在本文档,见 workflow.md §1.6 / §1.7 |
 | **E. 产品事实** — 长周期产品域的当前现状 | `docs/specs/<area>.md`(可选 `docs/specs/index.md` 域索引) | **§5 生命周期部分**(current truth 与 spec 状态的关系) |
 
 > "Tier" 概念详见 [workflow.md §0.3](workflow.md#03-概念区分钉死再读后续)。简言之:**全栈/多端项目的架构性分层**(前后端、客户端服务端等);单 tier 项目不存在这层。
@@ -74,7 +74,7 @@
 - 项目周期内**最低频更新**(明显低于 tier / 模块级 AGENTS.md);3 层频率梯度详见 [workflow.md §5.0 三层 AGENTS.md 的更新频率梯度](workflow.md#50-三层-agentsmd-的更新频率梯度)
 - 六要素(Addy 框架):Commands / Testing / Project Structure / Code Style / Git Workflow / Boundaries
 - Boundaries 三档:✅ Always / ⚠️ Ask first / 🚫 Never
-- 嵌套层次:**用户 / 项目根 / 子目录(tier + 模块)/ 私有**(详细见 [workflow.md §1.4](workflow.md#14-agentsmd--claudemd-嵌套层次子级覆盖父级);系统级 `/etc/claude-code/CLAUDE.md` 为企业 IT 场景,v2 audience 不覆盖)
+- 嵌套层次:**用户 / 项目根 / 子目录(tier + 模块)/ 私有**(详细见 [workflow.md §1.4](workflow.md#14-agentsmd--claudemd-嵌套层次子级覆盖父级);系统级 `/etc/claude-code/CLAUDE.md` 为企业 IT 场景,project-workflow audience 不覆盖)
 - 模块级 AGENTS.md(`<module>/AGENTS.md` + 1 行 `CLAUDE.md` alias)是**可选**,仅模块"反常"时才写(见 [workflow.md §2.3](workflow.md#23-反常判定何时该写模块-agentsmd))
 - path-scoped rules 是 A 类 peer to AGENTS.md(workflow.md §0.3 / §1.3),不在嵌套层次表里;Claude adapter materialization 为 `.claude/rules/*.md` + `globs:` frontmatter
 
@@ -421,7 +421,7 @@ docs/specs/changes/
 
 **何时跑**:`/feature-init` 生成骨架 + 你填完 spec.md / plan.md 后,**开始实施前**主动跑一遍。
 
-**为什么必跑**:实施开始后才发现"输入不清晰" → 回炒成本是 spec 阶段修的 5-10 倍。这 7 个问题是 v2 实证里**最常出错的 7 个位置**。
+**为什么必跑**:实施开始后才发现"输入不清晰" → 回炒成本是 spec 阶段修的 5-10 倍。这 7 个问题是 project-workflow 实证里**最常出错的 7 个位置**。
 
 | # | 问题 | 不通过的修法 |
 |---|---|---|
@@ -633,7 +633,7 @@ docs/specs/changes/
 
 ## 7. 维护工具
 
-按 feature 生命周期顺序,v2 ship 的工具:
+按 feature 生命周期顺序,project-workflow ship 的工具:
 
 | 任务 | 工具 |
 |---|---|
@@ -645,8 +645,8 @@ docs/specs/changes/
 | 多 spec 漂移诊断(存量烂摊子 retrofit / 怀疑老 spec 误导实施时) | [`/spec-reconcile`](../skills/spec-reconcile/SKILL.md) —— 冲突矩阵 + 精选 source of truth + 生命周期修正 + 归档 |
 | A 类约定(AGENTS.md 多层 + path-scoped rules)主动 refresh | [`/agents-md-revise`](../skills/agents-md-revise/SKILL.md) —— P4 主战场 |
 
-**外部备选**(可选,跟 v2 工具并存):
-- GitHub Spec Kit `/speckit.clarify` —— Q&A 引导补全 spec(若装 Spec Kit)。v2 的等价路径是主会话 conversational fill(§3.6.5),不需要单独 skill。
+**外部备选**(可选,跟 project-workflow 工具并存):
+- GitHub Spec Kit `/speckit.clarify` —— Q&A 引导补全 spec(若装 Spec Kit)。project-workflow 的等价路径是主会话 conversational fill(§3.6.5),不需要单独 skill。
 
 ---
 

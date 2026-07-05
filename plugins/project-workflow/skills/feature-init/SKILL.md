@@ -45,7 +45,7 @@ Slug 要求(strip 后):kebab-case(`a-z0-9-`)、2-40 chars、不以 `-` 开头结
 > A 类约定两个 core 载体(workflow §0.3 / §1.3):AGENTS.md 多层 + path-scoped rules(Claude materialization = `.claude/rules/*.md`)。
 
 **必读**:
-- `AGENTS.md` —— 缺则报 "项目无 v2 baseline,先跑 `/project-init` 或 `/project-personalize`" 并中止。
+- `AGENTS.md` —— 缺则报 "项目无 project-workflow baseline,先跑 `/project-init` 或 `/project-personalize`" 并中止。
 - **`docs/specs/`(E 类)** —— 读 `index.md`(若存在)+ 全部已有 `docs/specs/<area>.md`(排除 `index.md`)。已有 area doc **优先于** `docs/specs/changes/archive/` 里历史 change 作 pre-fill context。活动区同域有互相矛盾的历史 change → Step 6 提示 `/spec-reconcile`。
 
 **选读**(缺失静默跳过):

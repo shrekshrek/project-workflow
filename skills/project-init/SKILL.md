@@ -1,15 +1,15 @@
 ---
 name: project-init
-description: Initialize a project's v2 starter kit (AGENTS.md + .claude/ + tier-level AGENTS.md if fullstack). Q&A driven, language/stack agnostic. Dispatches tech-researcher sub-agent for "不确定" answers. Accepts optional `$ARGUMENTS` = target directory path (defaults to current working directory). Claude Code-native. Use at P0 (project's first day). Not for adding features mid-project — use /feature-init for that.
+description: Initialize a project's v3 starter kit (AGENTS.md + .claude/ + tier-level AGENTS.md if fullstack). Q&A driven, language/stack agnostic. Dispatches tech-researcher sub-agent for "不确定" answers. Accepts optional `$ARGUMENTS` = target directory path (defaults to current working directory). Claude Code-native. Use at P0 (project's first day). Not for adding features mid-project — use /feature-init for that.
 ---
 
-**Response language**: Match the user's prompt language (中文 / English / etc.) for all natural-language output. Generated file content stays in the language of the source template (Chinese for v2).
+**Response language**: Match the user's prompt language (中文 / English / etc.) for all natural-language output. Generated file content stays in the language of the source template.
 
 # Project Init
 
 Canonical action spec: `docs/actions/project-init.md`. Follow that file for methodology rules; this skill adds Claude Code execution details. **静态查表(placeholder 映射 / globs 推导 / mini-Q&A 题库 / defaults 清单)在同目录 [`reference.md`](reference.md)—— 是 relocation 不是删减;Step 4 开始前必须 Read R1-R4+R6,Step 5.1 开始前必须 Read R5,Step 8 报告前 Read R7。不得凭记忆填表。**
 
-Initialize a new (or existing-but-no-AGENTS.md) project's v2 baseline. Q&A walks the user through stack and conventions, then writes 10+ files in one pass.
+Initialize a new (or existing-but-no-AGENTS.md) project's project-workflow baseline. Q&A walks the user through stack and conventions, then writes 10+ files in one pass.
 
 **Use when**: P0 — project's first day, no AGENTS.md yet.
 **Not for**: starting a feature (`/feature-init`) / refreshing existing A 类约定 (`/agents-md-revise`) / scaffold-cloned or retrofit 项目(`/project-personalize`,它处理替换 scaffold defaults、补 tier-level、扫既有代码)。

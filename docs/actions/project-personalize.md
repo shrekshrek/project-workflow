@@ -1,6 +1,6 @@
 # project-personalize
 
-Canonical P0 action for adapting a copied scaffold or existing v2-shaped project to the user's actual project.
+Canonical P0 action for adapting a copied scaffold or existing project-workflow-shaped project to the user's actual project.
 
 ## Use When
 

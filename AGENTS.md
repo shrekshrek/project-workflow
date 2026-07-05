@@ -5,7 +5,7 @@
 
 ## 仓库性质
 
-**project-workflow v2** —— spec-driven feature development blueprint + runtime adapters。
+**project-workflow v3** —— spec-driven feature development blueprint + runtime adapters。
 
 四层资产(本仓库):
 1. `docs/` —— 方法论文档(5 阶段、4 支柱、canonical actions、spec 三件套、10 工程陷阱)
@@ -13,14 +13,14 @@
 3. `.claude-plugin/` + `skills/` —— Claude Code adapter 资产(当前最成熟)
 4. `plugins/project-workflow/` + `.agents/plugins/` —— Codex plugin 分发资产(installable plugin package + local marketplace)
 
-**遵循 v2 方法论的一个具体项目示例**:[`shrekshrek/full-stack-scaffolding-fastapi-nuxt4`](https://github.com/shrekshrek/full-stack-scaffolding-fastapi-nuxt4) —— FastAPI + Nuxt 4 全栈脚手架,公开。仅作 example-of-one,v2 方法论自身的论据不依赖它。
+**遵循 project-workflow 方法论的一个具体项目示例**:[`shrekshrek/full-stack-scaffolding-fastapi-nuxt4`](https://github.com/shrekshrek/full-stack-scaffolding-fastapi-nuxt4) —— FastAPI + Nuxt 4 全栈脚手架,公开。仅作 example-of-one,方法论自身的论据不依赖它。
 
-**v1 → v2**:完全重写。v1 是 5 个 process-owning slash command,v2 是文档主导 + 可选辅助命令。v1 保留在 git tag `v1.1.0`。
+**v1 → v2 → v3**:v2 完全重写 v1 的 5 个 process-owning slash command,改为文档主导 + 可选辅助命令;v3 保留该方向,补齐 Claude/Codex 双端插件分发和 spec lifecycle。v1 保留在 git tag `v1.1.0`。
 
 ## 文档索引
 
 ```
-README.md              v2 总览 + 安装 + skill 清单
+README.md              v3 总览 + 安装 + skill 清单
 .claude-plugin/        plugin 资产
 ├── plugin.json        manifest
 └── marketplace.json   marketplace 注册

@@ -135,7 +135,7 @@
 #### Fission-AI OpenSpec
 
 - **核心**:把每个 change 的意图、设计、任务显式化,避免需求只留在聊天记录里
-- **优点**:轻量、偏 brownfield、原生关注 AGENTS.md,跟 v2 的 per-feature `docs/specs/changes/<NNN>-<slug>/` 思路相近
+- **优点**:轻量、偏 brownfield、原生关注 AGENTS.md,跟 project-workflow 的 per-feature `docs/specs/changes/<NNN>-<slug>/` 思路相近
 - **缺点**:主要覆盖 change/spec lifecycle;项目启动、项目约定长期漂移、端点三层 review、proof bundle 这几块不是它的主战场
 - **本项目决定**:借鉴 spec delta / change lifecycle 思想,但不复制 CLI 或目录结构。project-workflow 的边界更宽:从 P0 项目基线到 P2 feature spec,再到 P3 交付验证和 P4 规则刷新
 
