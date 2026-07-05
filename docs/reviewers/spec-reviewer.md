@@ -1,27 +1,37 @@
 # spec-reviewer
 
-Canonical L3 reviewer for checking implementation against one feature's frozen `spec.md`.
+Canonical L3 reviewer for checking implementation against one feature's frozen change `spec.md` under `docs/specs/changes/<NNN>-<slug>/`.
 
 ## Scope
 
-Review implementation against the feature artifact:
+Review implementation against the **change spec** (B class), not domain docs (E class):
 
-- `spec.md` outcomes, scope, constraints, and verification
+- **Greenfield** change spec: §1 Outcomes, §2 Scope, §3 Constraints, §4 Verification
+- **Brownfield** change spec: Motivation, Delta (Added / Modified / Removed), Constraints, Verification
 - `plan.md` and `tasks.md` as context
 - current changed files or implementation scope
 
-Do not review project conventions, code style, architecture preferences, or spec quality. The spec is the baseline. If code is "better" but different, report a deviation and let the caller decide.
+**Domain docs** (`docs/specs/<area>.md`): read only as context to interpret Delta items. Do **not** treat the domain doc as the L3 compliance baseline. Domain contradictions belong to the caller's domain check (feature-done Step 5.5), not L3 missing/deviation against domain full text.
+
+Do not review project conventions, code style, architecture preferences, or spec quality.
 
 ## Method
 
+### Phase 0: Detect shape
+
+- If `spec.md` has `## Delta` or `## Motivation` → **brownfield**
+- If `spec.md` has `## 1. Outcomes` → **greenfield**
+
 ### Phase 1: Extract Testable Spec Items
 
-Fresh-read `spec.md`, `plan.md`, and `tasks.md`. Extract testable items and classify each:
+Fresh-read `spec.md`, `plan.md`, and `tasks.md`. Extract testable items from the shape-appropriate sections only:
 
-- `single`: applies once
-- `distributed`: applies per endpoint, state, migration, test case, component, role, or other population
+| Shape | Extract from |
+|---|---|
+| Greenfield | Outcomes, Scope (do + don't), Constraints, Verification |
+| Brownfield | Delta subsections, Constraints, Verification |
 
-For each item, record section citation, population, and verifier.
+Classify each item: `single` or `distributed`.
 
 ### Phase 2: Verify Every Item
 
@@ -31,25 +41,14 @@ For each item, record section citation, population, and verifier.
 
 ### Phase 3: Categorize Findings
 
-Use these categories:
-
-- `missing`: spec required it but implementation lacks it
-- `deviation`: implemented but differs from spec
-- `scope creep`: spec excluded it but implementation includes it
-- `verification gap`: spec's required verification is missing or failing
-
-For mixed distributed items, show a per-element matrix.
+- `missing`: change spec required it but implementation lacks it
+- `deviation`: implemented but differs from change spec
+- `scope creep`: greenfield excluded item present; brownfield Removed item still present or Added item over-scoped
+- `verification gap`: required verification missing or failing
 
 ### Phase 4: Coverage And Confidence
 
-Report:
-
-- spec items total
-- fully verified
-- sampled
-- skipped
-- coverage = fully verified / total
-- confidence: high only when coverage >= 95% and no skipped critical item
+Report coverage = fully verified / total; confidence high only when coverage >= 95% and no skipped critical item.
 
 ## Output
 
@@ -59,36 +58,35 @@ Use this structure:
 ## L3 Spec Compliance Review
 
 Feature: <slug>
-Spec: <path>
+Spec: docs/specs/changes/<NNN>-<slug>/spec.md
+Shape: brownfield | greenfield
+Domain context: docs/specs/<area>.md (read-only, if cited)
 Files reviewed: <count>
 Spec coverage: <X>% (<verified>/<total>; <sampled> sampled; <skipped> skipped)
 
 ### Missing
-<spec citation, expected behavior, missing location>
+...
 
 ### Deviations
-<spec citation, code reference, difference>
+...
 
 ### Scope Creep
-<excluded item, code reference, action>
+...
 
 ### Verification Gaps
-<required check, current evidence>
-
-### Per-element Matrices
-<only when needed>
+...
 
 ### Spec Ambiguities
-<unclear/contradictory spec points discovered during review>
+...
 
 ### Summary
-<counts, highest severity, confidence>
+...
 ```
 
 ## Rules
 
-- Cite or skip: every finding needs a spec section citation.
+- Cite or skip: every finding needs a change spec section citation.
 - Do not make edits.
 - Do not report AGENTS.md / path-scoped-rule issues.
-- Do not invent requirements absent from the spec.
-
+- Do not invent requirements absent from the change spec.
+- Do not flag "missing" for domain doc behaviors not listed in Delta / Outcomes.

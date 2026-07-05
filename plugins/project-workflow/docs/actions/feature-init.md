@@ -1,6 +1,6 @@
 # feature-init
 
-Canonical P2 action for starting a tracked feature artifact under `docs/specs/<NNN>-<slug>/`.
+Canonical P2 action for starting a tracked feature artifact under `docs/specs/changes/<NNN>-<slug>/`.
 
 ## Use When
 
@@ -9,7 +9,7 @@ Canonical P2 action for starting a tracked feature artifact under `docs/specs/<N
 
 Do not use this action when the task does not need a new project-workflow artifact. Tiny bugfixes, wording/style tweaks, local test expectation fixes, low-risk documentation edits, and implementation under an accepted spec should continue directly and close with checks.
 
-**Behavior-change floor** (applies **only when the touched area already has a `docs/current/<area>.md`**): a change that alters user-visible behavior or a durable rule (defaults, validation limits, retry/timeout policy, state transitions) in a current-truth-covered area takes **at least the light lane**, no matter how small the diff — the current-truth document's only write path is the pipeline (`feature-done` check → `feature-archive` merge), so behavior changes bypassing it silently rot the document. Areas and projects without current truth are unaffected: small behavior changes there continue directly as usual (staleness elsewhere is caught visibly by the freshness header and the P4 advisory, not by ceremony).
+**Behavior-change floor**: a change that alters user-visible behavior or a durable rule already declared in `docs/specs/<area>.md` takes **at least the light lane** — domain docs update only via `feature-done` → `feature-archive`.
 
 Do not use for mid-implementation frozen-spec changes; use [`spec-revise`](spec-revise.md). Do not write implementation code during this action.
 
@@ -17,10 +17,10 @@ Do not use for mid-implementation frozen-spec changes; use [`spec-revise`](spec-
 
 - Feature slug, optionally with a short description.
 - Existing project conventions from `AGENTS.md`, nested `AGENTS.md`, and path-scoped rules when present.
-- Related current-truth documents (`docs/current/<area>.md`) when the project has them; prefer them over historical feature specs when pre-filling context.
+- Existing substantive E-class domain docs (`docs/specs/<area>.md`) when present; prefer over `docs/specs/changes/archive/` when pre-filling. Do not create an empty domain doc just to make a feature brownfield.
 - Explicit feature facts already provided in the current conversation.
 
-Read the active tree only: `docs/specs/archive/` is closed history — exclude it when searching for context (its durable conclusions live in `docs/current/`). If the active tree still has several related historical specs that look contradictory, recommend running [`spec-reconcile`](spec-reconcile.md) before implementation.
+Read the active tree only: `docs/specs/changes/archive/` is closed history — exclude it when searching for context (its durable conclusions live in `docs/specs/`). If the active tree still has several related historical specs that look contradictory, recommend running [`spec-reconcile`](spec-reconcile.md) before implementation.
 
 ## Lane Classification
 
@@ -47,13 +47,13 @@ If direct implementation or light-lane work later touches API/schema, DB/data mi
 
 Full lane:
 
-- `docs/specs/<NNN>-<slug>/spec.md`
-- `docs/specs/<NNN>-<slug>/plan.md`
-- `docs/specs/<NNN>-<slug>/tasks.md`
+- `docs/specs/changes/<NNN>-<slug>/spec.md` (brownfield lean or greenfield full template)
+- `docs/specs/changes/<NNN>-<slug>/plan.md`
+- `docs/specs/changes/<NNN>-<slug>/tasks.md`
 
 Light lane:
 
-- `docs/specs/<NNN>-<slug>/tasks.md`
+- `docs/specs/changes/<NNN>-<slug>/tasks.md`
 
 The directory number is the next available three-digit number unless the user supplied a non-conflicting number.
 

@@ -1,4 +1,0 @@
-interface:
-  display_name: "Project Init"
-  short_description: "Initialize a v2 project baseline"
-  default_prompt: "Use $project-init to initialize project-workflow conventions in this repository."

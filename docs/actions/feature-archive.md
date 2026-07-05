@@ -1,8 +1,8 @@
 # feature-archive
 
-Canonical lifecycle action for closing delivered features: merge durable conclusions into current truth, then physically move closed feature directories into `docs/specs/archive/`.
+Canonical lifecycle action for closing delivered features: merge durable conclusions into current truth, then physically move closed feature directories into `docs/specs/changes/archive/`.
 
-The active tree `docs/specs/` holds **in-flight work only**. History leaves the active tree instead of being merely marked: directory boundaries are respected by retrieval tools (grep/glob), top-of-file status markers are not. This is the core defense against stale specs polluting LLM attention.
+The active tree `docs/specs/changes/` holds **in-flight work only**. History leaves the active tree instead of being merely marked: directory boundaries are respected by retrieval tools (grep/glob), top-of-file status markers are not. This is the core defense against stale changes polluting LLM attention.
 
 ## Use When
 
@@ -16,22 +16,22 @@ Default invocation is **sweep mode**: with no argument, find all features whose 
 
 - Feature directory/slug, or nothing (sweep mode).
 - Each candidate's proof bundle (must be READY) and `spec.md` status (`已实现`, or `已取代`/`已废弃` set by `spec-reconcile`).
-- Related current-truth documents (`docs/current/<area>.md`), if any.
+- Related current-truth documents (`docs/specs/<area>.md`), if any.
 - Related earlier specs and ADRs in the same product area.
 
 ## Outputs
 
-1. **Current truth merge** (only for features whose proof bundle marked "current truth update pending", or that touch an existing area document): update or create `docs/current/<area>.md`. Create `docs/current/` on first use; do not pre-create it at P0.
-2. **Physical archive**: `git mv docs/specs/<NNN>-<slug>/ docs/specs/archive/<NNN>-<slug>/` for every closed feature — full lane and light lane alike. Git history is preserved; numbering stays unique across active and archive.
+1. **Current truth merge** (only for features whose proof bundle marked "current truth update pending", or that change behavior already declared in a domain document): update `docs/specs/<area>.md`. P0 creates only `docs/specs/index.md`; create a new area document from the plugin domain template only when the delivered feature establishes a durable domain truth.
+2. **Physical archive**: `git mv docs/specs/changes/<NNN>-<slug>/ docs/specs/changes/archive/<NNN>-<slug>/` for every closed feature — full lane and light lane alike. Git history is preserved; numbering stays unique across active and archive.
 3. **Lifecycle status on superseded older specs**: when this delivery replaces an earlier feature's direction, mark that spec `已取代` (superseded, link the successor) or `已废弃` (abandoned) and archive it in the same pass.
 4. **ADR consistency check**: if a merged conclusion contradicts an `Accepted` ADR, stop and resolve — either a new ADR supersedes the old one, or the conclusion is wrong. Current-truth documents link the ADRs governing the area.
 5. A closing note in the feature's `tasks.md` recording what was merged and when it was archived.
-6. Updated `docs/specs/index.md` (optional, if the project keeps one): a flat list mapping `NNN` → title/status/location, so links to archived specs stay resolvable.
+6. Updated `docs/specs/changes/index.md` (optional, if the project keeps one): a flat list mapping `NNN` → title/status/location, so links to archived specs stay resolvable.
 
 ## Current-Truth Document Discipline
 
 - **Replace, don't append**: merging rewrites the sections that changed; superseded statements are deleted, not stacked. The document always reads as a single consistent present tense.
-- **Size cap**: keep each `docs/current/<area>.md` under ~150 lines. If it exceeds the cap, split the area or prune stale detail — a bloated current-truth doc is the next pollution source.
+- **Size cap**: keep each `docs/specs/<area>.md` under ~150 lines. If it exceeds the cap, split the area or prune stale detail — a bloated current-truth doc is the next pollution source.
 - **Freshness header**: first line under the title is `> 最后核对:YYYY-MM-DD(as of <NNN>-<slug>)`, updated on every merge. A stale date is a visible distrust signal.
 - Content is future-facing behavior facts only: how the area works now, plus links to governing ADRs. No history, no implementation details, no rationale (that lives in ADRs).
 
@@ -40,7 +40,7 @@ Default invocation is **sweep mode**: with no argument, find all features whose 
 - A READY feature is not current truth until its durable conclusions are merged.
 - Archiving is `git mv`, never deletion; archived directories are read-only history.
 - Never archive an in-flight feature (spec status `草稿`/`已确认`, or proof bundle missing/non-READY).
-- There is no "historical foundation" status: if parts of an archived spec remain valid (data model, API, pipeline), those facts belong in `docs/current/<area>.md` — extract them during the merge instead of keeping the old spec in the active tree as a reference.
+- There is no "historical foundation" status: if parts of an archived spec remain valid (data model, API, pipeline), those facts belong in `docs/specs/<area>.md` — extract them during the merge instead of keeping the old spec in the active tree as a reference.
 - Do not edit implementation code.
 
 ## Validation

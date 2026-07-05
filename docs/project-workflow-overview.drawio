@@ -44,7 +44,7 @@
         <mxCell id="skill_projpers" value="&lt;b&gt;/project-personalize&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;scaffold / retrofit&lt;br/&gt;扫码 + 套配置&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1565C0;fontSize=11;align=center;" vertex="1" parent="1">
           <mxGeometry x="640" y="246" width="170" height="68" as="geometry"/>
         </mxCell>
-        <mxCell id="p0_out" value="&lt;b&gt;产出 (按文档类标记)&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:11px;&#39;&gt;&lt;b&gt;[A]&lt;/b&gt; AGENTS.md (项目 / tier / 模块 嵌套)  ·  &lt;b&gt;[A]&lt;/b&gt; path-scoped rules (Claude: .claude/rules/)&lt;br/&gt;&lt;b&gt;[D]&lt;/b&gt; adapter hooks/settings (Claude: .claude/)  ·  &lt;b&gt;[D]&lt;/b&gt; .gitignore&lt;br/&gt;&lt;b&gt;[B]&lt;/b&gt; docs/specs/&amp;lt;NNN&amp;gt;-&amp;lt;slug&amp;gt;/ 由 feature-init 创建  ·  &lt;b&gt;[C 骨架]&lt;/b&gt; docs/adr/&lt;/span&gt;" style="text;html=1;strokeColor=#90A4AE;fillColor=#FAFAFA;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=11;spacing=8;rounded=0;dashed=1;" vertex="1" parent="1">
+        <mxCell id="p0_out" value="&lt;b&gt;产出 (按文档类标记)&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:11px;&#39;&gt;&lt;b&gt;[A]&lt;/b&gt; AGENTS.md (项目 / tier / 模块 嵌套)  ·  &lt;b&gt;[A]&lt;/b&gt; path-scoped rules (Claude: .claude/rules/)&lt;br/&gt;&lt;b&gt;[D]&lt;/b&gt; adapter hooks/settings (Claude: .claude/)  ·  &lt;b&gt;[D]&lt;/b&gt; .gitignore&lt;br/&gt;&lt;b&gt;[B]&lt;/b&gt; docs/specs/changes/&amp;lt;NNN&amp;gt;-&amp;lt;slug&amp;gt;/ 由 feature-init 创建  ·  &lt;b&gt;[C 骨架]&lt;/b&gt; docs/adr/&lt;/span&gt;" style="text;html=1;strokeColor=#90A4AE;fillColor=#FAFAFA;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=11;spacing=8;rounded=0;dashed=1;" vertex="1" parent="1">
           <mxGeometry x="840" y="240" width="800" height="80" as="geometry"/>
         </mxCell>
 
@@ -85,7 +85,7 @@
         <mxCell id="callout_subflow" value="&lt;b&gt;⚙ Module Setup sub-flow&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;/feature-init 自动检测 → 加边界进 &lt;b&gt;[B]&lt;/b&gt; plan.md / 骨架进 &lt;b&gt;[B]&lt;/b&gt; tasks.md&lt;br/&gt;&amp;quot;反常&amp;quot;时 + &lt;b&gt;[A]&lt;/b&gt; &amp;lt;module&amp;gt;/AGENTS.md (workflow §2.3)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF8E1;strokeColor=#F57F17;fontSize=10;align=center;dashed=1;" vertex="1" parent="1">
           <mxGeometry x="450" y="475" width="500" height="55" as="geometry"/>
         </mxCell>
-        <mxCell id="p2_out" value="&lt;b&gt;产出 (按文档类标记)&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;&lt;b&gt;[B]&lt;/b&gt; docs/specs/&lt;NNN&gt;-&lt;slug&gt;/{spec, plan, tasks}.md  ·  代码  ·  &lt;b&gt;[B]&lt;/b&gt; tasks.md § Proof Bundle (L1/L2/L3 结果 + drift 建议)&lt;/span&gt;" style="text;html=1;strokeColor=#90A4AE;fillColor=#FAFAFA;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=11;spacing=8;rounded=0;dashed=1;" vertex="1" parent="1">
+        <mxCell id="p2_out" value="&lt;b&gt;产出 (按文档类标记)&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;&lt;b&gt;[B]&lt;/b&gt; docs/specs/changes/&lt;NNN&gt;-&lt;slug&gt;/{spec, plan, tasks}.md  ·  代码  ·  &lt;b&gt;[B]&lt;/b&gt; tasks.md § Proof Bundle (L1/L2/L3 结果 + drift 建议)&lt;/span&gt;" style="text;html=1;strokeColor=#90A4AE;fillColor=#FAFAFA;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=11;spacing=8;rounded=0;dashed=1;" vertex="1" parent="1">
           <mxGeometry x="970" y="475" width="670" height="55" as="geometry"/>
         </mxCell>
 
@@ -171,13 +171,13 @@
           <mxGeometry x="1255" y="815" width="385" height="70" as="geometry"/>
         </mxCell>
 
-        <mxCell id="doc_header" value="文档物理位置(代码组织维度)— 5 类正交职责  &lt;span style=&#39;font-weight:normal;font-size:10px;color:#78909C;&#39;&gt;(↑ phase lanes 产出框中的 [A] [B] [C] [D] 标签对应前 4 类;[E] docs/current/&amp;lt;area&amp;gt;.md 产品事实由交付后 /feature-archive 创建维护,不在 P0 lane)&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontStyle=2;fontColor=#37474F;" vertex="1" parent="1">
+        <mxCell id="doc_header" value="文档物理位置(代码组织维度)— 5 类正交职责  &lt;span style=&#39;font-weight:normal;font-size:10px;color:#78909C;&#39;&gt;(↑ phase lanes 产出框中的 [A] [B] [C] [D] 标签对应前 4 类;[E] docs/specs/&amp;lt;area&amp;gt;.md 产品事实由交付后 /feature-archive 创建维护,不在 P0 lane)&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontStyle=2;fontColor=#37474F;" vertex="1" parent="1">
           <mxGeometry x="40" y="905" width="1620" height="20" as="geometry"/>
         </mxCell>
         <mxCell id="doc_a" value="&lt;b&gt;A · 约定 (Conventions)&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;AGENTS.md (项目/tier/模块 3 层嵌套) + path-scoped rules (Claude: .claude/rules/*.md) + adapter alias&lt;br/&gt;时间维度:&lt;b&gt;当前态&lt;/b&gt; — 我们现在怎么工作?&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E1F5FE;strokeColor=#0277BD;fontSize=11;align=left;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
           <mxGeometry x="40" y="930" width="395" height="75" as="geometry"/>
         </mxCell>
-        <mxCell id="doc_b" value="&lt;b&gt;B · 任务 (Specs)&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;docs/specs/&lt;NNN&gt;-&lt;slug&gt;/{spec, plan, tasks}.md&lt;br/&gt;时间维度:&lt;b&gt;per-feature 生命周期&lt;/b&gt; — 这个 feature 做什么 + 怎么做 + 步骤?&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;fontSize=11;align=left;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
+        <mxCell id="doc_b" value="&lt;b&gt;B · 变更 (Changes)&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;docs/specs/changes/&lt;NNN&gt;-&lt;slug&gt;/{spec, plan, tasks}.md&lt;br/&gt;时间维度:&lt;b&gt;per-change 生命周期&lt;/b&gt; — 这次 change 做什么 + 怎么做 + 步骤?&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;fontSize=11;align=left;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
           <mxGeometry x="445" y="930" width="395" height="75" as="geometry"/>
         </mxCell>
         <mxCell id="doc_c" value="&lt;b&gt;C · 决策 (ADR)&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;docs/adr/NNNN-&lt;title&gt;.md  (扁平,不嵌套)&lt;br/&gt;时间维度:&lt;b&gt;时间戳快照,append-only&lt;/b&gt; — 当时为什么这么选?trade-off?&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF8E1;strokeColor=#F57F17;fontSize=11;align=left;verticalAlign=middle;spacing=8;" vertex="1" parent="1">

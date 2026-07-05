@@ -70,7 +70,7 @@
 |---|---|
 | 装多个 IDE 工具会冲突吗? | 不会(它们读同一份代码) |
 | 该选一个主 adapter 吗? | 是。先让一个 adapter 稳定,再移植到另一个;不要两边同时发明流程 |
-| Claude/Codex 能共用什么? | `AGENTS.md`, `docs/actions/`, `docs/reviewers/`, `docs/specs/`, ADR, proof bundle, L1/L2/L3 语义 |
+| Claude/Codex 能共用什么? | `AGENTS.md`, `docs/actions/`, `docs/reviewers/`, `docs/specs/`, `docs/specs/changes/`, ADR, proof bundle, L1/L2/L3 语义 |
 | Claude/Codex 不能共用什么? | plugin manifest、hook 配置、skill 安装路径、sub-agent 配置格式 |
 | 切换工具的成本? | 低到中(weeks),前提是上层资产保持工具无关 |
 
@@ -135,7 +135,7 @@
 #### Fission-AI OpenSpec
 
 - **核心**:把每个 change 的意图、设计、任务显式化,避免需求只留在聊天记录里
-- **优点**:轻量、偏 brownfield、原生关注 AGENTS.md,跟 v2 的 per-feature `docs/specs/<NNN>-<slug>/` 思路相近
+- **优点**:轻量、偏 brownfield、原生关注 AGENTS.md,跟 v2 的 per-feature `docs/specs/changes/<NNN>-<slug>/` 思路相近
 - **缺点**:主要覆盖 change/spec lifecycle;项目启动、项目约定长期漂移、端点三层 review、proof bundle 这几块不是它的主战场
 - **本项目决定**:借鉴 spec delta / change lifecycle 思想,但不复制 CLI 或目录结构。project-workflow 的边界更宽:从 P0 项目基线到 P2 feature spec,再到 P3 交付验证和 P4 规则刷新
 

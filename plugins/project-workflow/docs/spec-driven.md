@@ -31,10 +31,10 @@
 | 类别 | 文件 | 本文档涉及? |
 |---|---|---|
 | **A. 约定** — 项目级常识 / Tier 级约定 / 模块级反常 / 路径级 topic 详规则 | 根 `AGENTS.md` + tier `<tier>/AGENTS.md` + 模块 `<module>/AGENTS.md` + path-scoped rules(Claude materialization 为 `.claude/rules/*.md`) | §2 速查,详 workflow.md §1.3 |
-| **B. 任务** — 功能级 spec / plan / tasks | `docs/specs/<NNN>-<slug>/{spec,plan,tasks}.md` | **§3 起本文档主题** |
+| **B. 变更** — 功能级 change spec / plan / tasks | `docs/specs/changes/<NNN>-<slug>/{spec,plan,tasks}.md` | **§3 起本文档主题** |
 | **C. 决策** — 架构选择 + trade-off | `docs/adr/NNNN-<title>.md` | 不在本文档,见 workflow.md §1.8 |
 | **D. 工具基础设施** — hook / lint / settings | `.claude/{hooks,settings.json}` + `.gitignore`(`.github/` 模板 v2 默认不预置,见 workflow.md §1.9) | 不在本文档,见 workflow.md §1.6 / §1.7 |
-| **E. 产品事实** — 长周期产品域的当前现状 | `docs/current/<area>.md`(可选 `docs/specs/index.md` 索引) | **§5 生命周期部分**(current truth 与 spec 状态的关系) |
+| **E. 产品事实** — 长周期产品域的当前现状 | `docs/specs/<area>.md`(可选 `docs/specs/index.md` 域索引) | **§5 生命周期部分**(current truth 与 spec 状态的关系) |
 
 > "Tier" 概念详见 [workflow.md §0.3](workflow.md#03-概念区分钉死再读后续)。简言之:**全栈/多端项目的架构性分层**(前后端、客户端服务端等);单 tier 项目不存在这层。
 
@@ -53,7 +53,7 @@
 ### 本项目采用混合
 
 - **项目级约定**(A 类):agents.md 风格 → 根 `AGENTS.md`(workflow §1.3)
-- **功能级 artifact**(B 类):Spec Kit 简化版 → `docs/specs/<NNN>-<slug>/`(全道三件套;轻车道仅 `tasks.md`)
+- **变更级 artifact**(B 类):Spec Kit 简化版 → `docs/specs/changes/<NNN>-<slug>/`(全道三件套;轻车道仅 `tasks.md`)
 - **架构决策**(C 类):Michael Nygard ADR 模板 → `docs/adr/`(详见 workflow.md §1.8,本文档不展开)
 - **哲学**:学术 SDD 的"spec-as-contract"精神,**不上** Spec Kit 的工具链负担
 
@@ -82,7 +82,7 @@
 
 ---
 
-## 3. 功能级 artifact(`docs/specs/<NNN>-<feature>/`)
+## 3. 变更级 artifact(`docs/specs/changes/<NNN>-<feature>/`)
 
 > **写 spec 前先看**:[§3.8 Spec 编辑边界](#38-spec-编辑边界只有-1-条线) —— 是否已 git commit + 实施开始,决定 spec.md 能否直接改 vs 必走 SOP。这条边界规则是 §3 全章的前置假设。
 
@@ -98,20 +98,31 @@
 | `plan.md` | **HOW** | 模块影响范围 / 架构决策 / Prior decisions / 风险 | 实施中可补充,不能推翻 spec.md |
 | `tasks.md` | **STEPS** | Task breakdown(checkbox)+ 实施记录 | 实施中持续更新,完成后归档 |
 
-**为什么分三文件**:三种生命周期不一样。spec.md 是与 stakeholder 的契约,改了等于变需求;plan.md 是技术草图,实施中会发现要补;tasks.md 是 live 进度,每天都动。混在一个文件里**等于把"冻结"和"动态"放一起,审核会乱**。
+**为什么分三文件**:三种生命周期不一样。change spec 是与 stakeholder 的契约;plan.md 是技术草图;tasks.md 是 live 进度。
+
+### 3.1.1 三形 change artifact(E 类按需后)
+
+| 形态 | 何时 | `spec.md` | L3 基线 |
+|---|---|---|---|
+| **Brownfield 瘦** | 已有实质 `docs/specs/<area>.md` 覆盖本范围 | Motivation + References + Delta + Constraints + Verification | Delta + Constraints + Verification |
+| **Greenfield 胖** | 尚无 domain 覆盖的新产品面 | §1–§4 全文 | §1–§4 |
+| **轻车道** | 小改 | 无 spec;`tasks.md` + `## 验证` | tasks 验证节 |
+
+E = `docs/specs/<area>.md`;B = `docs/specs/changes/<NNN>-*/`。domain doc 供 init/M6/L3 context,**不是** L3 全文对照基线。
 
 ### 3.2 目录命名
 
 ```
-docs/specs/
+docs/specs/changes/
 ├── 001-auth/
 │   ├── spec.md
 │   ├── plan.md
 │   └── tasks.md
-└── 002-invitation/
-    ├── spec.md
-    ├── plan.md
-    └── tasks.md
+├── 002-invitation/
+│   ├── spec.md
+│   ├── plan.md
+│   └── tasks.md
+└── archive/          # 已交付变更(由 /feature-archive 移入)
 ```
 
 - 目录名 `<NNN>-<slug>`,编号便于排序和引用
@@ -122,9 +133,9 @@ docs/specs/
 
 不是所有任务都应该启动 project-workflow。无需新 artifact 的任务不是一条 lane,而是直接不调用 `/feature-init`:小 bugfix、文案、样式、局部测试修复、低风险文档编辑,以及已确认 spec 下的实施任务,直接做并说明验证结果。直接做仍必须遵守 `AGENTS.md` / path rules,并跑相关 lint / type / test / hook。
 
-**行为变更下限**(上述"直接做"的例外,**仅当触达的域已有 `docs/current/<area>.md` 时适用**):改变用户可见行为或持久规则(默认值 / 校验上限 / 重试策略 / 状态流转)且落在 current-truth 覆盖域内的改动,无论 diff 多小**至少走轻车道**——current truth(§5.2)的唯一写入口在管线上,多次"太小不值得走流程"的行为改动累积绕过,它就静默过时了。没建 current truth 的域和项目不受此限,小行为改动照常直接做;那里的过时靠新鲜度头 + P4 advisory 可见地暴露,不靠仪式去堵。
+**行为变更下限**(上述"直接做"的例外):改变 `docs/specs/<area>.md` 已声明的用户可见行为或持久规则(默认值 / 校验上限 / 重试策略 / 状态流转)时,无论 diff 多小**至少走轻车道**——current truth(§5.2)的唯一写入口在管线上,多次"太小不值得走流程"的行为改动累积绕过,它就静默过时了。未被 domain doc 声明的局部行为小改不因此强制进 project-workflow;照常直接做,最后说明验证结果。
 
-一旦决定需要 artifact,才进入 `docs/specs/<NNN>-<slug>/`,正式 artifact lane 只有两条:
+一旦决定需要 artifact,才进入 `docs/specs/changes/<NNN>-<slug>/`,正式 artifact lane 只有两条:
 
 | Lane | Artifact | 适用 |
 |---|---|---|
@@ -256,7 +267,7 @@ docs/specs/
 
 ### 3.6 完整示范(用户邀请流)
 
-#### `docs/specs/002-invitation/spec.md`
+#### `docs/specs/changes/002-invitation/spec.md`
 
 ```markdown
 # 002 invitation — Spec
@@ -292,7 +303,7 @@ docs/specs/
 - 上线指标:发送成功率 ≥ 99%
 ```
 
-#### `docs/specs/002-invitation/plan.md`
+#### `docs/specs/changes/002-invitation/plan.md`
 
 ```markdown
 # 002 invitation — Plan
@@ -325,7 +336,7 @@ docs/specs/
 - 未决:邀请邮件文案 → 实施时跟产品对一遍
 ```
 
-#### `docs/specs/002-invitation/tasks.md`
+#### `docs/specs/changes/002-invitation/tasks.md`
 
 ```markdown
 # 002 invitation — Tasks
@@ -478,7 +489,7 @@ Draft / Filled / Validated **本质同档**(自由编辑);Frozen / Revised **本
 **正确做法**:新 session 第一句:
 
 ```
-请先阅读 docs/specs/002-invitation/spec.md 和 plan.md,然后从 tasks.md 第 1 条开始实现。
+请先阅读 docs/specs/changes/002-invitation/spec.md 和 plan.md,然后从 tasks.md 第 1 条开始实现。
 ```
 
 **错误做法**:把内容复制到 prompt 里。
@@ -530,35 +541,35 @@ Draft / Filled / Validated **本质同档**(自由编辑);Frozen / Revised **本
 | `已取代`(superseded) | 方向被后续 spec / ADR / current truth 替代 | ❌ | `feature-archive` / `spec-reconcile` |
 | `已废弃`(abandoned) | 方向错误或不再需要,中途停止 | ❌ | `feature-archive` / `spec-reconcile` |
 
-**物理归档是主机制,状态标记是辅助**:`docs/specs/` 只放**进行中**的 feature;交付收尾时整目录 `git mv` 进 `docs/specs/archive/`(`/feature-archive` 默认清扫模式批量处理,全道轻车道一视同仁)。理由:检索工具(grep / glob)尊重目录边界,不读文件顶部的状态行——只靠就地标记,agent 搜关键词照样命中旧 spec 正文。目录隔离 + AGENTS.md 一行"检索现状排除 archive/",才是机械可靠的注意力防线。
+**物理归档是主机制,状态标记是辅助**:`docs/specs/changes/` 只放**进行中**的变更;交付收尾时整目录 `git mv` 进 `docs/specs/changes/archive/`(`/feature-archive` 默认清扫模式批量处理,全道轻车道一视同仁)。理由:检索工具(grep / glob)尊重目录边界,不读文件顶部的状态行——只靠就地标记,agent 搜关键词照样命中旧 change 正文。目录隔离 + AGENTS.md 一行"检索现状排除 changes/archive/",才是机械可靠的注意力防线。
 
-**标记规则**:改状态标记 + 在文件顶部加一行指向替代物(新 spec / ADR / `docs/current/<area>.md`)的链接,**不改正文、不删目录**。没有"历史基础"这类中间状态——若旧 spec 里的数据模型 / API / 基础设施仍有效,把这些**事实提炼进 `docs/current/<area>.md`**,spec 本身照常归档;把旧 spec 留在活动区当参考,正是历史污染的入口。
+**标记规则**:改状态标记 + 在文件顶部加一行指向替代物(新 spec / ADR / `docs/specs/<area>.md`)的链接,**不改正文、不删目录**。没有"历史基础"这类中间状态——若旧 spec 里的数据模型 / API / 基础设施仍有效,把这些**事实提炼进 `docs/specs/<area>.md`**,spec 本身照常归档;把旧 spec 留在活动区当参考,正是历史污染的入口。
 
 ### 5.2 Current truth(E 类,产品域现状)
 
-`docs/current/<area>.md` 回答"这个产品域**现在**怎么工作";feature spec 回答"这**一次** tracked change 想做什么"。两者分工:
+`docs/specs/<area>.md` 回答"这个产品域**现在**怎么工作";feature spec 回答"这**一次** tracked change 想做什么"。两者分工:
 
-- **何时创建**:某产品域第一次出现"老 spec 会误导新实施"的信号时,由 `feature-archive` 创建;**不在 P0 预置**,小项目 / 短周期域永远不需要。
-- **谁维护**:`feature-done` 的 current-truth check 发现"READY 但持久行为变了" → proof bundle 记 "current truth 更新 pending" → `feature-archive` 完成合并。过期的 current truth 比过期 spec 更危险(agent 更信它),所以 pending 状态必须显式记录,不允许静默跳过。
+- **何时创建**:P0 `project-init` 只创建 `docs/specs/index.md`;`/feature-init` 只有在已有实质当前事实可写时才创建新 area,否则 greenfield change 先不建 E;`/feature-archive` 在首个 READY greenfield feature 后把持久结论沉淀成 `docs/specs/<area>.md`。
+- **谁维护**:`feature-done` Step 5.5 发现持久行为变更 → proof pending → `feature-archive` **必须** merge 回 `docs/specs/<area>.md`。
 - **内容标准**:简洁、面向未来(现状是什么),不写演进史(那是 archive + ADR 的事)。**替换式维护**:合并 = 改写相关段落、删被推翻的旧句,不追加堆叠;单文件 **< 150 行**,超了拆域或删过时细节。行为事实链接该域有效 ADR("为什么"一跳可达),不复述论证。
 - **新鲜度自声明**:标题下第一行固定为 `> 最后核对:YYYY-MM-DD(as of <NNN>-<slug>)`,每次合并更新。过时的核对日期是可见的怀疑信号——绕过 feature 管线的改动无法被机制抓住,但至少让读者知道该打折扣。
-- **feature spec 引用它**:该域已有 current truth 时,新 spec 应引用它并以 **delta** 方式描述变更(Added / Modified / Removed),防止新 spec 重新定义整个域、顺手复活旧假设。域没有 current truth 时不要求。
+- **change spec 引用 domain doc**:brownfield **必须** `## Domain References` + `## Delta`;greenfield 首次归档时由 `/feature-archive` 创建/更新 `docs/specs/<area>.md`,防重新定义整域。
 
-可选辅助:`docs/specs/index.md` 平铺列出全部 feature(编号 → 标题 / 状态 / 位置),让指向已归档 spec 的旧链接可解析。它是索引不是替代——注意力防线靠 archive/ 目录隔离,不靠这份清单。
+可选辅助:`docs/specs/changes/index.md` 平铺列出全部 feature(编号 → 标题 / 状态 / 位置),让指向已归档 spec 的旧链接可解析。它是索引不是替代——注意力防线靠 archive/ 目录隔离,不靠这份清单。
 
 ### 变更需求 = 起新功能目录
 
 **不要改老 `<NNN>-<feature>/spec.md`**,起一份新功能目录引用旧的:
 
 ```
-docs/specs/
+docs/specs/changes/
 ├── archive/
-│   └── 002-invitation/     # 老功能已交付收尾,整目录归档(内容保持冻结)
+│   └── 002-invitation/     # 老变更已交付收尾,整目录归档(内容保持冻结)
 │       ├── spec.md
 │       ├── plan.md
 │       └── tasks.md
-└── 005-invitation-quota/   # 新功能目录(进行中,留在活动区)
-    ├── spec.md             # 第一段写"基于 002-invitation,本功能增加 X"
+└── 005-invitation-quota/   # 新变更目录(进行中,留在活动区)
+    ├── spec.md             # 第一段写"基于 002-invitation,本变更增加 X"
     ├── plan.md
     └── tasks.md
 ```
@@ -577,7 +588,7 @@ docs/specs/
 - 多人协作场景避免冲突
 - git log 不能完全替代 —— spec 是设计意图,代码 diff 不是
 
-**反向标记别漏**:新 spec 引用老 spec 只是前向链接;若新 feature **取代**了老 spec 的方向(不只是叠加),交付后要给老 spec 标 `已取代` + 顶部替代链接,并随归档移入 `docs/specs/archive/`(§5.1),否则老 spec 在未来 agent 眼里仍像有效基线。这一步由 `/feature-archive` 或 `/spec-reconcile` 完成。
+**反向标记别漏**:新 spec 引用老 spec 只是前向链接;若新 feature **取代**了老 spec 的方向(不只是叠加),交付后要给老 spec 标 `已取代` + 顶部替代链接,并随归档移入 `docs/specs/changes/archive/`(§5.1),否则老 spec 在未来 agent 眼里仍像有效基线。这一步由 `/feature-archive` 或 `/spec-reconcile` 完成。
 
 ---
 
@@ -630,7 +641,7 @@ docs/specs/
 | spec 写完后质量自检(实施前 gate) | [`/spec-quality-check`](../skills/spec-quality-check/SKILL.md) —— 机械化 §3.7 7 问 + dispatch [`spec-quality-reviewer`](reviewers/spec-quality-reviewer.md) 做主观二审 |
 | spec / plan 实施中发现错 | [`/spec-revise`](../skills/spec-revise/SKILL.md) —— orchestrate [workflow.md §3.5](workflow.md#35-开发中发现-specplan-错怎么办) / [§2.6](workflow.md#26-module-中途变更feature-实施中发现边界要调整) SOP(ADR + `## 修订记录` + plan prior decisions + tasks rebalance) |
 | 完成交付(实施后) | [`/feature-done`](../skills/feature-done/SKILL.md) —— 默认端点门禁:L1 / L2 / L3 / current-truth check / proof bundle 聚合成一个 READY / NEEDS WORK / BLOCKED verdict;局部复查 = 重跑本 skill 或主会话直接 dispatch [`spec-reviewer`](reviewers/spec-reviewer.md) / [`agents-md-reviewer`](reviewers/agents-md-reviewer.md) |
-| 生命周期收尾(周期性清扫或单 feature) | [`/feature-archive`](../skills/feature-archive/SKILL.md) —— 合并持久结论进 `docs/current/<area>.md`,已交付 feature 整目录移入 `docs/specs/archive/`,被取代的老 spec 标 已取代/已废弃(§5.1) |
+| 生命周期收尾(周期性清扫或单 feature) | [`/feature-archive`](../skills/feature-archive/SKILL.md) —— 合并持久结论进 `docs/specs/<area>.md`,已交付 feature 整目录移入 `docs/specs/changes/archive/`,被取代的老 spec 标 已取代/已废弃(§5.1) |
 | 多 spec 漂移诊断(存量烂摊子 retrofit / 怀疑老 spec 误导实施时) | [`/spec-reconcile`](../skills/spec-reconcile/SKILL.md) —— 冲突矩阵 + 精选 source of truth + 生命周期修正 + 归档 |
 | A 类约定(AGENTS.md 多层 + path-scoped rules)主动 refresh | [`/agents-md-revise`](../skills/agents-md-revise/SKILL.md) —— P4 主战场 |
 

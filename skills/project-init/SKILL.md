@@ -14,7 +14,7 @@ Initialize a new (or existing-but-no-AGENTS.md) project's v2 baseline. Q&A walks
 **Use when**: P0 — project's first day, no AGENTS.md yet.
 **Not for**: starting a feature (`/feature-init`) / refreshing existing A 类约定 (`/agents-md-revise`) / scaffold-cloned or retrofit 项目(`/project-personalize`,它处理替换 scaffold defaults、补 tier-level、扫既有代码)。
 
-**Output structure**(写到 target 目录):根 `AGENTS.md` + `CLAUDE.md`(1 行 @AGENTS.md)、`.claude/{rules/{code-style,testing,security}.md, hooks/lint-on-edit.js, settings.json}`、`docs/adr/{README,0000-template}.md`、`docs/gotchas.md`、`.gitignore`;fullstack 追加各 `<tier>/AGENTS.md` + `<tier>/CLAUDE.md`。
+**Output structure**(写到 target 目录):根 `AGENTS.md` + `CLAUDE.md`(1 行 @AGENTS.md)、`.claude/{rules/{code-style,testing,security}.md, hooks/lint-on-edit.js, settings.json}`、`docs/specs/index.md`(E 类索引)、`docs/adr/{README,0000-template}.md`、`docs/gotchas.md`、`.gitignore`;fullstack 追加各 `<tier>/AGENTS.md` + `<tier>/CLAUDE.md`。
 
 ## Step 0 — 解析 target 目录(可选 `$ARGUMENTS`)
 
@@ -73,14 +73,14 @@ PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT:-$(ls -d ~/.claude/plugins/cache/project-workf
 # template/ 复制,排除 _multi_tier_examples/(plugin asset,Step 5 直接从 $PLUGIN_ROOT 读)
 find "$PLUGIN_ROOT/template" -mindepth 1 -maxdepth 1 ! -name '_multi_tier_examples' -exec cp -r {} . \;
 
-# docs/specs/_template/ + .claude/rules/_examples/ 是 plugin asset,清掉
-find ./docs/specs -type f -delete 2>/dev/null; rmdir ./docs/specs/_template ./docs/specs 2>/dev/null
+# docs/specs/_template/ + docs/specs/changes/_template/ + .claude/rules/_examples/ 是 plugin asset,清掉
+find ./docs/specs/_template ./docs/specs/changes -type f -delete 2>/dev/null; rmdir ./docs/specs/_template ./docs/specs/changes/_template ./docs/specs/changes 2>/dev/null
 find ./.claude/rules/_examples -type f -delete 2>/dev/null; rmdir ./.claude/rules/_examples 2>/dev/null
 
 mkdir -p docs && cp "$PLUGIN_ROOT/docs/gotchas.md" docs/gotchas.md
 ```
 
-复制后 ls 验证:`AGENTS.md` / `CLAUDE.md` / `.claude/rules/{code-style,testing,security}.md` / `.claude/hooks/lint-on-edit.js` / `.claude/settings.json` / `docs/adr/{README,0000-template}.md` / `docs/gotchas.md` / `.gitignore` 存在;`_multi_tier_examples/` 和 `docs/specs/_template/` **不**出现。
+复制后 ls 验证:`AGENTS.md` / `CLAUDE.md` / `.claude/rules/…` / `docs/specs/index.md` / `docs/adr/…` / `docs/gotchas.md` / `.gitignore` 存在;`docs/specs/_template/` 和 `docs/specs/changes/_template/` **不**出现。
 
 ## Step 4 — 填 placeholder(根 AGENTS.md + `.claude/rules/`)
 

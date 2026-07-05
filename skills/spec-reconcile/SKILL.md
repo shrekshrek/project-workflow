@@ -1,7 +1,7 @@
 ---
 name: spec-reconcile
 model: sonnet
-description: Repair tool for product areas where accumulated specs conflict. Builds a conflict matrix (spec vs spec vs current truth vs ADR vs code), selects source of truth per contradiction with user approval, marks losing specs 已取代/已废弃 and moves them to docs/specs/archive/, and reports current-truth gaps. Primarily for retrofit — adopting lifecycle management in an existing project or cleaning up an area that piled up direction changes; rarely needed once archive sweeps run routinely. NOT for revising one active spec mid-implementation — use spec-revise.
+description: Repair tool for product areas where accumulated specs conflict. Builds a conflict matrix (spec vs spec vs current truth vs ADR vs code), selects source of truth per contradiction with user approval, marks losing specs 已取代/已废弃 and moves them to docs/specs/changes/archive/, and reports current-truth gaps. Primarily for retrofit — adopting lifecycle management in an existing project or cleaning up an area that piled up direction changes; rarely needed once archive sweeps run routinely. NOT for revising one active spec mid-implementation — use spec-revise.
 ---
 
 > **Response language**: Match the user's prompt language in all natural-language output. Citations preserve source language. Code, commands, file paths stay as-is.
@@ -19,9 +19,9 @@ User input: `$ARGUMENTS` — 产品域名 / 模块路径 / 逗号分隔的 `<NNN
 
 ## Step 1 — 圈定范围
 
-1. 解析 `$ARGUMENTS`:域名(如 `dashboard`)→ 按 spec 标题 / Outcomes 关键词扫 `docs/specs/*/spec.md`;模块路径 → 按 plan.md §1 模块影响扫;`<NNN>` 列表 → 直接用。
+1. 解析 `$ARGUMENTS`:域名(如 `dashboard`)→ 按 spec 标题 / Outcomes 关键词扫 `docs/specs/changes/*/spec.md`;模块路径 → 按 plan.md §1 模块影响扫;`<NNN>` 列表 → 直接用。
 2. 列出候选 spec(编号 + 标题 + 当前状态标记)让用户确认圈定范围;≥ 2 份才有意义,只有 1 份 → 报 "无需 reconcile" 退出。
-3. 一并收集:`docs/current/<area>.md`(若有)、相关 ADR(grep 引用)、(可选)用户指定的实现文件。
+3. 一并收集:`docs/specs/<area>.md`(若有)、相关 ADR(grep 引用)、(可选)用户指定的实现文件。
 
 ## Step 2 — 提取断言 + 构建冲突矩阵
 
@@ -33,7 +33,7 @@ User input: `$ARGUMENTS` — 产品域名 / 模块路径 / 逗号分隔的 `<NNN
 [Conflict #N] <主题>
   - <NNN>-<slug>/spec.md §2:"<引文>"
   - <MMM>-<slug>/spec.md §1:"<矛盾引文>"
-  - (若有)docs/current/<area>.md:"<现状引文>"
+  - (若有)docs/specs/<area>.md:"<现状引文>"
   - (若给了代码)实现现状:<代码实际走哪边,file:line>
   - 证据倾向:<哪份是后来者 / ADR 是否已裁决 / 代码站哪边>
 ```
@@ -46,9 +46,9 @@ User input: `$ARGUMENTS` — 产品域名 / 模块路径 / 逗号分隔的 `<NNN
 
 ## Step 4 — 应用(标记 + 归档)+ 报告 current-truth gaps
 
-1. 对每份 loser spec 应用标记(状态行挪标记 + 状态行下加替代链接行;不动正文),然后 `git mv docs/specs/<NNN>-<slug> docs/specs/archive/<NNN>-<slug>`(`mkdir -p docs/specs/archive` 如需)。
-2. `docs/specs/index.md` 存在则同步(编号 → 标题 / 状态 / 位置)。
-3. **Current-truth gaps**:散落在 winner spec 里、或来自 loser spec 仍有效基础(数据模型 / API / 基础设施)、但 `docs/current/<area>.md` 缺失或未覆盖的持久事实 → 列清单;缺口大时当场补 current truth(经用户确认),或建议跑 `/feature-archive` 清扫(已交付 winner 一并归档)。
+1. 对每份 loser spec 应用标记(状态行挪标记 + 状态行下加替代链接行;不动正文),然后 `git mv docs/specs/changes/<NNN>-<slug> docs/specs/changes/archive/<NNN>-<slug>`(`mkdir -p docs/specs/changes/archive` 如需)。
+2. `docs/specs/changes/index.md` 存在则同步(编号 → 标题 / 状态 / 位置)。
+3. **Current-truth gaps**:散落在 winner spec 里、或来自 loser spec 仍有效基础(数据模型 / API / 基础设施)、但 `docs/specs/<area>.md` 缺失或未覆盖的持久事实 → 列清单;缺口大时当场补 current truth(经用户确认),或建议跑 `/feature-archive` 清扫(已交付 winner 一并归档)。
 4. **ADR 一致性**:loser 的方向背后有 `Accepted` ADR → 标记为需 superseding ADR 或状态更新,列入 follow-up。
 
 ## Step 5 — Verdict
@@ -58,7 +58,7 @@ User input: `$ARGUMENTS` — 产品域名 / 模块路径 / 逗号分隔的 `<NNN
 
 - 圈定:<N> specs + <current truth / ADRs>
 - 冲突:<M> 条(矩阵见上)
-- 已应用:<K> 份 spec 标记 + 归档 → docs/specs/archive/
+- 已应用:<K> 份 spec 标记 + 归档 → docs/specs/changes/archive/
 - Current-truth gaps:<已补 / list / 无>
 - ADR follow-up:<需 superseding ADR 的项 / 无>
 

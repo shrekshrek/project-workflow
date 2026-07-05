@@ -10,7 +10,7 @@ project-workflow 分两层:
 
 | 层 | 定义 | 是否工具绑定 | 例 |
 |---|---|---|---|
-| **Methodology core** | 项目长期资产和流程契约 | 否 | `AGENTS.md`, `docs/specs/`, ADR, proof bundle, L1/L2/L3 review model, `docs/actions/`, `docs/reviewers/` |
+| **Methodology core** | 项目长期资产和流程契约 | 否 | `AGENTS.md`, `docs/specs/`, `docs/specs/changes/`, ADR, proof bundle, L1/L2/L3 review model, `docs/actions/`, `docs/reviewers/` |
 | **Runtime adapter** | 把 core 自动化到某个工具里的封装 | 是 | Claude Code plugin skills, Codex skills/plugins/hooks, shell scripts |
 
 **判断规则**:
@@ -32,7 +32,7 @@ project-workflow 分两层:
    小 bugfix、文案、样式、局部测试修复、低风险文档编辑,以及已确认 spec 下的实施任务,不新建 feature artifact;直接做时仍遵守 `AGENTS.md` / path rules 和相关检查。
 
 3. **Feature artifact 只有 Full / Light 两类**
-   全道 feature 使用 `docs/specs/<NNN>-<slug>/{spec,plan,tasks}.md`;轻车道使用同目录下的 `tasks.md`。
+   全道 feature 使用 `docs/specs/changes/<NNN>-<slug>/{spec,plan,tasks}.md`;轻车道使用同目录下的 `tasks.md`。
 
 4. **Spec quality gate 在实施前发生**
    全道 feature 开始实现前必须通过 7 问质量检查。Failed 项阻断实施;borderline 项允许继续,但要显式记录风险和修法。
@@ -56,7 +56,7 @@ project-workflow 分两层:
    默认跨工具 action 是 `project-init` / `project-personalize` / `feature-init` / `spec-quality-check` / `spec-revise` / `feature-done` / `feature-archive` / `spec-reconcile` / `agents-md-revise`。`feature-done` 内聚 L1/L2/L3/current-truth check/proof bundle 全部端点步骤;局部复查通过重跑 `feature-done` 或直接按 `docs/reviewers/` 跑 reviewer 完成,不再设独立 helper 命令。
 
 11. **`已实现` 不等于"仍是产品现状"**
-   交付后的生命周期语义是跨工具的:`docs/specs/` 活动区只放进行中的 feature,已交付的整目录归档到 `docs/specs/archive/`(检索现状时排除);被取代的 spec 标 `已取代` / `已废弃`;current truth(`docs/current/<area>.md`)是产品域现状的唯一权威。任何 adapter 在长周期产品域取 context 时,应优先读 current truth,不把 archive 内容当有效基线。
+   交付后的生命周期语义是跨工具的:`docs/specs/changes/` 活动区只放进行中的变更,已交付的整目录归档到 `docs/specs/changes/archive/`(检索现状时排除);被取代的 change 标 `已取代` / `已废弃`;current truth(`docs/specs/<area>.md`)是产品域现状的唯一权威。任何 adapter 在长周期产品域取 context 时,应优先读 current truth,不把 archive 内容当有效基线。
 
 ---
 
@@ -90,7 +90,7 @@ Action: feature init
 Canonical: docs/actions/feature-init.md
 Claude Code: /project-workflow:feature-init <slug>
 Codex: $feature-init <slug> (or plugin-provided command)
-Manual: create docs/specs/<NNN>-<slug>/ from template
+Manual: create docs/specs/changes/<NNN>-<slug>/ from template
 ```
 
 Avoid:

@@ -25,8 +25,8 @@ User input: `$ARGUMENTS` — optional `<feature-slug>` and/or `--spec` / `--modu
 
 | 输入 | 处理 |
 |---|---|
-| `<slug>`(如 `email-verification`)| 找 `docs/specs/<NNN>-email-verification/` |
-| 空 / "current" | 找最近活跃的 feature(`docs/specs/` 下 mtime 最新)|
+| `<slug>`(如 `email-verification`)| 找 `docs/specs/changes/<NNN>-email-verification/` |
+| 空 / "current" | 找最近活跃的 feature(`docs/specs/changes/` 下 mtime 最新,排除 `archive/`)|
 | 多个匹配 / 不明 | 请用户挑 |
 
 读该 feature 的 `spec.md` + `plan.md` + `tasks.md`,为后续步骤准备 context。
@@ -116,7 +116,7 @@ ls docs/adr/ | grep -E '^[0-9]{4}-' | sort -rn | head -1
 
 ### 6.4 Current truth / 老 spec 联动(按需)
 
-- 若修订改变了 `docs/current/<area>.md` 已记录的持久行为 → 同步更新该文档(或在 plan.md 记录为什么暂不更新)
+- 若修订改变了 `docs/specs/<area>.md` 已记录的持久行为 → 同步更新该文档(或在 plan.md 记录为什么暂不更新)
 - 若修订**取代**了更早 spec 的方向 → 提示交付后跑 `/feature-archive` 或 `/spec-reconcile` 给老 spec 打状态标记并归档([spec-driven.md §5.1](../../docs/spec-driven.md#51-生命周期状态全集--物理归档)),本 skill 不直接改老 spec
 
 ## Step 7 — 改 tasks.md(若任务列表变化)
@@ -133,7 +133,7 @@ ls docs/adr/ | grep -E '^[0-9]{4}-' | sort -rn | head -1
 **降频**(workflow §1.12 提示 #4):最近 ≥ 3 个 feature audit 全零 🚫 且本次只动 tasks.md 无新 ADR → 可跳过(报告标注);含 spec/plan/ADR 改动仍无条件跑;再出 🚫 即恢复强制。
 Dispatch [`decision-completeness-auditor`](../../agents/decision-completeness-auditor.md):
 
-- `files_to_audit`: `docs/specs/<NNN>-<slug>/{spec,plan,tasks}.md` + `docs/adr/<NNNN>-<topic>.md` +(若 Step 5.5 触发)`<module>/AGENTS.md` + `<tier>/AGENTS.md` + `.claude/rules/<topic>.md`
+- `files_to_audit`: `docs/specs/changes/<NNN>-<slug>/{spec,plan,tasks}.md` + `docs/adr/<NNNN>-<topic>.md` +(若 Step 5.5 触发)`<module>/AGENTS.md` + `<tier>/AGENTS.md` + `.claude/rules/<topic>.md`
 - `baseline`: spec/plan/tasks 的**修订前**内容(让 auditor 只审本次修订新增的决策;ADR 是全新文件无 baseline,审全文)
 - `qa_answers`: Step 2 触发发现 + Step 4 ADR 三节 + Step 5/5.5/6/7 user 确认改动
 - `language_conventions`: null
@@ -161,7 +161,7 @@ AskUserQuestion:
 
 | 错误 | 应对 |
 |---|---|
-| 找不到 feature 目录 | 提示用户列出 `ls docs/specs/` 自选 |
+| 找不到 feature 目录 | 提示用户列出 `ls docs/specs/changes/` 自选 |
 | `docs/adr/` 不存在 | 询问 "项目还没起 ADR 目录,要先建吗?(y/n)";yes → mkdir + 复制 0000-template;no → 中止 revise |
 | spec.md 无 `## 修订记录` 节(老 spec)| 提示用户手动加节 → continue |
 | 用户走完 Step 2 决定 "其实不必修" | 引导写 plan.md prior decisions + 退出,不起 ADR |

@@ -58,8 +58,7 @@ docs/                  方法论文档
 ├── cross-tool-methodology.md  core vs runtime adapter 边界
 ├── gotchas.md         ⭐ 10 工程陷阱
 ├── spec-driven.md     spec/plan/tasks 详解
-├── tooling.md         工具链对比
-└── proposals/         详细提案(> 200 行的提案;真 backlog 走 GitHub Issues per §7.8)
+└── tooling.md         工具链对比
 template/              starter scaffold(core files + Claude compatibility assets)
 scripts/
 └── sync-codex-plugin.js  sync/check Codex plugin release artifacts

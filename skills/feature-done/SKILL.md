@@ -23,12 +23,14 @@ User input: `$ARGUMENTS` — feature slug or "current"
 
 | 输入 | 处理 |
 |---|---|
-| `<slug>`(如 `email-verification`)| `docs/specs/<NNN>-<slug>/`(取最新匹配 NNN)|
-| `<NNN>` / `<NNN>-<slug>`(如 `002`)| `docs/specs/<NNN>-*/` |
-| `current` / 空 | 最近的 `docs/specs/<NNN>-*/`(mtime / NNN 最新;排除 `archive/`)|
+| `<slug>`(如 `email-verification`)| `docs/specs/changes/<NNN>-<slug>/`(取最新匹配 NNN)|
+| `<NNN>` / `<NNN>-<slug>`(如 `002`)| `docs/specs/changes/<NNN>-*/` |
+| `current` / 空 | 最近的 `docs/specs/changes/<NNN>-*/`(mtime / NNN 最新;排除 `archive/`)|
 | `<full-path>` | 直接用 |
 
-校验 `tasks.md` 存在。**车道判定**:`spec.md` 存在 = 全道;缺失(仅 tasks.md)= 轻车道(L3 跳过;[spec-driven §3.2.5](../../docs/spec-driven.md#325-轻车道小改免-frozen-spec--plan))。两者都无 → 报 "No spec found. Run `/project-workflow:feature-init <slug>` first." 退出。
+校验 `tasks.md` 存在。**车道判定**:`spec.md` 存在 = 全道;缺失(仅 tasks.md)= 轻车道(L3 跳过)。两者都无 → 报 "No feature artifact in `docs/specs/changes/`. Run `/project-workflow:feature-init <slug>` first." 退出。
+
+**change spec 形态**(全道):`spec.md` 含 `## Delta` → **brownfield**;含 `## 1. Outcomes` → **greenfield**。
 
 ## Step 2 — 缓存检查(无改动则复用上次 review)
 
@@ -76,19 +78,21 @@ User input: `$ARGUMENTS` — feature slug or "current"
 **轻车道 → 跳过**,记 `L3: N/A(轻车道)`,直接 Step 5.5。全道:
 
 用 Task 工具 dispatch `subagent_type: spec-reviewer`,传:
-- `spec.md`(baseline)+ `plan.md` / `tasks.md`(仅 context)
-- 改动文件列表(同 Step 4 scope)
-- 检查焦点:§1 Outcomes 是否发生 / §2 Scope 有无偷跑或缺失 / §3 Constraints 硬数字是否被遵守 / §4 Verification 列的测试是否存在
+- `spec.md` 路径 + **形态 brownfield|greenfield**
+- brownfield: 另传 `docs/specs/<area>.md`(**只读 context**,非 L3 全文基线)
+- `plan.md` / `tasks.md`(context)+ 改动文件列表
+- **检查焦点**:
+  - **brownfield**:Delta(Added/Modified/Removed)是否实现 + Constraints + Verification;domain doc 不逐条对照
+  - **greenfield**:§1 Outcomes / §2 Scope / §3 Constraints / §4 Verification
 
 多数项 missing = feature 未完成,报 "N of M spec items unimplemented, continue per tasks.md"。tasks.md 与 spec 冲突时信 spec。**无论结果如何继续到 proof bundle**(会记录)。
 
-## Step 5.5 — Current-truth check(仅当 docs/current/ 存在)
+## Step 5.5 — Domain doc check(E 类,按需)
 
-项目无 `docs/current/` → 记 `current truth: N/A`,跳过。有则:
-
-1. 判断本 feature 触达的产品域是否有 `docs/current/<area>.md`
-2. 有 → 对照实施结果:**矛盾**(实施跟 current truth 冲突且 spec 未声明 deviation)→ verdict 至少 🟡,列出冲突点;**改变了持久行为** → 记 "current truth 更新 pending → `/feature-archive`"
-3. 全道 spec 未引用已存在的相关 current truth → ⚠️ 提示(不 block,spec-quality-check Q8 的漏网)
+1. brownfield:读 `spec.md` 引用的 `docs/specs/<area>.md`;greenfield:若没有 domain doc,本项不做冲突对照。
+2. **矛盾**:实施与 domain 冲突且 change spec 未声明 deviation → 至少 🟡。
+3. **持久行为变更**或 greenfield 首次交付会形成新当前事实 → proof Item 5.5 记 "domain 更新 pending → `/feature-archive`"。
+4. brownfield 未引用已存在的相关 domain → ⚠️ 提示。
 
 ## Step 6 — Proof bundle 装配 + 写入 tasks.md(总是 fresh)
 
@@ -103,7 +107,7 @@ User input: `$ARGUMENTS` — feature slug or "current"
 | **4 L3 合规** | ✅ / ⚠️ N deviations;轻车道写 `N/A`。**L2+L3 去重**:同行同根因以 L3 为准,L2 标 "also flagged";不同根因两条都留([workflow.md §6.4](../../docs/workflow.md#64-按规则源分层验证three-layer-review-separation)) |
 | **5a A 类约定触动** | `git diff --name-only` 过滤 `(AGENTS|CLAUDE)\.md$|^\.claude/rules/`;按 root / tier / module / path-rule 四档列出,每份标 plan.md §1.1 声明的 Align / Deviate / Codify(未声明则提示补) |
 | **5b A 类约定 drift 建议**(未应用) | 代码里出现但 A 类约定没提该提的(新 pattern 未文档化 / 命令未同步)→ 0-3 bullet |
-| **5.5 Current truth** | N/A / aligned / **更新 pending(指向 `docs/current/<area>.md`,下一步 `/feature-archive`)** |
+| **5.5 Current truth** | N/A / aligned / **更新 pending(指向 `docs/specs/<area>.md`,下一步 `/feature-archive`)** |
 | **6 开放问题** | tasks.md `## 实施记录` 未决项 + L3 flagged spec ambiguities |
 
 **5b 重现感知**:每条 5b 建议以自由文本 append 到 `.claude/drift-ledger.md`(一行一条:`- <NNN>-<slug> (YYYY-MM-DD): <一句话 gist>`;文件不存在则创建)。**不算指纹、不维护计数** —— append 前通读现有条目,若发现早前 feature 已记过同一件事(语义判断,不要求措辞一致)→ 报告尾部提示:"🔁 「<gist>」已在 N 个 feature 重现 —— codify 它:客观漂移 → `/agents-md-revise`;模式文档化 → `/spec-revise` 或手改 AGENTS.md/rules"。已 codify 的条目顺手删行(ledger 只留未处理项)。
@@ -152,4 +156,4 @@ Verdict 判定:
 
 - **不自动 commit / 不自动 fix**:review 层全 read-only,本 skill 只聚合 + 写 proof bundle(+ READY 翻 spec 状态行)
 - **幂等**:重跑产出相同结果(除测试 timing);这就是"局部复查"的入口 —— 有效缓存自动复用,只重算失效层
-- **READY ≠ 关闭**:每个已交付 feature 最终都由 `/feature-archive` 移入 `docs/specs/archive/`(清扫模式批量,不必逐个);current truth pending 的 feature 归档时必须完成合并,不能静默跳过(canonical spec 的 verdict 语义)
+- **READY ≠ 关闭**:每个已交付 feature 最终都由 `/feature-archive` 移入 `docs/specs/changes/archive/`(清扫模式批量,不必逐个);current truth pending 的 feature 归档时必须完成合并,不能静默跳过(canonical spec 的 verdict 语义)

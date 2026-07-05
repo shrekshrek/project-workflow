@@ -1,61 +1,180 @@
 ---
 name: feature-init
-description: Create a project-workflow feature artifact in Codex only when the task needs new durable tracking. Full lane creates spec, plan, and tasks files; light lane creates tasks only. Tiny bugfixes, wording/style tweaks, local test fixes, low-risk docs, and work already covered by an accepted spec should skip this skill.
+model: sonnet
+description: "Create a feature artifact when tracking is needed. Full lane: docs/specs/changes/<NNN>-<slug>/{spec,plan,tasks}.md (brownfield lean when a substantive domain doc exists; greenfield full spec otherwise). Light lane: tasks.md only. Reads E-class domain docs under docs/specs/ when present."
 ---
+
+> **Response language**: Match the user's prompt language (中文 / English / etc.) in all natural-language output. Code, commands, file paths, and `$ARGUMENTS` stay as-is.
 
 # Feature Init
 
-Match the user's language in natural-language output. This is the Codex adapter for the project-workflow P2 entry action; keep the method aligned with bundled `../../docs/workflow.md`, `../../docs/spec-driven.md`, and `../../docs/cross-tool-methodology.md`.
+Canonical action spec: `docs/actions/feature-init.md`. Follow that file for methodology rules; this skill adds Claude Code execution details.
 
-Canonical action spec: `../../docs/actions/feature-init.md`. Follow that file for methodology rules; this skill only adds Codex execution guidance.
+Start a tracked feature artifact when the task needs project-workflow. Business 细节走主会话 conversational fill([spec-driven.md §3.6.5](../../docs/spec-driven.md#365-phase-a填-todos-的-ai-协作-sop));全道质量由 `/spec-quality-check` 把关。
 
-## Workflow
+**Use when**: P2 — 值得 track 的新 feature / 变更。全道 = 跨模块/跨边界或架构 / 数据模型 / API 契约变更([workflow.md §3.1](../../docs/workflow.md#31-规划阶段));同模块小改可走轻车道(仅 tasks.md,见 Step 4.5);键盘级局部改 / 文案样式 / 局部测试修复 / 低风险文档不启动 project-workflow。已确认 spec 下的实施任务继续原 `tasks.md`;spec/plan 错走 `/spec-revise`。
+**Not for**: P0 scaffolding(`/project-init`)/ 实施中改 spec(`/spec-revise`)/ 收尾交付(`/feature-done`)。
 
-1. Resolve the feature slug from the prompt.
-   - Accept `<slug>`, `<NNN>-<slug>`, or `<slug>: <description>`.
-   - Strip an optional `NNN-` prefix before validating the slug.
-   - Require kebab-case: `a-z0-9-`, 2-40 chars, no leading/trailing dash.
-   - If missing or invalid, ask for a corrected slug before writing files.
+User input: `$ARGUMENTS` — feature slug + optional description.
 
-2. Read project context before creating files.
-   - Required: `AGENTS.md`. If absent, stop and tell the user to initialize the project baseline first.
-   - Optional: nested `AGENTS.md`, explicit rule sections in those files, `.claude/rules/` compatibility files if present, and the current conversation for explicit user-provided feature facts.
-   - Optional: `docs/current/<area>.md` when the project has current-truth documents for the touched area; prefer them over historical feature specs when pre-filling, and have the new spec cite them and describe changes as a delta. Read the active tree only: `docs/specs/archive/` is closed history, not a context source. If related historical specs in the active tree contradict each other, recommend `$spec-reconcile` before implementation.
-   - Do not invent endpoints, entities, field names, errors, module paths, or technology choices that are not in project context or the user prompt.
+## Step 1 — 解析输入
 
-3. Classify the entry.
-   - First decide whether the task needs a new project-workflow artifact at all. If it is a tiny bugfix, wording/style tweak, local test expectation fix, low-risk documentation edit, or work already covered by an accepted spec, stop and report: "No new project-workflow artifact needed; continue directly and close with checks."
-   - Behavior-change floor (exception to the above, applies only when the touched area already has a `docs/current/<area>.md`): a change altering user-visible behavior or a durable rule (defaults, validation limits, retry/timeout policy, state transitions) in a current-truth-covered area takes at least the light lane no matter how small the diff — the current-truth document's only write path is the pipeline. Areas and projects without current truth are unaffected; small behavior changes there continue directly.
-   - If an artifact is useful, use full lane for API/schema, DB/data migration, security, auth/permissions, multi-tenant behavior, cross-module contract, architecture, user-visible product contract, new module work, or high-blast-radius paths.
-   - Use light lane only when all are true: small/reversible change within one cohesive module or responsibility area, no new module, no API/schema/data migration/architecture contract change, and no disaster-invariant/high-blast-radius path from `AGENTS.md`. File count alone is not decisive.
-   - Uncertainty rule: uncertain about high-risk impact means full; uncertain about UI wording/styling/component split/local refactor/test shape does not force full; uncertain business outcome means ask before creating artifacts.
-   - Bundle related small changes into one tracked feature instead of creating fragmentary specs.
-   - Implementation without a new artifact still follows `AGENTS.md`, path rules, and relevant lint/type/test/hooks. If that work or light-lane work later touches API/schema, DB/data migration, security, multi-tenant behavior, evidence/data invariants, cross-module contracts, or high-blast-radius paths, stop and upgrade to the appropriate artifact flow.
+| 输入格式 | 处理 |
+|---|---|
+| 仅 `<slug>` | 直接用 |
+| `<slug>: <description>` | 拆 slug 和 description |
+| `<NNN>-<slug>`(± description)| strip 前导 `\d{3}-` 作 slug,NNN 进 Step 2 校验 |
+| 空 | 问用户 "feature slug? (kebab-case)" |
 
-4. Determine the feature number only if creating light or full lane artifacts.
-   - Inspect both `docs/specs/` and `docs/specs/archive/` for directories matching `^[0-9]{3}-` (numbering is shared across active and archive; archived ids are never reused).
-   - Use the max number + 1; start at `001` if none exist.
-   - If the user supplied an `NNN` prefix that collides with an existing directory, stop and ask whether to use the next available number.
+Slug 要求(strip 后):kebab-case(`a-z0-9-`)、2-40 chars、不以 `-` 开头结尾;不合法请用户改正。
 
-5. Create the spec directory from templates.
-   - Template source: bundled `../../template/docs/specs/_template/`.
-   - Do not require or create target-project `docs/specs/_template/`; project-local default templates are intentionally not part of the generated baseline.
-   - Full lane: copy `spec.md`, `plan.md`, and `tasks.md`.
-   - Light lane: copy `tasks-light.md` to `tasks.md`; do not create `spec.md` or `plan.md`.
-   - Replace `<NNN>`, `<slug>`, and `<TODAY>` where present.
-   - Preserve unresolved `{{TODO ...}}` markers.
-   - If pre-filling from explicit conversation facts, add a short HTML comment such as `<!-- pre-filled from chat: ... -->`.
+## Step 2 — 预备 NNN 编号(仅 artifact 情况使用)
 
-6. Report the result.
-   - List created files.
-   - State lane classification and module decision, including uncertainty.
-   - If pre-filling from conversation facts, prefer a separate Codex subagent running `../../docs/reviewers/decision-completeness-auditor.md` before treating the scaffold as complete; otherwise run the audit in the main session. Frequency reduction: if the last 3+ features all had zero must-fix audit findings, the audit may be skipped for light lane (report "audit: skipped, mature baseline"); any new must-fix restores it unconditionally.
-   - Remind the user that full-lane work must pass `$spec-quality-check` before implementation.
-   - For light lane, remind that `tasks.md` must include goal/boundary, verification, tasks, and proof bundle.
+只算候选编号;若 Step 4.5 判定无需 artifact,不分配不建目录。
 
-## Guardrails
+```bash
+{ ls docs/specs/changes/ ; ls docs/specs/changes/archive/ 2>/dev/null ; } | grep -E '^[0-9]{3}-' | sort -rn | head -1
+```
 
-- Do not write implementation code.
-- Do not plant "reasonable defaults" for business/API details.
-- Ask before creating a new module if module ownership is unclear.
-- Keep Claude-specific paths as optional inputs only; Codex's canonical shared source is `AGENTS.md` plus `docs/`.
+最大编号 +1 补零到 3 位(**active + archive 共用序列**,归档编号不复用);空则从 `001` 起。
+
+**NNN 前缀冲突**(Step 1 给了 NNN 时):等于 auto → 静默用;大于 auto → 问用哪个;≤ existing → 报 collision,改 auto 或换 slug。
+
+## Step 3 — 读项目 context
+
+> A 类约定两个 core 载体(workflow §0.3 / §1.3):AGENTS.md 多层 + path-scoped rules(Claude materialization = `.claude/rules/*.md`)。
+
+**必读**:
+- `AGENTS.md` —— 缺则报 "项目无 v2 baseline,先跑 `/project-init` 或 `/project-personalize`" 并中止。
+- **`docs/specs/`(E 类)** —— 读 `index.md`(若存在)+ 全部已有 `docs/specs/<area>.md`(排除 `index.md`)。已有 area doc **优先于** `docs/specs/changes/archive/` 里历史 change 作 pre-fill context。活动区同域有互相矛盾的历史 change → Step 6 提示 `/spec-reconcile`。
+
+**选读**(缺失静默跳过):
+- `<tier>/AGENTS.md` 每个 tier —— tier 特异约定
+- **`.claude/rules/*.md` 全集** —— 读 frontmatter `globs:`,记"哪条规则约束哪些路径",供 Step 5 pre-fill + Step 6 reminders 对照 feature scope
+- **本 session 早期对话** —— user 已讨论过本 feature 的,提取**用户明确给的细节**作 Step 5 pre-fill input
+
+### 扫描项目结构(tier-aware)
+
+不写死 `backend/` `frontend/`,据实际推:根 AGENTS.md 提到的 tier 目录 → 不明则扫含 AGENTS.md 的子目录(maxdepth 2)→ 每 tier 按类型扫模块(service:`src|app|internal/*/`;UI:`src/{modules,views,features}/*/`;单 tier 扫 `./src/*/`)。识别不出 → 问用户 "本 feature 涉及哪些目录?"
+
+### Step 3.5 — 域(E)判定
+
+1. **推断触达域** `primary_area`:从 slug / description / 模块路径 / chat;无法推断 → 问 user 选一个 area(kebab-case);仍不明可先用 slug 作为候选。
+2. **已有实质 E**:`docs/specs/<primary_area>.md` 存在且包含非模板的当前行为 / 关键约束 → `SPEC_SHAPE=brownfield`,全道用 `spec-brownfield.md`。
+3. **无实质 E**:不要为了分类先创建空 domain doc → `SPEC_SHAPE=greenfield`,全道用 `spec-greenfield.md`;首个 READY 后 `/feature-archive` 必须把持久结论 merge 进新建 domain doc。
+4. **显式创建例外**:只有当用户已提供可写入 E 的当前事实,且希望先建立 domain baseline 时,才从 `$PLUGIN_ROOT/template/docs/specs/_template/domain.md` 创建 `docs/specs/<primary_area>.md` 并更新 `docs/specs/index.md`;创建后仍需确认这些事实不是本次 change 的未验证意图。
+5. 记录 `SPEC_SHAPE=brownfield|greenfield` 供 Step 5 / Step 6 使用。
+
+## Step 4 — 检测 Module Setup 需要(workflow §2)
+
+| 情形 | 模块决策 |
+|---|---|
+| 明确扩展某一既有模块 | 不建新模块;plan 注 "extends `<X>`" |
+| 横跨 2+ 模块,主家不明 | 问用户:哪个承担 / 怎么拆 |
+| 全新领域 | **需新建模块** —— plan/tasks 加 skeleton |
+| 跨 tier feature | 逐 tier 单独判 |
+
+**不确定时先问用户,不编造模块决定。** 新模块的反常判定(跟父级约定是否不同)不预问——99% 选 n,作 Step 6.2 reminder 给 user 自判(workflow §2.3)。
+
+## Step 4.5 — 入口分流(无需新 artifact / 轻车道 / 全道)
+
+先判**是否需要新 artifact**(判据 [spec-driven §3.2.5](../../docs/spec-driven.md#325-入口分流先判是否需要-project-workflow))。**不启动 project-workflow**:小 bugfix / 文案样式微调 / 局部测试期望修复 / 低风险文档 / 键盘级局部改 / 已确认 spec 下的实施任务(spec/plan 错走 `/spec-revise`)。
+
+**行为变更下限**(上列的例外):改变 `docs/specs/<area>.md` 已声明的用户可见行为或持久规则时,无论 diff 多小至少走轻车道 —— domain doc 唯一写入口是 `feature-done` pending → `feature-archive` merge,绕过即腐化。未声明的局部行为小改不因此强制进入 project-workflow。
+
+命中"无需 artifact" → 输出 "No new project-workflow artifact needed; continue directly and close with checks." 停止本 skill;直接做仍遵守 AGENTS.md / path rules / lint / test / hook。
+
+需要 artifact 时,3 道 trip **全 yes 才轻车道,任一 no → 全道**:
+
+| # | 判据 | no → |
+|---|------|------|
+| 1 规模 | ≤ ~1 个内聚模块 / 单一职责,**且 Step 4 未判定新建模块**;文件数只是辅助信号 | 全道 |
+| 2 可逆性 | additive / bugfix / polish 易回滚;**非**数据迁移 / API 或 schema 契约变更 | 全道 |
+| 3 爆破半径 | 不触达根 AGENTS.md「灾难性不变量 / 高爆破半径路径」节声明的路径(节缺失则问用户保守判)| 全道 |
+
+**不确定时分级**:不确定是否触达 API / DB / security / auth / multi-tenant / 迁移 / 跨模块契约 → 全道;不确定 UI 文案 / 样式 / 组件拆分 / 测试写法 → 不因此升级;不确定业务目标 → 先问用户,不建 spec。
+
+**Bundle rule**:多个相关小改合成一个中等 feature,不碎 spec。轻车道是优化不是逃生舱;直接实施或轻车道中发现触达高危面 → 停,补 artifact 再继续。
+
+## Step 5 — 生成 change artifact(按车道)
+
+模板源 `$PLUGIN_ROOT/template/docs/specs/changes/_template/`。全道 = `{spec,plan,tasks}.md`;轻车道 = 仅 `tasks-light.md` → `tasks.md`。
+
+```bash
+PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT:-$(ls -d ~/.claude/plugins/cache/project-workflow/project-workflow/*/ 2>/dev/null | sort -V | tail -1)}"
+SRC="$PLUGIN_ROOT/template/docs/specs/changes/_template"
+mkdir -p "docs/specs/changes/$NNN-$SLUG"
+# 全道 —— 按 Step 3.5 SPEC_SHAPE 选 change spec 模板:
+if [ "$SPEC_SHAPE" = "greenfield" ]; then
+  cp "$SRC/spec-greenfield.md" "docs/specs/changes/$NNN-$SLUG/spec.md"
+else
+  cp "$SRC/spec-brownfield.md" "docs/specs/changes/$NNN-$SLUG/spec.md"
+fi
+cp "$SRC/plan.md" "$SRC/tasks.md" "docs/specs/changes/$NNN-$SLUG/"
+# 轻车道: cp "$SRC/tasks-light.md" "docs/specs/changes/$NNN-$SLUG/tasks.md"
+```
+
+复制后 Edit 替换 `<NNN>` / `<slug>` / `<TODAY>` / `{{area}}`→`primary_area`(brownfield)。`{{TODO ...}}` **保留**给 conversational fill。
+
+**Brownfield pre-fill**:读 `docs/specs/<primary_area>.md`,Motivation/Delta 只写**相对 domain 的差异**,不复制 domain 全文。
+
+### Chat context pre-fill(若 Step 3 提取到对话)
+
+只 pre-fill user **明确给的事实**(outcomes / scope / constraints / 框架决策 / entity / endpoint);未讨论项留 `{{TODO ...}}` 或 `(待 ADR-NNNN-XXX)`。**不凭印象补**——user 说 "做 email verification" 没说 endpoint 路径就不要 plant `/api/v1/auth/verify`。pre-fill 处 inline 标注 `<!-- pre-filled from chat: <quote> -->` 供 6.3 audit trace。
+
+## Step 6 — 报告 + reminders + audit
+
+### 6.1 文件 ready 报告
+
+报告:创建路径 + 车道 + **spec 形态(brownfield/greenfield)** + `primary_area`;Module decision…;(brownfield)⚠️ change spec 填 Motivation + Delta,域全貌在 `docs/specs/<area>.md`;(greenfield)⚠️ 填 §1–§4,首次归档时由 `/feature-archive` 创建/更新 domain doc;(若发现矛盾历史 change)⚠️ `/spec-reconcile <area>`。
+
+### 6.2 Reminders(user 自判,不预问)
+
+```
+⚠️ Mission-critical checkpoints:
+  全道 brownfield(spec-quality-check):Delta 三子节 + Constraints + Verification;Motivation 不重复 domain doc
+  全道 greenfield:spec.md §2 `**不做**:` 至少 2-3 条(Q2);§1 Outcomes 具体(Q4)
+    (多模块)plan.md §1.1 Sibling Alignment 每个兄弟模块 Align / Deviate / Codify(Q6)
+  轻车道:tasks.md 目标/边界 至少 1 条"不做" + 验证 至少 1 条可机验项(/spec-quality-check 不适用轻车道)
+
+📌 (若建了新模块)`<path>` 若反常(不同存储 / 特殊并发 / 公共 API 契约)→ 补 `<path>/AGENTS.md`
+   (差量于父级)+ CLAUDE.md 1 行 alias;不反常不加(workflow §2.3)
+
+💡 Conversational fill 引导:主会话接着聊业务想法,AI 据 placeholder 迭代填(§3.6.5 SOP);
+   不确定 stack 说 'research X vs Y' → tech-researcher;要查外部库版本约束说 '拉 context7 文档'
+   → 摘进 plan.md §2;不确定细节用 `(待 ADR-NNNN-XXX)` defer,不 plant 'reasonable default';
+   对照 `.claude/rules/<framework>.md` 已定 idiom 写,避免 drift
+```
+
+### 6.3 决策完整性 audit(默认强制,workflow §1.12)
+
+**降频条件**:最近 ≥ 3 个 feature 的 audit 全零 🚫(查收尾输出记录)→ 轻车道可跳过(报告标 "audit: 降频跳过"),全道仍跑;任一次再出 🚫 恢复强制;历史读不到照常跑。
+
+Dispatch [`decision-completeness-auditor`](../../agents/decision-completeness-auditor.md)审 pre-fill 内容(纯空骨架可跳过):
+- `files_to_audit`: 全道 `{spec,plan}.md`;轻车道 `tasks.md`
+- `qa_answers`: Step 4 框架决策(slug / NNN / module setup)+ chat 中 user 明确给的业务事实;`language_conventions`: null
+- `plugin_hardcoded_defaults`: `{value: "NNN-<slug>", source: "workflow.md §3 spec-driven"}` 一条
+
+**典型 plant**(audit 应 catch):endpoint path 凭空 / 错误码具体值无 trace(rules 文件规定则 ✅)/ 字段名超出对话事实 / HTTP method 推测 → 🚫。**Block 规则**:🚫 > 0 → 告诉 user 主会话据 feedback 修;⚠️ 不 block(spec-quality-check 还会再 audit)。
+
+### 6.4 收尾
+
+报告 scaffold + pre-fill 完成、audit 结果(N 🚫 / M ⚠️ 或跳过原因),下一步:主会话 conversational fill 剩余 placeholder → 填完跑 `/spec-quality-check` 迭代到 pass。
+
+## Failure modes
+
+| 错误 | 应对 |
+|---|---|
+| AGENTS.md 不存在 | 中止,提示 `/project-init` 或 `/project-personalize` |
+| Tier / 模块结构识别不出 | 问 user "本 feature 涉及哪些目录?" |
+| Module 决策不明 | 生成文件前问 user,不编造 |
+| Pre-fill 不确定 | 留 `{{TODO}}` / `(待 ADR-NNNN-XXX)`,不 plant |
+| Audit 标 🚫 | 告诉 user 主会话修;skill 不主动重 audit |
+| User 拒填 mission-critical 项 | 不阻塞 —— spec-quality-check Q2/Q6 会 gate |
+| 输入带 `NNN-` 前缀 | 不报错:strip 作 slug,NNN 进 Step 2 校验 |
+
+## Notes
+
+- **Do not** generate code / overwrite existing `docs/specs/changes/<NNN>-<slug>/`(碰撞报错退出)
+- 仅在 slug / tier / module 不明时问;business 细节走主会话 conversational fill
+- 车道完整判据 + 安全闸(验证保留 / 事后反核)见 [spec-driven §3.2.5](../../docs/spec-driven.md#325-入口分流先判是否需要-project-workflow)

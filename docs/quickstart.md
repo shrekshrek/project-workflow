@@ -29,7 +29,7 @@
 /project-workflow:project-personalize
 ```
 
-预期结果:在功能开发前,项目里已有 `AGENTS.md`、路径级规则语义、hooks 和 ADR 模板。Feature spec 模板保留在 plugin 内,由 `feature-init` 在创建具体 `docs/specs/<NNN>-<slug>/` 时复制;目标项目默认不保留 `docs/specs/_template/`。Claude Code adapter 默认把路径级规则 materialize 为 `.claude/rules/`;Codex adapter 优先通过嵌套 `AGENTS.md` 和显式规则章节承载同一语义,并用 `.codex/hooks.json` 映射 runtime enforcement。必要时只把 `.claude/rules/` 当兼容输入读取。
+预期结果:在功能开发前,项目里已有 `AGENTS.md`、路径级规则语义、hooks 和 ADR 模板。Feature spec 模板保留在 plugin 内,由 `feature-init` 在创建具体 `docs/specs/changes/<NNN>-<slug>/` 时复制;目标项目默认不保留 `docs/specs/changes/_template/`。Claude Code adapter 默认把路径级规则 materialize 为 `.claude/rules/`;Codex adapter 优先通过嵌套 `AGENTS.md` 和显式规则章节承载同一语义,并用 `.codex/hooks.json` 映射 runtime enforcement。必要时只把 `.claude/rules/` 当兼容输入读取。
 
 ## 2. 判断是否需要 feature artifact
 
@@ -43,9 +43,9 @@
 
 全道 feature 然后补全:
 
-- `docs/specs/<NNN>-<slug>/spec.md`:结果、范围、约束、验证方式
-- `docs/specs/<NNN>-<slug>/plan.md`:模块影响、Sibling Alignment、技术决策
-- `docs/specs/<NNN>-<slug>/tasks.md`:可验证的实施步骤
+- `docs/specs/changes/<NNN>-<slug>/spec.md`:结果、范围、约束、验证方式
+- `docs/specs/changes/<NNN>-<slug>/plan.md`:模块影响、Sibling Alignment、技术决策
+- `docs/specs/changes/<NNN>-<slug>/tasks.md`:可验证的实施步骤
 
 轻车道小改只有 `tasks.md`,补全目标/边界、验证、任务和 proof bundle;不跑 `spec-quality-check`。
 
@@ -80,7 +80,7 @@
 - L1 机械检查
 - L2 项目约定 review
 - L3 code-vs-spec review
-- current-truth check(仅当 `docs/current/<area>.md` 存在)
+- current-truth check(仅当 `docs/specs/<area>.md` 存在)
 - proof bundle 写入 `tasks.md`
 
 需要局部复查某一层时重跑 `feature-done`(幂等,复用有效缓存),或在主会话直接 dispatch reviewer sub-agent;没有独立的 helper 命令。
@@ -91,7 +91,7 @@
 /project-workflow:feature-archive
 ```
 
-它把所有已交付 feature 的目录整体移入 `docs/specs/archive/`(活动区只留进行中的工作,历史 spec 不再污染检索),对标了 "current truth 更新 pending" 的 feature 先把持久结论合并进 `docs/current/<area>.md`,被取代的老 spec 标 `已取代` / `已废弃`。带 slug 可以只收尾单个 feature。
+它把所有已交付 feature 的目录整体移入 `docs/specs/changes/archive/`(活动区只留进行中的工作,历史 spec 不再污染检索),对标了 "current truth 更新 pending" 的 feature 先把持久结论合并进 `docs/specs/<area>.md`,被取代的老 spec 标 `已取代` / `已废弃`。带 slug 可以只收尾单个 feature。
 
 ## 4.5 存量项目 spec 已经积累混乱时
 
@@ -117,7 +117,7 @@
 
 | 场景 | 简化做法 |
 |---|---|
-| 大约 50 行以内的小改动 | 跳过 feature spec,依赖 hooks + review;例外:改动改变行为**且**该域已有 `docs/current/<area>.md` 时至少走轻车道(current truth 只经管线更新) |
+| 大约 50 行以内的小改动 | 跳过 feature spec,依赖 hooks + review;例外:改动改变 `docs/specs/<area>.md` 已声明的当前行为或持久规则时至少走轻车道(current truth 只经管线更新) |
 | 探索性 spike | 在临时 branch / worktree 做;决策留下来时再写 ADR |
 | 生产 hotfix | 先修;之后补测试并记录后续技术债 |
 | 架构 / API / 数据模型变更 | 不要跳过 spec;使用 feature spec + ADR |

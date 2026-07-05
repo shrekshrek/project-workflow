@@ -27,7 +27,7 @@ project-workflow helps real projects move from **chat-driven AI coding** to **sp
 
 v2 separates **methodology core** from **runtime adapters**:
 
-- Core: `AGENTS.md`, `docs/specs/`, ADR, proof bundle, L1/L2/L3 review model, canonical workflow actions in `docs/actions/`, and canonical reviewer specs in `docs/reviewers/`.
+- Core: `AGENTS.md`, `docs/specs/`(域现状), `docs/specs/changes/`(tracked changes), ADR, proof bundle, L1/L2/L3 review model, canonical workflow actions in `docs/actions/`, and canonical reviewer specs in `docs/reviewers/`.
 - Adapters: Claude Code plugin is mature; Codex is distributed as a separate Codex plugin package. Both adapters use the same core docs and template, but their installed artifacts are separate.
 
 See [`docs/cross-tool-methodology.md`](docs/cross-tool-methodology.md).
@@ -124,7 +124,7 @@ $spec-reconcile <area>
 $agents-md-revise
 ```
 
-Run `$project-init` once per target project to materialize `AGENTS.md`, ADR templates, hooks, Claude compatibility assets, and Codex hook config into that project. Feature spec templates stay in the plugin and are copied into concrete `docs/specs/<NNN>-<slug>/` directories by `$feature-init`.
+Run `$project-init` once per target project to materialize `AGENTS.md`, ADR templates, hooks, Claude compatibility assets, and Codex hook config into that project. Feature spec templates stay in the plugin and are copied into concrete `docs/specs/changes/<NNN>-<slug>/` directories by `$feature-init`.
 
 ### Manual fallback
 
@@ -156,11 +156,11 @@ The plugin identity is `project-workflow` for both Claude Code and Codex. Local 
 | `spec-quality-check` | `/project-workflow:spec-quality-check` | `$spec-quality-check` | Pre-implementation gate for full-lane specs: mechanical checks plus subjective review against the 7-question checklist. Failed items block implementation. |
 | `spec-revise` | `/project-workflow:spec-revise` | `$spec-revise` | Mid-implementation revision SOP for frozen spec / plan / module-boundary changes: ADR, spec revision record, plan prior decisions, tasks rebalance, and traceability audit. |
 | `feature-done` | `/project-workflow:feature-done` | `$feature-done` | Default end-of-feature gate: L1 → L2 → L3 → current-truth check → proof bundle, with one READY / NEEDS WORK / BLOCKED verdict. Idempotent — re-run for partial rechecks. |
-| `feature-archive` | `/project-workflow:feature-archive` | `$feature-archive` | Lifecycle closure (default sweep mode): move delivered feature dirs into `docs/specs/archive/` so the active tree holds in-flight work only; merge durable conclusions into `docs/current/<area>.md` when pending; mark superseded old specs (已取代 / 已废弃). |
+| `feature-archive` | `/project-workflow:feature-archive` | `$feature-archive` | Lifecycle closure (default sweep mode): move delivered feature dirs into `docs/specs/changes/archive/` so the active tree holds in-flight work only; merge durable conclusions into `docs/specs/<area>.md` when pending; mark superseded old specs (已取代 / 已废弃). |
 | `spec-reconcile` | `/project-workflow:spec-reconcile` | `$spec-reconcile` | Repair conflicts across accumulated specs in one area (retrofit tool): conflict matrix, user-picked source of truth, mark + archive losing specs, current-truth gap report. |
 | `agents-md-revise` | `/project-workflow:agents-md-revise` | `$agents-md-revise` | P4 convention refresh: audit A 类约定 (AGENTS.md + path-scoped rules) against objective project state, propose user-approved updates, and summarize drift. |
 
-> Spec templates (`docs/specs/_template/{spec,plan,tasks}.md`) are plugin-canonical — `feature-init` copies them from the installed plugin template at feature-creation time. To customize, fork the plugin and edit `template/docs/specs/_template/`.
+> Spec templates (`docs/specs/changes/_template/{spec,plan,tasks}.md`) are plugin-canonical — `feature-init` copies them from the installed plugin template at feature-creation time. To customize, fork the plugin and edit `template/docs/specs/changes/_template/`.
 >
 > Ad-hoc single-layer review (formerly `/l1-review` / `/l2-review` / `/l3-review` / `/proof-bundle`, merged into `feature-done` in v3.0): run the project check command directly for L1, or dispatch the `agents-md-reviewer` / `spec-reviewer` sub-agent from the main session for L2/L3.
 

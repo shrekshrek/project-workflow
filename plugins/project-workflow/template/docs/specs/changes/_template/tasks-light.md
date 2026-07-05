@@ -7,6 +7,7 @@
 
 - 做:{{TODO 1-3 条做什么}}
 - 不做:{{TODO 排除项}}
+- (可选)触达的产品域:{{若改变 `docs/specs/<area>.md` 已声明行为,实施后在 `/feature-archive` 合并进 domain doc}}
 
 ## 验证(spec §4 等价 —— 不可省)
 

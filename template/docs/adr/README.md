@@ -11,7 +11,7 @@
 - 影响多 feature / 多模块的架构边界划分
 
 不写:
-- 单功能内的技术选择(那进 `docs/specs/<NNN>-<feature>/plan.md`)
+- 单功能内的技术选择(那进 `docs/specs/changes/<NNN>-<feature>/plan.md`)
 - 临时调试选择(进 plan.md `实施记录`)
 - 跟项目无关的个人偏好(进 `CLAUDE.local.md`)
 

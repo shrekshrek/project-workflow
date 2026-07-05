@@ -1,4 +1,0 @@
-interface:
-  display_name: "Feature Done"
-  short_description: "Run the end-of-feature delivery gate"
-  default_prompt: "Use $feature-done to run L1/L2/L3 checks and update the proof bundle."

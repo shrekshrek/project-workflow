@@ -27,6 +27,7 @@ Minimum baseline:
 - `CLAUDE.md` as a one-line alias for Claude compatibility
 - path-scoped rule files where the adapter supports them
 - hook/check configuration where the adapter supports it
+- `docs/specs/index.md` as the E-class domain index; do not create an empty domain document at P0
 - `docs/adr/`
 - `docs/gotchas.md`
 - `.gitignore`

@@ -1,4 +1,0 @@
-interface:
-  display_name: "Feature Init"
-  short_description: "Create a project-workflow feature artifact"
-  default_prompt: "Use $feature-init only if this task needs a new feature artifact."

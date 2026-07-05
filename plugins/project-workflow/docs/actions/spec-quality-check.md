@@ -4,7 +4,7 @@ Canonical pre-implementation gate for full-lane feature artifacts.
 
 ## Use When
 
-- `docs/specs/<NNN>-<slug>/{spec,plan,tasks}.md` exists.
+- `docs/specs/changes/<NNN>-<slug>/{spec,plan,tasks}.md` exists.
 - The user believes the spec is ready for implementation.
 
 Do not use as the main gate for light-lane features; check their `tasks.md` goal/boundary, verification, tasks, and proof bundle directly.
@@ -27,7 +27,8 @@ Required quality questions:
 5. Plan identifies affected modules/tier boundaries.
 6. Multi-module work has sibling alignment: align, deviate with reason, or codify.
 7. Tasks are implementation-sized and include validation/proof work.
-8. Only when the touched area has a `docs/current/<area>.md`: the spec cites it and does not contradict it, or explicitly records why it deviates. Projects without current-truth documents skip this check.
+8. Only when the touched area has a `docs/specs/<area>.md`: the spec cites it and does not contradict it, or explicitly records why it deviates. Projects without current-truth documents skip this check.
+9. When check 8 applies: the spec includes a `## Delta` section with `Added`, `Modified`, and `Removed` subsections; at least one subsection has concrete content (not placeholders or bare N/A).
 
 Mechanical checks may detect missing sections and placeholders; subjective checks judge clarity, traceability, and risk.
 

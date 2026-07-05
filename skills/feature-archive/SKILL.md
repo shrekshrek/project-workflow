@@ -1,7 +1,7 @@
 ---
 name: feature-archive
 model: sonnet
-description: Lifecycle closure for delivered features. Default sweep mode finds all delivered-but-unarchived features and closes them as a batch; merges durable conclusions into docs/current/<area>.md when the proof bundle marked "current truth 更新 pending" (creating the doc on first use, replace-not-append, <150 lines, freshness header), marks superseded older specs 已取代/已废弃, then git-mv's every closed feature directory into docs/specs/archive/. Use periodically after feature-done READY features accumulate, or with a slug for single-feature closure.
+description: Lifecycle closure for delivered features. Default sweep mode finds all delivered-but-unarchived features and closes them as a batch; merges durable conclusions into docs/specs/<area>.md when the proof bundle marked "current truth 更新 pending" (P0 creates only docs/specs/index.md; new area docs are created from the plugin domain template only for durable domains; replace-not-append, <150 lines, freshness header), marks superseded older specs 已取代/已废弃, then git-mv's every closed feature directory into docs/specs/changes/archive/. Use periodically after feature-done READY features accumulate, or with a slug for single-feature closure.
 ---
 
 > **Response language**: Match the user's prompt language in all natural-language output. File contents follow each file's existing language. Code, commands, file paths stay as-is.
@@ -10,7 +10,7 @@ description: Lifecycle closure for delivered features. Default sweep mode finds 
 
 Canonical action spec: `docs/actions/feature-archive.md`. Follow that file for methodology rules; this skill adds Claude Code execution details.
 
-交付后的生命周期收尾:合并持久结论进 current truth(E 类),然后把已交付 feature **整目录移入 `docs/specs/archive/`** —— 活动区只留进行中的工作,历史 spec 物理离场,不再污染检索([spec-driven.md §5.1](../../docs/spec-driven.md#51-生命周期状态全集--物理归档))。
+交付后的生命周期收尾:合并持久结论进 current truth(E 类),然后把已交付 feature **整目录移入 `docs/specs/changes/archive/`** —— 活动区只留进行中的工作,历史 spec 物理离场,不再污染检索([spec-driven.md §5.1](../../docs/spec-driven.md#51-生命周期状态全集--物理归档))。
 
 **Use when**: 周期性清扫(推荐,攒几个 feature 一起);或 `/feature-done` READY 后单独收尾某个 feature。
 **Not for**: 未过 `feature-done` 的 feature(先跑端点门禁)/ 存量多 spec 冲突的一次性 retrofit(先 `/spec-reconcile` 裁决,再回来归档)。
@@ -19,7 +19,7 @@ User input: `$ARGUMENTS` — 空 = 清扫模式;或 feature slug / NNN / "curren
 
 ## Step 1 — 圈定收尾对象
 
-**清扫模式**(空参数):扫 `docs/specs/<NNN>-*/`(排除 `archive/`),对每个目录检查:
+**清扫模式**(空参数):扫 `docs/specs/changes/<NNN>-*/`(排除 `archive/`),对每个目录检查:
 - `tasks.md` 的 `## Proof Bundle` 已填且 verdict READY
 - `spec.md` 状态为 `已实现`(或已被 `spec-reconcile` 标 `已取代` / `已废弃`);轻车道无 spec.md 则只看 proof bundle
 - 工作已 commit(`git status` 该目录及相关代码无未提交改动)
@@ -34,9 +34,9 @@ User input: `$ARGUMENTS` — 空 = 清扫模式;或 feature slug / NNN / "curren
 
 1. 从 spec §1 Outcomes / plan §1 模块影响 / proof bundle diff 判定产品域;不明 → 问用户。
 2. 提取**持久结论**(交付后长期成立的行为 / 契约 / IA / 默认值;不是实施过程或临时方案),向用户确认。
-3. 写入 `docs/current/<area>.md`:
+3. 写入 `docs/specs/<area>.md`:
    - 已存在 → **替换式更新**:改写相关段落、删被推翻的旧句,不追加堆叠
-   - 不存在 → 首次创建(顺带 `docs/current/`):标题 + 新鲜度行 + 1 行域定义 + 按子域分节的现状 + 末尾 `## Sources`(有效 ADR 链接 + 支撑 spec 编号)
+   - 不存在 → 仅当这是新的持久产品域时,从 `$PLUGIN_ROOT/template/docs/specs/_template/domain.md` 创建并替换 area / date / source;更新 `docs/specs/index.md`
 4. **纪律自检**:更新后单文件 **< 150 行**(超了拆域或删过时细节);标题下第一行更新为 `> 最后核对:YYYY-MM-DD(as of <NNN>-<slug>)`。
 5. **ADR 一致性**:合并的结论与某 `Accepted` ADR 矛盾 → 停,报冲突(需要新 ADR supersede 或结论有误);跨 feature 方向变更无 ADR → 提示先补。
 
@@ -45,7 +45,7 @@ User input: `$ARGUMENTS` — 空 = 清扫模式;或 feature slug / NNN / "curren
 ## Step 3 — 被取代老 spec 标记(如有)
 
 本次交付**取代**了某早期 spec 方向(不只是叠加)时,跟用户逐份确认:
-- `已取代`:方向被替代 → 状态行挪标记 + 状态行下加 `> ⚠️ 已取代 by <NNN>-<slug> / ADR-NNNN / docs/current/<area>.md — <1 句原因>`
+- `已取代`:方向被替代 → 状态行挪标记 + 状态行下加 `> ⚠️ 已取代 by <NNN>-<slug> / ADR-NNNN / docs/specs/<area>.md — <1 句原因>`
 - `已废弃`:方向错误 / 不再需要 → 同上格式
 
 老 spec 里仍有效的数据模型 / API / 基础设施事实 → **提炼进 current truth**(回 Step 2 补),spec 本身照常归档;没有"历史基础"状态。被标记的老 spec 一并加入本轮归档清单。
@@ -55,12 +55,12 @@ User input: `$ARGUMENTS` — 空 = 清扫模式;或 feature slug / NNN / "curren
 对每个收尾 feature:
 
 ```bash
-mkdir -p docs/specs/archive
-git mv docs/specs/<NNN>-<slug> docs/specs/archive/<NNN>-<slug>
+mkdir -p docs/specs/changes/archive
+git mv docs/specs/changes/<NNN>-<slug> docs/specs/changes/archive/<NNN>-<slug>
 ```
 
-- 归档前在 `tasks.md` 末尾追加:`## Archive Note\n- YYYY-MM-DD: archived;<若有>持久结论已合并 → docs/current/<area>.md`
-- `docs/specs/index.md` 存在 → 更新对应行的位置/状态(编号 → 标题 / 状态 / active|archive);不存在 → 不主动创建
+- 归档前在 `tasks.md` 末尾追加:`## Archive Note\n- YYYY-MM-DD: archived;<若有>持久结论已合并 → docs/specs/<area>.md`
+- `docs/specs/changes/index.md` 存在 → 更新对应行的位置/状态(编号 → 标题 / 状态 / active|archive);不存在 → 不主动创建
 - 编号全局唯一(active + archive 共用 NNN 序列),`/feature-init` 取号时两边都查
 
 ## Step 5 — 报告
@@ -68,7 +68,7 @@ git mv docs/specs/<NNN>-<slug> docs/specs/archive/<NNN>-<slug>
 ```markdown
 ## /project-workflow:feature-archive — <sweep | slug>
 
-- 归档:<N> features → docs/specs/archive/(列编号)
+- 归档:<N> features → docs/specs/changes/archive/(列编号)
 - Current truth:<K> 份 <created / updated>(各 <area>.md,行数)
 - 老 spec 标记:<list 或 无>
 - ADR follow-up:<需要新 ADR 的冲突 / 无>

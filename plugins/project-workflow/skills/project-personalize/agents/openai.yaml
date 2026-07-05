@@ -1,4 +1,0 @@
-interface:
-  display_name: "Project Personalize"
-  short_description: "Adapt a v2 scaffold to this project"
-  default_prompt: "Use $project-personalize to replace scaffold defaults and align AGENTS.md with this codebase."

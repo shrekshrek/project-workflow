@@ -24,27 +24,47 @@ User input: `$ARGUMENTS` — `<feature-slug>` or empty (use most recent feature)
 
 | 输入 | 处理 |
 |---|---|
-| `<slug>` | 找 `docs/specs/<NNN>-<slug>/` |
-| 空 | 用 `spec.md` mtime 最新的 feature |
+| `<slug>` | 找 `docs/specs/changes/<NNN>-<slug>/` |
+| 空 | 用 `docs/specs/changes/` 活动区内 `spec.md` mtime 最新的 feature,排除 `archive/` |
 
 读 `spec.md` + `plan.md` + `tasks.md`。
 
-**车道判定**:`spec.md` 缺失 = **轻车道**(只 tasks.md,见 [spec-driven §3.2.5](../../docs/spec-driven.md#325-轻车道小改免-frozen-spec--plan))。本质量门验的是 frozen spec 的 §3.7 七问,**只适用全道** → 报 "N/A(轻车道无 frozen spec;验证靠 tasks.md `## 验证` + `/feature-done` proof bundle)" 并退出,不跑 M1-M5 / sub-agent。
+**change spec 形态判定**(读 `spec.md` 节标题):
+- 含 `## Delta` 或 `## Motivation` → **brownfield**
+- 含 `## 1. Outcomes` → **greenfield**
+- 无法判定 → 看 `## Domain References`;有则 brownfield,无则 greenfield
 
-## Step 2 — Mechanical checks (skill 自己跑,不 dispatch)
+**车道判定**:`spec.md` 缺失 = **轻车道** → 报 "N/A(轻车道…)" 并退出。
 
-逐条机械验证,产出 ✅ / ❌ + 失败原因:
+## Step 2 — Mechanical checks (分形 M 表)
+
+逐条机械验证,产出 ✅ / ❌ + 失败原因。**brownfield 不跑 M1/M2 的 Outcomes/Scope 项**,改跑 M1b/M2b。
+
+### Greenfield M 表
 
 | # | 检查 | 实现 |
 |---|---|---|
-| **M1** | spec.md 六要素是否齐(§1 Outcomes / §2 Scope / §3 Constraints / §4 Verification + plan.md `Prior decisions` + plan.md `§1 模块影响范围`)| grep `^## ` 节标题,核对清单 |
-| **M2** | spec.md `## 2. Scope` 是否有 `**做**`(或 `**Include**`) + `**不做**`(或 `**Exclude**`) 两个清单 | 在 `## 2.` 节内分别检查 include/do 与 exclude/not-do 小节,且各自至少 1 条非 `{{TODO}}` bullet |
-| **M3** | spec.md `## 4. Verification` 至少含 3 条具体可测项(plugin default,项目可调)| 数 `- [ ]` 或 `-` bullet |
-| **M4** | plan.md `§1.1 Sibling Alignment`(若多模块时)是否填(非 placeholder) | 只统计表格数据行;必须出现非 `<sibling-module>` 的模块名 + `Align` / `Deviate` / `Codify` 三选一 + 非 `{{TODO}}` 备注。模板占位行不算通过 |
-| **M5** | tasks.md 任务数 ≥ 3(plugin default,项目可调)且不全是 `## TODO`(用户填了具体内容) | grep `- [ ]` 数量 + 检 `{{TODO}}` 残留 |
-| **M6** | **仅当项目有 `docs/current/` 且本 feature 触达的域有对应文档**:spec 引用了该 `docs/current/<area>.md` 且不与之矛盾,或显式声明 deviation 理由 | 检 spec 是否含该路径引用;无 `docs/current/` 的项目本项直接 pass(N/A) |
+| **M1** | 六要素齐(§1–§4 + plan Prior decisions + plan §1 模块影响) | grep `^## ` |
+| **M2** | §2 Scope 有 `**做**` + `**不做**` 各 ≥1 条非 TODO | 节内 grep |
+| **M3** | §4 Verification ≥3 条可测项 | 数 bullet |
+| **M4** | plan §1.1 Sibling Alignment(多模块) | 同旧 |
+| **M5** | tasks ≥3 项 | 同旧 |
+| **M6** | N/A(greenfield 首次归档时由 `/feature-archive` 创建/更新 domain doc) | — |
+| **M7** | N/A | — |
 
-任一失败 → 报告给用户 + 提供修法建议(指向具体节)。
+### Brownfield M 表
+
+| # | 检查 | 实现 |
+|---|---|---|
+| **M1b** | Motivation + Domain References + Delta + Constraints + Verification + plan 两要素 | grep 节标题 |
+| **M2b** | Delta 含 Added/Modified/Removed 三子节,至少一处非 TODO | grep |
+| **M3b** | Verification ≥2 条( brownfield 默认) | 数 bullet |
+| **M4** | 同 greenfield | 同旧 |
+| **M5** | 同 greenfield | 同旧 |
+| **M6** | spec 引用 `docs/specs/<area>.md` 且不矛盾,或显式 deviation | 路径 + 对照 |
+| **M7** | 同 M2b(Delta 非空) | 与 M2b 可合并判 |
+
+**M 表共用**:M4/M5 两形态都跑;失败形态专属项则只跑对应表。
 
 ## Step 3 — Subjective checks (dispatch spec-quality-reviewer sub-agent)
 
@@ -54,15 +74,11 @@ User input: `$ARGUMENTS` — `<feature-slug>` or empty (use most recent feature)
 Task tool:
   subagent_type: spec-quality-reviewer
   prompt: """
-    Spec to assess: docs/specs/<NNN>-<slug>/spec.md + plan.md + tasks.md
+    Spec to assess: docs/specs/changes/<NNN>-<slug>/spec.md + plan.md + tasks.md
 
-    Subjective checks (per spec-driven.md §3.7 questions 3/4/5/7):
-      Q3: Verification §4 每条是否真能机械化(test 覆盖 / API curl / 数据断言),
-          还是留 "靠人眼判断" 这种不可测描述?
-          (M3 已数过项数 ≥ 3,本问题验"每条是否真可测",不是计数)
-      Q4: Outcomes 是否具体场景而非模糊愿望?
-      Q5: Constraints 是否真约束而非 wish list?
-      Q7: tasks.md 是否拆到 verifiable step?
+    Subjective checks (per spec-driven.md §3.7; **shape-aware**):
+      - brownfield: Q3 on Verification; Q4 on Motivation/Delta specificity (NOT domain doc duplication); Q5 Constraints; Q7 tasks
+      - greenfield: Q3–Q5 on §4/§1/§3; Q7 tasks
 
     Per agent's mandatory 4-phase methodology, return structured report
     with verdict per question + cited evidence.
@@ -73,7 +89,7 @@ Sub-agent 返回结构化报告(Q3/Q4/Q5/Q7 各项 ✅/⚠️边缘/❌ + spec.m
 
 ## Step 4 — Aggregate verdict
 
-合并 Step 2(M1-M5)+ Step 3(Q3/Q4/Q5/Q7)→ 7 个 verdict(Q3 由 Step 3 主观判定为主,M3 计数为辅):
+合并 Step 2(M1-M7)+ Step 3(Q3/Q4/Q5/Q7)→ 7 问 verdict + M6/M7 机械项(Q3 由 Step 3 主观判定为主,M3 计数为辅):
 
 ```markdown
 # Spec Quality Check Report — <NNN>-<slug>
@@ -116,7 +132,7 @@ Sub-agent 返回结构化报告(Q3/Q4/Q5/Q7 各项 ✅/⚠️边缘/❌ + spec.m
 
 | 错误 | 应对 |
 |---|---|
-| 找不到 feature 目录 | 提示用户列 `ls docs/specs/` 自选 |
+| 找不到 feature 目录 | 提示用户列 `ls docs/specs/changes/` 自选 |
 | spec.md 缺六要素中的一个 | M1 ❌,sub-agent 不跑(没意义)|
 | spec.md 是空骨架(全是 `{{TODO}}`)| 提示用户 "spec 还没填,先跟 AI 在对话里填 §1/§3/§4,再跑 quality-check" |
 | Sub-agent 返回 "Outcomes 模糊但可接受" | 标 ⚠️ borderline,不强制改 |
