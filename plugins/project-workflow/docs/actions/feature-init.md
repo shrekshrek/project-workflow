@@ -9,13 +9,18 @@ Canonical P2 action for starting a tracked feature artifact under `docs/specs/<N
 
 Do not use this action when the task does not need a new project-workflow artifact. Tiny bugfixes, wording/style tweaks, local test expectation fixes, low-risk documentation edits, and implementation under an accepted spec should continue directly and close with checks.
 
+**Behavior-change floor** (applies **only when the touched area already has a `docs/current/<area>.md`**): a change that alters user-visible behavior or a durable rule (defaults, validation limits, retry/timeout policy, state transitions) in a current-truth-covered area takes **at least the light lane**, no matter how small the diff — the current-truth document's only write path is the pipeline (`feature-done` check → `feature-archive` merge), so behavior changes bypassing it silently rot the document. Areas and projects without current truth are unaffected: small behavior changes there continue directly as usual (staleness elsewhere is caught visibly by the freshness header and the P4 advisory, not by ceremony).
+
 Do not use for mid-implementation frozen-spec changes; use [`spec-revise`](spec-revise.md). Do not write implementation code during this action.
 
 ## Inputs
 
 - Feature slug, optionally with a short description.
 - Existing project conventions from `AGENTS.md`, nested `AGENTS.md`, and path-scoped rules when present.
+- Related current-truth documents (`docs/current/<area>.md`) when the project has them; prefer them over historical feature specs when pre-filling context.
 - Explicit feature facts already provided in the current conversation.
+
+Read the active tree only: `docs/specs/archive/` is closed history — exclude it when searching for context (its durable conclusions live in `docs/current/`). If the active tree still has several related historical specs that look contradictory, recommend running [`spec-reconcile`](spec-reconcile.md) before implementation.
 
 ## Lane Classification
 

@@ -35,6 +35,8 @@ Canonical action spec: `../../docs/actions/agents-md-revise.md`. Follow that fil
    - For each candidate, show old convention, observed reality, evidence, and proposed patch.
    - Include only high-confidence objective drift.
    - Group candidates by file.
+   - If a drift ledger exists (default `.claude/drift-ledger.md`, appended by the feature-done proof bundle), read all entries and cluster them semantically at read time; themes recurring across 2+ features are strong codify candidates. Remove ledger lines once their theme is codified.
+   - Current-truth freshness advisory (read-only, coarse): for each `docs/current/<area>.md`, if its 最后核对 date is older than ~30 days and commits landed since, flag it as possibly stale and suggest a `$feature-archive` sweep or manual verification. No area-to-path mapping, no behavior-level comparison.
    - If nothing objective changed, report clean and stop.
 
 5. Ask for per-item decisions.

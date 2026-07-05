@@ -20,10 +20,12 @@ Canonical action spec: `../../docs/actions/feature-init.md`. Follow that file fo
 2. Read project context before creating files.
    - Required: `AGENTS.md`. If absent, stop and tell the user to initialize the project baseline first.
    - Optional: nested `AGENTS.md`, explicit rule sections in those files, `.claude/rules/` compatibility files if present, and the current conversation for explicit user-provided feature facts.
+   - Optional: `docs/current/<area>.md` when the project has current-truth documents for the touched area; prefer them over historical feature specs when pre-filling, and have the new spec cite them and describe changes as a delta. Read the active tree only: `docs/specs/archive/` is closed history, not a context source. If related historical specs in the active tree contradict each other, recommend `$spec-reconcile` before implementation.
    - Do not invent endpoints, entities, field names, errors, module paths, or technology choices that are not in project context or the user prompt.
 
 3. Classify the entry.
    - First decide whether the task needs a new project-workflow artifact at all. If it is a tiny bugfix, wording/style tweak, local test expectation fix, low-risk documentation edit, or work already covered by an accepted spec, stop and report: "No new project-workflow artifact needed; continue directly and close with checks."
+   - Behavior-change floor (exception to the above, applies only when the touched area already has a `docs/current/<area>.md`): a change altering user-visible behavior or a durable rule (defaults, validation limits, retry/timeout policy, state transitions) in a current-truth-covered area takes at least the light lane no matter how small the diff — the current-truth document's only write path is the pipeline. Areas and projects without current truth are unaffected; small behavior changes there continue directly.
    - If an artifact is useful, use full lane for API/schema, DB/data migration, security, auth/permissions, multi-tenant behavior, cross-module contract, architecture, user-visible product contract, new module work, or high-blast-radius paths.
    - Use light lane only when all are true: small/reversible change within one cohesive module or responsibility area, no new module, no API/schema/data migration/architecture contract change, and no disaster-invariant/high-blast-radius path from `AGENTS.md`. File count alone is not decisive.
    - Uncertainty rule: uncertain about high-risk impact means full; uncertain about UI wording/styling/component split/local refactor/test shape does not force full; uncertain business outcome means ask before creating artifacts.
@@ -31,7 +33,7 @@ Canonical action spec: `../../docs/actions/feature-init.md`. Follow that file fo
    - Implementation without a new artifact still follows `AGENTS.md`, path rules, and relevant lint/type/test/hooks. If that work or light-lane work later touches API/schema, DB/data migration, security, multi-tenant behavior, evidence/data invariants, cross-module contracts, or high-blast-radius paths, stop and upgrade to the appropriate artifact flow.
 
 4. Determine the feature number only if creating light or full lane artifacts.
-   - Inspect `docs/specs/` for directories matching `^[0-9]{3}-`.
+   - Inspect both `docs/specs/` and `docs/specs/archive/` for directories matching `^[0-9]{3}-` (numbering is shared across active and archive; archived ids are never reused).
    - Use the max number + 1; start at `001` if none exist.
    - If the user supplied an `NNN` prefix that collides with an existing directory, stop and ask whether to use the next available number.
 
@@ -47,7 +49,7 @@ Canonical action spec: `../../docs/actions/feature-init.md`. Follow that file fo
 6. Report the result.
    - List created files.
    - State lane classification and module decision, including uncertainty.
-   - If pre-filling from conversation facts, prefer a separate Codex subagent running `../../docs/reviewers/decision-completeness-auditor.md` before treating the scaffold as complete; otherwise run the audit in the main session.
+   - If pre-filling from conversation facts, prefer a separate Codex subagent running `../../docs/reviewers/decision-completeness-auditor.md` before treating the scaffold as complete; otherwise run the audit in the main session. Frequency reduction: if the last 3+ features all had zero must-fix audit findings, the audit may be skipped for light lane (report "audit: skipped, mature baseline"); any new must-fix restores it unconditionally.
    - Remind the user that full-lane work must pass `$spec-quality-check` before implementation.
    - For light lane, remind that `tasks.md` must include goal/boundary, verification, tasks, and proof bundle.
 

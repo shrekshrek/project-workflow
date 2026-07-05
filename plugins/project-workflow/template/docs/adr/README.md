@@ -28,6 +28,8 @@
 - 起新 ADR
 - 老 ADR 的 Status 改为 `Superseded by NNNN`(唯一允许的改动)
 
+**工具支持**(装了 project-workflow 时):`/spec-revise` 起新 ADR 会自动扫既有 ADR 做反向 supersede 核对(经你确认后翻旧状态);`/feature-archive` / `/spec-reconcile` 在合并 current truth 时核对结论与 Accepted ADR 的一致性;`/agents-md-revise` 周期性点名"零引用 + 60 天以上"的孤儿 ADR。状态不实是 ADR 唯一的腐化通道——这三道核对就是为它设的。
+
 ## ADR vs 其他文档
 
 | 文档 | 回答 | 范围 | 寿命 |

@@ -34,10 +34,7 @@ const removedTemplateFiles = [
 function transformPluginDoc(content) {
   return content
     .replace(/\]\(\.\.\/README\.md([^)#]*)?(#[^)]+)?\)/g, `](${sourceRepoUrl}/README.md$2)`)
-    .replace(/\]\(\.\.\/agents\/([^)]+)\)/g, "](reviewers/$1)")
-    .replace(/\]\(\.\.\/skills\/(l1-review|l2-review|l3-review|proof-bundle)\/SKILL\.md([^)#]*)?(#[^)]+)?\)/g, (_, skill, _extra, hash = "") => {
-      return `](${sourceRepoUrl}/skills/${skill}/SKILL.md${hash})`;
-    });
+    .replace(/\]\(\.\.\/agents\/([^)]+)\)/g, "](reviewers/$1)");
 }
 
 function walkFiles(root) {

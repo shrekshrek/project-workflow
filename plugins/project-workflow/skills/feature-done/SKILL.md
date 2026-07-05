@@ -13,7 +13,7 @@ Canonical action spec: `../../docs/actions/feature-done.md`. Follow that file fo
 
 1. Locate the feature.
    - Accept `<slug>`, `<NNN>`, `<NNN>-<slug>`, a full path, `current`, or no argument.
-   - With no argument/current, use the latest `docs/specs/<NNN>-*/`.
+   - With no argument/current, use the latest `docs/specs/<NNN>-*/` (excluding `archive/`).
    - Require `tasks.md`.
    - Full lane: `spec.md` exists. Light lane: no `spec.md`; L3 is N/A but proof still checks invariants.
 
@@ -41,9 +41,16 @@ Canonical action spec: `../../docs/actions/feature-done.md`. Follow that file fo
    - Look for missing outcomes, deviations, scope creep, and verification gaps.
    - Light lane: mark L3 `N/A`, then perform the light-lane invariant reverse check from `tasks.md`; if high-blast-radius/invariant paths were touched, verdict is at least `NEEDS WORK` and the feature should be upgraded to full lane.
 
+5.5. Current-truth check (only when `docs/current/` exists).
+   - If the feature touches an area with a `docs/current/<area>.md`, compare delivered behavior against it.
+   - Contradiction without a declared deviation: verdict at least `NEEDS WORK`, list the conflicting statements.
+   - Durable behavior changed: record "current truth update pending → run `$feature-archive`" in the proof bundle. Do not skip this line silently.
+   - No `docs/current/`: record `current truth: N/A`.
+
 6. Write or refresh the proof bundle.
    - Update `tasks.md ## Proof Bundle`.
-   - Include diff summary, L1/L2/L3 results, test evidence, AGENTS/rule drift suggestions, and open questions.
+   - Include diff summary, L1/L2/L3 results, current-truth status, test evidence, AGENTS/rule drift suggestions, and open questions.
+   - Append each drift suggestion as one plain-text line to the drift ledger (default `.claude/drift-ledger.md`, format `- <NNN>-<slug> (YYYY-MM-DD): <gist>`). No fingerprints or counters; before appending, read existing entries and flag any theme an earlier feature already logged as recurring (codify candidate).
    - Preserve existing task history; replace stale proof-bundle content only.
    - If the final verdict is `READY` and this is full lane, update the top `spec.md` status marker to `已实现` by moving the bold marker only. Do not change contract text. Skip for light lane or non-READY results.
 
@@ -69,11 +76,17 @@ Use this structure:
 ### L3 — Spec compliance
 <result or N/A for light lane>
 
+### Current truth
+<N/A | aligned | update pending → $feature-archive>
+
 ### Proof Bundle
 Updated: <tasks.md path>
 
+### Gate health
+<findings per gate this run; add a hint if any gate produced zero findings of any severity across the last 3+ features (read prior proof bundles); omit when history is unavailable>
+
 ### Verdict: <READY | NEEDS WORK | BLOCKED>
-<short reason and next action>
+<short reason and next action; READY with pending current truth must name $feature-archive as the next step; otherwise remind that delivered features are picked up by the next $feature-archive sweep>
 ```
 
 ## Guardrails

@@ -77,6 +77,10 @@ ls docs/adr/ | grep -E '^[0-9]{4}-' | sort -rn | head -1
 
 写好 ADR 文件,用户 review。
 
+### 4.5 反向 supersede 核对(防旧 ADR 状态撒谎)
+
+落盘前按 topic 关键词 grep 既有 `Accepted` / `Proposed` ADR 的标题与 Decision 节,列出可能被本决策**推翻或矛盾**的(0-3 份,引原文)逐份问用户:推翻 → 老 ADR 状态行改 `Superseded by <NNNN>`(唯一允许的改动)+ 新 ADR Context 注一句取代原因;正交共存 / 拿不准 → 不动(后者列入报告)。零命中静默跳过。只登记新决策不翻旧状态,就是 ADR 冲突积累的主通道(与 spec 侧"反向标记别漏"同构)。
+
 ## Step 5 — 改 spec.md
 
 ### 5.1 改正文(对应 §3.5 / §2.6 的"改 spec.md 节")
@@ -106,19 +110,14 @@ ls docs/adr/ | grep -E '^[0-9]{4}-' | sort -rn | head -1
 
 ## Step 6 — 改 plan.md
 
-### 6.1 `## 3. Prior decisions` 加一条
+- **6.1 `## 3. Prior decisions` 加一条**:`- 改 spec.md §<N>: <改了什么>。原因 / 详细决策见 ADR-<NNNN>。`
+- **6.2 `## 1. 模块影响范围`**:若 §5.5 触发 module 变更,更新 module list。
+- **6.3 `## 2. 架构决策`**:若 ADR 涉及架构层(数据模型 / API 契约 / 关键算法),加 1-2 句简述引 ADR。
 
-```markdown
-- 改 spec.md §<N>: <改了什么>。原因 / 详细决策见 ADR-<NNNN>。
-```
+### 6.4 Current truth / 老 spec 联动(按需)
 
-### 6.2 `## 1. 模块影响范围` 按需更新
-
-若 §5.5 触发了 module 变更:更新 `## 1` 的 module list。
-
-### 6.3 `## 2. 架构决策` 按需更新
-
-若 ADR Decision 涉及架构层(数据模型、API 契约、关键算法):在此节加 1-2 句简述,引 ADR 详细。
+- 若修订改变了 `docs/current/<area>.md` 已记录的持久行为 → 同步更新该文档(或在 plan.md 记录为什么暂不更新)
+- 若修订**取代**了更早 spec 的方向 → 提示交付后跑 `/feature-archive` 或 `/spec-reconcile` 给老 spec 打状态标记并归档([spec-driven.md §5.1](../../docs/spec-driven.md#51-生命周期状态全集--物理归档)),本 skill 不直接改老 spec
 
 ## Step 7 — 改 tasks.md(若任务列表变化)
 
@@ -129,8 +128,9 @@ ls docs/adr/ | grep -E '^[0-9]{4}-' | sort -rn | head -1
 
 跟用户确认每条变化,用 Edit 工具更新 `tasks.md`。
 
-## Step 7.5 — 决策完整性 audit(强制,workflow §1.12)
+## Step 7.5 — 决策完整性 audit(默认强制,workflow §1.12)
 
+**降频**(workflow §1.12 提示 #4):最近 ≥ 3 个 feature audit 全零 🚫 且本次只动 tasks.md 无新 ADR → 可跳过(报告标注);含 spec/plan/ADR 改动仍无条件跑;再出 🚫 即恢复强制。
 Dispatch [`decision-completeness-auditor`](../../agents/decision-completeness-auditor.md):
 
 - `files_to_audit`: `docs/specs/<NNN>-<slug>/{spec,plan,tasks}.md` + `docs/adr/<NNNN>-<topic>.md` +(若 Step 5.5 触发)`<module>/AGENTS.md` + `<tier>/AGENTS.md` + `.claude/rules/<topic>.md`
@@ -155,24 +155,7 @@ AskUserQuestion:
 
 ## Step 8 — 总结
 
-```markdown
-## ✅ Spec revision complete
-
-### ADR
-- 起了 `docs/adr/<NNNN>-<topic>.md`(用户 review 过)
-
-### 改了的文件
-- `docs/specs/<NNN>-<slug>/spec.md` — §<N> + ## 修订记录(+1 条)
-- `docs/specs/<NNN>-<slug>/plan.md` — Prior decisions / §1 / §2(按需)
-- `docs/specs/<NNN>-<slug>/tasks.md` — (若任务变化)
-- `<module>/AGENTS.md`(+ `<module>/CLAUDE.md` alias)— (若 §5.5 触发反常)
-- `.claude/rules/<topic>.md` — (若 §5.5 触发 framework / topic 级 codify)
-
-### 📋 下一步
-1. `git diff` 看一遍所有改动
-2. `git add . && git commit -m "revise: <topic> per ADR-<NNNN>"`
-3. 回到实施(已修订的 spec 是新 baseline)
-```
+报告:起了哪份 ADR(`docs/adr/<NNNN>-<topic>.md`)+ 改了哪些文件(spec.md §N + 修订记录 / plan.md 相应节 / tasks.md / 若 §5.5 触发的 `<module>/AGENTS.md` 与 `.claude/rules/<topic>.md`)。下一步:`git diff` 复查 → `git commit -m "revise: <topic> per ADR-<NNNN>"` → 回到实施(修订后的 spec 是新 baseline)。
 
 ## Failure modes
 

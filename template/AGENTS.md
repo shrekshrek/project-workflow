@@ -24,7 +24,9 @@ CLAUDE.md                  thin pointer: @AGENTS.md
 ├── hooks.json
 └── hooks/                 thin wrappers over shared hook scripts
 docs/
-├── specs/<NNN>-<slug>/    需追踪的 feature artifact(由 /feature-init 创建)
+├── specs/<NNN>-<slug>/    进行中的 feature artifact(由 /feature-init 创建)
+├── specs/archive/         已交付 feature 的归档(历史记录;检索现状时排除)
+├── current/<area>.md      产品域现状(如存在,是该域行为的唯一权威;按需创建)
 ├── adr/                   架构决策记录
 └── (其他业务文档)
 <!-- Fullstack 项目追加 tier 占位:
@@ -61,7 +63,7 @@ docs/
 <!-- 目录约定:源码、测试、文档放哪儿。Claude 能从代码读出来的不写 -->
 - `{{SRC_DIR}}/`  源码
 - `{{TEST_DIR}}/` 测试
-- `docs/specs/` 功能级 artifact(仅需追踪时创建)
+- `docs/specs/` 功能级 artifact(仅需追踪时创建);`docs/specs/archive/` 是已交付历史,**查现状不要读它**,现状看 `docs/current/`(如有)
 - `docs/adr/` 架构决策记录
 
 <!-- 项目特异约定 -->
@@ -97,6 +99,7 @@ P0 完成、第一次起服务之前,务必扫一遍工程陷阱清单 [`docs/go
 - **优先编辑现有文件**,不主动建新文件;新文件需有清晰理由(职责无法挂入现有模块)
 - **不主动写文档**(`.md` / README / NOTES),除非用户明确要求;PR 描述里写"为什么"
 - **保持最小 diff**:bug fix 不顺便重构,新 feature 不顺便清旧代码;cleanup 单独 PR
+- **行为变更下限**(仅当 `docs/current/` 覆盖该域时):改变用户可见行为或持久规则的改动落在 current-truth 覆盖域内,无论 diff 多小**至少走轻车道**(`/feature-init`)—— current truth 只经管线更新,绕过即腐化;未覆盖的域照常直接做
 - **不为不存在的场景加防御**:框架已保证的不重复校验,内部代码间互信,只在边界(用户输入 / 外部 API)做校验
 - **删除即删除**:别留 `// removed in PR #123` 注释、别留未用的 `_unused` 重命名、别加"以防未来要用"的 stub
 

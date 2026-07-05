@@ -20,7 +20,7 @@
 
 ## Proof Bundle
 
-> 由 `/project-workflow:proof-bundle` 填。轻车道:跑 L1 + L2 + 验证 + 不变量反核;L3 因无 frozen spec 跳过。
+> 由 `/project-workflow:feature-done` 填。轻车道:跑 L1 + L2 + 验证 + 不变量反核;L3 因无 frozen spec 跳过。
 
 - [ ] Diff 摘要:(新建/改了什么)
 - [ ] Tests:`<X>/<Y>` passed, coverage `<Z>%`

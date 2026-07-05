@@ -31,6 +31,7 @@ Canonical action spec: `../../docs/actions/spec-quality-check.md`. Follow that f
    - Q5: Constraints are real constraints with meaningful limits or tradeoffs, not a wish list.
    - Q6: If multiple modules are involved, Sibling Alignment is filled with Align/Deviate/Codify and a reason.
    - Q7: Tasks are verifiable steps, not broad buckets; each task should have an observable output or check.
+   - Q8 (only when the project has `docs/current/` and the touched area has a document there): the spec cites that `docs/current/<area>.md` and does not contradict it, or explicitly records the deviation reason. Projects without current-truth documents pass this as N/A.
    - Prefer a separate Codex subagent running `../../docs/reviewers/spec-quality-reviewer.md` for Q3/Q4/Q5/Q7; otherwise run those subjective checks in the main session.
 
 4. Aggregate the verdict.

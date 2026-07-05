@@ -22,7 +22,7 @@
 
 ### Acceptance
 - [ ] spec §4 Verification 全部 pass
-- [ ] Proof bundle 就绪(`/project-workflow:proof-bundle`)
+- [ ] Proof bundle 就绪(`/project-workflow:feature-done`)
 
 ## 2. 实施记录
 
@@ -32,7 +32,7 @@
 
 ## Proof Bundle
 
-> 由 `/project-workflow:proof-bundle` 填。本节实施前留占位,完成后由 skill 写入。
+> 由 `/project-workflow:feature-done` 填。本节实施前留占位,完成后由 skill 写入。
 
 - [ ] Diff 摘要:(新建/改了什么)
 - [ ] Tests:`<X>/<Y>` passed, coverage `<Z>%`
@@ -41,4 +41,5 @@
 - [ ] L3 合规(reviewer 提供 spec.md 作 context 跑过)
 - [ ] AGENTS.md 实际改动审计(item 5a)
 - [ ] AGENTS.md drift 建议(item 5b)
+- [ ] Current truth:N/A / aligned / 更新 pending(→ `/project-workflow:feature-archive`)
 - [ ] 开放问题(如有)

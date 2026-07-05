@@ -1,6 +1,7 @@
 # <NNN> <slug> — Spec
 
 > 创建于 <TODAY> · 状态:**草稿** / 已确认 / 已实现
+> (交付后由 `/feature-archive` 归档整目录到 docs/specs/archive/;被取代时标 已取代 / 已废弃 + 替代链接,见 spec-driven.md §5.1)
 >
 > **本文件回答 WHAT —— 做什么、为什么。确认并开始实施后冻结,需变更则起新功能 spec。**
 > 写法详见 [project-workflow / spec-driven.md](https://github.com/shrekshrek/project-workflow/blob/main/docs/spec-driven.md)。

@@ -52,8 +52,11 @@ project-workflow 分两层:
 9. **Reviewer 方法有唯一权威层**
    `docs/reviewers/` 定义 reviewer、auditor、researcher 的任务边界、输入、检查方法和输出形状。Claude `agents/` 与 Codex plugin skills 只是 adapter,不能各自维护一套 reviewer 方法。
 
-10. **Public action 和 helper surface 分开**
-   默认跨工具 action 是 `project-init` / `project-personalize` / `feature-init` / `spec-quality-check` / `spec-revise` / `feature-done` / `agents-md-revise`。L1/L2/L3/proof-bundle 可以作为某个 adapter 的调试或局部复查入口存在,但不能变成第二套默认流程。
+10. **所有 adapter 暴露同一组 public action,没有第二套 surface**
+   默认跨工具 action 是 `project-init` / `project-personalize` / `feature-init` / `spec-quality-check` / `spec-revise` / `feature-done` / `feature-archive` / `spec-reconcile` / `agents-md-revise`。`feature-done` 内聚 L1/L2/L3/current-truth check/proof bundle 全部端点步骤;局部复查通过重跑 `feature-done` 或直接按 `docs/reviewers/` 跑 reviewer 完成,不再设独立 helper 命令。
+
+11. **`已实现` 不等于"仍是产品现状"**
+   交付后的生命周期语义是跨工具的:`docs/specs/` 活动区只放进行中的 feature,已交付的整目录归档到 `docs/specs/archive/`(检索现状时排除);被取代的 spec 标 `已取代` / `已废弃`;current truth(`docs/current/<area>.md`)是产品域现状的唯一权威。任何 adapter 在长周期产品域取 context 时,应优先读 current truth,不把 archive 内容当有效基线。
 
 ---
 
@@ -72,7 +75,7 @@ Codex supports additional instruction override filenames, but project-workflow d
 
 Adapter 设计必须遵守一个约束:**不要复制 methodology core**。例如 Claude 和 Codex 可以各有 hook 配置,但 action 的触发/输入/输出/不变量只能在 `docs/actions/` 定义一次;reviewer 的任务方法只能在 `docs/reviewers/` 定义一次;L1/L2/L3 的含义只能在 core 文档定义一次。
 
-Helper surfaces 只能拆开某个 action 的内部步骤,例如 Claude Code 的 `/l1-review` / `/l2-review` / `/l3-review` / `/proof-bundle` 是 `feature-done` 的局部入口。它们可以保留用于调试、缓存复用或只重跑一层 review,但文档默认路径和其他 adapter 不需要逐个复制这些 helper。
+Adapter 不设 helper 命令层:`feature-done` 是端点的唯一入口,其内部层(L1/L2/L3/proof bundle)的局部重跑通过重跑该 action(幂等 + 缓存复用)或在会话内直接 dispatch `docs/reviewers/` 定义的 reviewer 完成。历史上 Claude Code 曾有 `/l1-review` / `/l2-review` / `/l3-review` / `/proof-bundle` 四个 helper skill,已在 v3.0 合并进 `feature-done`。
 
 ---
 

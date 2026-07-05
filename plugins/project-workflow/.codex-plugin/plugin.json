@@ -1,7 +1,7 @@
 {
   "name": "project-workflow",
-  "version": "2.10.7",
-  "description": "Spec-driven project workflow for Codex and Claude Code with project initialization, feature specs, reviews, and delivery gates.",
+  "version": "3.0.0",
+  "description": "Spec-driven project workflow for Codex and Claude Code with project initialization, feature specs, reviews, delivery gates, and spec lifecycle management.",
   "author": {
     "name": "shrek.wang"
   },

@@ -27,6 +27,7 @@ Canonical action spec: `../../docs/actions/spec-revise.md`. Follow that file for
    - Use `docs/adr/0000-template.md` when available.
    - Capture context, decision, and consequences.
    - Keep the ADR about one decision topic.
+   - Reverse-supersede check: scan existing `Accepted`/`Proposed` ADRs for decisions this one overturns or contradicts (grep titles and Decision sections by topic keywords); per user approval, flip the old ADR's status line to `Superseded by NNNN` (the only edit allowed on an old ADR) and note the takeover in the new ADR's context. Orthogonal decisions coexist; undecided cases are listed in the report, not edited.
 
 4. Update the feature artifacts.
    - `spec.md`: update only the affected frozen sections and append a revision-record entry with date and ADR reference.
@@ -38,10 +39,14 @@ Canonical action spec: `../../docs/actions/spec-revise.md`. Follow that file for
    - If a module is genuinely exceptional, add or update module `AGENTS.md`.
    - If a repeated pattern should become a tier or path rule, update the scoped convention file instead of burying it in the feature spec.
 
+5.5. Handle current-truth and superseded-spec follow-ups.
+   - If the revision changes durable behavior recorded in `docs/current/<area>.md`, update that document or record why not.
+   - If the revision supersedes an earlier spec's direction, note that lifecycle markers should be applied after delivery via `$feature-archive` or `$spec-reconcile`; do not edit old specs here.
+
 6. Review the diff before finishing.
    - Show touched files and the reason for each.
    - Check that every new specific decision traces to the trigger, ADR, existing conventions, or user confirmation.
-   - Prefer a separate Codex subagent running `../../docs/reviewers/decision-completeness-auditor.md`; otherwise run the audit in the main session.
+   - Prefer a separate Codex subagent running `../../docs/reviewers/decision-completeness-auditor.md`; otherwise run the audit in the main session. Frequency reduction: if the last 3+ features all had zero must-fix findings and this revision only touches `tasks.md` with no new ADR, the audit may be skipped (report it); any new must-fix restores it unconditionally.
    - Ask for approval before treating the revised spec as the new baseline.
 
 ## Output

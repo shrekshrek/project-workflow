@@ -48,7 +48,7 @@ The intended outcome is practical: fewer repeated reminders, fewer unreviewed AI
 
 | Layer | What | Where |
 |---|---|---|
-| 📘 **Methodology core** | 5-phase blueprint (P0 Project Setup / P2 Feature / P3 Maintenance / P4 Drift Refresh) + canonical action specs + 4 pillars + cross-tool boundaries + spec-driven 3-file template + 10 工程陷阱 | [`docs/`](docs/) |
+| 📘 **Methodology core** | 5-phase blueprint (P0 Project Setup / P2 Feature + Module Setup sub-flow / P3 Maintenance / P4 Drift Refresh; no P1 by design — see workflow.md §0.2) + canonical action specs + 4 pillars + cross-tool boundaries + spec-driven 3-file template + 10 工程陷阱 | [`docs/`](docs/) |
 | 🧰 **Starter template** | Baseline project scaffold: portable core files plus current runtime enforcement assets (`CLAUDE.md`, `.claude/` rules/hooks, `.codex/` hooks). It is language/framework-agnostic, but not tool-empty. | [`template/`](template/) |
 | 🤖 **Claude Code adapter** | Slash commands automating high-ROI workflow actions | [`.claude-plugin/`](.claude-plugin/) + [`skills/`](skills/) |
 | 🧩 **Codex adapter** | Installable Codex plugin package for public workflow actions | [`plugins/project-workflow/`](plugins/project-workflow/) + [`.agents/plugins/`](.agents/plugins/) |
@@ -72,11 +72,11 @@ Then in any project:
 /project-workflow:feature-init <feature-slug>
 ```
 
-Claude Code exposes 7 primary actions plus 4 helper skills. Normal feature delivery should use `/project-workflow:feature-done`; helper skills are for partial reruns and debugging.
+Claude Code exposes the same 9 workflow actions as Codex — one entry point per action, no separate helper commands. Normal feature delivery ends with `/project-workflow:feature-done`; partial reruns re-invoke the same command (idempotent, caches reused).
 
 ### Codex plugin
 
-The Codex plugin package lives at [`plugins/project-workflow/`](plugins/project-workflow/), and this repo exposes it through [`.agents/plugins/marketplace.json`](.agents/plugins/marketplace.json). Codex exposes only the 7 primary workflow actions.
+The Codex plugin package lives at [`plugins/project-workflow/`](plugins/project-workflow/), and this repo exposes it through [`.agents/plugins/marketplace.json`](.agents/plugins/marketplace.json). Codex exposes the same 9 workflow actions.
 
 Install the GitHub version in Codex:
 
@@ -119,6 +119,8 @@ $feature-init <feature-slug>
 $spec-quality-check <feature-slug>
 $spec-revise <feature-slug>
 $feature-done <feature-slug>
+$feature-archive <feature-slug>
+$spec-reconcile <area>
 $agents-md-revise
 ```
 
@@ -153,21 +155,14 @@ The plugin identity is `project-workflow` for both Claude Code and Codex. Local 
 | `feature-init` | `/project-workflow:feature-init` | `$feature-init` | Create a numbered feature artifact only when the task needs new project-workflow tracking. Full lane creates `spec.md` / `plan.md` / `tasks.md`; light lane creates `tasks.md`. Tiny fixes and work covered by an accepted spec skip this action. |
 | `spec-quality-check` | `/project-workflow:spec-quality-check` | `$spec-quality-check` | Pre-implementation gate for full-lane specs: mechanical checks plus subjective review against the 7-question checklist. Failed items block implementation. |
 | `spec-revise` | `/project-workflow:spec-revise` | `$spec-revise` | Mid-implementation revision SOP for frozen spec / plan / module-boundary changes: ADR, spec revision record, plan prior decisions, tasks rebalance, and traceability audit. |
-| `feature-done` | `/project-workflow:feature-done` | `$feature-done` | Default end-of-feature gate: L1 → L2 → L3 → proof bundle, with one READY / NEEDS WORK / BLOCKED verdict. |
+| `feature-done` | `/project-workflow:feature-done` | `$feature-done` | Default end-of-feature gate: L1 → L2 → L3 → current-truth check → proof bundle, with one READY / NEEDS WORK / BLOCKED verdict. Idempotent — re-run for partial rechecks. |
+| `feature-archive` | `/project-workflow:feature-archive` | `$feature-archive` | Lifecycle closure (default sweep mode): move delivered feature dirs into `docs/specs/archive/` so the active tree holds in-flight work only; merge durable conclusions into `docs/current/<area>.md` when pending; mark superseded old specs (已取代 / 已废弃). |
+| `spec-reconcile` | `/project-workflow:spec-reconcile` | `$spec-reconcile` | Repair conflicts across accumulated specs in one area (retrofit tool): conflict matrix, user-picked source of truth, mark + archive losing specs, current-truth gap report. |
 | `agents-md-revise` | `/project-workflow:agents-md-revise` | `$agents-md-revise` | P4 convention refresh: audit A 类约定 (AGENTS.md + path-scoped rules) against objective project state, propose user-approved updates, and summarize drift. |
 
-### Claude Code helper skills
-
-These helper skills remain useful for ad-hoc debugging or partial reruns in Claude Code, but they are not separate methodology actions and are not part of the default Codex plugin surface. For normal feature delivery, run `feature-done`.
-
-| Helper | Purpose |
-|---|---|
-| `/project-workflow:l1-review` | Run the project's check command (lint/typecheck/test) and report pass/fail concisely. |
-| `/project-workflow:l2-review` | Review changed code against A 类约定 via `agents-md-reviewer`. |
-| `/project-workflow:l3-review` | Review implementation against one feature's `spec.md` via `spec-reviewer`. |
-| `/project-workflow:proof-bundle` | Assemble or repair the proof bundle section in `tasks.md` after reviews are already available. |
-
 > Spec templates (`docs/specs/_template/{spec,plan,tasks}.md`) are plugin-canonical — `feature-init` copies them from the installed plugin template at feature-creation time. To customize, fork the plugin and edit `template/docs/specs/_template/`.
+>
+> Ad-hoc single-layer review (formerly `/l1-review` / `/l2-review` / `/l3-review` / `/proof-bundle`, merged into `feature-done` in v3.0): run the project check command directly for L1, or dispatch the `agents-md-reviewer` / `spec-reviewer` sub-agent from the main session for L2/L3.
 
 ## Reviewer Agents
 
@@ -175,8 +170,8 @@ Canonical reviewer/auditor methodology lives in [`docs/reviewers/`](docs/reviewe
 
 | Role | Canonical spec | Claude adapter | Codex adapter | Used by |
 |---|---|---|---|---|
-| L2 project convention review | `docs/reviewers/agents-md-reviewer.md` | `agents/agents-md-reviewer.md` | plugin skill reads reviewer spec | `/l2-review`, `$feature-done` |
-| L3 spec compliance review | `docs/reviewers/spec-reviewer.md` | `agents/spec-reviewer.md` | plugin skill reads reviewer spec | `/l3-review`, `$feature-done` |
+| L2 project convention review | `docs/reviewers/agents-md-reviewer.md` | `agents/agents-md-reviewer.md` | plugin skill reads reviewer spec | `feature-done` L2 layer(+ ad-hoc direct dispatch) |
+| L3 spec compliance review | `docs/reviewers/spec-reviewer.md` | `agents/spec-reviewer.md` | plugin skill reads reviewer spec | `feature-done` L3 layer(+ ad-hoc direct dispatch) |
 | Spec quality subjective review | `docs/reviewers/spec-quality-reviewer.md` | `agents/spec-quality-reviewer.md` | plugin skill reads reviewer spec | `/spec-quality-check`, `$spec-quality-check` |
 | Decision completeness audit | `docs/reviewers/decision-completeness-auditor.md` | `agents/decision-completeness-auditor.md` | plugin skill reads reviewer spec | init/revise/refresh actions |
 | Stack/library research | `docs/reviewers/tech-researcher.md` | `agents/tech-researcher.md` | plugin skill reads reviewer spec | `/project-init`, `$project-init` |
@@ -218,7 +213,7 @@ v1 source preserved at git tag [`v1.1.0`](../../tree/v1.1.0). Install via `git c
 
 ## Status
 
-The current release ships a mature **Claude Code adapter** with **11 skills + 6 sub-agents** covering the full P0→P2→P3→P4 lifecycle, plus an action-complete **Codex plugin** with 7 public workflow skills for P0 setup, P2 feature flow, and P4 convention refresh.
+The current release ships a mature **Claude Code adapter** with **9 skills + 6 sub-agents** covering the full P0→P2→P3→P4 lifecycle plus post-delivery spec lifecycle management, and an action-complete **Codex plugin** exposing the same 9 workflow skills. Both adapters share one action surface; there is no separate helper-command layer.
 
 The methodology docs (`workflow.md` / `actions/` / `reviewers/` / `cross-tool-methodology.md` / `spec-driven.md` / `gotchas.md` / `tooling.md`) are complete and self-contained. A concrete instantiation exists at the public scaffold linked above, but the docs do not depend on it for authority.
 

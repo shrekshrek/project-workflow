@@ -14,7 +14,7 @@ Run the 7-question quality checklist from [`spec-driven.md §3.7`](../../docs/sp
 
 **Use when**: `/feature-init` already ran + you filled in spec.md / plan.md / tasks.md TODOs in the main conversational session — **right before starting implementation**.
 
-**Not for**: spec creation (use `/feature-init`) / mid-implementation revision (use `/spec-revise`) / code-vs-spec compliance review (use `/l3-review`).
+**Not for**: spec creation (use `/feature-init`) / mid-implementation revision (use `/spec-revise`) / code-vs-spec compliance review (that's `/feature-done` 的 L3 层).
 
 User input: `$ARGUMENTS` — `<feature-slug>` or empty (use most recent feature).
 
@@ -29,7 +29,7 @@ User input: `$ARGUMENTS` — `<feature-slug>` or empty (use most recent feature)
 
 读 `spec.md` + `plan.md` + `tasks.md`。
 
-**车道判定**:`spec.md` 缺失 = **轻车道**(只 tasks.md,见 [spec-driven §3.2.5](../../docs/spec-driven.md#325-轻车道小改免-frozen-spec--plan))。本质量门验的是 frozen spec 的 §3.7 七问,**只适用全道** → 报 "N/A(轻车道无 frozen spec;验证靠 tasks.md `## 验证` + `/proof-bundle`)" 并退出,不跑 M1-M5 / sub-agent。
+**车道判定**:`spec.md` 缺失 = **轻车道**(只 tasks.md,见 [spec-driven §3.2.5](../../docs/spec-driven.md#325-轻车道小改免-frozen-spec--plan))。本质量门验的是 frozen spec 的 §3.7 七问,**只适用全道** → 报 "N/A(轻车道无 frozen spec;验证靠 tasks.md `## 验证` + `/feature-done` proof bundle)" 并退出,不跑 M1-M5 / sub-agent。
 
 ## Step 2 — Mechanical checks (skill 自己跑,不 dispatch)
 
@@ -42,6 +42,7 @@ User input: `$ARGUMENTS` — `<feature-slug>` or empty (use most recent feature)
 | **M3** | spec.md `## 4. Verification` 至少含 3 条具体可测项(plugin default,项目可调)| 数 `- [ ]` 或 `-` bullet |
 | **M4** | plan.md `§1.1 Sibling Alignment`(若多模块时)是否填(非 placeholder) | 只统计表格数据行;必须出现非 `<sibling-module>` 的模块名 + `Align` / `Deviate` / `Codify` 三选一 + 非 `{{TODO}}` 备注。模板占位行不算通过 |
 | **M5** | tasks.md 任务数 ≥ 3(plugin default,项目可调)且不全是 `## TODO`(用户填了具体内容) | grep `- [ ]` 数量 + 检 `{{TODO}}` 残留 |
+| **M6** | **仅当项目有 `docs/current/` 且本 feature 触达的域有对应文档**:spec 引用了该 `docs/current/<area>.md` 且不与之矛盾,或显式声明 deviation 理由 | 检 spec 是否含该路径引用;无 `docs/current/` 的项目本项直接 pass(N/A) |
 
 任一失败 → 报告给用户 + 提供修法建议(指向具体节)。
 
@@ -122,4 +123,4 @@ Sub-agent 返回结构化报告(Q3/Q4/Q5/Q7 各项 ✅/⚠️边缘/❌ + spec.m
 
 ## Notes
 
-- 互补:`/feature-init` 创建 spec/plan/tasks 骨架;本 skill 验收已填内容质量;`/spec-revise` = 贵阶段 fix(implementation 中);`/l3-review` = code vs spec(本 skill = spec 内部)
+- 互补:`/feature-init` 创建 spec/plan/tasks 骨架;本 skill 验收已填内容质量;`/spec-revise` = 贵阶段 fix(implementation 中);`/feature-done` L3 层 = code vs spec(本 skill = spec 内部)

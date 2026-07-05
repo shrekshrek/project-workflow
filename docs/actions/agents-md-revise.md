@@ -22,6 +22,7 @@ Do not use to rewrite historical feature specs, create backlog items, or make su
 - Drift report with objective evidence.
 - User-approved edits to A-class conventions.
 - Optional ignore/ledger entries for intentionally ignored drift when the adapter supports it.
+- Advisory (read-only, not in the apply flow): current-truth freshness — for each `docs/current/<area>.md`, if its "最后核对" date is older than ~30 days and commits landed since, flag it as possibly stale and suggest a `feature-archive` sweep or manual verification. Coarse signal only; no area-to-path precision mapping, no behavior-level comparison.
 - Summary of applied changes and follow-up manual review.
 
 ## Invariants

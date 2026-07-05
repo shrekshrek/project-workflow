@@ -11,6 +11,8 @@
 | 实施前质量门 | [`spec-quality-check`](actions/spec-quality-check.md) | `/project-workflow:spec-quality-check <slug>` | Codex:`$spec-quality-check <slug>`;manual:按 action spec + `spec-driven.md §3.7` 7 问检查 |
 | 中途修订 | [`spec-revise`](actions/spec-revise.md) | `/project-workflow:spec-revise <slug>` | Codex:`$spec-revise <slug>`;manual:按 action spec 修 spec、ADR、plan、tasks |
 | 完成交付 | [`feature-done`](actions/feature-done.md) | `/project-workflow:feature-done <slug>` | Codex:`$feature-done <slug>`;manual:手动跑 L1/L2/L3 + proof bundle |
+| 生命周期收尾 | [`feature-archive`](actions/feature-archive.md) | `/project-workflow:feature-archive <slug>` | Codex:`$feature-archive <slug>`;manual:按 action spec 合并 current truth + 标老 spec 状态 |
+| 多 spec 漂移诊断 | [`spec-reconcile`](actions/spec-reconcile.md) | `/project-workflow:spec-reconcile <area>` | Codex:`$spec-reconcile <area>`;manual:按 action spec 做冲突矩阵 + 状态修正 |
 | 约定刷新 | [`agents-md-revise`](actions/agents-md-revise.md) | `/project-workflow:agents-md-revise` | Codex:`$agents-md-revise`;manual:按 action spec 扫 A 类约定和真实项目 drift |
 
 ## 1. 初始化项目约定
@@ -78,13 +80,28 @@
 - L1 机械检查
 - L2 项目约定 review
 - L3 code-vs-spec review
+- current-truth check(仅当 `docs/current/<area>.md` 存在)
 - proof bundle 写入 `tasks.md`
 
-Claude Code adapter 还保留 `l1-review` / `l2-review` / `l3-review` / `proof-bundle` 作为 helper skills,用于局部复查或调试。它们不是独立 workflow action。正常交付只跑 `feature-done`;如果你已经手动跑过 review,只需要在 Claude Code 中装配交付证据:
+需要局部复查某一层时重跑 `feature-done`(幂等,复用有效缓存),或在主会话直接 dispatch reviewer sub-agent;没有独立的 helper 命令。
+
+交付合并后,周期性跑一次生命周期清扫(不必每个 feature 都立刻跑,攒几个一起也行):
 
 ```text
-/project-workflow:proof-bundle <feature-slug>
+/project-workflow:feature-archive
 ```
+
+它把所有已交付 feature 的目录整体移入 `docs/specs/archive/`(活动区只留进行中的工作,历史 spec 不再污染检索),对标了 "current truth 更新 pending" 的 feature 先把持久结论合并进 `docs/current/<area>.md`,被取代的老 spec 标 `已取代` / `已废弃`。带 slug 可以只收尾单个 feature。
+
+## 4.5 存量项目 spec 已经积累混乱时
+
+老项目引入生命周期管理,或某产品域积累了多份互相矛盾的 spec 时,先做一次性修复再动工:
+
+```text
+/project-workflow:spec-reconcile <area-or-module>
+```
+
+它输出冲突矩阵、指定 source of truth、经你确认后修正生命周期状态并归档失效 spec。稳态下(archive 清扫常态化后)很少需要它。
 
 ## 5. 发现约定漂移时刷新
 
@@ -100,7 +117,7 @@ Claude Code adapter 还保留 `l1-review` / `l2-review` / `l3-review` / `proof-b
 
 | 场景 | 简化做法 |
 |---|---|
-| 大约 50 行以内的小改动 | 跳过 feature spec,依赖 hooks + review |
+| 大约 50 行以内的小改动 | 跳过 feature spec,依赖 hooks + review;例外:改动改变行为**且**该域已有 `docs/current/<area>.md` 时至少走轻车道(current truth 只经管线更新) |
 | 探索性 spike | 在临时 branch / worktree 做;决策留下来时再写 ADR |
 | 生产 hotfix | 先修;之后补测试并记录后续技术债 |
 | 架构 / API / 数据模型变更 | 不要跳过 spec;使用 feature spec + ADR |

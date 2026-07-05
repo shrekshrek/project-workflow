@@ -27,6 +27,7 @@ Required quality questions:
 5. Plan identifies affected modules/tier boundaries.
 6. Multi-module work has sibling alignment: align, deviate with reason, or codify.
 7. Tasks are implementation-sized and include validation/proof work.
+8. Only when the touched area has a `docs/current/<area>.md`: the spec cites it and does not contradict it, or explicitly records why it deviates. Projects without current-truth documents skip this check.
 
 Mechanical checks may detect missing sections and placeholders; subjective checks judge clarity, traceability, and risk.
 

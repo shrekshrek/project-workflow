@@ -14,4 +14,6 @@ If an adapter conflicts with an action spec, the action spec wins. Update this d
 | [`spec-quality-check`](spec-quality-check.md) | Gate full-lane feature specs before implementation |
 | [`spec-revise`](spec-revise.md) | Revise frozen spec/plan/tasks during implementation |
 | [`feature-done`](feature-done.md) | Run endpoint review and write the proof bundle |
+| [`feature-archive`](feature-archive.md) | Close delivered features: merge durable conclusions into current truth, move directories to `docs/specs/archive/` (default sweep mode) |
+| [`spec-reconcile`](spec-reconcile.md) | Repair conflicts across accumulated specs in one area (retrofit tool): pick source of truth, mark and archive losing specs |
 | [`agents-md-revise`](agents-md-revise.md) | Refresh A-class project conventions |
