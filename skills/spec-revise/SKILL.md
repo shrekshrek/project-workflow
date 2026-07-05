@@ -116,7 +116,7 @@ ls docs/adr/ | grep -E '^[0-9]{4}-' | sort -rn | head -1
 
 ### 6.4 Current truth / 老 spec 联动(按需)
 
-- 若修订改变了 `docs/specs/<area>.md` 已记录的持久行为 → 同步更新该文档(或在 plan.md 记录为什么暂不更新)
+- 若修订改变了 `docs/specs/<area>.md` 已记录的持久行为 → **不在本 skill 直接改 E 类文档**;在 plan/tasks 记录 `current truth update pending`,交给 `/feature-done` 标入 proof bundle 后由 `/feature-archive` 写回
 - 若修订**取代**了更早 spec 的方向 → 提示交付后跑 `/feature-archive` 或 `/spec-reconcile` 给老 spec 打状态标记并归档([spec-driven.md §5.1](../../docs/spec-driven.md#51-生命周期状态全集--物理归档)),本 skill 不直接改老 spec
 
 ## Step 7 — 改 tasks.md(若任务列表变化)

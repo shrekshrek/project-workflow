@@ -190,7 +190,7 @@ Codex adapter 不应该照搬 Claude Code 的文件布局,而应该复用 method
 | 能力 | Codex 载体 | project-workflow 用法 |
 |---|---|---|
 | Persistent guidance | `AGENTS.md` + nested `AGENTS.md` discovery | 直接复用 core 的项目约定 source of truth;用嵌套文件承载 scoped guidance |
-| Skills | `plugins/project-workflow/skills` | default public action adapter:project-init / project-personalize / feature-init / spec-quality-check / spec-revise / feature-done / agents-md-revise;方法定义来自 `docs/actions/` |
+| Skills | `plugins/project-workflow/skills` | default public action adapter:project-init / project-personalize / feature-init / spec-quality-check / spec-revise / feature-done / feature-archive / spec-reconcile / agents-md-revise;方法定义来自 `docs/actions/` |
 | Reviewer execution | plugin skill + bundled `docs/reviewers/*.md` | 若当前 Codex surface 支持 subagent,优先用 subagent 执行 reviewer spec;否则主会话执行同一 spec |
 | Plugin packaging | `plugins/project-workflow/` + `.agents/plugins/marketplace.json` | Codex App / CLI 的安装分发入口;plugin 内 `docs/` 与 `template/` 是 release artifact,不能独立 fork methodology |
 | Hooks | `.codex/hooks.json` / `.codex/config.toml` | 复用同一 L1 脚本语义,配置格式按 Codex 写 |

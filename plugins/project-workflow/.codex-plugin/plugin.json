@@ -19,7 +19,7 @@
   "interface": {
     "displayName": "Project Workflow",
     "shortDescription": "Run spec-driven project workflow in Codex.",
-    "longDescription": "Project Workflow packages project initialization, feature spec scaffolding, pre-implementation quality checks, spec revision, convention drift refresh, and end-of-feature review gates for Codex. It keeps AGENTS.md, specs, ADRs, Claude compatibility assets, and Codex hooks aligned around one methodology.",
+    "longDescription": "Project Workflow packages project initialization, feature spec scaffolding, pre-implementation quality checks, spec revision, convention drift refresh, end-of-feature review gates, and post-delivery spec lifecycle management for Codex. It keeps AGENTS.md, specs, ADRs, Claude compatibility assets, and Codex hooks aligned around one methodology.",
     "developerName": "shrek.wang",
     "category": "Productivity",
     "capabilities": [
@@ -29,7 +29,9 @@
     "defaultPrompt": [
       "Use $project-init to initialize this repository.",
       "Use $feature-init to create a feature artifact when needed.",
-      "Use $feature-done to review completed feature work."
+      "Use $feature-done to review completed feature work.",
+      "Use $feature-archive to close delivered specs into current truth and archive history.",
+      "Use $spec-reconcile when accumulated specs conflict."
     ]
   }
 }

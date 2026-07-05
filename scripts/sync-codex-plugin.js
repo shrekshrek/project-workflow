@@ -11,6 +11,7 @@ const sourceRepoUrl = "https://github.com/shrekshrek/project-workflow/blob/main"
 const copiedDirs = [
   ["docs/actions", "docs/actions"],
   ["docs/reviewers", "docs/reviewers"],
+  ["skills", "skills"],
   ["template", "template"],
 ];
 
