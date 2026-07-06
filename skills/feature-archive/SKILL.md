@@ -37,7 +37,7 @@ User input: `$ARGUMENTS` — 空 = 清扫模式;或 feature slug / NNN / "curren
 3. 写入 `docs/specs/<area>.md`:
    - 已存在 → **替换式更新**:改写相关段落、删被推翻的旧句,不追加堆叠
    - 不存在 → 仅当这是新的持久产品域时,从 `$PLUGIN_ROOT/template/docs/specs/_template/domain.md` 创建并替换 area / date / source;更新 `docs/specs/index.md`
-4. **纪律自检**:更新后单文件 **< 150 行**(超了拆域或删过时细节);标题下第一行更新为 `> 最后核对:YYYY-MM-DD(as of <NNN>-<slug>)`。
+4. **纪律自检**:更新后单文件 **< 150 行**(超了拆域或删过时细节);标题下第一行更新为 `> 最后核对:YYYY-MM-DD`。feature 编号 / 来源写进 archive note、proof bundle 或 commit message,不要写进 E 类文件头部。E 正文不得长期保留 `docs/specs/changes/archive/*` 引用或大段 `NNN-<slug>` 清单;把仍有效事实提炼成当前行为。
 5. **ADR 一致性**:合并的结论与某 `Accepted` ADR 矛盾 → 停,报冲突(需要新 ADR supersede 或结论有误);跨 feature 方向变更无 ADR → 提示先补。
 
 无 pending 的 feature 跳过本步直接归档。

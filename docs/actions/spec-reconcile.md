@@ -22,7 +22,7 @@ Do not use for a single active feature that is simply wrong mid-implementation; 
 - Conflict report: for each contradiction, the exact files and sections that disagree, and which statement the evidence supports.
 - Selected source of truth per contradiction (a spec, an ADR, a current-truth document, or the code itself).
 - With user approval, per losing spec: status mark `已取代` (link the successor) or `已废弃`, then physical move to `docs/specs/changes/archive/` (same mechanics as [`feature-archive`](feature-archive.md)). Winning delivered specs are closed through `feature-archive` as the recommended follow-up.
-- Current-truth gaps: durable facts that exist only in scattered specs — including still-valid foundations from superseded specs (data model, API, pipeline) — merged into or listed for `docs/specs/<area>.md`. There is no "historical foundation" status; surviving facts move into current truth, the spec itself is archived.
+- Current-truth gaps: durable facts that exist only in scattered specs — including still-valid foundations from superseded specs (data model, API, pipeline) — merged into or listed for `docs/specs/<area>.md`. If the current-truth document is mostly archived-spec links, `NNN-<slug>` lists, or reconcile backlog, replace that with present-tense facts. There is no "historical foundation" status; surviving facts move into current truth, the spec itself is archived.
 - ADR consistency: contradictions whose loser is backed by an `Accepted` ADR get flagged for a superseding ADR or a status update.
 - Recommended next step: run `feature-archive` (sweep) for delivered features, update current truth, or start a new feature.
 
@@ -39,3 +39,4 @@ Do not use for a single active feature that is simply wrong mid-implementation; 
 - Do not continue implementation in the area while active specs contradict each other without a resolved precedence.
 - Every reported conflict cites exact files and sections; no vague "may be stale" findings.
 - Status changes and archive moves are applied only with user approval.
+- Current-truth output is not a history index: do not leave archive references or change lists as the body of `docs/specs/<area>.md`.
