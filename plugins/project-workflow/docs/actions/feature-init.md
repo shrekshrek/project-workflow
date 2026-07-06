@@ -16,6 +16,7 @@ Do not use for mid-implementation frozen-spec changes; use [`spec-revise`](spec-
 ## Inputs
 
 - Feature slug, optionally with a short description.
+- Target project root containing `AGENTS.md` and `docs/specs/`; all created files must be written under this root, not under an incidental cwd.
 - Existing project conventions from `AGENTS.md`, nested `AGENTS.md`, and path-scoped rules when present.
 - Existing substantive E-class domain docs (`docs/specs/<area>.md`) when present; prefer over `docs/specs/changes/archive/` when pre-filling. Do not create an empty domain doc just to make a feature brownfield.
 - Explicit feature facts already provided in the current conversation.
@@ -59,6 +60,7 @@ The directory number is the next available three-digit number unless the user su
 
 ## Invariants
 
+- Resolve the target project root before creating files. Prefer cwd, then nearest parent, then a single matching child; if multiple candidates exist, ask and do not guess.
 - Preserve unresolved `{{TODO ...}}` markers for unknown details.
 - Do not plant endpoints, entities, field names, error codes, module paths, or technology choices without traceable support.
 - If pre-filling from conversation, mark the source briefly.

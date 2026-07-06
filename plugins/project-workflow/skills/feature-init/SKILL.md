@@ -17,6 +17,17 @@ Start a tracked feature artifact when the task needs project-workflow. Business 
 
 User input: `$ARGUMENTS` — feature slug + optional description.
 
+## Step 0 — 确认目标项目根
+
+`TARGET_ROOT` 是本次 feature artifact 的唯一写入根目录,必须包含 `AGENTS.md` 和 `docs/specs/`。
+
+- 当前 cwd 满足 → `TARGET_ROOT="$PWD"`。
+- 当前 cwd 不满足,但最近父级目录满足 → 使用该父级并在报告中写明。
+- 当前 cwd 不满足,但只有一个直接子目录满足 → 使用该子目录并在报告中写明。
+- 多个候选或没有候选 → 先问用户目标项目目录;不要猜。
+
+后续 Bash / Edit / Write / apply_patch 都必须写入 `$TARGET_ROOT` 下的路径;不要依赖先前 `cd` 状态或裸 `docs/specs/...` 相对路径。创建完成后验证文件确实落在 `$TARGET_ROOT/docs/specs/changes/<NNN>-<slug>/`。
+
 ## Step 1 — 解析输入
 
 | 输入格式 | 处理 |
@@ -33,7 +44,7 @@ Slug 要求(strip 后):kebab-case(`a-z0-9-`)、2-40 chars、不以 `-` 开头结
 只算候选编号;若 Step 4.5 判定无需 artifact,不分配不建目录。
 
 ```bash
-{ ls docs/specs/changes/ ; ls docs/specs/changes/archive/ 2>/dev/null ; } | grep -E '^[0-9]{3}-' | sort -rn | head -1
+{ ls "$TARGET_ROOT/docs/specs/changes/" ; ls "$TARGET_ROOT/docs/specs/changes/archive/" 2>/dev/null ; } | grep -E '^[0-9]{3}-' | sort -rn | head -1
 ```
 
 最大编号 +1 补零到 3 位(**active + archive 共用序列**,归档编号不复用);空则从 `001` 起。
@@ -45,8 +56,8 @@ Slug 要求(strip 后):kebab-case(`a-z0-9-`)、2-40 chars、不以 `-` 开头结
 > A 类约定两个 core 载体(workflow §0.3 / §1.3):AGENTS.md 多层 + path-scoped rules(Claude materialization = `.claude/rules/*.md`)。
 
 **必读**:
-- `AGENTS.md` —— 缺则报 "项目无 project-workflow baseline,先跑 `/project-init` 或 `/project-personalize`" 并中止。
-- **`docs/specs/`(E 类)** —— 读 `index.md`(若存在)+ 全部已有 `docs/specs/<area>.md`(排除 `index.md`)。已有 area doc **优先于** `docs/specs/changes/archive/` 里历史 change 作 pre-fill context。活动区同域有互相矛盾的历史 change → Step 6 提示 `/spec-reconcile`。
+- `$TARGET_ROOT/AGENTS.md` —— 缺则报 "项目无 project-workflow baseline,先跑 `/project-init` 或 `/project-personalize`" 并中止。
+- **`$TARGET_ROOT/docs/specs/`(E 类)** —— 读 `index.md`(若存在)+ 全部已有 `docs/specs/<area>.md`(排除 `index.md`)。已有 area doc **优先于** `docs/specs/changes/archive/` 里历史 change 作 pre-fill context。活动区同域有互相矛盾的历史 change → Step 6 提示 `/spec-reconcile`。
 
 **选读**(缺失静默跳过):
 - `<tier>/AGENTS.md` 每个 tier —— tier 特异约定
@@ -62,7 +73,7 @@ Slug 要求(strip 后):kebab-case(`a-z0-9-`)、2-40 chars、不以 `-` 开头结
 1. **推断触达域** `primary_area`:从 slug / description / 模块路径 / chat;无法推断 → 问 user 选一个 area(kebab-case);仍不明可先用 slug 作为候选。
 2. **已有实质 E**:`docs/specs/<primary_area>.md` 存在且包含非模板的当前行为 / 关键约束 → `SPEC_SHAPE=brownfield`,全道用 `spec-brownfield.md`。
 3. **无实质 E**:不要为了分类先创建空 domain doc → `SPEC_SHAPE=greenfield`,全道用 `spec-greenfield.md`;首个 READY 后 `/feature-archive` 必须把持久结论 merge 进新建 domain doc。
-4. **显式创建例外**:只有当用户已提供可写入 E 的当前事实,且希望先建立 domain baseline 时,才从 `$PLUGIN_ROOT/template/docs/specs/_template/domain.md` 创建 `docs/specs/<primary_area>.md` 并更新 `docs/specs/index.md`;创建后仍需确认这些事实不是本次 change 的未验证意图。
+4. **显式创建例外**:只有当用户已提供可写入 E 的当前事实,且希望先建立 domain baseline 时,才从 `$PLUGIN_ROOT/template/docs/specs/_template/domain.md` 创建 `$TARGET_ROOT/docs/specs/<primary_area>.md` 并更新 `$TARGET_ROOT/docs/specs/index.md`;创建后仍需确认这些事实不是本次 change 的未验证意图。
 5. 记录 `SPEC_SHAPE=brownfield|greenfield` 供 Step 5 / Step 6 使用。
 
 ## Step 4 — 检测 Module Setup 需要(workflow §2)
@@ -107,20 +118,21 @@ if [ -z "$PLUGIN_ROOT" ] || [ ! -d "$PLUGIN_ROOT/template" ]; then
 fi
 [ -n "$PLUGIN_ROOT" ] && [ -d "$PLUGIN_ROOT/template" ] || { echo "Cannot resolve project-workflow plugin root"; exit 1; }
 SRC="$PLUGIN_ROOT/template/docs/specs/changes/_template"
-mkdir -p "docs/specs/changes/$NNN-$SLUG"
+CHANGE_DIR="$TARGET_ROOT/docs/specs/changes/$NNN-$SLUG"
+mkdir -p "$CHANGE_DIR"
 # 全道 —— 按 Step 3.5 SPEC_SHAPE 选 change spec 模板:
 if [ "$SPEC_SHAPE" = "greenfield" ]; then
-  cp "$SRC/spec-greenfield.md" "docs/specs/changes/$NNN-$SLUG/spec.md"
+  cp "$SRC/spec-greenfield.md" "$CHANGE_DIR/spec.md"
 else
-  cp "$SRC/spec-brownfield.md" "docs/specs/changes/$NNN-$SLUG/spec.md"
+  cp "$SRC/spec-brownfield.md" "$CHANGE_DIR/spec.md"
 fi
-cp "$SRC/plan.md" "$SRC/tasks.md" "docs/specs/changes/$NNN-$SLUG/"
-# 轻车道: cp "$SRC/tasks-light.md" "docs/specs/changes/$NNN-$SLUG/tasks.md"
+cp "$SRC/plan.md" "$SRC/tasks.md" "$CHANGE_DIR/"
+# 轻车道: cp "$SRC/tasks-light.md" "$CHANGE_DIR/tasks.md"
 ```
 
 复制后 Edit 替换 `<NNN>` / `<slug>` / `<TODAY>` / `{{area}}`→`primary_area`(brownfield)。`{{TODO ...}}` **保留**给 conversational fill。
 
-**Brownfield pre-fill**:读 `docs/specs/<primary_area>.md`,Motivation/Delta 只写**相对 domain 的差异**,不复制 domain 全文。
+**Brownfield pre-fill**:读 `$TARGET_ROOT/docs/specs/<primary_area>.md`,Motivation/Delta 只写**相对 domain 的差异**,不复制 domain 全文。
 
 ### Chat context pre-fill(若 Step 3 提取到对话)
 
