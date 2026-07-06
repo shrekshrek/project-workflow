@@ -551,7 +551,7 @@ Draft / Filled / Validated **本质同档**(自由编辑);Frozen / Revised **本
 
 - **何时创建**:P0 `project-init` 只创建 `docs/specs/index.md`;`/feature-init` 只有在已有实质当前事实可写时才创建新 area,否则 greenfield change 先不建 E;`/feature-archive` 在首个 READY greenfield feature 后把持久结论沉淀成 `docs/specs/<area>.md`。
 - **谁维护**:`feature-done` Step 5.5 发现持久行为变更 → proof pending → `feature-archive` **必须** merge 回 `docs/specs/<area>.md`。
-- **内容标准**:简洁、面向未来(现状是什么),不写演进史(那是 archive + ADR 的事)。**替换式维护**:合并 = 改写相关段落、删被推翻的旧句,不追加堆叠;单文件 **< 150 行**,超了拆域或删过时细节。行为事实链接该域有效 ADR("为什么"一跳可达),不复述论证。
+- **内容标准**:简洁、面向未来(现状是什么),不写演进史(那是 archive + ADR 的事)。**替换式维护**:合并 = 改写相关段落、删被推翻的旧句,不追加堆叠;单文件目标约 **150 行**左右,明显超过时检查是否该拆域或删过时细节;复杂 domain 只要内容仍是当前态、结构清晰、有用,可以超过。行为事实链接该域有效 ADR("为什么"一跳可达),不复述论证。
 - **新鲜度自声明**:标题下第一行固定为 `> 最后核对:YYYY-MM-DD`,每次合并更新。feature 编号 / 来源写进 archive note、proof bundle 或 commit message,不要写进 E 类文件头部。过时的核对日期是可见的怀疑信号——绕过 feature 管线的改动无法被机制抓住,但至少让读者知道该打折扣。
 - **change spec 引用 domain doc**:brownfield **必须** `## Domain References` + `## Delta`;greenfield 首次归档时由 `/feature-archive` 创建/更新 `docs/specs/<area>.md`,防重新定义整域。
 

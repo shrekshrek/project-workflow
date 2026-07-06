@@ -31,7 +31,7 @@ Default invocation is **sweep mode**: with no argument, find all features whose 
 ## Current-Truth Document Discipline
 
 - **Replace, don't append**: merging rewrites the sections that changed; superseded statements are deleted, not stacked. The document always reads as a single consistent present tense.
-- **Size cap**: keep each `docs/specs/<area>.md` under ~150 lines. If it exceeds the cap, split the area or prune stale detail — a bloated current-truth doc is the next pollution source.
+- **Size discipline**: aim to keep each `docs/specs/<area>.md` around 150 lines. If it grows well beyond that, check whether the area should split or stale detail should be pruned — a bloated current-truth doc is the next pollution source. Complex domains may exceed this when the content is still current, structured, and useful.
 - **Freshness header**: first line under the title is `> 最后核对:YYYY-MM-DD`, updated on every merge. Keep feature/source identifiers in the archive note, proof bundle, or commit message, not in the domain header. A stale date is a visible distrust signal.
 - Content is future-facing behavior facts only: how the area works now, plus links to governing ADRs. No history, no implementation details, no rationale (that lives in ADRs). Do not leave `docs/specs/changes/archive/*` references or long `NNN-<slug>` lists as the current-truth body; extract the surviving facts instead.
 

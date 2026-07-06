@@ -1,7 +1,7 @@
 ---
 name: feature-archive
 model: sonnet
-description: Lifecycle closure for delivered features. Default sweep mode finds all delivered-but-unarchived features and closes them as a batch; merges durable conclusions into docs/specs/<area>.md when the proof bundle marked "current truth 更新 pending" (P0 creates only docs/specs/index.md; new area docs are created from the plugin domain template only for durable domains; replace-not-append, <150 lines, freshness header), marks superseded older specs 已取代/已废弃, then git-mv's every closed feature directory into docs/specs/changes/archive/. Use periodically after feature-done READY features accumulate, or with a slug for single-feature closure.
+description: Lifecycle closure for delivered features. Default sweep mode finds all delivered-but-unarchived features and closes them as a batch; merges durable conclusions into docs/specs/<area>.md when the proof bundle marked "current truth 更新 pending" (P0 creates only docs/specs/index.md; new area docs are created from the plugin domain template only for durable domains; replace-not-append, size-disciplined, freshness header), marks superseded older specs 已取代/已废弃, then git-mv's every closed feature directory into docs/specs/changes/archive/. Use periodically after feature-done READY features accumulate, or with a slug for single-feature closure.
 ---
 
 > **Response language**: Match the user's prompt language in all natural-language output. File contents follow each file's existing language. Code, commands, file paths stay as-is.
@@ -37,7 +37,7 @@ User input: `$ARGUMENTS` — 空 = 清扫模式;或 feature slug / NNN / "curren
 3. 写入 `docs/specs/<area>.md`:
    - 已存在 → **替换式更新**:改写相关段落、删被推翻的旧句,不追加堆叠
    - 不存在 → 仅当这是新的持久产品域时,从 `$PLUGIN_ROOT/template/docs/specs/_template/domain.md` 创建并替换 area / date / source;更新 `docs/specs/index.md`
-4. **纪律自检**:更新后单文件 **< 150 行**(超了拆域或删过时细节);标题下第一行更新为 `> 最后核对:YYYY-MM-DD`。feature 编号 / 来源写进 archive note、proof bundle 或 commit message,不要写进 E 类文件头部。E 正文不得长期保留 `docs/specs/changes/archive/*` 引用或大段 `NNN-<slug>` 清单;把仍有效事实提炼成当前行为。
+4. **纪律自检**:更新后目标控制在约 **150 行**;明显超出时检查是否该拆域或删过时细节,但复杂 domain 内容仍是当前态、结构清晰、有用时可超过。标题下第一行更新为 `> 最后核对:YYYY-MM-DD`。feature 编号 / 来源写进 archive note、proof bundle 或 commit message,不要写进 E 类文件头部。E 正文不得长期保留 `docs/specs/changes/archive/*` 引用或大段 `NNN-<slug>` 清单;把仍有效事实提炼成当前行为。
 5. **ADR 一致性**:合并的结论与某 `Accepted` ADR 矛盾 → 停,报冲突(需要新 ADR supersede 或结论有误);跨 feature 方向变更无 ADR → 提示先补。
 
 无 pending 的 feature 跳过本步直接归档。
@@ -82,7 +82,7 @@ git mv docs/specs/changes/<NNN>-<slug> docs/specs/changes/archive/<NNN>-<slug>
 
 - **不改实施代码**;归档是 `git mv` 不是删除;archive 内容只读
 - 进行中 feature(草稿 / 已确认 / proof bundle 非 READY)**永不归档**
-- Current truth 更新后必须不与已交付行为矛盾、< 150 行、新鲜度行已更新
+- Current truth 更新后必须不与已交付行为矛盾、尺寸受控或有合理 domain 复杂度理由、新鲜度行已更新
 - 状态标记与归档清单逐份经用户确认,不静默批量执行
 
 ## Failure modes
