@@ -46,7 +46,9 @@ User input: `$ARGUMENTS` — 产品域名 / 模块路径 / 逗号分隔的 `<NNN
 
 ## Step 4 — 应用(标记 + 归档)+ 报告 current-truth gaps
 
-1. 对每份 loser spec 应用标记(状态行挪标记 + 状态行下加替代链接行;不动正文),然后 `git mv docs/specs/changes/<NNN>-<slug> docs/specs/changes/archive/<NNN>-<slug>`(`mkdir -p docs/specs/changes/archive` 如需)。
+先解析 `$PLUGIN_ROOT`:优先 `PROJECT_WORKFLOW_PLUGIN_ROOT` / `CLAUDE_PLUGIN_ROOT` / `CODEX_PLUGIN_ROOT`;否则在 `~/.claude/plugins/cache` 与 `~/.codex/plugins/cache` 下查找包含 `scripts/relocate-markdown-links.cjs` 的 project-workflow plugin 根目录。解析不到则停止,不得跳过 link relocation。
+
+1. 对每份 loser spec 应用标记(状态行挪标记 + 状态行下加替代链接行;不动正文),然后 `git mv docs/specs/changes/<NNN>-<slug> docs/specs/changes/archive/<NNN>-<slug>`(`mkdir -p docs/specs/changes/archive` 如需)。每次 move 后运行 `$PLUGIN_ROOT/scripts/relocate-markdown-links.cjs <old-dir> <new-dir>`;`$PLUGIN_ROOT` 解析同 `/feature-archive`。工具按旧/新位置重算本地 Markdown links并验证目标;missing target 阻断本步。
 2. `docs/specs/changes/index.md` 存在则同步(编号 → 标题 / 状态 / 位置)。
 3. **Current-truth gaps**:散落在 winner spec 里、或来自 loser spec 仍有效基础(数据模型 / API / 基础设施)、但 `docs/specs/<area>.md` 缺失或未覆盖的持久事实 → 列清单;缺口大时当场补 current truth(经用户确认),或建议跑 `/feature-archive` 清扫(已交付 winner 一并归档)。若现有 E 文件主要是 archived spec 链接、`NNN-<slug>` 清单或 reconcile backlog,本步要改写成当前事实,不保留为历史索引。
 4. **ADR 一致性**:loser 的方向背后有 `Accepted` ADR → 标记为需 superseding ADR 或状态更新,列入 follow-up。
@@ -74,6 +76,7 @@ User input: `$ARGUMENTS` — 产品域名 / 模块路径 / 逗号分隔的 `<NNN
 - **只读代码,不改代码**;不删历史,supersede = 标记 + 归档,不是删除
 - 每条冲突必须引用到具体文件 + 节;引不出原文的"感觉过时"不报
 - 状态变更与归档移动全部经用户逐条裁决
+- archive move 后必须用统一工具重定位并验证本地 Markdown links;不手算路径,missing target 不得忽略
 - E 类输出必须是 current truth,不是 archived changes 索引 / 待 reconcile 清单
 
 ## Failure modes

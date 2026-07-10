@@ -1,6 +1,7 @@
 ---
 description: {{CODE_STYLE_DESCRIPTION}}
-globs: {{CODE_STYLE_GLOBS}}
+paths:
+{{CODE_STYLE_PATHS}}
 ---
 
 # Code Style

@@ -4,8 +4,8 @@ This file provides project-level instructions to any AI coding agent (Claude Cod
 Claude Code reads `CLAUDE.md` which imports this file via `@AGENTS.md`.
 
 <!--
-本文件目标 < 100 行(Anthropic Boris Cherny 标准),最多 200 行。
-长尾内容用 @imports 拉到 .claude/rules/*.md 或 docs/。
+本文件目标 < 100 行,最多 200 行；长文件会增加上下文并降低指令遵循度。
+长尾背景放 docs/ 并在此留短指针；路径约定放 .claude/rules/*.md,由 Claude 自动发现。
 -->
 
 ## 文档索引(big picture)
@@ -13,7 +13,6 @@ Claude Code reads `CLAUDE.md` which imports this file via `@AGENTS.md`.
 <!-- 读单个文档之前先理解它在整体里的位置。Claude 拿到这段就知道去哪找信息,不用搜 -->
 
 ```
-README.md                  快速上手 + 命令清单
 AGENTS.md                  本文件,项目级 AI 协作约定
 CLAUDE.md                  thin pointer: @AGENTS.md
 .claude/                   Claude path-scoped rules + hooks + settings
@@ -40,7 +39,6 @@ docs/
 **关键依赖关系**(改 A 文件常常要同步改 B):
 
 <!-- 项目演化中识别后补充。典型例:
-     - README.md 命令清单 ↔ 根 package.json scripts
      - AGENTS.md Boundaries ↔ .claude/rules/security.md
      - <tier>/AGENTS.md ↔ <tier>/ 实际栈选择 -->
 - (按需填写)
@@ -132,10 +130,6 @@ P0 完成、第一次起服务之前,务必扫一遍工程陷阱清单 [`docs/go
 
 ---
 
-<!-- 路径级规则按需 @import,只在 Claude 读相关文件时加载,节省 context budget。
-     纪律(workflow §1.6):
-     - 有 `globs:` frontmatter 的规则 → 注释保留(globs 处理 path-scoped 加载)
-     - 无 `globs:` 的全局规则(如 security)→ 取消注释,走 @import 强制加载 -->
-<!-- @.claude/rules/code-style.md -->
-<!-- @.claude/rules/testing.md -->
-<!-- @.claude/rules/security.md -->
+<!-- `.claude/rules/**/*.md` 由 Claude Code 自动递归发现。
+     有 `paths:` YAML 列表的规则按路径加载；无 `paths:` 的规则全局加载。
+     不要在 AGENTS.md / CLAUDE.md 中重复 @import 这些规则。 -->

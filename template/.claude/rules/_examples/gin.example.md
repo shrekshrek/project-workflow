@@ -1,6 +1,7 @@
 ---
 description: Gin + sqlx detailed rules (path-scoped to backend Go)
-globs: backend/**/*.go
+paths:
+  - "backend/**/*.go"
 ---
 
 <!--
@@ -8,7 +9,7 @@ globs: backend/**/*.go
 (参考 Gin 官方 docs + golang-standards/project-layout + Effective Go)。
 落地到具体项目时请筛 / 删 / 增,并写 docs/adr/000N-adopt-gin-best-practices.md 留追溯。
 本文件触发条件:Claude 读取 backend/**/*.go 任一文件时自动 inject。
-若 tier 命名不是 backend(如 server / api),改上方 globs。
+若 tier 命名不是 backend(如 server / api),改上方 paths 列表。
 -->
 
 # Gin + sqlx 项目约定

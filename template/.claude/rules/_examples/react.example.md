@@ -1,6 +1,7 @@
 ---
 description: React + Vite detailed rules (path-scoped to frontend TS/TSX)
-globs: frontend/**/*.{ts,tsx}
+paths:
+  - "frontend/**/*.{ts,tsx}"
 ---
 
 <!--
@@ -8,7 +9,7 @@ globs: frontend/**/*.{ts,tsx}
 (参考 React 官方 docs / kentcdodds blog / Mark Erikson Redux+React 文章)。
 落地到具体项目时请筛 / 删 / 增,并写 docs/adr/000N-adopt-react-best-practices.md 留追溯。
 本文件触发条件:Claude 读取 frontend/**/*.{ts,tsx} 任一文件时自动 inject。
-若 tier 命名不是 frontend(如 web / app),改上方 globs。
+若 tier 命名不是 frontend(如 web / app),改上方 paths 列表。
 -->
 
 # React + Vite 项目约定

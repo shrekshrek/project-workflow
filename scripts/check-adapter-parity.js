@@ -5,6 +5,7 @@ const path = require("path");
 
 const repoRoot = path.resolve(__dirname, "..");
 const claudeSkillsRoot = path.join(repoRoot, "skills");
+const codexPackageRoot = path.join(repoRoot, "plugins", "project-workflow");
 const codexSkillsRoot = path.join(repoRoot, "plugins", "project-workflow", "skills");
 const actionsRoot = path.join(repoRoot, "docs", "actions");
 const claudeManifestPath = path.join(repoRoot, ".claude-plugin", "plugin.json");
@@ -41,10 +42,15 @@ const codexRuleBridgeActions = [
 ];
 const codexRuleBridgeRef = "docs/adapters/codex-scoped-rule-bridge.md";
 const codexRuleBridgePath = path.join(repoRoot, codexRuleBridgeRef);
+const lifecycleLinkActions = ["feature-archive", "spec-reconcile"];
+const lifecycleLinkScriptRef = "scripts/relocate-markdown-links.cjs";
+const lifecycleLinkScriptPath = path.join(repoRoot, lifecycleLinkScriptRef);
+const packagedLifecycleLinkScriptPath = path.join(codexPackageRoot, lifecycleLinkScriptRef);
 const codexRuleBridgeMarkers = [
   ".claude/rules/**/*.md",
   "paths:",
-  "globs:",
+  "YAML list",
+  "unsupported",
   "ambiguous",
   "L3",
 ];
@@ -72,6 +78,14 @@ const codexNames = skillNames(codexSkillsRoot);
 const claudeManifest = JSON.parse(fs.readFileSync(claudeManifestPath, "utf8"));
 const codexManifest = JSON.parse(fs.readFileSync(codexManifestPath, "utf8"));
 
+if (!fs.existsSync(lifecycleLinkScriptPath)) {
+  problems.push(`missing ${lifecycleLinkScriptRef}`);
+}
+
+if (!fs.existsSync(packagedLifecycleLinkScriptPath)) {
+  problems.push(`Codex package: missing ${lifecycleLinkScriptRef}`);
+}
+
 if (!fs.existsSync(codexRuleBridgePath)) {
   problems.push(`missing ${codexRuleBridgeRef}`);
 } else {
@@ -80,6 +94,9 @@ if (!fs.existsSync(codexRuleBridgePath)) {
     if (!bridgeContent.includes(marker)) {
       problems.push(`Codex scoped-rule bridge: required contract marker missing ${JSON.stringify(marker)}`);
     }
+  }
+  if (bridgeContent.includes("globs:")) {
+    problems.push("Codex scoped-rule bridge must not retain legacy scope-key compatibility");
   }
 }
 
@@ -139,8 +156,13 @@ for (const name of expected) {
       if (codexRuleBridgeActions.includes(name) && !content.includes(codexRuleBridgeRef)) {
         problems.push(`Codex ${name}: scoped-rule bridge reference missing`);
       }
+      if (lifecycleLinkActions.includes(name) && !content.includes(lifecycleLinkScriptRef)) {
+        problems.push(`Codex ${name}: lifecycle link relocator reference missing`);
+      }
     } else if (content.includes(codexRuleBridgeRef)) {
       problems.push(`Claude ${name}: Codex-only scoped-rule bridge leaked into Claude runtime adapter`);
+    } else if (lifecycleLinkActions.includes(name) && !content.includes(lifecycleLinkScriptRef)) {
+      problems.push(`Claude ${name}: lifecycle link relocator reference missing`);
     }
   }
 

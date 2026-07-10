@@ -29,10 +29,10 @@
 
 | 文件 | Placeholder | 据什么填 |
 |---|---|---|
-| `code-style.md` | `{{CODE_STYLE_DESCRIPTION}}` | 一句话(< 80 字符)说本文件管什么,如 `Code style — Python (Ruff) + TypeScript/Vue (ESLint)` |
-| `code-style.md` | `{{CODE_STYLE_GLOBS}}` | 见 R3 globs 推导 |
-| `testing.md` | `{{TESTING_DESCRIPTION}}` | 一句话(< 80 字符),如 `Testing conventions — pytest (backend) + Vitest (frontend) + Playwright (E2E)` |
-| `testing.md` | `{{TESTING_GLOBS}}` | 见 R3 globs 推导 |
+| `code-style.md` | `{{CODE_STYLE_DESCRIPTION}}` | 一句话说明本文件管什么,保持简洁、具体;如 `Code style — Python (Ruff) + TypeScript/Vue (ESLint)` |
+| `code-style.md` | `{{CODE_STYLE_PATHS}}` | 见 R3 paths YAML-list 推导 |
+| `testing.md` | `{{TESTING_DESCRIPTION}}` | 一句话说明本文件管什么,保持简洁、具体;如 `Testing conventions — pytest (backend) + Vitest (frontend) + Playwright (E2E)` |
+| `testing.md` | `{{TESTING_PATHS}}` | 见 R3 paths YAML-list 推导 |
 | `testing.md` | `{{UNIT_TEST_FRAMEWORK}}` / `{{INTEGRATION_TEST_FRAMEWORK}}` | mixed-lang fullstack → mini-Q&A;single-lang / 单 tier → Q&A 轮 2 共享答案 |
 | `testing.md` | `{{E2E_FRAMEWORK}}` | 询问 / 默认 Playwright |
 | `testing.md` | `{{TEST_FILE_LAYOUT}}` | 推断(Python tests/ 镜像 src/ / JS `*.test.ts` 同目录) |
@@ -41,33 +41,33 @@
 | `testing.md` | `{{COVERAGE_THRESHOLD}}` | 默认 80(跟根 AGENTS.md 一致) |
 | `security.md` | (无 placeholder,description 已 hardcode) | 通常不需大改 |
 
-**`description:` 字段强制规则**:每个 path-scoped rule frontmatter 必含 `description:`(< 80 字符,`/rules` 列表展示用);`security.md`(always-on)同样应含。缺了不算 silent fail 但伤 discoverability。
+**`description:` 字段规则**:每个 rule frontmatter 保留简洁、具体的 `description:` 作为人类可读元数据,不设机械字符上限;`security.md`(always-on)同样应含。
 
-## R3 — Step 4.3:globs 推导
+## R3 — Step 4.3:paths 推导
 
-格式:**comma-separated 字符串**(`globs: pattern1, pattern2`)—— 不要用 `paths:` YAML 列表,silently fails(workflow §1.6)。
+格式:**`paths:` YAML 列表**。每个 `{{..._PATHS}}` placeholder 渲染为若干行缩进两个空格的 quoted list item,例如 `  - "src/**/*.py"`。不生成历史 scope key 或 scalar scope(workflow §1.6)。
 
 ### 单 tier 项目(轮 1 答 b/c/d)
 
-| 主语言 | `{{CODE_STYLE_GLOBS}}` | `{{TESTING_GLOBS}}` |
+| 主语言 | `{{CODE_STYLE_PATHS}}` patterns | `{{TESTING_PATHS}}` patterns |
 |---|---|---|
 | Python | `src/**/*.py`(或语言惯例 `<project>/**/*.py`)| `tests/**/*.py` |
 | TypeScript / JavaScript | `src/**/*.{ts,tsx,js,jsx,vue}` | `**/*.test.{ts,tsx,js,jsx}`(JS 测试常就近)|
 | Go | `**/*.go`(Go 不分 src/) | `**/*_test.go` |
-| Rust | `src/**/*.rs` | `tests/**/*.rs, src/**/*.rs`(inline + integration)|
+| Rust | `src/**/*.rs` | `tests/**/*.rs`<br>`src/**/*.rs`(inline + integration)|
 
 ### Fullstack(轮 1 答 a;$BTIER / $FTIER = 轮 1.5 tier 名)
 
-| 主语言组合 | `{{CODE_STYLE_GLOBS}}` | `{{TESTING_GLOBS}}` |
+| 主语言组合 | `{{CODE_STYLE_PATHS}}` patterns | `{{TESTING_PATHS}}` patterns |
 |---|---|---|
-| Python + TS/Vue | `$BTIER/**/*.py, $FTIER/**/*.{ts,vue}` | `$BTIER/tests/**/*.py, $FTIER/**/*.test.{ts,vue}` |
-| Go + TS | `$BTIER/**/*.go, $FTIER/**/*.{ts,tsx}` | `$BTIER/**/*_test.go, $FTIER/**/*.test.{ts,tsx}` |
-| 全 TS | `$BTIER/**/*.ts, $FTIER/**/*.{ts,tsx,vue}` | `**/*.test.{ts,tsx}` |
-| Rust + TS | `$BTIER/src/**/*.rs, $FTIER/**/*.{ts,tsx}` | `$BTIER/tests/**/*.rs, $FTIER/**/*.test.{ts,tsx}` |
+| Python + TS/Vue | `$BTIER/**/*.py`<br>`$FTIER/**/*.{ts,vue}` | `$BTIER/tests/**/*.py`<br>`$FTIER/**/*.test.{ts,vue}` |
+| Go + TS | `$BTIER/**/*.go`<br>`$FTIER/**/*.{ts,tsx}` | `$BTIER/**/*_test.go`<br>`$FTIER/**/*.test.{ts,tsx}` |
+| 全 TS | `$BTIER/**/*.ts`<br>`$FTIER/**/*.{ts,tsx,vue}` | `**/*.test.{ts,tsx}` |
+| Rust + TS | `$BTIER/src/**/*.rs`<br>`$FTIER/**/*.{ts,tsx}` | `$BTIER/tests/**/*.rs`<br>`$FTIER/**/*.test.{ts,tsx}` |
 
-示例(自定 tier `server + web`,Python+Vue):`CODE_STYLE_GLOBS = "server/**/*.py, web/**/*.{ts,vue}"`,`TESTING_GLOBS = "server/tests/**/*.py, web/**/*.test.{ts,vue}"`。
+示例(自定 tier `server + web`,Python+Vue):`CODE_STYLE_PATHS` 渲染为 `server/**/*.py`、`web/**/*.{ts,vue}` 两个 YAML list item;`TESTING_PATHS` 同理渲染 `server/tests/**/*.py`、`web/**/*.test.{ts,vue}`。
 
-**多 tier(> 2)**:每个 tier 都加,OR 关系(`backend/**/*.py, worker/**/*.py, frontend/**/*.{ts,vue}`)。
+**多 tier(> 2)**:每个 tier 都加一个 list item,patterns 之间是 OR 关系。
 **冷门栈识别不出**:保守 fallback `**/*.<ext>`,用户后续收窄。
 
 ## R4 — Step 4.4:STYLE_HIGHLIGHT 推断

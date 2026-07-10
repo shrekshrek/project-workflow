@@ -22,7 +22,7 @@ Default invocation is **sweep mode**: with no argument, find all features whose 
 ## Outputs
 
 1. **Current truth merge** (only for features whose proof bundle marked "current truth update pending", or that change behavior already declared in a domain document): update `docs/specs/<area>.md`. P0 creates only `docs/specs/index.md`; create a new area document from the plugin domain template only when the delivered feature establishes a durable domain truth.
-2. **Physical archive**: `git mv docs/specs/changes/<NNN>-<slug>/ docs/specs/changes/archive/<NNN>-<slug>/` for every closed feature — full lane and light lane alike. Git history is preserved; numbering stays unique across active and archive.
+2. **Physical archive**: `git mv docs/specs/changes/<NNN>-<slug>/ docs/specs/changes/archive/<NNN>-<slug>/` for every closed feature — full lane and light lane alike. Git history is preserved; numbering stays unique across active and archive. After each move, recompute local Markdown destinations from the old file location to the new one so links outside the feature keep the same semantic target while links within the moved directory remain local. Missing local targets block completion.
 3. **Lifecycle status on superseded older specs**: when this delivery replaces an earlier feature's direction, mark that spec `已取代` (superseded, link the successor) or `已废弃` (abandoned) and archive it in the same pass.
 4. **ADR consistency check**: if a merged conclusion contradicts an `Accepted` ADR, stop and resolve — either a new ADR supersedes the old one, or the conclusion is wrong. Current-truth documents link the ADRs governing the area.
 5. A closing note in the feature's `tasks.md` recording what was merged and when it was archived.
@@ -47,4 +47,5 @@ Default invocation is **sweep mode**: with no argument, find all features whose 
 
 - Confirm the current-truth document no longer contradicts the delivered behavior and respects the size cap.
 - Confirm every archived spec's status line reflects its final state and superseded ones link their successor.
+- Confirm every local Markdown link in each archived directory resolves after relocation; do not report the archive complete with broken ADR, domain-doc, sibling, or reference-style links.
 - Report which documents were touched, which features were archived, and any ADR follow-ups.

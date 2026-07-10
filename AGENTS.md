@@ -15,8 +15,6 @@
 
 **遵循 project-workflow 方法论的一个具体项目示例**:[`shrekshrek/full-stack-scaffolding-fastapi-nuxt4`](https://github.com/shrekshrek/full-stack-scaffolding-fastapi-nuxt4) —— FastAPI + Nuxt 4 全栈脚手架,公开。仅作 example-of-one,方法论自身的论据不依赖它。
 
-**v1 → v2 → v3**:v2 完全重写 v1 的 5 个 process-owning slash command,改为文档主导 + 可选辅助命令;v3 保留该方向,补齐 Claude/Codex 双端插件分发和 spec lifecycle。v1 保留在 git tag `v1.1.0`。
-
 ## 文档索引
 
 ```
@@ -62,7 +60,10 @@ docs/                  方法论文档
 template/              starter scaffold(core files + Claude compatibility assets)
 scripts/
 ├── sync-codex-plugin.js  sync/check Codex core release artifacts
-└── check-adapter-parity.js  check 9+9 action parity + runtime isolation
+├── check-adapter-parity.js  check 9+9 action parity + runtime isolation
+├── check-template-contracts.js  check Claude rule frontmatter + shared hook input handling
+├── relocate-markdown-links.cjs  preserve local links after feature archive moves
+└── check-lifecycle-links.cjs  regression-check archive link relocation
 ```
 
 ## 修改纪律
@@ -73,6 +74,8 @@ scripts/
 - **Codex plugin release artifact**:`plugins/project-workflow/docs/` 和 `plugins/project-workflow/template/` 是安装包副本,不要手改;改源目录后运行 `node scripts/sync-codex-plugin.js`
 - **双端 native adapter**:根 `skills/` 是 Claude-native;`plugins/project-workflow/skills/` 是 Codex-native。两边必须保持同一 9-action 集合并引用同名 `docs/actions/`,但 runtime 交互 / subagent / 命令写法分别维护;禁止把一边的 SKILL.md 原样同步到另一边
 - **Adapter parity**:修改任一端 skill 或 action 后运行 `node scripts/check-adapter-parity.js`;Codex skill 不得出现 Claude-only 交互、具名 agent dispatch 或 `/project-workflow:*` 命令
+- **Template contracts**:修改 `.claude/rules/` 模板或共享 hook 后运行 `node scripts/check-template-contracts.js`;规则只接受官方 `paths:` YAML list,description 无字符硬门槛,malformed hook input 必须安全退出
+- **Lifecycle links**:修改 `feature-archive` / `spec-reconcile` 后运行 `node scripts/check-lifecycle-links.cjs`;归档移动必须重定位并验证本地 Markdown links
 - **不在方法论里塞栈细节**(workflow.md / gotchas.md 通用,具体命令样例引用外部仓库)
 - **plugin skill 简洁**:每个 SKILL.md < 200 行,职责单一;超长的静态查表** relocation** 到同目录 `reference.md`(如 `skills/project-init/reference.md`)—— 不是删内容;SKILL.md 标出强制 Read 点,执行时必须先读对应节再填表
 - **skill description 写好**:Claude 据此判断何时自动调用
@@ -87,12 +90,8 @@ scripts/
     - **引用项目内中文 anchor / 概念**(如 spec-driven §3.7 中文 7 问)= **中文**(原文保真)
     - 现状的语言占比差异(agents-md-reviewer 95% 英文 vs tech-researcher 50/50)**是内容性质差异,不是 drift** —— 前者纯 methodology,后者大量 user-facing template
 
-## v1 弃用说明
-
-v1 commands(`/project-plan` / `/module-plan` / `/module-dev` / `/module-done` / `/plan-review`)**不再支持**。若用户问起,指向 git tag `v1.1.0`。
-
 ## Boundaries
 
 - ✅ Always:加 skill / 改文档 / 加 example
 - ⚠️ Ask first:改 workflow.md §0 / §2 / §6 (核心方法论结构);改 plugin.json `name` 字段;改目录大结构
-- 🚫 Never:把 v1 commands 加回来;committing secrets
+- 🚫 Never:committing secrets

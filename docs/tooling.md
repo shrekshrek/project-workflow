@@ -3,6 +3,8 @@
 > [README](../README.md) 里工具链主题的展开。聚焦 **AI 辅助编码**(Concern A)的工具栈,不涉及构建 LLM 产品的工具(LangChain / DSPy / agent 框架等 —— Concern B)。
 >
 > **强意见,不假装中立**:本文档反映本项目的实际取舍,不是综述。
+>
+> **能力信息最后核对:2026-07-10**。产品能力会变化;安装与配置以各工具当前官方文档为准,本文只维护影响 project-workflow 边界的稳定差异。
 
 ---
 
@@ -42,10 +44,10 @@
 | 形态 | CLI + IDE 扩展 | CLI + IDE extension + Codex app/cloud | 独立 IDE(VS Code fork) |
 | 模型 | Claude(Anthropic) | GPT(OpenAI) | 多模型(GPT/Claude/Gemini) |
 | 主交互 | 对话式 + 工具调用 | 对话式 + app/CLI/IDE 多入口 | 编辑器内 inline + chat |
-| Persistent guidance | `CLAUDE.md` / `AGENTS.md` alias | `AGENTS.md` discovery | `.cursorrules` / 项目规则 |
-| Hook 系统 | ✅ `.claude/settings.json` + hooks | ✅ `.codex/hooks.json` / `.codex/config.toml` | ❌ 无原生 hook |
-| Skill / Plugin | ✅ Claude Code plugin / skills | ✅ Codex plugin + bundled skills | ⚠️ 主要靠 IDE 扩展 |
-| Worktree / parallel work | ✅ 原生支持 | ✅ worktrees / subagents / cloud threads | ❌ 需手动 |
+| Persistent guidance | `CLAUDE.md` / `AGENTS.md` alias | `AGENTS.md` discovery | `AGENTS.md` 或 `.cursor/rules/*.mdc` |
+| Hook 系统 | ✅ `.claude/settings.json` + hooks | ✅ `.codex/hooks.json` / `.codex/config.toml` | 能力随 Cursor 版本演进;本仓库不维护对应 adapter |
+| Reusable workflow | ✅ Claude Code plugin / skills | ✅ Codex plugin + bundled skills | project rules / commands / extensions;不作为本仓库正式 adapter |
+| Parallel work | ✅ 原生支持 | ✅ worktrees / subagents / cloud threads | 不纳入本仓库稳定能力假设 |
 
 ### 2.2 选择理由
 
@@ -90,18 +92,18 @@
 
 ## 3. 中层:Skill / Plugin 框架
 
-这一层 2026 年最热闹,也最容易过度投资。**不要装超过 3 个 skill 框架**,否则相互覆盖、命名冲突、心智负担。
+这一层变化快,也最容易过度投资。**不要装超过 3 个 skill 框架**,否则相互覆盖、命名冲突、心智负担。
 
 ### 3.1 主流框架横向对比
 
 | 框架 | 哲学 | Skill 数量 | 适合谁 | 风险 |
 |---|---|---|---|---|
-| **Matt Pocock skills** | small composable,你拥有工具 | 17 | 实战工程师,要灵活 | 自己得有判断力 |
-| **Superpowers**(Jesse Vincent) | 方法论先行,六步法 | 数十 | 团队要严格流程 | process-owning,出问题难排查 |
-| **Everything Claude Code (ECC)** | kitchen-sink,什么都给 | 182 | 多语言、覆盖广 | 大部分用不到,膨胀 |
-| **GitHub Spec Kit** | spec/plan/tasks 工具链 | 6 个 slash | 流程纪律强的团队 | 工具链开销大 |
+| **Matt Pocock skills** | small composable,你拥有工具 | 小型独立 skills | 实战工程师,要灵活 | 自己得有判断力 |
+| **Superpowers**(Jesse Vincent) | 方法论先行,流程完整 | 多步骤 workflow | 团队要严格流程 | process-owning,出问题难排查 |
+| **Everything Claude Code (ECC)** | kitchen-sink,跨 harness 能力包 | 大型 catalog | 多语言、覆盖广 | 大部分用不到,膨胀 |
+| **GitHub Spec Kit** | spec/plan/tasks 工具链 | command suite | 流程纪律强的团队 | 工具链开销大 |
 | **OpenSpec** | spec delta / change lifecycle | CLI / slash | 想把每个 change 显式规格化的项目 | 主要解决 change 层,不覆盖项目规则长期治理 |
-| **OpenAI Symphony** | manage work, not agents | (规范) | 高自动化场景 | 早期,实证少 |
+| **OpenAI Symphony** | manage work, not agents | spec + experimental reference implementation | 高自动化场景 | engineering preview,需可信环境验证 |
 
 详细对比与适用场景判断:
 
@@ -110,7 +112,7 @@
 - **核心**:小、独立、可 hack
 - **优点**:每个 skill 几十行,你能完全读懂、改、删
 - **缺点**:覆盖窄;需要你自己决定怎么用
-- **本项目用法**:精挑 3-5 个(`zoom-out`、`improve-codebase-architecture` 等),作为日常思考工具
+- **本项目用法**:只按已出现的真实痛点选择少量独立 skill,不绑定固定清单
 
 #### Superpowers(反向参考)
 
@@ -122,10 +124,10 @@
 
 #### Everything Claude Code (ECC)
 
-- **核心**:大而全,182 skills + 48 agents
+- **核心**:大而全,且 catalog / installer surface 持续变化
 - **优点**:Go / Python / Java / Django / Spring Boot 等多语言专项,覆盖广
 - **缺点**:大部分跟你栈无关,装着膨胀,且本身是 process-owning
-- **本项目决定**:**外科手术保留** —— 仅 Go 相关 5 个 skill(`golang-patterns` / `golang-testing` / `go-build` / `go-test` / `go-review`)+ 可选 `python-testing` / `strategic-compact` / `iterative-retrieval`,其余淘汰
+- **本项目决定**:不把整套 ECC 设为依赖;需要专项能力时单独评估并安装最小集合
 
 #### GitHub Spec Kit
 
@@ -145,7 +147,7 @@
 
 - **核心**:managed work item / handoff state / isolated autonomous runs
 - **优点**:"manage work, not agents" 哲学影响深远(本项目 [workflow §3.3 proof bundle](workflow.md#33-交付阶段proof-bundle) 受其工作交接思想启发)
-- **缺点**:目前是 spec 而非可装即用工具,实证少
+- **缺点**:当前仍是 engineering preview;虽有实验性 reference implementation,生产实证有限
 - **本项目决定**:借哲学(end-of-task gate / handoff artifacts),不装工具
 
 ### 3.2 决策原则
@@ -166,24 +168,21 @@
 
 ## 4. Runtime 原生能力
 
-### 4.1 Claude Code / Anthropic 原生能力
+### 4.1 Claude Code 内建能力与可选扩展
 
-这一层 Anthropic 直接维护,质量稳定,Claude Code adapter 主要依赖:
+Claude Code adapter 依赖官方内建能力;第三方 MCP / plugins 只是可选补充,不能因为出现在同一 marketplace 或配置层就视为 Anthropic 维护:
 
-| 插件 | 作用 | 本项目用法 |
+| 能力 / 扩展 | 来源 | 本项目用法 |
 |---|---|---|
-| `context7` | 拉取库文档(MCP) | 任何外部库版本相关问题先问它 |
-| `pr-review-toolkit` | 5+ 种 reviewer agent(code / type / silent-failure / 等) | Claude adapter 可用;proof bundle 阶段必须有等价 reviewer |
-| `commit-commands` | `/commit`、`/commit-push-pr` 等 | 标准化 git 流程 |
-| `rust-analyzer-lsp` | Rust LSP 集成 | Rust 项目实时类型检查 |
-| `/init`(原生) | 扫描代码库生成初始 CLAUDE.md | Claude adapter 新项目可用;生成内容应收敛到 `AGENTS.md` source of truth,后续维护用 [`/project-workflow:agents-md-revise`](../skills/agents-md-revise/SKILL.md) |
-| `/security-review`(原生) | 安全审查 | 涉及认证/输入/密钥时跑 |
-| `/review`(原生) | 通用代码审查 | 备用 |
+| `context7` | 第三方 MCP | 外部库版本相关问题可用;不是 workflow 必需依赖 |
+| `pr-review-toolkit` | 可选 plugin | Claude adapter 可用;proof bundle 只要求等价 reviewer,不绑定该插件 |
+| `commit-commands` | 可选 plugin | 可标准化 git 流程,不属于 methodology core |
+| `rust-analyzer-lsp` | 可选 LSP 集成 | Rust 项目实时类型检查 |
+| `/init` | Claude Code 内建 | 可辅助生成初始 CLAUDE.md;project-workflow 输出仍以 `AGENTS.md` 为 source of truth |
+| `/security-review` | Claude Code 内建 | 涉及认证/输入/密钥时可运行 |
+| `/review` | Claude Code 内建 | 通用代码审查备用入口 |
 
-**为什么优先原生**:
-- 维护可信(Anthropic 自己升级,不会突然废弃)
-- 跟模型版本协调(新模型出来 plugin 同步优化)
-- 命名空间独立,不容易冲突
+**选择纪律**:内建能力可直接纳入 adapter 假设;第三方扩展需单独核对维护者、权限和版本,且必须保留无该扩展时的主会话 fallback。
 
 ### 4.2 Codex / OpenAI 原生能力
 
@@ -249,7 +248,7 @@ Codex adapter 不应该照搬 Claude Code 的文件布局,而应该复用 method
 **修正**:每月一次审查,3 个月没用的归档
 
 ### 6.3 把上层投资沉在底层工具
-**症状**:把项目规则只写进 Cursor 的 `.cursorrules` 或 Claude 的 `CLAUDE.md`,而不是项目根 `AGENTS.md`
+**症状**:把项目规则只写进 Cursor 的 `.cursor/rules/` 或 Claude 的 `CLAUDE.md`,而不是项目根 `AGENTS.md`
 **后果**:换工具就丢,失去工具无关性
 **修正**:**协作约定写在工具无关位置**(`AGENTS.md` / `docs/`),工具特定位置只放工具特异配置
 
@@ -259,14 +258,16 @@ Codex adapter 不应该照搬 Claude Code 的文件布局,而应该复用 method
 **修正**:opt-in 启用,只开你真懂的部分
 
 ### 6.5 只看 stars 不看适用性
-**症状**:看到 Superpowers 18 万 stars 就装
-**后果**:18 万人不是你,他们的痛点不一定是你的
+**症状**:看到高 star 数或社区热度就装
+**后果**:流行度不等于适配你的项目和权限边界
 **修正**:看哲学是否对,看 §3.2 五条是否过
 
 ---
 
 ## 7. 参考与延伸
 
+- 当前能力边界:[Claude rules](https://code.claude.com/docs/en/memory#organize-rules-with-clauderules) / [Claude hooks](https://code.claude.com/docs/en/hooks) / [Codex AGENTS.md](https://learn.chatgpt.com/docs/agent-configuration/agents-md) / [Codex hooks](https://learn.chatgpt.com/docs/config-file/config-advanced#hooks) / [Codex command rules](https://learn.chatgpt.com/docs/agent-configuration/rules) / [Cursor rules](https://docs.cursor.com/context/rules-for-ai)
+- [OpenAI Symphony](https://github.com/openai/symphony) 当前定位为 engineering preview,含 spec 与实验性 reference implementation
 - 各框架官网 / README 链接见 [`workflow.md §参考与延伸`](workflow.md#参考与延伸),本文档的"对比"基于那些 README + 本项目实际跑过的经验
 - Matt Pocock 哲学的展开:[`docs/spec-driven.md`](spec-driven.md) 用同样的"小、可读、可拥有"精神
 - 工具链方法论(怎么投资上层、怎么对待中层):[`workflow.md §6 方法论支柱`](workflow.md#6-方法论支柱4-条) 4 条原则

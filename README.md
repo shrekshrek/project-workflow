@@ -2,8 +2,7 @@
 
 **Spec-driven feature development blueprint for AI-assisted coding** — methodology docs + starter template + runtime adapters.
 
-> v1 (5 slash commands forcing a workflow) is preserved at git tag `v1.1.0`.
-> v2 was the docs-first rewrite from v1. v3 keeps that stance and adds dual Claude/Codex plugin packaging plus spec lifecycle management. See [Migration from v1](#migration-from-v1) below.
+> v3 is docs-first and adds dual Claude/Codex plugin packaging plus spec lifecycle management.
 
 ---
 
@@ -200,19 +199,6 @@ The parity check enforces the same 9 public actions on both adapters, canonical 
 - [`docs/gotchas.md`](docs/gotchas.md) — ⭐ 10 engineering pitfalls (from real validation)
 - [`docs/spec-driven.md`](docs/spec-driven.md) — spec/plan/tasks pattern detail
 - [`docs/tooling.md`](docs/tooling.md) — three-layer tool stack model + project-workflow vs Spec Kit / Superpowers / ECC / Symphony 对比(评估者 first read)
-
-## Migration from v1
-
-v1 was 5 `/project-plan` / `/module-plan` / `/module-dev` / `/module-done` / `/plan-review` slash commands that **owned the entire workflow process**. The premise didn't survive: users felt locked into a rigid flow.
-
-Current project-workflow keeps the v2 rewrite's rejection of process-ownership:
-- **Methodology lives in docs**, not in slash commands
-- **Slash commands are optional helpers**, each independently usable
-- **No mandated phase sequence** — open at the part you need
-- **Cross-tool by design** (AGENTS.md + docs + template work in any AI tool;
-  slash commands enhance Claude Code but aren't required)
-
-v1 source preserved at git tag [`v1.1.0`](../../tree/v1.1.0). Install via `git checkout v1.1.0` if needed.
 
 ## Status
 

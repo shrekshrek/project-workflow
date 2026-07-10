@@ -1,6 +1,7 @@
 ---
 description: {{TESTING_DESCRIPTION}}
-globs: {{TESTING_GLOBS}}
+paths:
+{{TESTING_PATHS}}
 ---
 
 # Testing Conventions

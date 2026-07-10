@@ -1,13 +1,14 @@
 ---
 description: FastAPI + SQLAlchemy 2.0 + Pydantic v2 detailed rules (path-scoped to backend Python)
-globs: backend/**/*.py
+paths:
+  - "backend/**/*.py"
 ---
 
 <!--
 来源:此 starter 浓缩了几条社区广为采纳的 FastAPI 实践(参考 zhanymkanov/fastapi-best-practices)。
 落地到具体项目时请筛 / 删 / 增,并写 docs/adr/000N-adopt-fastapi-best-practices.md 留追溯。
 本文件触发条件:Claude 读取 backend/**/*.py 任一文件时自动 inject。
-若 tier 命名不是 backend(如 server / api),改上方 globs。
+若 tier 命名不是 backend(如 server / api),改上方 paths 列表。
 -->
 
 # FastAPI 项目约定

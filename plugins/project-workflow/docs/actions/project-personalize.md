@@ -5,7 +5,7 @@ Canonical P0 action for adapting a copied scaffold or existing project-workflow-
 ## Use When
 
 - The target already has `AGENTS.md` or other project-workflow scaffold files.
-- Default names, commands, ports, database names, tier paths, or rule globs still reflect the scaffold.
+- Default names, commands, ports, database names, tier paths, or rule path patterns still reflect the scaffold.
 - An existing codebase needs its project conventions aligned with actual structure.
 
 Do not use for an empty greenfield project; use [`project-init`](project-init.md).
@@ -33,7 +33,7 @@ When `.claude/rules/` compatibility files exist, the Codex adapter inventories t
 - Replace only scaffold/default values that are demonstrably stale or selected by the user.
 - Do not invent product semantics from directory names.
 - `AGENTS.md` remains concise; put tier-specific guidance in tier files.
-- Path-rule globs must match existing or intentionally planned paths.
+- Path-rule `paths:` YAML-list patterns must match existing or intentionally planned paths; unsupported historical scope metadata is migrated rather than preserved.
 - Historical feature specs are not rewritten.
 
 ## Validation

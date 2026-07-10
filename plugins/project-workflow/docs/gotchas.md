@@ -2,11 +2,11 @@
 
 > 跨工具、跨语言的"AI / 工程师容易踩"的工程坑。每条都来自一个真实 fullstack 项目搭建过程中的故障(2026-05-12 集中梳理),反例 → 正例 → 为什么。
 >
-> **怎么用**:新项目 P0 阶段扫一遍;AGENTS.md 可以 `@imports` 引用本文件让 AI 读到。
+> **怎么用**:新项目 P0 阶段扫一遍;在 AGENTS.md 留短指针,需要时由 workflow action 显式读取。
 
 ## 📋 内容范围(stack 覆盖度)
 
-每条坑标 **🌐 通用** / **🐍 Python+FastAPI** / **📦 Node/TS** 等标签。**只看跟自己栈相关的**。当前内容偏 Python+FastAPI(plugin 早期主要在该栈实证落地),其他栈陆续补:
+每条坑标 **🌐 通用** / **🐍 Python+FastAPI** / **📦 Node/TS** 等标签。**只看跟自己栈相关的**。当前内容偏 Python+FastAPI(plugin 早期主要在该栈实证落地);其他栈只使用通用条目:
 
 | 章节 | 适用 stack |
 |---|---|
@@ -20,10 +20,6 @@
 | #8 测试 DB"不存在就建" | 🌐 通用思路 / 例子用 Python |
 | #9 FastAPI + asyncpg 测试 session | 🐍 Python + FastAPI |
 | #10 测试 engine NullPool | 🐍 SQLAlchemy + asyncio |
-| #11 Go 专属坑(待补) | 🐹 Go |
-| #12 React/Next 专属坑(待补) | ⚛️ React |
-
-> **Go / Rust / Java / TypeScript-React 项目用户**:本文件目前只能给 #1 / #3 / #4 / #5(部分) / #8 4 条提供价值。**stack-specific 坑欢迎 PR 到 plugin 仓库** —— 真实搭建过程中踩到的坑,反例 → 正例 → 为什么,各 5-10 条即可。
 
 ---
 
@@ -342,41 +338,6 @@ asyncio_default_fixture_loop_scope = "session"  # session-scoped 异步 fixture 
 ```
 
 ---
-
-## 11. Go 专属坑(待补充)
-
-> 适用 stack:**🐹 Go**
-
-<!-- TODO(plugin maintainer / 社区 PR):补充 Go 真实搭建过程踩到的坑。预期主题:
-- goroutine leak(`go func()` 漏 cancel)
-- channel send / receive 死锁
-- `defer` 在 for loop 内(资源延迟到函数返回)
-- nil interface vs nil pointer 比较陷阱
-- `context.Context` 传递不完整
-- module path 跟 import path 不一致
-- `go.mod` `replace` directive 滥用
-- 并发 map 写需要 sync.Map / mutex
-- HTTP client 不复用导致连接泄漏
-- testing 包 -race 检测器没启用 -->
-
-每条按 反例 → 正例 → 为什么 格式。社区 PR 欢迎。
-
-## 12. React / Next.js 专属坑(待补充)
-
-> 适用 stack:**⚛️ React / Next.js**
-
-<!-- TODO(plugin maintainer / 社区 PR):补充 React+Vite / Next.js 真实搭建坑。预期主题:
-- `useEffect` 漏 deps 导致 stale closure
-- Strict Mode 双调用 effect 时副作用没幂等
-- `key={index}` 列表渲染错位
-- 状态 batching 假设错误(React 18 自动批处理)
-- Next.js App Router vs Pages Router 心智混淆
-- `'use client'` / `'use server'` 边界
-- TanStack Query staleTime 默认 0 导致频繁 refetch
-- Tailwind purge 漏 dynamic class name
-- Vite HMR 不刷新某些边界(全局 store) -->
-
-每条按 反例 → 正例 → 为什么 格式。社区 PR 欢迎。
 
 ## 跨条总结(怎么避免下次再踩)
 

@@ -13,7 +13,7 @@ Match the user's language. Read [`../../docs/actions/spec-reconcile.md`](../../d
 2. Extract concrete assertions about behavior, contracts, defaults, ownership, and structure. Report only direct contradictions, each with exact file and section evidence.
 3. Build a conflict matrix showing each side, current truth, ADR support, implementation evidence when supplied, and the evidence tendency. Do not silently choose the winner.
 4. Ask the user to select the source of truth for each contradiction and classify each losing spec as superseded or abandoned. Unresolved contradictions block new implementation in the area.
-5. After explicit approval, update only losing status markers and successor links, then move losing directories to `docs/specs/changes/archive/` with `git mv`.
+5. After explicit approval, update only losing status markers and successor links, then move losing directories to `docs/specs/changes/archive/` with `git mv`. Immediately run the packaged `scripts/relocate-markdown-links.cjs <old-dir> <new-dir>` after each move; resolve the plugin root as the nearest ancestor of this skill containing `.codex-plugin/plugin.json`. Missing local targets block the lifecycle update.
 6. Extract still-valid facts from losing specs into current-truth gaps; do not invent a “historical foundation” lifecycle state.
 7. Replace archive-link lists or historical narratives in domain docs with present-tense facts when the user approves the current-truth update.
 8. Flag any losing direction backed by an Accepted ADR for a superseding ADR or status correction.

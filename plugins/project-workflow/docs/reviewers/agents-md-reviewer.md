@@ -20,7 +20,7 @@ Do not review functional correctness, design taste, feature-spec compliance, gen
 - convention source files
 - optional feature/spec path for context only
 
-For Claude, path-scoped rules may arrive as `.claude/rules/*.md` with `globs:` frontmatter. For Codex, scoped guidance should primarily come from nested `AGENTS.md` and explicit rule sections; `.claude/rules/` is compatibility input only.
+For Claude, path-scoped rules arrive as `.claude/rules/*.md` with a `paths:` YAML list; rules without `paths:` are global. For Codex, scoped guidance should primarily come from nested `AGENTS.md` and explicit rule sections; `.claude/rules/` is compatibility input only.
 
 ## Method
 

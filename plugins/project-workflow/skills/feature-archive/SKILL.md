@@ -18,6 +18,6 @@ Match the user's language and preserve file language. Read [`../../docs/actions/
 7. Stop if the proposed current truth contradicts an Accepted ADR until a superseding decision is resolved.
 8. With user approval, mark replaced older specs as superseded or abandoned, link the successor, and preserve their body unchanged.
 9. Append an archive note to each feature's `tasks.md`; update an existing changes index when present.
-10. Move every approved closed directory with `git mv` into `docs/specs/changes/archive/`. Do not delete history or edit implementation code.
+10. Move every approved closed directory with `git mv` into `docs/specs/changes/archive/`. Immediately run the packaged `scripts/relocate-markdown-links.cjs <old-dir> <new-dir>` after each move; resolve the plugin root as the nearest ancestor of this skill containing `.codex-plugin/plugin.json`. Missing local targets block completion. Do not delete history or edit implementation code.
 
 Report archived features, current-truth files created/updated and their line counts, superseded specs, ADR follow-ups, and a commit-message draft. Default invocation is sweep mode.

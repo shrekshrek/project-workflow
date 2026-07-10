@@ -59,9 +59,13 @@ User input: `$ARGUMENTS` — 空 = 清扫模式;或 feature slug / NNN / "curren
 ```bash
 mkdir -p docs/specs/changes/archive
 git mv docs/specs/changes/<NNN>-<slug> docs/specs/changes/archive/<NNN>-<slug>
+node "$PLUGIN_ROOT/scripts/relocate-markdown-links.cjs" \
+  docs/specs/changes/<NNN>-<slug> \
+  docs/specs/changes/archive/<NNN>-<slug>
 ```
 
 - 归档前在 `tasks.md` 末尾追加:`## Archive Note\n- YYYY-MM-DD: archived;<若有>持久结论已合并 → docs/specs/<area>.md`
+- link relocation 必须在每次 `git mv` 后立即执行;它按旧/新文件位置重算 feature 外部链接,保留 feature 内部相对链接,并验证目标存在。任一 missing local target → 停止并修复,不得报告归档完成。
 - `docs/specs/changes/index.md` 存在 → 更新对应行的位置/状态(编号 → 标题 / 状态 / active|archive);不存在 → 不主动创建
 - 编号全局唯一(active + archive 共用 NNN 序列),`/feature-init` 取号时两边都查
 
@@ -84,6 +88,7 @@ git mv docs/specs/changes/<NNN>-<slug> docs/specs/changes/archive/<NNN>-<slug>
 - 进行中 feature(草稿 / 已确认 / proof bundle 非 READY)**永不归档**
 - Current truth 更新后必须不与已交付行为矛盾、尺寸受控或有合理 domain 复杂度理由、新鲜度行已更新
 - 状态标记与归档清单逐份经用户确认,不静默批量执行
+- archive 内所有本地 Markdown link 必须可解析;移动后必须运行统一 relocation 工具,不得手算或只给所有链接机械加 `../`
 
 ## Failure modes
 

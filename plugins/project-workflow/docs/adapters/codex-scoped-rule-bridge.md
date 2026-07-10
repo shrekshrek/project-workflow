@@ -6,10 +6,9 @@ Codex has native hierarchical `AGENTS.md` discovery, but it does not natively lo
 
 1. Discover `.claude/rules/**/*.md` recursively. Ignore `_examples/` and files that are not active rules.
 2. Read frontmatter first and normalize supported scope metadata:
-   - `paths:` as a quoted/unquoted scalar or YAML list;
-   - legacy `globs:` as a comma-separated scalar;
-   - neither field means global scope.
-3. If both `paths` and `globs` exist, use their union only when they are semantically compatible. Conflicting fields are ambiguous.
+   - `paths:` must be a YAML list of quoted patterns;
+   - no `paths:` field means global scope.
+3. Historical scope keys, scalar `paths`, malformed YAML, or other unsupported scope metadata are ambiguous. Do not interpret them as compatibility aliases; require migration to the current Claude Code format.
 4. Match normalized patterns against the complete target population:
    - planned module/file scope for initialization and revision actions;
    - actual changed files for `feature-done` L2;
@@ -27,7 +26,7 @@ Report four sets with paths:
 - global rules read;
 - scoped rules matched and read;
 - scoped rules skipped as definite non-matches;
-- malformed, conflicting, or otherwise ambiguous rules read conservatively.
+- malformed, unsupported, or otherwise ambiguous rules read conservatively.
 
 For `feature-init` and `spec-revise`, include the matched/global rule paths in the implementation handoff so a resumed or new Codex session can fresh-read them. For `feature-done`, include the L2 rule-source set and ambiguities in the proof bundle. L3 receives the change spec as its baseline and must not inherit A-class rules as requirements.
 

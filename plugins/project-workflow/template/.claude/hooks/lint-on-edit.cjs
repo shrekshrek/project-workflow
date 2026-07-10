@@ -56,10 +56,20 @@ function filesFromInput(input) {
   return files;
 }
 
+function parseInput(raw) {
+  try {
+    return JSON.parse(raw || '{}');
+  } catch {
+    console.error('[project-workflow] lint-on-edit: malformed hook JSON; skipping');
+    return null;
+  }
+}
+
 let data = '';
 process.stdin.on('data', c => (data += c));
 process.stdin.on('end', () => {
-  const input = JSON.parse(data || '{}');
+  const input = parseInput(data);
+  if (!input) process.exit(0);
   projectRoot = process.env.CLAUDE_PROJECT_DIR || input.cwd || process.cwd();
   const files = filesFromInput(input);
 

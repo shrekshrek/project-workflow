@@ -23,6 +23,7 @@ const copiedFiles = [
   ["docs/tooling.md", "docs/tooling.md"],
   ["docs/quickstart.md", "docs/quickstart.md"],
   ["docs/adapters/codex-scoped-rule-bridge.md", "docs/adapters/codex-scoped-rule-bridge.md"],
+  ["scripts/relocate-markdown-links.cjs", "scripts/relocate-markdown-links.cjs"],
 ];
 
 const templateDocFiles = [

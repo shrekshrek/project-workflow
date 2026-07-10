@@ -27,10 +27,10 @@ User input: `$ARGUMENTS` — optional scope filter(如 `backend` 限定 tier;`ru
 - `AGENTS.md`(root)—— 必读;缺失则报错退出 "项目无 project-workflow baseline,先跑 `/project-init` 或 `/project-personalize`"
 - `<tier>/AGENTS.md`(若多 tier 项目)
 - `<module>/AGENTS.md`(仅"反常"模块,见 [§2.3](../../docs/workflow.md#23-反常判定何时该写模块-agentsmd))
-- `.claude/rules/*.md`(全集;读每个文件的 frontmatter `globs:` + 正文。**globs 用来限定 drift 作用域**:Step 3 比对时,只对 globs 命中的项目路径计算 drift;无 `globs:` 的规则按全局适用)
+- `.claude/rules/*.md`(全集;读每个文件的 frontmatter `paths:` YAML 列表 + 正文。**paths 用来限定 drift 作用域**:Step 3 比对时,只对 paths 命中的项目路径计算 drift;无 `paths:` 的规则按全局适用)
 
 若 `$ARGUMENTS` 给了 scope filter:
-- `backend` / 其他 tier 名 → 只读 root + `<tier>/AGENTS.md` + globs 命中该 tier 的 `.claude/rules/`
+- `backend` / 其他 tier 名 → 只读 root + `<tier>/AGENTS.md` + paths 命中该 tier 的 `.claude/rules/`
 - `rules` → 只读 `.claude/rules/*.md` 全集
 
 读完所有文件,提取每条**具体可验证** statement:

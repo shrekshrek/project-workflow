@@ -65,7 +65,7 @@ project-workflow 分两层:
 | Methodology need | Claude Code adapter | Codex adapter | Manual fallback |
 |---|---|---|---|
 | Persistent project guidance | `AGENTS.md` + `CLAUDE.md` 1 行 alias | `AGENTS.md` discovery | 读 `AGENTS.md` |
-| Path-scoped rules | `.claude/rules/*.md` with adapter-supported scope metadata | Native `AGENTS.md` hierarchy; project-workflow actions explicitly resolve matching `.claude/rules/` through the [Codex scoped-rule bridge](adapters/codex-scoped-rule-bridge.md) when compatibility files exist | 在 `AGENTS.md` 引用相关规则 |
+| Path-scoped rules | `.claude/rules/*.md` with official `paths:` YAML-list frontmatter; no `paths:` means global | Native `AGENTS.md` hierarchy; project-workflow actions explicitly resolve matching `.claude/rules/` through the [Codex scoped-rule bridge](adapters/codex-scoped-rule-bridge.md) when compatibility files exist | 在 `AGENTS.md` 引用相关规则 |
 | Reusable workflows | `.claude-plugin` + `skills/`, each referencing `docs/actions/` | Installable `plugins/project-workflow/` Codex plugin; skills reference bundled copies of the same `docs/actions/` semantics | 按 `docs/actions/` 手工执行 |
 | Hooks | `.claude/settings.json` + `.claude/hooks/` | `.codex/hooks.json` or `.codex/config.toml` | 端点手动跑 check |
 | Sub-agent review | Claude Code sub-agent files in `agents/`, each referencing `docs/reviewers/` | Prefer a Codex subagent running bundled `docs/reviewers/`; custom-agent name dispatch is optional and not part of the core package | 主会话按 `docs/reviewers/` 执行 |

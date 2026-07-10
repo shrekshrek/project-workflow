@@ -63,7 +63,7 @@ User input: `$ARGUMENTS` — feature slug or "current"
 
 ## Step 4 — L2 A 类约定合规(缓存有效则复用)
 
-收集 A 类约定全集:root `AGENTS.md` + 命中 tier 的 `<tier>/AGENTS.md` + `<module>/AGENTS.md`(若有)+ **`.claude/rules/*.md` 全量**(skill 层不按 globs 过滤,reviewer 自判作用域)+ `docs/gotchas.md`(若有)。
+收集 A 类约定全集:root `AGENTS.md` + 命中 tier 的 `<tier>/AGENTS.md` + `<module>/AGENTS.md`(若有)+ **`.claude/rules/*.md` 全量**(skill 层不按 paths 过滤,reviewer 自判作用域)+ `docs/gotchas.md`(若有)。
 
 用 Task 工具 dispatch `subagent_type: agents-md-reviewer`,传:
 - Scope(changed files 列表;来源:tasks.md 显式提到的路径,后备 `git diff --name-only` / `git status --porcelain`)

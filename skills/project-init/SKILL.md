@@ -7,12 +7,12 @@ description: Initialize a project's v3 starter kit (AGENTS.md + .claude/ + tier-
 
 # Project Init
 
-Canonical action spec: `docs/actions/project-init.md`. Follow that file for methodology rules; this skill adds Claude Code execution details. **静态查表(placeholder 映射 / globs 推导 / mini-Q&A 题库 / defaults 清单)在同目录 [`reference.md`](reference.md)—— 是 relocation 不是删减;Step 4 开始前必须 Read R1-R4+R6,Step 5.1 开始前必须 Read R5,Step 8 报告前 Read R7。不得凭记忆填表。**
+Canonical action spec: `docs/actions/project-init.md`. Follow that file for methodology rules; this skill adds Claude Code execution details. **静态查表(placeholder 映射 / paths 推导 / mini-Q&A 题库 / defaults 清单)在同目录 [`reference.md`](reference.md)—— 是 relocation 不是删减;Step 4 开始前必须 Read R1-R4+R6,Step 5.1 开始前必须 Read R5,Step 8 报告前 Read R7。不得凭记忆填表。**
 
 **Use when**: P0 — project's first day, no AGENTS.md yet.
 **Not for**: starting a feature (`/feature-init`) / refreshing existing A 类约定 (`/agents-md-revise`) / scaffold-cloned or retrofit 项目(`/project-personalize`,它处理替换 scaffold defaults、补 tier-level、扫既有代码)。
 
-**Output structure**(写到 target 目录):根 `AGENTS.md` + `CLAUDE.md`(1 行 @AGENTS.md)、`.claude/{rules/{code-style,testing,security}.md, hooks/lint-on-edit.js, settings.json}`、`.codex/{hooks.json,hooks/lint-on-edit.js}`、`docs/specs/index.md`(E 类索引)、`docs/adr/{README,0000-template}.md`、`docs/gotchas.md`、`.gitignore`;fullstack 追加各 `<tier>/AGENTS.md` + `<tier>/CLAUDE.md`。
+**Output structure**(写到 target 目录):根 `AGENTS.md` + `CLAUDE.md`(1 行 @AGENTS.md)、`.claude/{rules/{code-style,testing,security}.md, hooks/lint-on-edit.cjs, settings.json}`、`.codex/{hooks.json,hooks/lint-on-edit.cjs}`、`docs/specs/index.md`(E 类索引)、`docs/adr/{README,0000-template}.md`、`docs/gotchas.md`、`.gitignore`;fullstack 追加各 `<tier>/AGENTS.md` + `<tier>/CLAUDE.md`。
 
 ## Step 0 — 解析 target 目录(可选 `$ARGUMENTS`)
 
@@ -89,13 +89,13 @@ mkdir -p docs && cp "$PLUGIN_ROOT/docs/gotchas.md" docs/gotchas.md
 用 Edit 逐文件填齐。**填齐或删行,不允许留 `{{...}}`**(no aspirational)。
 
 - **4.1 根 AGENTS.md**:按 [reference.md R1](reference.md) 映射表填(含模块组织 / Git 平台两个 default 的写入位置)。
-- **4.2 `.claude/rules/`**:按 [R2](reference.md) 填;每个 rule frontmatter 必含 `description:`(< 80 字符)。
-- **4.3 globs 推导**:按 [R3](reference.md)(comma-separated 字符串,**不要** `paths:` YAML 列表——silently fails,workflow §1.6)。
+- **4.2 `.claude/rules/`**:按 [R2](reference.md) 填;每个 rule 的 `description:` 保持简洁、具体。
+- **4.3 paths 推导**:按 [R3](reference.md)填 `paths:` YAML 列表;禁止生成历史 scope key 或 scalar scope(workflow §1.6)。
 - **4.4 STYLE_HIGHLIGHT**:按 [R4](reference.md)——只写项目级真正特殊的点,栈通用 default 不写。
 
-### 4.5 `@imports` 启用判断(强制)
+### 4.5 `.claude/rules/` 自动发现判断(强制)
 
-根 AGENTS.md 末尾 3 行 `@import` 注释:**有 `globs:` 的规则保留注释**(globs 管加载);**无 `globs:` 的 `security.md` 取消注释**改 `@.claude/rules/security.md`(always-on 走 @import,避开 globs 不触发 Write 的 limitation)。改动累积在内存,**不立即 Write**(等 4.6 preview)。
+确认根 AGENTS.md 不手工 `@import` `.claude/rules/`:Claude Code 会自动递归发现规则,有 `paths:` 的按路径加载,无 `paths:` 的 `security.md` 全局加载。改动累积在内存,**不立即 Write**(等 4.6 preview)。
 
 ### 4.5b 决策完整性 audit(强制,workflow §1.12)
 
@@ -137,7 +137,7 @@ cp "$PLUGIN_ROOT/template/_multi_tier_examples/${TIER_CATEGORY}.CLAUDE.md.exampl
 
 逐个替换 `{{TIER_*}}`(详见 `$PLUGIN_ROOT/template/_multi_tier_examples/README.md`)。三条关键规则:
 
-1. **Framework 规则强制 split**(workflow §1.3):`{{TIER_*_CRITICAL_LABELS}}` 只填 ≤ 5 个短标签(单行 ≤ 80 字符,如 FastAPI:`APIRouter 分组 / Depends DI / async 内禁 sync I/O ...`;Vue 3:`Composition API + <script setup> / ref vs reactive / useXxx 命名 ...`);**完整 detail 禁止进 tier AGENTS.md**,必走 `.claude/rules/<framework>.md` —— 有 `$PLUGIN_ROOT/template/.claude/rules/_examples/<framework>.example.md` 则 cp 并改 `globs:` + `description:`,无 starter 则建空壳带 frontmatter + TODO。tier critical 段 verbatim 重复 rules 内容 = 违反"差量于根"。
+1. **Framework 规则强制 split**(workflow §1.3):`{{TIER_*_CRITICAL_LABELS}}` 只填 ≤ 5 个短标签(单行 ≤ 80 字符,如 FastAPI:`APIRouter 分组 / Depends DI / async 内禁 sync I/O ...`;Vue 3:`Composition API + <script setup> / ref vs reactive / useXxx 命名 ...`);**完整 detail 禁止进 tier AGENTS.md**,必走 `.claude/rules/<framework>.md` —— 有 `$PLUGIN_ROOT/template/.claude/rules/_examples/<framework>.example.md` 则 cp 并改 `paths:` YAML 列表 + `description:`,无 starter 则建空壳带 frontmatter + TODO。tier critical 段 verbatim 重复 rules 内容 = 违反"差量于根"。
 2. **删除不适用的整个章节**(如不用 ORM 时 `### {{TIER_ORM}}` 整节删,不留空章节)。
 3. **Module Structure 节按主语言渲染**:保留对应语言的文件名行,删其他语言示例;Q&A 答没有的层(如无 ORM → repository 层)也删。
 4. **Source Layout 是 SOT**:`{{TIER_SRC_DIR}}` 等据 R5 题 4 答案渲染一处,其他节统一引用指针,防多处独立 plant(workflow §1.12 Cross-file consistency)。
@@ -150,7 +150,7 @@ cp "$PLUGIN_ROOT/template/_multi_tier_examples/${TIER_CATEGORY}.CLAUDE.md.exampl
 
 每 tier 一组 preview(`<tier>/AGENTS.md` + 关联 rules 文件)+ AskUserQuestion 接受 / 改 / revert。CLAUDE.md 单行 alias 无 preview 价值,自动落盘。
 
-## Step 6 — 裁剪 `.claude/hooks/lint-on-edit.js`
+## Step 6 — 裁剪 `.claude/hooks/lint-on-edit.cjs`
 
 template 是 if-else by extension 骨架:按 Q&A 保留对应语言 case branch,删其他。
 
@@ -167,19 +167,19 @@ wc -l AGENTS.md $(find . -maxdepth 2 -name 'AGENTS.md' -not -path './AGENTS.md' 
 ## Step 7.5 — Self-verify(强制,workflow §1.11)
 
 ```bash
-# V1 placeholder 残留(唯一允许命中:README.md 的 instruction 文本)
-grep -rn '{{' --include='*.md' --include='*.js' --include='*.json' .
-# V2 frontmatter(path-scoped rule 含 description + globs;security.md 仅 description)
+# V1 placeholder 残留(只检查本 action 生成的文件;目标原有 README 等外部文件不计)
+grep -rn '{{' --include='*.md' --include='*.js' --include='*.cjs' --include='*.json' .
+# V2 frontmatter(path-scoped rule 含 description + paths YAML list;security.md 仅 description)
 head -10 .claude/rules/*.md
 ```
 
-结合 Q&A 答案判断:**V3** globs path prefix 真存在;**V4** 根 AGENTS.md 指针 ↔ tier Commands 节对应、命令 verb 跟 pkg-mgr 对齐;**V4.5** tier framework 各节 ≤ 5 条、深度内容在 rules 文件。运行时:**V5** `/memory` 加载齐(缺 → 嵌套层次错)、**V8** 自问一句话总结栈 + 命令(4 要素全对);V6 命令能跑 / V7 hook 触发 → 🟡 deferred(B 层未起)。任一 ❌(V6/V7 除外)→ 回头改,不能 self-report done。
+结合 Q&A 答案判断:**V3** 每个 paths pattern 的 path prefix 真存在,且无历史 scope key/scalar scope;**V4** 根 AGENTS.md 指针 ↔ tier Commands 节对应、命令 verb 跟 pkg-mgr 对齐;**V4.5** tier framework 各节 ≤ 5 条、深度内容在 rules 文件。运行时:**V5** `/memory` 加载齐(缺 → 嵌套层次错)、**V8** 自问一句话总结栈 + 命令(4 要素全对);V6 命令能跑 / V7 hook 触发 → 🟡 deferred(B 层未起)。任一 ❌(V6/V7 除外)→ 回头改,不能 self-report done。
 
 报告格式:`V1✅ V2✅ V3✅ V4✅ V4.5✅ V5✅ V6🟡def V7🟡def V8✅`
 
 ## Step 8 — 用户报告
 
-**还需手工 review**:AGENTS.md `## Boundaries` 项目特定的 ⚠️ Ask first 项(只有用户知道,P0 不收集);`.claude/rules/code-style.md` 各章节按项目实践补;想加 framework rules → cp `_examples/<framework>.example.md` 改 globs。
+**还需手工 review**:AGENTS.md `## Boundaries` 项目特定的 ⚠️ Ask first 项(只有用户知道,P0 不收集);`.claude/rules/code-style.md` 各章节按项目实践补;想加 framework rules → 从已安装插件的 `template/.claude/rules/_examples/<framework>.example.md` 复制并改 paths 列表。
 
 **⚠️ Aspirational refs**:AGENTS.md 引用了 P0 不生成的文件(docker-compose / app 主入口 / CI 等)——按 Q&A 答案从 [reference.md R7](reference.md) 动态列举"文件 → 怎么获得"表。提醒:想要 ready-to-run 全栈 → clone scaffold 后跑 `/project-personalize`;`/project-init` 是**约定层 init**,不是 code scaffolder。
 

@@ -1,6 +1,7 @@
 ---
 description: Vue 3 + Vite detailed rules (path-scoped to frontend TS/Vue)
-globs: frontend/**/*.{ts,vue}
+paths:
+  - "frontend/**/*.{ts,vue}"
 ---
 
 <!--
@@ -8,7 +9,7 @@ globs: frontend/**/*.{ts,vue}
 (参考 Vue 官方 docs / Anthony Fu blog / Vue Mastery / Pinia docs)。
 落地到具体项目时请筛 / 删 / 增,并写 docs/adr/000N-adopt-vue-best-practices.md 留追溯。
 本文件触发条件:Claude 读取 frontend/**/*.{ts,vue} 任一文件时自动 inject。
-若 tier 命名不是 frontend(如 web / app),改上方 globs。
+若 tier 命名不是 frontend(如 web / app),改上方 paths 列表。
 -->
 
 # Vue 3 + Vite 项目约定

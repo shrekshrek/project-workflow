@@ -46,7 +46,7 @@
 
 | 流派 | 代表 | 形态 | 适合谁 |
 |---|---|---|---|
-| **重型** | [GitHub Spec Kit](https://github.com/github/spec-kit) | `.specify/specs/<NNN>/{spec,plan,tasks}.md` + 6 个 slash commands | 大团队、流程纪律强 |
+| **重型** | [GitHub Spec Kit](https://github.com/github/spec-kit) | `.specify/specs/<NNN>/{spec,plan,tasks}.md` + command suite | 大团队、流程纪律强 |
 | **轻量** | [Addy Osmani agents.md](https://addyosmani.com/blog/good-spec/) | 根目录单文件六要素 | 单人/小团队、要灵活 |
 | **学术** | [SDD: From Code to Contract — arXiv 2602.00180](https://arxiv.org/abs/2602.00180) | spec 是契约,代码是契约的实现 | 高合规、强保证场景 |
 
@@ -76,7 +76,7 @@
 - Boundaries 三档:✅ Always / ⚠️ Ask first / 🚫 Never
 - 嵌套层次:**用户 / 项目根 / 子目录(tier + 模块)/ 私有**(详细见 [workflow.md §1.4](workflow.md#14-agentsmd--claudemd-嵌套层次子级覆盖父级);系统级 `/etc/claude-code/CLAUDE.md` 为企业 IT 场景,project-workflow audience 不覆盖)
 - 模块级 AGENTS.md(`<module>/AGENTS.md` + 1 行 `CLAUDE.md` alias)是**可选**,仅模块"反常"时才写(见 [workflow.md §2.3](workflow.md#23-反常判定何时该写模块-agentsmd))
-- path-scoped rules 是 A 类 peer to AGENTS.md(workflow.md §0.3 / §1.3),不在嵌套层次表里;Claude adapter materialization 为 `.claude/rules/*.md` + `globs:` frontmatter
+- path-scoped rules 是 A 类 peer to AGENTS.md(workflow.md §0.3 / §1.3),不在嵌套层次表里;Claude adapter materialization 为 `.claude/rules/*.md` + `paths:` YAML-list frontmatter
 
 维护工具:[`/project-workflow:agents-md-revise`](../skills/agents-md-revise/SKILL.md) —— P4 主动 refresh A 类约定全集(AGENTS.md 嵌套 + path-scoped rules)。
 
@@ -367,6 +367,7 @@ docs/specs/changes/
 
 ---
 
+<a id="365-phase-a填-todos-的-ai-协作-sop"></a>
 ### 3.6.5 Phase A:填 TODOs 的 AI 协作 SOP(主会话用 ── primary mode)
 
 **本节是 conversational fill 的 primary mode SOP**:`/feature-init` 创建 spec/plan/tasks scaffold(+ chat context pre-fill + mission-critical reminders + decision-completeness audit;**零强制 Q&A**)后,**所有 TODOs 由 user 在主会话跟 AI 对话填**(spec.md §1 Outcomes / §2 Scope "不做" / §3 Constraints / §4 Verification / plan.md §1.1 Sibling Alignment / §2 架构决策 / §3 Prior decisions / tasks.md 任务清单 等)。AI 应**读本节后按规则引导** ── 保证 quality 标准 inline 内化,**不依赖事后 quality-check 才发现问题**。

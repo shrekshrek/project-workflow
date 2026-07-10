@@ -67,3 +67,11 @@ jobs:
       - name: Check Claude/Codex adapter parity
         run: |
           node scripts/check-adapter-parity.js
+
+      - name: Check rule templates and hook input contracts
+        run: |
+          node scripts/check-template-contracts.js
+
+      - name: Check lifecycle archive links
+        run: |
+          node scripts/check-lifecycle-links.cjs

@@ -61,7 +61,7 @@ Slug 要求(strip 后):kebab-case(`a-z0-9-`)、2-40 chars、不以 `-` 开头结
 
 **选读**(缺失静默跳过):
 - `<tier>/AGENTS.md` 每个 tier —— tier 特异约定
-- **`.claude/rules/*.md` 全集** —— 读 frontmatter `globs:`,记"哪条规则约束哪些路径",供 Step 5 pre-fill + Step 6 reminders 对照 feature scope
+- **`.claude/rules/*.md` 全集** —— 读 frontmatter `paths:` YAML 列表,记"哪条规则约束哪些路径";无 `paths:` 按全局规则,供 Step 5 pre-fill + Step 6 reminders 对照 feature scope
 - **本 session 早期对话** —— user 已讨论过本 feature 的,提取**用户明确给的细节**作 Step 5 pre-fill input
 
 ### 扫描项目结构(tier-aware)

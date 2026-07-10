@@ -44,7 +44,7 @@ After generating `.claude/rules/` compatibility files, the Codex adapter validat
 - Tool-specific files are adapter assets, not methodology core.
 - Source templates may contain stack-rendering placeholders; generated active files may not. After initialization, active `AGENTS.md`, path-scoped rules, and hook config must be concrete for the target stack.
 - Commands must come from user answers, manifests, or conservative stack conventions. Unknown deployment commands stay deferred.
-- Path-scoped rule files must be stack-adapted, including `description:` and `globs:`. Do not use broad catch-all globs as a substitute for real language/tier matching.
+- Path-scoped rule files must be stack-adapted, including concise `description:` metadata and a `paths:` YAML list. Do not use broad catch-all patterns as a substitute for real language/tier matching. Rules without `paths:` are global.
 - No unresolved scaffold placeholders may remain in generated project-workflow files.
 - No application code is generated.
 
