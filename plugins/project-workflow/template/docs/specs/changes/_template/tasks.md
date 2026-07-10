@@ -22,7 +22,6 @@
 
 ### Acceptance
 - [ ] spec §4 Verification 全部 pass
-- [ ] Proof bundle 就绪(`/project-workflow:feature-done`)
 
 ## 2. 实施记录
 
