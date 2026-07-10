@@ -19,6 +19,7 @@
 | `{{COMMIT_FORMAT}}` | 默认 conventional commits |
 | `{{LINT_CONFIG_PATH}}` | mixed-lang → 指针 `(见各 <tier>/AGENTS.md)`;single-lang → 据 lint 工具推(`.eslintrc.cjs` / `pyproject.toml`)|
 | `{{STYLE_HIGHLIGHT_1/2/3}}` | 据栈推 1-3 条**真正特殊**的风格点(见 R4)|
+| `{{HOOK_INDEX}}` | hook 未安装 → 删除整行;hook active + verified → 展开为实际存在的 `.claude/hooks` / `.claude/settings.json` / `.codex/hooks*` 索引行 |
 
 **模块组织模式 default**(不问用户;写进 `.claude/rules/code-style.md` 末尾 `## 文件 / 模块` 节,不写根 AGENTS.md):
 > 模块组织模式:**按 feature / domain 组织,不按 type**(避免 `controllers/` `services/` `utils/` type-based 散布)。详见 workflow §2.5。

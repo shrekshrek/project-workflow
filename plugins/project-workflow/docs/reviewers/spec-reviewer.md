@@ -48,7 +48,9 @@ Classify each item: `single` or `distributed`.
 
 ### Phase 4: Coverage And Confidence
 
-Report coverage = fully verified / total; confidence high only when coverage >= 95% and no skipped critical item.
+Enumerate the exact changed-file population and exact spec-item identifiers (`section#item`). Report coverage = fully verified applicable spec items / all applicable spec items. Explicitly excluded/non-applicable items do not enter the denominator. Confidence is high only when coverage is 100% and no blocking spec ambiguity remains.
+
+A zero-finding result is `PASS` only when the exact changed-file population and exact applicable spec-item identifiers are enumerated, coverage is 100%, no applicable item is unverified, no blocking spec ambiguity remains, and confidence is high. Sampling or an incomplete population returns `UNRELIABLE`, not a clean pass.
 
 ## Output
 
@@ -62,7 +64,7 @@ Spec: docs/specs/changes/<NNN>-<slug>/spec.md
 Shape: brownfield | greenfield
 Domain context: docs/specs/<area>.md (read-only, if cited)
 Files reviewed: <count>
-Spec coverage: <X>% (<verified>/<total>; <sampled> sampled; <skipped> skipped)
+Spec coverage: <X>% (<verified>/<applicable>; <non-applicable> excluded; <unverified> applicable but unverified)
 
 ### Missing
 ...
@@ -77,11 +79,13 @@ Spec coverage: <X>% (<verified>/<total>; <sampled> sampled; <skipped> skipped)
 ...
 
 ### Spec Ambiguities
-...
+<ambiguity, blocking=yes|no, reason>
 
 ### Summary
 ...
 ```
+
+When findings are zero, collapse empty finding sections and return a compact evidence block containing the exact changed paths, exact spec-item identifiers, coverage, applicable-unverified count, ambiguity count, findings=0, and confidence.
 
 ## Rules
 
@@ -90,3 +94,5 @@ Spec coverage: <X>% (<verified>/<total>; <sampled> sampled; <skipped> skipped)
 - Do not report AGENTS.md / path-scoped-rule issues.
 - Do not invent requirements absent from the change spec.
 - Do not flag "missing" for domain doc behaviors not listed in Delta / Outcomes.
+- Never equate an empty findings array with success without the Phase 4 evidence contract.
+- Mark every ambiguity as blocking or advisory. Advisory means it cannot change compliance for the current implementation; otherwise it is blocking.

@@ -22,13 +22,13 @@
 
 ## 写法
 
-复制 [`0000-template.md`](0000-template.md) → 改名 → 填内容。
+安装 project-workflow 时,由需要 ADR 的 action 从 plugin 内 `template/docs/adr/0000-template.md` 实例化具体编号文件;项目目录不保留空模板。手工流程从 project-workflow 源库同一路径复制。
 
 每份 ADR **只追加,不修改**。决策推翻时:
 - 起新 ADR
 - 老 ADR 的 Status 改为 `Superseded by NNNN`(唯一允许的改动)
 
-**工具支持**(装了 project-workflow 时):`/spec-revise` 起新 ADR 会自动扫既有 ADR 做反向 supersede 核对(经你确认后翻旧状态);`/feature-archive` / `/spec-reconcile` 在合并 current truth 时核对结论与 Accepted ADR 的一致性;`/agents-md-revise` 周期性点名"零引用 + 60 天以上"的孤儿 ADR。状态不实是 ADR 唯一的腐化通道——这三道核对就是为它设的。
+**工具支持**(装了 project-workflow 时):`/spec-revise` 仅在 `ADR_REQUIRED`(架构/模块边界、持久跨 feature 技术决定或取代既有 ADR)时创建新 ADR并做反向 supersede 核对;普通 frozen contract 修订只写 revision record。`/feature-archive` / `/spec-reconcile` 在合并 current truth 时核对结论与 Accepted ADR 的一致性;`/agents-md-revise` 周期性点名"零引用 + 60 天以上"的孤儿 ADR。
 
 ## ADR vs 其他文档
 

@@ -38,7 +38,7 @@
 /project-workflow:project-personalize
 ```
 
-预期结果:在功能开发前,项目里已有 `AGENTS.md`、路径级规则语义、hook adapter 和 ADR 模板。只有确认了安全、快速的单文件命令时 edit hook 才标 active;否则明确是 scaffold/inactive,端点检查仍由 `feature-done` 执行。Feature spec 模板保留在 plugin 内,由 `feature-init` 在创建具体 `docs/specs/changes/<NNN>-<slug>/` 时复制;目标项目默认不保留 `docs/specs/changes/_template/`。Claude Code adapter 默认把路径级规则 materialize 为 `.claude/rules/`;Codex adapter 优先通过嵌套 `AGENTS.md` 和显式规则章节承载同一语义,并用 `.codex/hooks.json` 映射 runtime enforcement。必要时只把 `.claude/rules/` 当兼容输入读取。
+预期结果:项目里有 `AGENTS.md`、路径级规则和 ADR/domain baseline。只有确认安全、快速的单文件命令后才生成 hook assets;否则项目内不安装 no-op hook,端点检查由 `feature-done` 执行。Feature templates 保留在 plugin,创建 feature 时只实例化 concrete files。
 
 ## 2. 判断是否需要 feature artifact
 
@@ -56,7 +56,7 @@
 - `docs/specs/changes/<NNN>-<slug>/plan.md`:模块影响、Sibling Alignment、技术决策
 - `docs/specs/changes/<NNN>-<slug>/tasks.md`:可验证的实施步骤
 
-轻车道小改只有 `tasks.md`,补全目标/边界、验证、任务和 proof bundle;不跑 `spec-quality-check`。
+轻车道小改只有 `tasks.md`,补全目标/边界、验证、任务和 delivery receipt;不跑 `spec-quality-check`,但 `feature-done` 必须逐项兑现 `## 验证`。
 
 全道写代码前先跑:
 
@@ -90,7 +90,7 @@
 - L2 项目约定 review
 - L3 code-vs-spec review
 - current-truth check(仅当 `docs/specs/<area>.md` 存在)
-- proof bundle 写入 `tasks.md`
+- delivery receipt 写入 `tasks.md` 的兼容标题 `## Proof Bundle`
 
 需要局部复查某一层时重跑 `feature-done`(幂等,复用有效缓存),或在主会话直接 dispatch reviewer sub-agent;没有独立的 helper 命令。
 
@@ -126,7 +126,7 @@
 
 | 场景 | 简化做法 |
 |---|---|
-| 大约 50 行以内的小改动 | 跳过 feature spec,依赖 hooks + review;例外:改动改变 `docs/specs/<area>.md` 已声明的当前行为或持久规则时至少走轻车道(current truth 只经管线更新) |
+| tiny/local、低风险且未改变已声明 current truth | 不建 feature artifact,直接做并跑相关检查;hook 只在已安装且 active 时提供增量反馈 |
 | 探索性 spike | 在临时 branch / worktree 做;决策留下来时再写 ADR |
 | 生产 hotfix | 先修;之后补测试并记录后续技术债 |
 | 架构 / API / 数据模型变更 | 不要跳过 spec;使用 feature spec + ADR |

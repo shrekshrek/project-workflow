@@ -12,6 +12,7 @@ const copiedDirs = [
   ["docs/actions", "docs/actions"],
   ["docs/examples", "docs/examples"],
   ["docs/reviewers", "docs/reviewers"],
+  ["tests/fixtures/reviewer-smoke", "tests/fixtures/reviewer-smoke"],
   ["template", "template"],
 ];
 
@@ -25,6 +26,8 @@ const copiedFiles = [
   ["docs/quickstart.md", "docs/quickstart.md"],
   ["docs/adapters/codex-scoped-rule-bridge.md", "docs/adapters/codex-scoped-rule-bridge.md"],
   ["scripts/relocate-markdown-links.cjs", "scripts/relocate-markdown-links.cjs"],
+  ["scripts/materialize-project-baseline.cjs", "scripts/materialize-project-baseline.cjs"],
+  ["scripts/check-reviewer-fixtures.cjs", "scripts/check-reviewer-fixtures.cjs"],
 ];
 
 const removedTemplateFiles = [

@@ -7,7 +7,7 @@ Canonical pre-implementation gate for full-lane feature artifacts.
 - `docs/specs/changes/<NNN>-<slug>/{spec,plan,tasks}.md` exists.
 - The user believes the spec is ready for implementation.
 
-Do not use as the main gate for light-lane features; check their `tasks.md` goal/boundary, verification, tasks, and proof bundle directly.
+Do not use as the main gate for light-lane features; `feature-done` checks their `tasks.md` goal/boundary, executes each verification item, and writes the delivery receipt directly.
 
 ## Inputs
 

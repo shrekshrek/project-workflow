@@ -1,6 +1,6 @@
 ---
 name: spec-revise
-description: Orchestrate mid-implementation spec/plan/module revision per workflow.md §3.5 (spec/plan errors) and §2.6 (module boundary changes). Handles ADR creation + spec.md 修订记录 entry + plan.md prior decisions update + tasks.md rebalance + module CLAUDE.md (if needed). Use when implementation reveals the spec/plan/module is wrong. NOT for fixing typos or polish — those go in directly without ceremony.
+description: Orchestrate a frozen full-lane contract revision when implementation reveals a material error in an accepted spec, verification contract, scope, plan, or module boundary. Synchronizes spec/plan/tasks with a revision record and creates an ADR only for architecture/module or durable cross-feature decisions. Not for draft edits, typos, or polish.
 ---
 
 **Response language**: Match the user's prompt language for all natural-language output. File contents stay in source language.
@@ -13,7 +13,7 @@ Orchestrate the mid-implementation revision SOP from [`workflow.md §3.5`](../..
 
 **Use when**: implementation reveals real spec error, verification not testable, scope missed item, or module boundary needs adjustment.
 
-**Not for**: typos, formatting fixes, minor wording polish — those edit directly. This skill exists for **decisions that need ADR + cross-file consistency**.
+**Not for**: typos, formatting fixes, minor wording polish — those edit directly. This skill exists for material frozen-contract changes; not every revision needs an ADR.
 
 User input: `$ARGUMENTS` — optional `<feature-slug>` and/or `--spec` / `--module` mode hint.
 
@@ -31,7 +31,7 @@ User input: `$ARGUMENTS` — optional `<feature-slug>` and/or `--spec` / `--modu
 
 读该 feature 的 `spec.md` + `plan.md` + `tasks.md`,为后续步骤准备 context。
 
-**车道判定**:`spec.md` 缺失 = **轻车道**(只 tasks.md)。`/spec-revise` 改 frozen spec + 起 ADR,**只适用全道** → 报 "轻车道无 frozen spec 可修订。若本次变更需要 spec(触达不变量 / 契约变更),先重跑 `/feature-init <slug>` 选全道补 spec.md + plan.md 再回来"(升级路径见 [spec-driven §3.2.5](../../docs/spec-driven.md#325-轻车道小改免-frozen-spec--plan))退出。
+**车道判定**:`spec.md` 缺失 = **轻车道**。本 skill 只修订 frozen full-lane spec;轻车道风险升级时先补全道 artifact。
 
 ## Step 2 — 判定是否需要 revision(走 §3.5 判断表)
 
@@ -47,25 +47,30 @@ Then walk through the [§3.5 judgment table](../../docs/workflow.md#35-开发中
 | Verification 不可机械化 | ✅ 真错 | spec.md §4 必修 |
 | 数据模型/API 契约跟实际冲突 | ⚠️ 检查 | 模型错改 spec;代码错改代码 |
 | 需要拆/合/改 module | ✅ 真错 | 走 §2.6(本 skill 自动转 --module 模式)|
-| Constraints 太死 | ⚠️ 看 | 真不必要 → 改 + ADR;只是难做 → 别动 |
+| Constraints 太死 | ⚠️ 看 | 真不必要 → 改 + revision record;若是持久技术决策再加 ADR |
 ```
 
 Q&A 决策:
-- **真错** → 进 Step 3
+- **真错** → 分类 `ADR_REQUIRED`;若为 yes,先扫既有 Accepted/Proposed ADR 找可能 supersede/冲突项。展示“决定 + 原因 + affected files + ADR_REQUIRED + supersede 决定”并取得第 1 次确认后进 Step 3
 - **不必修(只是模糊/难做)**→ 引导用户写 plan.md prior decisions(`§3` 加一条)+ 退出。**不强行起 ADR / 改 spec**——避免过度 ceremony 把 plan.md 当 release note 用。
 - **module 边界变更** → 自动跑 §2.6 流程(走 Step 5.5)
 
-## Step 3 — 找下一个 ADR 编号
+### ADR_REQUIRED 判据
+
+- yes:架构/模块边界、跨 feature 持久技术决策、取代/矛盾既有 ADR。
+- no:普通产品 scope、outcome、constraint 或 verification 修正,且不改变上述长期技术决策。
+
+## Step 3 — 条件式 ADR(仅 `ADR_REQUIRED=yes`)
 
 ```bash
 ls docs/adr/ | grep -E '^[0-9]{4}-' | sort -rn | head -1
 ```
 
-取最大 4 位数字 + 1,zero-pad to 4 digits。若 `docs/adr/` 不存在或为空,起 `0001`。`0000-template.md` 跳过。
+取最大 4 位数字 + 1,zero-pad to 4 digits。若 `docs/adr/` 不存在或为空,起 `0001`。
 
-## Step 4 — 起 ADR 草稿
+### 起 ADR 草稿
 
-复制 `docs/adr/0000-template.md` 到 `docs/adr/<NNNN>-<topic-slug>.md`。
+从 `${CLAUDE_PLUGIN_ROOT}/template/docs/adr/0000-template.md` 读取模板,在内存中拟定 `docs/adr/<NNNN>-<topic-slug>.md`;第二次确认前不落盘。
 
 跟用户 Q&A 填:
 
@@ -75,27 +80,27 @@ ls docs/adr/ | grep -E '^[0-9]{4}-' | sort -rn | head -1
 | Decision | 决定改 spec 哪些节 / 改成什么 |
 | Consequences | 这次改动影响哪些 module / file / 既有代码 |
 
-写好 ADR 文件,用户 review。
+ADR 草稿纳入最终 proposed diff;除非出现新歧义,不单独追加 approval。
 
 ### 4.5 反向 supersede 核对(防旧 ADR 状态撒谎)
 
-落盘前按 topic 关键词 grep 既有 `Accepted` / `Proposed` ADR 的标题与 Decision 节,列出可能被本决策**推翻或矛盾**的(0-3 份,引原文)逐份问用户:推翻 → 老 ADR 状态行改 `Superseded by <NNNN>`(唯一允许的改动)+ 新 ADR Context 注一句取代原因;正交共存 / 拿不准 → 不动(后者列入报告)。零命中静默跳过。只登记新决策不翻旧状态,就是 ADR 冲突积累的主通道(与 spec 侧"反向标记别漏"同构)。
+第 1 次确认前已经按 topic 扫过既有 `Accepted` / `Proposed` ADR。这里只按已确认结果拟定旧状态更新;拿不准的新冲突才追加问题。`ADR_REQUIRED=no` 跳过 Step 3 全部内容。
 
 ## Step 5 — 改 spec.md
 
 ### 5.1 改正文(对应 §3.5 / §2.6 的"改 spec.md 节")
 
-按 ADR Decision 用 Edit 工具改 spec.md 对应 §1-§6 节。
+按已确认 decision 拟定 spec.md 最终内容,暂不落盘。
 
 ### 5.2 在 `## 修订记录` 节追加
 
 格式(标准化):
 
 ```markdown
-- YYYY-MM-DD: 改了 §<N> <节名>;原因见 ADR-<NNNN>
+- YYYY-MM-DD: 改了 §<N> <节名>;原因:<一句话>;决定来源:<用户确认 / ADR-NNNN>
 ```
 
-若 spec.md 没有 `## 修订记录` 节(老 spec 或自定 template),提示用户在 spec.md 末尾手动加该节,**然后** skill 追加条目。
+若 spec.md 没有 `## 修订记录` 节(老 spec 或自定 template),在 proposed diff 中创建该节并追加条目,不要求用户手工编辑。
 
 ## Step 5.5 — (--module 模式追加)Module 边界变更
 
@@ -106,11 +111,11 @@ ls docs/adr/ | grep -E '^[0-9]{4}-' | sort -rn | head -1
 3. (如适用)起 tier-level AGENTS.md 调整(若 codify 出来的规则属于 tier 级)
 4. (如适用)若 codify 出来的规则属 framework / topic 级 → 加 / 改 path-scoped rules(Claude materialization 为 `.claude/rules/<topic>.md`;见 [§1.3](../../docs/workflow.md#13-a-类约定的内容标准agentsmd--claude-rules))
 
-每步跟用户确认改了什么。
+按第 1 次确认的范围在内存中拟定这些变化;只有发现新 module ambiguity 时再提问。
 
 ## Step 6 — 改 plan.md
 
-- **6.1 `## 3. Prior decisions` 加一条**:`- 改 spec.md §<N>: <改了什么>。原因 / 详细决策见 ADR-<NNNN>。`
+- **6.1 `## 3. Prior decisions` 加一条**:`- 改 spec.md §<N>: <改了什么>。原因:<一句话>;来源:<用户确认 / ADR-NNNN>。`
 - **6.2 `## 1. 模块影响范围`**:若 §5.5 触发 module 变更,更新 module list。
 - **6.3 `## 2. 架构决策`**:若 ADR 涉及架构层(数据模型 / API 契约 / 关键算法),加 1-2 句简述引 ADR。
 
@@ -126,52 +131,51 @@ ls docs/adr/ | grep -E '^[0-9]{4}-' | sort -rn | head -1
 - 新加 task?
 - 删除 task?
 
-跟用户确认每条变化,用 Edit 工具更新 `tasks.md`。
+按已确认 revision 拟定 `tasks.md` 最终内容;新增歧义才提问,不逐 task 重复确认。
 
-## Step 7.5 — 决策完整性 audit(默认强制,workflow §1.12)
+## Step 7.5 — 按复杂度选择 trace check / auditor
 
-**降频**(workflow §1.12 提示 #4):最近 ≥ 3 个 feature audit 全零 🚫 且本次只动 tasks.md 无新 ADR → 可跳过(报告标注);含 spec/plan/ADR 改动仍无条件跑;再出 🚫 即恢复强制。
-Dispatch [`decision-completeness-auditor`](../../agents/decision-completeness-auditor.md):
+普通单一用户决定、无 ADR、无新 ownership/port/package/infra 且每个具体值有直接来源 → 主 skill 输出紧凑 trace matrix。存在 ADR、新模块/基础设施决策、弱证据或生成决策跨多文件 → dispatch [`decision-completeness-auditor`](../../agents/decision-completeness-auditor.md):
 
-- `files_to_audit`: `docs/specs/changes/<NNN>-<slug>/{spec,plan,tasks}.md` + `docs/adr/<NNNN>-<topic>.md` +(若 Step 5.5 触发)`<module>/AGENTS.md` + `<tier>/AGENTS.md` + `.claude/rules/<topic>.md`
+- `files_to_audit`: proposed final inline contents for `docs/specs/changes/<NNN>-<slug>/{spec,plan,tasks}.md` +(仅 ADR_REQUIRED)新/被 supersede ADR +(module mode)约定文件
 - `baseline`: spec/plan/tasks 的**修订前**内容(让 auditor 只审本次修订新增的决策;ADR 是全新文件无 baseline,审全文)
-- `qa_answers`: Step 2 触发发现 + Step 4 ADR 三节 + Step 5/5.5/6/7 user 确认改动
+- `qa_answers`: Step 2 触发发现 + 第 1 次 decision approval + 条件式 ADR 内容
 - `language_conventions`: null
-- `plugin_hardcoded_defaults`: `{value: "<NNNN>-<topic>", source: "Step 3 ADR numbering"}`
+- `plugin_hardcoded_defaults`:仅 `ADR_REQUIRED=yes` 时传 `{value: "<NNNN>-<topic>", source: "Step 3 ADR numbering"}`
 
-**Block 规则**:🚫 > 0 → 报 user,提示 `git checkout HEAD -- <file>` 回退 + 据 feedback 重跑;⚠️ 不 block。
+**Block 规则**:🚫 > 0 → 不落盘,按 feedback 修 proposed contents 后重跑;⚠️ 不 block。
 
-## Step 7.6 — Diff Review Gate(强制)
+## Step 7.6 — Consolidated Diff Review Gate(第 2 次确认)
 
-跑 `git diff HEAD -- <files-touched>` + 附 7.5 audit 摘要(`✅ N / ⚠️ M / 🚫 K`)。
+从 pre-skill on-disk 内容与 proposed final contents 生成 unified diff,附 7.5 audit 摘要(`✅ N / ⚠️ M / 🚫 K`)。不得用当前 worktree 的其他未提交变化冒充本次 patch。
 
-AskUserQuestion:
+展示一个完整 diff 后 AskUserQuestion:
 
 | 选项 | 处理 |
 |---|---|
-| ✅ 接受 | 进 Step 8 |
+| ✅ 接受 | 一次性 apply proposed patch,再进 Step 8 |
 | ⚠️ 改某项 | 改完重跑 7.5 + 7.6 |
-| 🚫 revert | `git checkout HEAD -- <files-touched>` + 退回 Step 2 |
+| 🚫 放弃 | 丢弃内存草稿,worktree 保持不变 |
 
 ## Step 8 — 总结
 
-报告:起了哪份 ADR(`docs/adr/<NNNN>-<topic>.md`)+ 改了哪些文件(spec.md §N + 修订记录 / plan.md 相应节 / tasks.md / 若 §5.5 触发的 `<module>/AGENTS.md` 与 `.claude/rules/<topic>.md`)。下一步:`git diff` 复查 → `git commit -m "revise: <topic> per ADR-<NNNN>"` → 回到实施(修订后的 spec 是新 baseline)。
+报告 revision record、`ADR_REQUIRED` 结论/文件、改动文件、trace/audit 结果和下一步。Commit 草稿有 ADR 时引用 ADR,无 ADR 时引用 revision topic。
 
 ## Failure modes
 
 | 错误 | 应对 |
 |---|---|
 | 找不到 feature 目录 | 提示用户列出 `ls docs/specs/changes/` 自选 |
-| `docs/adr/` 不存在 | 询问 "项目还没起 ADR 目录,要先建吗?(y/n)";yes → mkdir + 复制 0000-template;no → 中止 revise |
-| spec.md 无 `## 修订记录` 节(老 spec)| 提示用户手动加节 → continue |
+| `ADR_REQUIRED=yes` 但 `docs/adr/` 不存在 | 在第 1 次确认中包含“创建 ADR 目录/模板”;不同意则中止涉及架构决策的 revision |
+| spec.md 无 `## 修订记录` 节(老 spec)| proposed diff 自动创建该节 |
 | 用户走完 Step 2 决定 "其实不必修" | 引导写 plan.md prior decisions + 退出,不起 ADR |
 | 多个 ADR 同时起(并发 revision)| 警告"建议一次只 revise 一个 topic",用户确认后 continue |
-| Step 7.5 audit 标 🚫 | 报告 plant 给 user,提示 `git checkout HEAD -- <file>` 回退 + 据 feedback 重跑;skill 不主动重 audit(等 user 决定)|
-| Step 7.6 user 选 revert | 跑 `git checkout HEAD -- <files-touched>`,退回 Step 2 让 user 调整发现描述后重启 |
+| Step 7.5 audit 标 🚫 | worktree 未改;据 feedback 修 proposed contents 后重跑 |
+| Step 7.6 user 放弃 | 丢弃草稿;不得改动或 checkout 用户原有文件 |
 
 ## Notes
 
 - **跟 `/feature-init` 区别**:`/feature-init` 起骨架(P2 头);`/spec-revise` 修订既有 spec(P2 中)。两者不互替。
 - **跟 `/spec-quality-check` 区别**:`/spec-quality-check` 是 **pre-implementation gate**(便宜阶段查质量);`/spec-revise` 是 **mid-implementation 修订**(贵阶段)。
 - **Goal-driven**:本 skill 服务 [§0.1 命题 1 Verification](../../docs/workflow.md#01-这本手册解决什么)(spec 仍是契约,修订有迹可循)+ 命题 3 Drift(防止偷偷改 spec 累积漂移)。
-- **ADR 编号**:`NNNN` 4 位数字,从 0001 开始(0000 是 template);全局递增,跨 feature 共享。
+- **ADR 编号**:仅 `ADR_REQUIRED=yes` 时分配;`NNNN` 4 位、全局递增。

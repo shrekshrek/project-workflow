@@ -21,12 +21,14 @@
 
 ## Proof Bundle
 
-> 由 `/project-workflow:feature-done` 填。轻车道:跑 L1 + L2 + 验证 + 不变量反核;L3 因无 frozen spec 跳过。
+> 由 `/project-workflow:feature-done` 填。轻车道仍跑 L1 + L2 + 验证 + 不变量反核;L3 明确跳过。端点回复原样展示此 delivery receipt。
 
-- [ ] Diff 摘要:(新建/改了什么)
-- [ ] Tests:`<X>/<Y>` passed, coverage `<Z>%`
-- [ ] L1 合规
-- [ ] L2 合规(若触动 A 类约定)
-- [ ] 验证项全过
-- [ ] 不变量反核:实际 diff 未触达项目声明的灾难性不变量路径(否则误分类,应改全道)
-- [ ] 开放问题(如有)
+- Verdict:
+- Change:`<diff identity>; review-scope=[exact paths reviewed by L2/light verification]; endpoint-outputs=[tasks.md receipt, drift ledger when written]`
+- Checks / 轻车道验证 / 不变量反核:`<每项 command/assertion + result>`
+- L2:`verdict; findings=<N>; applicable-rules=[source#id]; coverage=<N>%; applicable-unverified=<N>; ambiguities=<N>; confidence=<level>`
+- Rule sources:`global=<N>; matched=<N>; skipped=<N>; ambiguous=<N>; applicable-paths=[...]; ambiguous-paths=[...]`
+- L3:`N/A(light lane); verification=<PASS|FAIL>`
+- Current truth:
+- Open questions:(仅非空时保留)
+- Drift:(仅非空时保留)

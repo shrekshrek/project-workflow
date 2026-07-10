@@ -12,7 +12,7 @@ Match the user's language. Read [`../../docs/actions/feature-init.md`](../../doc
 - Resolve the target root explicitly. It must contain `AGENTS.md` and `docs/specs/`; never write under an incidental cwd.
 - Read active conventions and current-truth documents first. Exclude `docs/specs/changes/archive/` when gathering implementation context.
 - Read [`../../docs/adapters/codex-scoped-rule-bridge.md`](../../docs/adapters/codex-scoped-rule-bridge.md) completely before resolving path-scoped compatibility input.
-- Use a general subagent with [`../../docs/reviewers/decision-completeness-auditor.md`](../../docs/reviewers/decision-completeness-auditor.md) for non-empty prefill; otherwise run the audit in the main session.
+- For simple prefill copied from one explicit source, use an inline value-to-source trace matrix. Use [`../../docs/reviewers/decision-completeness-auditor.md`](../../docs/reviewers/decision-completeness-auditor.md) only for new technical specifics, ownership, weak evidence, or generated decisions spanning multiple artifacts.
 - Do not write implementation code.
 
 ## Workflow
@@ -29,7 +29,7 @@ Match the user's language. Read [`../../docs/actions/feature-init.md`](../../doc
    - full: shape-appropriate `spec.md`, plus `plan.md` and `tasks.md`;
    - light: `tasks-light.md` as `tasks.md`.
 7. Replace structural placeholders such as number, slug, date, and area. Preserve unknown `{{TODO ...}}` markers. Prefill only facts explicitly supplied by the user or existing project sources, with brief trace notes.
-8. Audit prefilled decisions. Remove or defer unanchored endpoints, fields, error codes, paths, packages, and technology choices.
+8. Run the complexity-triggered trace/audit. Remove or defer unanchored endpoints, fields, error codes, paths, packages, and technology choices.
 9. Verify that files landed under the resolved target root and that no existing feature directory was overwritten.
 
-Report the chosen lane, spec shape, area, module decision, created files, unresolved placeholders, audit result, bridge global/matched/skipped/ambiguous sets, and next action. The implementation handoff must name every global or matched rule path so a resumed Codex session can fresh-read it. Full-lane work proceeds to `$spec-quality-check`; light-lane work validates directly through its tasks and proof bundle.
+Report the chosen lane, spec shape, area, module decision, created files, unresolved placeholders, trace/audit result and trigger reason, compact bridge counts plus applicable/ambiguous paths, and next action.

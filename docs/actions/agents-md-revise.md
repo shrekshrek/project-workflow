@@ -27,7 +27,7 @@ Do not use to rewrite historical feature specs, create backlog items, or make su
 
 ## Codex Adapter Contract
 
-When `.claude/rules/` compatibility files exist, the Codex adapter resolves them through the [Codex scoped-rule bridge](../adapters/codex-scoped-rule-bridge.md). It reports global, matched, skipped, and ambiguous rule sets. An ambiguity that may hide a critical convention blocks application until clarified. This explicit bridge does not change Claude-native rule loading.
+When `.claude/rules/` compatibility files exist, the Codex adapter reports compact counts plus applicable/ambiguous paths through the bridge; full skipped paths are debug-only. Critical ambiguity blocks application.
 
 ## Invariants
 
@@ -42,4 +42,4 @@ When `.claude/rules/` compatibility files exist, the Codex adapter resolves them
 - Search for unresolved placeholders.
 - Verify updated commands and paths exist or are explicitly documented as deferred.
 - Check path-scoped rule descriptions and path matching after edits.
-- For Codex, verify and report all four scoped-rule bridge source sets.
+- For Codex, verify compact bridge counts and applicable/ambiguous paths.

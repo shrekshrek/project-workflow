@@ -21,14 +21,15 @@ Never silently skip a rule whose scope cannot be parsed or matched reliably. Fre
 
 ## Reporting contract
 
-Report four sets with paths:
+Resolve four internal sets, but default user-facing output is compact:
 
-- global rules read;
-- scoped rules matched and read;
-- scoped rules skipped as definite non-matches;
-- malformed, unsupported, or otherwise ambiguous rules read conservatively.
+- counts for global / matched / skipped / ambiguous;
+- paths for global and matched rules that constrain the handoff;
+- paths and reasons for every ambiguous rule.
 
-For `feature-init` and `spec-revise`, include the matched/global rule paths in the implementation handoff so a resumed or new Codex session can fresh-read them. For `feature-done`, include the L2 rule-source set and ambiguities in the proof bundle. L3 receives the change spec as its baseline and must not inherit A-class rules as requirements.
+Do not enumerate definite skipped paths unless the user requests debug output or scope resolution itself is under investigation. A skipped count is enough for normal execution.
+
+For `feature-init` and `spec-revise`, include matched/global paths in the implementation handoff. For `feature-done`, include compact counts plus applicable/ambiguous paths in the delivery receipt. L3 receives the change spec as its baseline and must not inherit A-class rules as requirements.
 
 ## Non-goals
 

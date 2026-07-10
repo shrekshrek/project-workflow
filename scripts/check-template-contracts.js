@@ -4,9 +4,11 @@ const fs = require("fs");
 const os = require("os");
 const path = require("path");
 const { spawnSync } = require("child_process");
+const { applyStaged, materialize } = require("./materialize-project-baseline.cjs");
 
 const repoRoot = path.resolve(__dirname, "..");
 const problems = [];
+const realTmpRoot = fs.realpathSync(os.tmpdir());
 
 function walkFiles(root) {
   if (!fs.existsSync(root)) return [];
@@ -48,6 +50,117 @@ const templateAgents = fs.readFileSync(path.join(repoRoot, "template", "AGENTS.m
 if (/@\.claude\/rules\//.test(templateAgents)) {
   problems.push("template/AGENTS.md: generated projects must rely on automatic rule discovery, not imports");
 }
+
+const baselineRoot = fs.mkdtempSync(path.join(realTmpRoot, "project-workflow-baseline-"));
+const baselineStage = fs.mkdtempSync(path.join(realTmpRoot, "project-workflow-stage-"));
+const baselineResult = materialize(path.join(repoRoot, "template"), baselineStage, { againstRoot: baselineRoot });
+if (walkFiles(baselineRoot).length !== 0) problems.push("staging baseline wrote to target before approval/apply");
+const applyResult = applyStaged(baselineStage, baselineRoot);
+const baselineFiles = walkFiles(baselineRoot).map((file) => path.relative(baselineRoot, file).split(path.sep).join("/"));
+for (const forbidden of [
+  "docs/specs/_template/domain.md",
+  "docs/specs/changes/_template/tasks.md",
+  "docs/adr/0000-template.md",
+  ".claude/settings.json",
+  ".claude/hooks/lint-on-edit.cjs",
+  ".codex/hooks.json",
+]) {
+  if (baselineFiles.includes(forbidden)) problems.push(`materialized baseline retains plugin-only asset ${forbidden}`);
+}
+for (const required of ["AGENTS.md", "CLAUDE.md", "docs/specs/index.md", "docs/adr/README.md", ".claude/rules/security.md"]) {
+  if (!baselineFiles.includes(required)) problems.push(`materialized baseline missing ${required}`);
+}
+if (baselineResult.skippedExisting.length !== 0) problems.push("empty-target baseline unexpectedly skipped existing files");
+if (applyResult.copied.length !== baselineResult.copied.length) problems.push("approved staged baseline did not apply the complete planned population");
+fs.rmSync(baselineStage, { recursive: true, force: true });
+fs.rmSync(baselineRoot, { recursive: true, force: true });
+
+const retrofitRoot = fs.mkdtempSync(path.join(realTmpRoot, "project-workflow-retrofit-"));
+fs.writeFileSync(path.join(retrofitRoot, "AGENTS.md"), "# User-owned conventions\n");
+const retrofitResult = materialize(path.join(repoRoot, "template"), retrofitRoot);
+if (fs.readFileSync(path.join(retrofitRoot, "AGENTS.md"), "utf8") !== "# User-owned conventions\n") {
+  problems.push("baseline materializer overwrote an existing AGENTS.md");
+}
+if (!retrofitResult.skippedExisting.includes("AGENTS.md")) problems.push("baseline materializer did not report skipped existing AGENTS.md");
+fs.rmSync(retrofitRoot, { recursive: true, force: true });
+
+const symlinkRoot = fs.mkdtempSync(path.join(realTmpRoot, "project-workflow-symlink-target-"));
+const symlinkOutside = fs.mkdtempSync(path.join(realTmpRoot, "project-workflow-symlink-outside-"));
+const symlinkStage = fs.mkdtempSync(path.join(realTmpRoot, "project-workflow-symlink-stage-"));
+fs.symlinkSync(symlinkOutside, path.join(symlinkRoot, "docs"), "dir");
+let symlinkRejected = false;
+try {
+  materialize(path.join(repoRoot, "template"), symlinkStage, { againstRoot: symlinkRoot });
+} catch (error) {
+  symlinkRejected = /symlink destination/.test(error.message);
+}
+if (!symlinkRejected) problems.push("baseline materializer did not reject a symlinked target parent");
+if (walkFiles(symlinkOutside).length !== 0) problems.push("baseline materializer wrote through a target symlink");
+fs.rmSync(symlinkRoot, { recursive: true, force: true });
+fs.rmSync(symlinkOutside, { recursive: true, force: true });
+fs.rmSync(symlinkStage, { recursive: true, force: true });
+
+const absentParent = fs.mkdtempSync(path.join(realTmpRoot, "project-workflow-absent-parent-"));
+const absentTarget = path.join(absentParent, "not-created-during-stage");
+const absentStage = fs.mkdtempSync(path.join(realTmpRoot, "project-workflow-absent-stage-"));
+materialize(path.join(repoRoot, "template"), absentStage, { againstRoot: absentTarget });
+if (fs.existsSync(absentTarget)) problems.push("baseline staging created an absent target before approval");
+fs.rmSync(absentParent, { recursive: true, force: true });
+fs.rmSync(absentStage, { recursive: true, force: true });
+
+const rootLinkOutside = fs.mkdtempSync(path.join(realTmpRoot, "project-workflow-root-link-outside-"));
+const rootLinkParent = fs.mkdtempSync(path.join(realTmpRoot, "project-workflow-root-link-parent-"));
+const rootLink = path.join(rootLinkParent, "target-link");
+const rootLinkStage = fs.mkdtempSync(path.join(realTmpRoot, "project-workflow-root-link-stage-"));
+fs.writeFileSync(path.join(rootLinkStage, "escape.txt"), "must stay staged\n");
+fs.symlinkSync(rootLinkOutside, rootLink, "dir");
+let rootLinkRejected = false;
+try {
+  applyStaged(rootLinkStage, rootLink);
+} catch (error) {
+  rootLinkRejected = /symlink target (?:root|component)/.test(error.message);
+}
+if (!rootLinkRejected) problems.push("staged apply did not reject a symlink target root");
+if (walkFiles(rootLinkOutside).length !== 0) problems.push("staged apply wrote through a symlink target root");
+fs.rmSync(rootLinkParent, { recursive: true, force: true });
+fs.rmSync(rootLinkOutside, { recursive: true, force: true });
+fs.rmSync(rootLinkStage, { recursive: true, force: true });
+
+const linkedParentOutside = fs.mkdtempSync(path.join(realTmpRoot, "project-workflow-linked-parent-outside-"));
+const linkedParentRoot = fs.mkdtempSync(path.join(realTmpRoot, "project-workflow-linked-parent-root-"));
+const linkedParentStage = fs.mkdtempSync(path.join(realTmpRoot, "project-workflow-linked-parent-stage-"));
+const linkedParent = path.join(linkedParentRoot, "linked");
+const missingThroughLink = path.join(linkedParent, "new-target");
+fs.symlinkSync(linkedParentOutside, linkedParent, "dir");
+fs.writeFileSync(path.join(linkedParentStage, "escape.txt"), "must not traverse parent link\n");
+let linkedParentRejected = false;
+try {
+  applyStaged(linkedParentStage, missingThroughLink);
+} catch (error) {
+  linkedParentRejected = /symlink target component/.test(error.message);
+}
+if (!linkedParentRejected) problems.push("staged apply did not reject an absent target below a symlink parent");
+if (walkFiles(linkedParentOutside).length !== 0) problems.push("staged apply wrote through a symlink target parent");
+fs.rmSync(linkedParentRoot, { recursive: true, force: true });
+fs.rmSync(linkedParentOutside, { recursive: true, force: true });
+fs.rmSync(linkedParentStage, { recursive: true, force: true });
+
+const conflictRoot = fs.mkdtempSync(path.join(realTmpRoot, "project-workflow-apply-conflict-"));
+const conflictStage = fs.mkdtempSync(path.join(realTmpRoot, "project-workflow-conflict-stage-"));
+fs.writeFileSync(path.join(conflictRoot, "same.txt"), "user version\n");
+fs.writeFileSync(path.join(conflictStage, "same.txt"), "staged version\n");
+fs.writeFileSync(path.join(conflictStage, "fresh.txt"), "must not partially apply\n");
+let conflictRejected = false;
+try {
+  applyStaged(conflictStage, conflictRoot);
+} catch (error) {
+  conflictRejected = /Refusing partial apply/.test(error.message);
+}
+if (!conflictRejected) problems.push("staged apply did not reject approval-time target drift");
+if (fs.readFileSync(path.join(conflictRoot, "same.txt"), "utf8") !== "user version\n") problems.push("staged apply overwrote a conflicting file");
+if (fs.existsSync(path.join(conflictRoot, "fresh.txt"))) problems.push("staged apply partially wrote non-conflicting files after a conflict");
+fs.rmSync(conflictRoot, { recursive: true, force: true });
+fs.rmSync(conflictStage, { recursive: true, force: true });
 
 const rulesRoot = path.join(repoRoot, "template", ".claude", "rules");
 const ruleFiles = walkFiles(rulesRoot)
@@ -111,7 +224,7 @@ for (const [name, input] of hookCases) {
   }
 }
 
-const esmRoot = fs.mkdtempSync(path.join(os.tmpdir(), "project-workflow-esm-hooks-"));
+const esmRoot = fs.mkdtempSync(path.join(realTmpRoot, "project-workflow-esm-hooks-"));
 fs.mkdirSync(path.join(esmRoot, ".claude", "hooks"), { recursive: true });
 fs.mkdirSync(path.join(esmRoot, ".codex", "hooks"), { recursive: true });
 fs.writeFileSync(path.join(esmRoot, "package.json"), JSON.stringify({ type: "module" }));
@@ -175,4 +288,4 @@ if (problems.length > 0) {
   process.exit(1);
 }
 
-console.log(`Template contracts OK: ${ruleFiles.length} rules + ${hookCases.length + (esmScripts.length * esmInputs.length)} hook cases.`);
+console.log(`Template contracts OK: staged/strict baseline boundaries + ${ruleFiles.length} rules + ${hookCases.length + (esmScripts.length * esmInputs.length)} hook cases.`);

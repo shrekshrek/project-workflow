@@ -10,18 +10,20 @@ The active tree `docs/specs/changes/` holds **in-flight work only**. History lea
 - Periodically, as a sweep: close every delivered-but-unarchived feature in one pass.
 - After `spec-reconcile` resolved a messy area and left features ready to close.
 
-Default invocation is **sweep mode**: with no argument, find all features whose delivery is complete (READY proof bundle, work committed) and propose closing them as a batch. Per-feature cost stays near zero; forgetting to archive after each feature is fine — the next sweep catches up.
+Default invocation is **sweep mode**: with no argument, find all features whose delivery is complete (READY delivery receipt in `## Proof Bundle`, work committed) and propose closing them as a batch. Per-feature cost stays near zero; forgetting to archive after each feature is fine — the next sweep catches up.
+
+Upgrade migration: an older `## Proof Bundle` that has checked L1/L2/L3 rows but no `Verdict:` is a **legacy candidate**, not evidence of READY under the current contract. Sweep mode lists these separately instead of silently ignoring them and offers to rerun `feature-done` to normalize the receipt. Never infer READY or archive from legacy checkboxes alone.
 
 ## Inputs
 
 - Feature directory/slug, or nothing (sweep mode).
-- Each candidate's proof bundle (must be READY) and `spec.md` status (`已实现`, or `已取代`/`已废弃` set by `spec-reconcile`).
+- Each candidate's delivery receipt (must have `Verdict: READY`) and `spec.md` status (`已实现`, or `已取代`/`已废弃` set by `spec-reconcile`). A missing Verdict routes to the visible legacy-migration list.
 - Related current-truth documents (`docs/specs/<area>.md`), if any.
 - Related earlier specs and ADRs in the same product area.
 
 ## Outputs
 
-1. **Current truth merge** (only for features whose proof bundle marked "current truth update pending", or that change behavior already declared in a domain document): update `docs/specs/<area>.md`. P0 creates only `docs/specs/index.md`; create a new area document from the plugin domain template only when the delivered feature establishes a durable domain truth.
+1. **Current truth merge** (only for features whose receipt `Current truth` is `update pending`, or that change behavior already declared in a domain document): update `docs/specs/<area>.md`. P0 creates only `docs/specs/index.md`; create a new area document from the plugin domain template only when the delivered feature establishes a durable domain truth.
 2. **Physical archive**: `git mv docs/specs/changes/<NNN>-<slug>/ docs/specs/changes/archive/<NNN>-<slug>/` for every closed feature — full lane and light lane alike. Git history is preserved; numbering stays unique across active and archive. After each move, recompute local Markdown destinations from the old file location to the new one so links outside the feature keep the same semantic target while links within the moved directory remain local. Missing local targets block completion.
 3. **Lifecycle status on superseded older specs**: when this delivery replaces an earlier feature's direction, mark that spec `已取代` (superseded, link the successor) or `已废弃` (abandoned) and archive it in the same pass.
 4. **ADR consistency check**: if a merged conclusion contradicts an `Accepted` ADR, stop and resolve — either a new ADR supersedes the old one, or the conclusion is wrong. Current-truth documents link the ADRs governing the area.
@@ -39,7 +41,7 @@ Default invocation is **sweep mode**: with no argument, find all features whose 
 
 - A READY feature is not current truth until its durable conclusions are merged.
 - Archiving is `git mv`, never deletion; archived directories are read-only history.
-- Never archive an in-flight feature (spec status `草稿`/`已确认`, or proof bundle missing/non-READY).
+- Never archive an in-flight feature (spec status `草稿`/`已确认`, or delivery receipt missing/non-READY).
 - There is no "historical foundation" status: if parts of an archived spec remain valid (data model, API, pipeline), those facts belong in `docs/specs/<area>.md` — extract them during the merge instead of keeping the old spec in the active tree as a reference.
 - Do not edit implementation code.
 

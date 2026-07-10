@@ -21,30 +21,32 @@ Do not use for an empty greenfield project; use [`project-init`](project-init.md
 
 - Created or updated root `AGENTS.md`, preserving useful existing guidance.
 - Updated path-scoped rule files.
-- Hook adapter kept or generated with an explicit `active + verified` or `scaffold/inactive + reason` status.
+- Existing hook adapter preserved unless the user approves a repair; a new hook adapter is generated only for an `active + verified` command, otherwise report `not installed + reason`.
 - Added or repaired tier-level `AGENTS.md` and one-line `CLAUDE.md` aliases when relevant.
 - Removed stale scaffold placeholders/defaults.
 - Summary of values changed and items requiring human review.
 
 ## Codex Adapter Contract
 
-When `.claude/rules/` compatibility files exist, the Codex adapter inventories their metadata and resolves them against real project paths through the [Codex scoped-rule bridge](../adapters/codex-scoped-rule-bridge.md). It reports global, matched, skipped, and ambiguous sets. An ambiguity that may hide a critical convention blocks application until clarified. Claude-native rule loading is unchanged.
+When `.claude/rules/` compatibility files exist, the Codex adapter resolves them through the [Codex scoped-rule bridge](../adapters/codex-scoped-rule-bridge.md). Report compact counts plus applicable/ambiguous paths; full skipped paths are debug-only. Critical ambiguity blocks application.
 
 ## Invariants
 
 - Replace only scaffold/default values that are demonstrably stale or selected by the user.
 - Missing baseline sections are added in place; existing custom headings or guidance are not grounds for redirecting to `project-init`.
 - When `AGENTS.md` is absent in a non-empty codebase, render the minimum baseline from objective repository evidence and user answers, with a preview before writing.
-- Activate edit-time lint only for a user-confirmed, safe, sub-five-second per-file command; otherwise preserve the hook as an inactive scaffold and rely on endpoint checks.
+- Missing-baseline bootstrap keeps all reusable templates in the plugin and renders `AGENTS.md` indexes from files that will actually exist; absent hooks/templates are not advertised as project-local assets.
+- Activate a new edit-time lint hook only for a user-confirmed, safe, sub-five-second per-file command; otherwise do not add hook files/config. Existing project hooks are reported as active/verified, existing/unverified, or user-approved for repair.
 - Do not invent product semantics from directory names.
 - `AGENTS.md` remains concise; put tier-specific guidance in tier files.
 - Path-rule `paths:` YAML-list patterns must match existing or intentionally planned paths; unsupported historical scope metadata is migrated rather than preserved.
 - Historical feature specs are not rewritten.
+- Compose every proposed patch in memory or a disposable staging directory, then run trace/audit and show one consolidated diff before applying it. Rejection or a blocking audit leaves the target unchanged. Missing-baseline apply uses strict no-clobber preflight: any approval-time conflict or symlinked destination rejects the whole staged population before copying anything.
 
 ## Validation
 
 - Search for unresolved placeholders and old scaffold names.
 - Check path-scoped rule frontmatter / path matching against the actual directory layout.
-- Verify an activated hook against a matching file; otherwise report `hook: scaffold/inactive` and its reason without claiming runtime enforcement.
+- Verify a newly activated hook against a matching file; otherwise report `hook: not installed` and its reason without claiming runtime enforcement.
 - Confirm no example-only assets became active project files.
-- For Codex, verify normalized bridge scopes and report all four source sets.
+- For Codex, verify normalized bridge scopes and report compact counts plus applicable/ambiguous paths.

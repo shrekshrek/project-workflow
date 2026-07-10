@@ -17,7 +17,7 @@ Adapt a copied scaffold or non-empty existing codebase to project-workflow. The 
 
 ## Step 0 — 解析 target 目录(可选 `$ARGUMENTS`)
 
-空 → target = cwd;相对路径基于 cwd 解析;绝对路径直接用。目录不存在 → 报错中止。目录为空或仅含版本控制元数据 → 建议 `/project-init`;目录非空则继续 retrofit。然后 `cd "$TARGET_DIR"`——**后续所有 Step 的 bash / Edit / Write 都对此目录操作**。
+空 → target = cwd;相对路径基于 cwd 解析;绝对路径直接用。目录不存在 → 报错中止。目录为空或仅含版本控制元数据 → 建议 `/project-init`;目录非空则继续 retrofit。然后 `cd "$TARGET_DIR"`。审计与 consolidated approval 前只读 target;拟议修改保存在内存或 disposable staging。
 
 ## Step 1 — Detect existing state
 
@@ -63,10 +63,10 @@ Claude Code 自动递归发现 `.claude/rules/**/*.md`;无 `paths:` 的 `securit
 
 ## Step 4.0 — 建立或补齐 baseline(仅 partial/missing)
 
-- missing:从 `${CLAUDE_PLUGIN_ROOT}/template/` 复制最小 baseline,排除 examples、multi-tier examples 和 feature/domain templates;现有代码与配置永不覆盖。
+- missing:创建 disposable staging,运行 `${CLAUDE_PLUGIN_ROOT}/scripts/materialize-project-baseline.cjs --stage <staging> --target <target>`;target 保持不变。脚本统一排除 reusable templates/examples/hook assets,并预检 no-clobber 与 symlink destination。
 - partial:保留已有 `AGENTS.md` 全部有效内容,补 Commands / Testing / Project Structure / Code Style / Git Workflow / Boundaries 中缺失的职责,标题可沿用项目语言与既有命名。
 - 只使用 manifests、实际目录、已有配置和用户答案填值;未知命令显式 deferred。preview 后才写。
-- hook 只有在确认 <5 秒、安全且支持单文件参数的命令后才激活并实测;否则保持 skeleton,记录 `hook: scaffold/inactive + reason`,端点检查交给 `feature-done`。
+- missing baseline 不复制 hook assets;根 AGENTS.md `{{HOOK_INDEX}}` 按最终实际文件渲染或删除。只有确认 <5 秒、安全且支持单文件参数的命令后才从 plugin materialize 并实测。否则记录 `hook: not installed + reason`;既有项目 hook 不自动删除,只报告 active/verified 或 existing/unverified。
 
 ## Step 4.A — 替换 scaffold default 值
 
@@ -75,7 +75,7 @@ grep -lE '(scaffold|template|example|my-?app|sample|placeholder|TBD)' \
   AGENTS.md docker-compose*.yml package.json pyproject.toml .env.example 2>/dev/null
 ```
 
-对每个 hit 检查上下文,跟用户逐项确认("这看起来是 scaffold default,你项目的实际值?答 '保留不改' / '改成 X'"),收齐后 Edit 批量替换。
+对每个 hit 检查上下文,跟用户逐项确认("这看起来是 scaffold default,你项目的实际值?答 '保留不改' / '改成 X'"),收齐后只生成 proposed replacements,暂不 Edit target。
 
 **典型替换位置**:项目名(README / package.json / pyproject.toml `name`)、数据库名(env / docker-compose / connection strings)、container_name、domain / URL、auth secret 占位符。
 **不要替换**:框架版本号(除非用户要求)、License、Author 信息(git config 已决定 commit author)。
@@ -93,7 +93,7 @@ while read tier_dir; do
 done
 ```
 
-确认选项:`(y)` 全做 / `(n)` 取消 / `(s)` 列号多选。确认后每 tier 执行 `mv CLAUDE.md AGENTS.md && echo '@AGENTS.md' > CLAUDE.md`,报告结果。
+确认选项:`(y)` 全做 / `(n)` 取消 / `(s)` 列号多选。确认后为每 tier 拟定 `CLAUDE.md → AGENTS.md` 内容迁移与一行 alias patch,暂不执行 `mv`/Write。
 
 ## Step 4.C — 扫 codebase 推 Project Structure(委托 codebase-explorer)
 
@@ -103,19 +103,29 @@ Dispatch [`codebase-explorer`](../../agents/codebase-explorer.md) sub-agent,prom
 - `Existing AGENTS.md`: ./AGENTS.md(对比已声明 vs 实际)
 → 扫顶层结构 + framework manifest + module structure + 规模,返回结构化报告 + `## Project Structure` 节更新建议。
 
-拿到报告后:1) **完整展示给用户**(报告本身是 deliverable) 2) 问"要写入 AGENTS.md 吗?(yes / no / edit 后写入)" 3) yes / edit 后 → Edit 替换对应节;no → 跳过。
+拿到报告后:1) **完整展示给用户**(报告本身是 deliverable) 2) 问"纳入 proposed AGENTS.md 吗?(yes / no / edit)" 3) yes / edit 后加入 proposed patch;no → 跳过。仍不写 target。
 
-## Step 4.D — 决策完整性 audit(强制,workflow §1.12)
+## Step 4.D — 按 patch 复杂度选择 trace check / auditor
 
-落盘前 dispatch [`decision-completeness-auditor`](../../agents/decision-completeness-auditor.md)审 4.A/B/C 累积修改:
+若只是把 manifest/现有代码中的客观值同步进单一文件,或应用用户明确给出的替换 → 主 skill 输出紧凑 trace matrix。若 patch 新增 ownership/port/package/path/infra、证据弱、或生成决定跨多文件 → dispatch [`decision-completeness-auditor`](../../agents/decision-completeness-auditor.md)审 4.A/B/C:
 - `files_to_audit`: 本次涉及的所有文件(根 AGENTS.md + tier-level + `.claude/rules/*`)inline content
 - `qa_answers`: Step 2 选的 paths + 4.A 替换答案 + 4.B tier 答案 + 4.C 接受/拒绝决定;`language_conventions`: null
 - `plugin_hardcoded_defaults`: 同 `/project-init` reference.md R6 清单
 - **Retrofit 模式**:从既有代码扫出的决策(framework / tier 命名)标 `(retrofit: from existing code)` 视同 ✅
 
-**Block 规则**:🚫 > 0 不进 Step 5,按修正选项处理后重跑本 step;⚠️ 不 block,Step 6 一并展示。
+两种路径都必须列“具体值 → 来源”;subagent 🚫 或 inline trace 缺来源都不进入 apply gate。
 
-## Step 5 — Self-verify(强制)
+## Step 4.E — Consolidated Preview + Apply Gate(唯一写入点)
+
+先预检所有 target 文件仍与本轮读取 baseline 一致,并让 materializer 预检 staged destination。展示一个完整 unified diff/新增文件清单 + trace/audit 摘要 + hook 状态。用户确认后才:
+
+1. missing baseline:运行 `materialize-project-baseline.cjs --apply-staged <staging> <target>`;
+2. 一次性 apply 已批准的 existing-file patch/tier migration;
+3. 删除 staging。
+
+若用户拒绝、audit 阻断、baseline 漂移、existing path/symlink 冲突,丢弃 proposed patch/staging,target 保持不变。不得用 checkout 回滚用户文件。
+
+## Step 5 — Applied-state self-verify(强制)
 
 ```bash
 # V1 placeholder 残留            # V2 frontmatter(description + paths YAML list;security.md 仅 description)
@@ -123,7 +133,7 @@ grep -rn '{{' --include='*.md' AGENTS.md .claude/rules/*.md 2>/dev/null
 head -10 .claude/rules/*.md 2>/dev/null
 ```
 
-agent 据输出对照:**V3** paths list 中每个 pattern 的 path prefix 真存在(personalize 改 tier 名后易遗漏),并把历史 scope key/scalar scope 迁移为 YAML list;运行时 **V5** `/memory` 加载齐、**V7** hook 为 `active + verified` 或 `scaffold/inactive + reason`、**V8** 自问一句话总结栈 + 命令(4 要素全对)。任一 ❌ → 修完再进 Step 6。报告格式:`V1✅ V2✅ V3✅ V5✅ V7✅active/⚪scaffold(reason) V8✅`。
+agent 据输出对照:**V3** paths 有效;**V5** `/memory` 加载齐;**V7** hook 为 `active + verified` / `existing + unverified` / `not installed + reason`,新 baseline 不得留下 no-op mapping;**V8** 栈 + 命令总结正确。任一 ❌ → 修完再进 Step 6。
 
 ## Step 6 — Summary
 
@@ -132,7 +142,7 @@ agent 据输出对照:**V3** paths list 中每个 pattern 的 path prefix 真存
 
 ### 做了什么
 - Step 3 security.md @import:{enabled / 已是 / missing 提示}
-- Hook:{active + verified / scaffold/inactive + reason}
+- Hook:{active + verified / existing + unverified / not installed + reason}
 - (A) 替换了 {N} 个 scaffold default 值:{list}
 - (B) 补齐了 {M} 个 tier 的 AGENTS.md + alias:{list}
 - (C) 更新了 AGENTS.md `## Project Structure` 节

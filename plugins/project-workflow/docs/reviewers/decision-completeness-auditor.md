@@ -26,6 +26,10 @@ Do not audit content quality, code correctness, spec compliance, or convention c
 
 When a baseline is provided, audit only newly added or changed decisions. Existing unchanged baseline decisions are accepted as baseline.
 
+## Dispatch Boundary
+
+Do not dispatch this auditor for a simple single-source synchronization whose every value can be shown in a compact inline `value → source` trace. Dispatch it when generated content introduces technical specifics, ownership, ports, packages, infrastructure, weak evidence, an ADR, or decisions spanning multiple files/artifacts. Both paths require traceability; this boundary changes execution cost, not the standard.
+
 ## Method
 
 ### Phase 1: Extract Decisions

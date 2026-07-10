@@ -11,7 +11,7 @@ Match the user's language. Read [`../../docs/actions/agents-md-revise.md`](../..
 
 - Scope is A-class engineering conventions only: root/nested `AGENTS.md` and scoped rules.
 - Read [`../../docs/adapters/codex-scoped-rule-bridge.md`](../../docs/adapters/codex-scoped-rule-bridge.md) completely before resolving `.claude/rules/` compatibility scope.
-- Use a general subagent with [`../../docs/reviewers/decision-completeness-auditor.md`](../../docs/reviewers/decision-completeness-auditor.md) before applying generated patches; main-session fallback is valid.
+- Use an inline trace matrix for a single-file patch that only synchronizes observed state. Use the decision-completeness auditor for new conventions, technical specifics, weak evidence, or cross-file generated patches.
 - Findings require objective evidence. Do not turn preferences, pattern guesses, backlog, or product-domain changes into convention patches.
 - Apply only changes the user approves; never commit automatically.
 
@@ -25,7 +25,7 @@ Match the user's language. Read [`../../docs/actions/agents-md-revise.md`](../..
 6. Report coarse current-truth freshness separately as read-only advisory; never edit product-domain documents in this action.
 7. Report old zero-reference ADRs separately as advisory; they do not enter the convention apply flow.
 8. Present at most five drift decisions per batch. The user may apply, skip, ignore permanently, or stop.
-9. Simulate approved patches and audit newly introduced decisions against the current baseline and observed project state. Must-fix findings block application.
+9. Simulate approved patches and run the complexity-triggered trace/audit. Missing trace or must-fix findings block application.
 10. Apply approved patches atomically, remove resolved drift-ledger lines, write approved permanent ignores, and show the final diff.
 
-Report applied and skipped drift, evidence, audit result, bridge global/matched/skipped/ambiguous sets, advisory items, unresolved questions, and a commit-message draft.
+Report applied and skipped drift, evidence, trace/audit result and trigger reason, compact bridge counts plus applicable/ambiguous paths, advisory items, unresolved questions, and a commit-message draft.

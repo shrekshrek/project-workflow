@@ -140,7 +140,7 @@ Codex/Claude/manual 的完整 capability mapping 与不可变边界由 [`cross-t
 #### OpenAI Symphony
 
 - **核心**:managed work item / handoff state / isolated autonomous runs
-- **优点**:"manage work, not agents" 哲学影响深远(本项目 [workflow §3.3 proof bundle](workflow.md#33-交付阶段proof-bundle) 受其工作交接思想启发)
+- **优点**:"manage work, not agents" 哲学影响深远(本项目 [workflow §3.3 delivery receipt](workflow.md#33-交付阶段delivery-receipt) 受其工作交接思想启发)
 - **缺点**:当前仍是 engineering preview;虽有实验性 reference implementation,生产实证有限
 - **本项目决定**:借哲学(end-of-task gate / handoff artifacts),不装工具
 

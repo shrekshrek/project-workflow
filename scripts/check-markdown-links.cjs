@@ -122,21 +122,67 @@ function inlineDestinations(content) {
   return destinations;
 }
 
-function splitSuffix(value) {
-  const indexes = [value.indexOf("?"), value.indexOf("#")].filter((index) => index >= 0);
+function splitTarget(value) {
+  const query = value.indexOf("?");
+  const hash = value.indexOf("#");
+  const indexes = [query, hash].filter((index) => index >= 0);
   const splitAt = indexes.length > 0 ? Math.min(...indexes) : value.length;
-  return value.slice(0, splitAt);
+  const fragmentEnd = hash >= 0 && query > hash ? query : value.length;
+  return {
+    path: value.slice(0, splitAt),
+    fragment: hash >= 0 ? value.slice(hash + 1, fragmentEnd) : null,
+  };
 }
 
-function isExternalOrAnchor(value) {
-  return value.startsWith("#")
-    || value.startsWith("/")
+function isExternal(value) {
+  return value.startsWith("/")
     || /^[a-z][a-z0-9+.-]*:/i.test(value);
+}
+
+function headingSlug(value) {
+  return value
+    .replace(/<[^>]*>/g, "")
+    .replace(/!\[([^\]]*)\]\([^)]*\)/g, "$1")
+    .replace(/\[([^\]]+)\]\([^)]*\)/g, "$1")
+    .replace(/[`*_~]/g, "")
+    .trim()
+    .toLowerCase()
+    .replace(/[^\p{L}\p{N}\p{M}_\-\s]/gu, "")
+    .replace(/\s/g, "-");
+}
+
+const anchorCache = new Map();
+function markdownAnchors(file) {
+  if (anchorCache.has(file)) return anchorCache.get(file);
+  const anchors = new Set();
+  const counts = new Map();
+  let fence = null;
+  for (const line of fs.readFileSync(file, "utf8").split(/\r?\n/)) {
+    const marker = line.match(/^ {0,3}(`{3,}|~{3,})/)?.[1];
+    if (fence) {
+      if (marker?.[0] === fence.character && marker.length >= fence.length) fence = null;
+      continue;
+    }
+    if (marker) {
+      fence = { character: marker[0], length: marker.length };
+      continue;
+    }
+    for (const match of line.matchAll(/<a\s+(?:name|id)=["']([^"']+)["'][^>]*>/gi)) anchors.add(match[1]);
+    const heading = line.match(/^ {0,3}#{1,6}\s+(.+?)\s*#*\s*$/)?.[1];
+    if (!heading) continue;
+    const base = headingSlug(heading);
+    const seen = counts.get(base) ?? 0;
+    counts.set(base, seen + 1);
+    anchors.add(seen === 0 ? base : `${base}-${seen}`);
+  }
+  anchorCache.set(file, anchors);
+  return anchors;
 }
 
 const files = roots.flatMap(walkMarkdown);
 const missing = [];
 let checked = 0;
+let checkedFragments = 0;
 
 for (const file of files) {
   const prose = markdownProse(fs.readFileSync(file, "utf8"));
@@ -145,20 +191,27 @@ for (const file of files) {
   for (const token of [...inlineDestinations(prose), ...references]) {
     const angled = token.startsWith("<") && token.endsWith(">");
     let destination = angled ? token.slice(1, -1) : token;
-    if (!destination || isExternalOrAnchor(destination)) continue;
-    destination = splitSuffix(destination);
-    if (!destination) continue;
+    if (!destination || isExternal(destination)) continue;
+    const target = splitTarget(destination);
     try {
-      destination = decodeURIComponent(destination);
+      target.path = decodeURIComponent(target.path);
+      if (target.fragment !== null) target.fragment = decodeURIComponent(target.fragment);
     } catch {
       missing.push(`${path.relative(repoRoot, file)} -> malformed URI ${token}`);
       continue;
     }
 
     checked += 1;
-    const resolved = path.resolve(path.dirname(file), destination);
+    const resolved = target.path ? path.resolve(path.dirname(file), target.path) : file;
     if (!fs.existsSync(resolved)) {
       missing.push(`${path.relative(repoRoot, file)} -> ${token}`);
+      continue;
+    }
+    if (target.fragment && resolved.endsWith(".md")) {
+      checkedFragments += 1;
+      if (!markdownAnchors(resolved).has(target.fragment)) {
+        missing.push(`${path.relative(repoRoot, file)} -> ${token} (missing fragment)`);
+      }
     }
   }
 }
@@ -169,4 +222,4 @@ if (missing.length > 0) {
   process.exit(1);
 }
 
-console.log(`Markdown links OK: ${checked} local destinations across ${files.length} files.`);
+console.log(`Markdown links OK: ${checked} local destinations (${checkedFragments} fragments) across ${files.length} files.`);

@@ -1,7 +1,7 @@
 ---
 name: feature-archive
 model: sonnet
-description: Lifecycle closure for delivered features. Default sweep mode finds all delivered-but-unarchived features and closes them as a batch; merges durable conclusions into docs/specs/<area>.md when the proof bundle marked "current truth 更新 pending" (P0 creates only docs/specs/index.md; new area docs are created from the plugin domain template only for durable domains; replace-not-append, size-disciplined, freshness header), marks superseded older specs 已取代/已废弃, then git-mv's every closed feature directory into docs/specs/changes/archive/. Use periodically after feature-done READY features accumulate, or with a slug for single-feature closure.
+description: Lifecycle closure for delivered features. Default sweep mode finds delivered-but-unarchived features and closes them as a batch; consumes the delivery receipt Verdict/Current truth fields, merges durable conclusions into docs/specs/<area>.md when update is pending, marks superseded older specs 已取代/已废弃, then git-mv's closed feature directories into archive. Use periodically after feature-done READY features accumulate, or with a slug for single-feature closure.
 ---
 
 > **Response language**: Match the user's prompt language in all natural-language output. File contents follow each file's existing language. Code, commands, file paths stay as-is.
@@ -20,17 +20,19 @@ User input: `$ARGUMENTS` — 空 = 清扫模式;或 feature slug / NNN / "curren
 ## Step 1 — 圈定收尾对象
 
 **清扫模式**(空参数):扫 `docs/specs/changes/<NNN>-*/`(排除 `archive/`),对每个目录检查:
-- `tasks.md` 的 `## Proof Bundle` 已填且 verdict READY
-- `spec.md` 状态为 `已实现`(或已被 `spec-reconcile` 标 `已取代` / `已废弃`);轻车道无 spec.md 则只看 proof bundle
+- `tasks.md` 的 delivery receipt(`## Proof Bundle`)含 `Verdict: READY`
+- `spec.md` 状态为 `已实现`(或已被 `spec-reconcile` 标 `已取代` / `已废弃`);轻车道无 spec.md 则只看 delivery receipt
 - 工作已 commit(`git status` 该目录及相关代码无未提交改动)
 
-列出候选清单(编号 + 标题 + current-truth pending 与否)让用户确认;空清单 → 报 "无待归档 feature" 退出。
+同时扫描旧格式 `## Proof Bundle`:若只有 L1/L2/L3 checkbox/文字而无 `Verdict:`,列为 **legacy receipt migration**(编号 + 状态),不得静默丢弃或推断 READY。建议/经用户同意逐项重跑 `/feature-done` 生成当前 receipt,本轮只归档重跑后明确 READY 的项。
+
+列出 READY 候选清单(编号 + 标题 + current-truth pending 与否)与 legacy migration 清单让用户确认;两者都空才报 "无待归档 feature" 退出。
 
 **单 feature 模式**:输入解析同 `/feature-done`;不满足上述条件 → 报 "先跑 `/project-workflow:feature-done <slug>` 拿到 READY" 退出。**进行中的 feature(草稿/已确认)永不归档。**
 
 ## Step 2 — Current truth 合并(仅 pending 的 feature)
 
-对 proof bundle 标了 "current truth 更新 pending" 的每个 feature:
+对 receipt `Current truth` 标了 `update pending` 的每个 feature:
 
 1. 从 spec §1 Outcomes / plan §1 模块影响 / proof bundle diff 判定产品域;不明 → 问用户。
 2. 提取**持久结论**(交付后长期成立的行为 / 契约 / IA / 默认值;不是实施过程或临时方案),向用户确认。
@@ -85,7 +87,7 @@ node "$PLUGIN_ROOT/scripts/relocate-markdown-links.cjs" \
 ## Invariants(强制)
 
 - **不改实施代码**;归档是 `git mv` 不是删除;archive 内容只读
-- 进行中 feature(草稿 / 已确认 / proof bundle 非 READY)**永不归档**
+- 进行中 feature(草稿 / 已确认 / delivery receipt 非 READY)**永不归档**
 - Current truth 更新后必须不与已交付行为矛盾、尺寸受控或有合理 domain 复杂度理由、新鲜度行已更新
 - 状态标记与归档清单逐份经用户确认,不静默批量执行
 - archive 内所有本地 Markdown link 必须可解析;移动后必须运行统一 relocation 工具,不得手算或只给所有链接机械加 `../`
@@ -94,7 +96,8 @@ node "$PLUGIN_ROOT/scripts/relocate-markdown-links.cjs" \
 
 | 错误 | 应对 |
 |---|---|
-| Proof bundle 缺失 / 非 READY | 该 feature 跳过(清扫模式)或指向 `/feature-done`(单模式) |
+| Delivery receipt 无 `Verdict:` 的旧格式 | 显式列入 legacy migration;重跑 `/feature-done`,不从 checkbox 推断 READY |
+| Delivery receipt 缺失 / 明确非 READY | 该 feature 跳过(清扫模式)或指向 `/feature-done`(单模式) |
 | 未提交改动涉及该 feature | 跳过并提示先 commit |
 | 产品域判定不明 | 问用户,不猜 |
 | 老 spec 是否被取代拿不准 | 列证据让用户裁决;拿不准且冲突多 → 建议 `/spec-reconcile` |

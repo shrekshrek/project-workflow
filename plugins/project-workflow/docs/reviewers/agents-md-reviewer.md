@@ -38,7 +38,7 @@ For distributed rules, identify the full population and the verifier before chec
 - Verify single rules directly.
 - For distributed rules, enumerate the whole population first, then check every element.
 - Do not spot-check unless the population is too large; if sampling is unavoidable, state the sample and reason.
-- Skip rules whose path scope clearly does not match the changed files.
+- Mark rules whose path scope clearly does not match the changed files as definite non-matches. They are not applicable and do not enter the coverage denominator.
 
 ### Phase 3: Matrix For Distributed Failures
 
@@ -58,12 +58,17 @@ DELETE /todos/:id  yes    no    no
 
 Report:
 
-- rules total
+- exact changed-file population
+- exact applicable-rule identifiers (`source-path#heading` or line)
+- applicable rules total
 - fully verified
 - sampled
-- skipped
-- coverage = fully verified / total
-- confidence: high only when coverage >= 95% and no skipped critical rule; medium for partial coverage; low for major gaps
+- definite non-matches
+- applicable but unverified
+- coverage = fully verified applicable rules / all applicable rules
+- confidence: high only when every applicable rule is verified and no blocking ambiguity remains; medium for partial coverage; low for major gaps
+
+A zero-finding result is `PASS` only when the exact changed-file population and exact applicable-rule identifiers are enumerated, coverage is 100%, no applicable rule is unverified, no blocking ambiguity remains, and confidence is high. If no rules apply, return `PASS (no applicable rules)` only after enumerating the changed files, resolving every rule source, and confirming zero ambiguity. Sampling or an incomplete population returns `UNRELIABLE`, not a clean pass.
 
 ## Output
 
@@ -74,13 +79,13 @@ Use this structure:
 
 Scope: <files reviewed>
 Rules source: <files consulted>
-Coverage: <X>% (<verified>/<total>; <sampled> sampled; <skipped> skipped)
+Coverage: <X>% (<verified>/<applicable>; <nonmatches> definite non-matches; <unverified> applicable but unverified)
 
 ### Violations
 <rule citation, file:line, issue, suggested fix>
 
 ### Partial / Borderline
-<rule citation, reason>
+<rule citation, reason, blocking=yes|no>
 
 ### Verified
 <short sample of checked items>
@@ -95,9 +100,13 @@ Coverage: <X>% (<verified>/<total>; <sampled> sampled; <skipped> skipped)
 <counts, confidence, most impactful finding>
 ```
 
+When findings are zero, collapse empty finding sections and return a compact evidence block containing the exact changed paths, exact applicable rule identifiers, resolved source counts, coverage, applicable-unverified count, ambiguity count, findings=0, and confidence. Do not emit pages of empty headings.
+
 ## Rules
 
 - Cite or skip: every finding needs a convention citation.
 - Do not make edits.
 - Keep findings precise with file:line references where possible.
 - Surface ambiguous conventions as feedback to the caller.
+- Never equate an empty findings array with success without the Phase 4 evidence contract.
+- Mark every partial/borderline item as blocking or advisory. Advisory means no declared convention is currently violated; otherwise it is blocking.

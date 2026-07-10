@@ -162,11 +162,9 @@ cp "$SRC/plan.md" "$SRC/tasks.md" "$CHANGE_DIR/"
    对照 `.claude/rules/<framework>.md` 已定 idiom 写,避免 drift
 ```
 
-### 6.3 决策完整性 audit(默认强制,workflow §1.12)
+### 6.3 按 pre-fill 复杂度选择 trace check / auditor
 
-**降频条件**:最近 ≥ 3 个 feature 的 audit 全零 🚫(查收尾输出记录)→ 轻车道可跳过(报告标 "audit: 降频跳过"),全道仍跑;任一次再出 🚫 恢复强制;历史读不到照常跑。
-
-Dispatch [`decision-completeness-auditor`](../../agents/decision-completeness-auditor.md)审 pre-fill 内容(纯空骨架可跳过):
+纯空骨架跳过。只有用户原话/现有 domain 事实的简单单文件 pre-fill → 主 skill 输出“值 → 来源”紧凑 trace matrix。出现新 module ownership、endpoint/method/field/error/package/path/infra、弱证据,或生成决定跨 spec/plan/tasks → dispatch [`decision-completeness-auditor`](../../agents/decision-completeness-auditor.md):
 - `files_to_audit`: 全道 `{spec,plan}.md`;轻车道 `tasks.md`
 - `qa_answers`: Step 4 框架决策(slug / NNN / module setup)+ chat 中 user 明确给的业务事实;`language_conventions`: null
 - `plugin_hardcoded_defaults`: `{value: "NNN-<slug>", source: "workflow.md §3 spec-driven"}` 一条
@@ -175,7 +173,7 @@ Dispatch [`decision-completeness-auditor`](../../agents/decision-completeness-au
 
 ### 6.4 收尾
 
-报告 scaffold + pre-fill 完成、audit 结果(N 🚫 / M ⚠️ 或跳过原因),下一步:主会话 conversational fill 剩余 placeholder → 填完跑 `/spec-quality-check` 迭代到 pass。
+报告 scaffold + pre-fill 完成、trace/audit 结果与选择原因,下一步:主会话 conversational fill 剩余 placeholder → 填完跑 `/spec-quality-check`。
 
 ## Failure modes
 

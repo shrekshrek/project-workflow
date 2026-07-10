@@ -27,14 +27,14 @@
 
 ## Proof Bundle
 
-> 由 `/project-workflow:feature-done` 填。本节实施前留占位,完成后由 skill 写入。
+> 由 `/project-workflow:feature-done` 填。本节保留历史兼容标题,内容是会在端点回复中原样展示并由 archive/PR 消费的 delivery receipt。
 
-- [ ] Diff 摘要:(新建/改了什么)
-- [ ] Tests:`<X>/<Y>` passed, coverage `<Z>%`
-- [ ] L1 合规
-- [ ] L2 合规(reviewer 提供 AGENTS.md 作 context 跑过)
-- [ ] L3 合规(reviewer 提供 spec.md 作 context 跑过)
-- [ ] AGENTS.md 实际改动审计(item 5a)
-- [ ] AGENTS.md drift 建议(item 5b)
-- [ ] Current truth:N/A / aligned / 更新 pending(→ `/project-workflow:feature-archive`)
-- [ ] 开放问题(如有)
+- Verdict:
+- Change:`<diff identity>; review-scope=[exact paths reviewed by L2/L3]; endpoint-outputs=[tasks.md receipt, READY spec status/drift ledger when written]`
+- Checks:`<command/assertion; exit/result; test totals>`
+- L2:`verdict; findings=<N>; applicable-rules=[source#id]; coverage=<N>%; applicable-unverified=<N>; ambiguities=<N>; confidence=<level>`
+- Rule sources:`global=<N>; matched=<N>; skipped=<N>; ambiguous=<N>; applicable-paths=[...]; ambiguous-paths=[...]`
+- L3:`verdict; findings=<N>; spec-items=[section#item]; coverage=<N>%; applicable-unverified=<N>; ambiguities=<N>; confidence=<level>`
+- Current truth:
+- Open questions:(仅非空时保留)
+- Drift:(仅非空时保留)

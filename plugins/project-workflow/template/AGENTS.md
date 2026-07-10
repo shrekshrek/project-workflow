@@ -15,13 +15,8 @@ Claude Code reads `CLAUDE.md` which imports this file via `@AGENTS.md`.
 ```
 AGENTS.md                  本文件,项目级 AI 协作约定
 CLAUDE.md                  thin pointer: @AGENTS.md
-.claude/                   Claude path-scoped rules + hooks + settings
-├── rules/<topic>.md       code-style / testing / security / framework-specific
-├── hooks/                 PostToolUse 等机械检查
-└── settings.json
-.codex/                    Codex hook mapping
-├── hooks.json
-└── hooks/                 thin wrappers over shared hook scripts
+.claude/rules/<topic>.md   code-style / testing / security / framework-specific
+{{HOOK_INDEX}}
 docs/
 ├── specs/index.md           产品域索引(E 类;P0 创建)
 ├── specs/<area>.md          产品域现状(E 类;按需创建;是该域唯一权威)
@@ -87,7 +82,7 @@ docs/
 
 - 分支命名:`{{BRANCH_PATTERN}}`(如 `feat/<scope>` / `fix/<scope>`)
 - Commit 格式:{{COMMIT_FORMAT}}(如 conventional commits)
-- Proof bundle:填入 `docs/specs/changes/<NNN>-<slug>/tasks.md` 末尾 `## Proof Bundle` 节;走 PR 时复制该节到 PR 描述
+- Delivery receipt:填入 `docs/specs/changes/<NNN>-<slug>/tasks.md` 末尾兼容命名的 `## Proof Bundle` 节;走 PR 时原样复制到 PR 描述
 
 ## 项目工程坑
 
@@ -104,7 +99,7 @@ docs/
 
 ## 灾难性不变量 / 高爆破半径路径(可选)
 
-> 列出"破一次 = 大面积作废 / 难回滚"的路径(glob)。`feature-init` 轻车道分类 + `feature-done` proof-bundle step 反核读本节:**触达这些路径的 feature 一律走全道**(spec-driven.md §3.2.5)。无此类不变量的项目可删本节(轻车道第 3 问退回人工保守判)。
+> 列出"破一次 = 大面积作废 / 难回滚"的路径(glob)。`feature-init` 轻车道分类 + `feature-done` delivery-receipt step 反核读本节:**触达这些路径的 feature 一律走全道**(spec-driven.md §3.2.5)。无此类不变量的项目可删本节(轻车道第 3 问退回人工保守判)。
 
 - (例)`**/embedding*` / `**/vector*` —— 向量 / 嵌入:破一次全量向量作废、跨源检索失效
 - (例)`**/migrations/**` / `**/alembic/**` —— 数据迁移:不可逆

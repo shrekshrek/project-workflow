@@ -10,7 +10,7 @@ Match the user's language and preserve file language. Read [`../../docs/actions/
 ## Workflow
 
 1. Resolve candidates from an explicit feature argument or sweep active `docs/specs/changes/<NNN>-*/` directories.
-2. Accept only candidates with a READY proof bundle, valid final spec status when present, and no relevant uncommitted implementation or artifact changes. Never archive draft or confirmed in-flight work.
+2. Accept only candidates whose delivery receipt (`## Proof Bundle`) has `Verdict: READY`, with valid final spec status when present and no relevant uncommitted implementation or artifact changes. Separately list legacy receipts that have old L1/L2/L3 checkboxes but no `Verdict:`; offer to rerun `$feature-done` and never infer READY or silently omit them. Never archive draft or confirmed in-flight work.
 3. Present the candidate list, current-truth pending state, and any suspected supersession; obtain confirmation before lifecycle status changes or moves.
 4. For each pending feature, extract only durable present-tense behavior and constraints. Confirm an uncertain product area rather than guessing.
 5. Update an existing `docs/specs/<area>.md` by replacement, not append-only history. Create a new domain document from the plugin template only when a delivered feature establishes durable domain truth; update `docs/specs/index.md`.
