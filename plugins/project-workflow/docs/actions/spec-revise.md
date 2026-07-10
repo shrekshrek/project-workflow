@@ -24,6 +24,10 @@ Draft specs may be edited directly before implementation starts.
 - Updated `plan.md` prior decisions and affected module/architecture sections.
 - Updated `tasks.md` if task order, scope, or validation changed.
 
+## Codex Adapter Contract
+
+When `.claude/rules/` compatibility files exist, the Codex adapter resolves them through the [Codex scoped-rule bridge](../adapters/codex-scoped-rule-bridge.md) against the proposed affected module/file population before drafting. It recomputes resolution whenever that population or a module boundary changes, reports global, matched, skipped, and ambiguous sets, and names applicable rule paths in the resumed implementation handoff. Claude-native rule loading is unchanged.
+
 ## Invariants
 
 - Do not silently rewrite a frozen spec.
@@ -38,3 +42,4 @@ Draft specs may be edited directly before implementation starts.
 
 - Show a concise diff summary before finalizing when the tool supports it.
 - Confirm the next implementation step and whether [`spec-quality-check`](spec-quality-check.md) should be rerun.
+- For Codex, verify that bridge resolution reflects the final affected scope and report all four source sets.

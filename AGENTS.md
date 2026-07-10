@@ -79,7 +79,8 @@ scripts/
 - **文档先于工具**:任何新 skill / 命令想法,先问 "这是 workflow SOP 的哪一步自动化?SOP 写过没?"。SOP 不清晰时做工具是把混乱固化(对应 workflow.md §7.2 反模式)
 - **Skill Step 编号约定**:Step 0 仅用于 **scope-changing pre-work**(cwd 切换 / 全局 setup,影响所有 Step 1+ 的运行环境)。普通输入解析(slug / identifier 等)从 **Step 1** 起。`project-init` / `project-personalize` 用 Step 0(cwd 切换);`feature-init` / `spec-quality-check` 从 Step 1 起(parse 不改 cwd)
 - **Skill vs Agent 文件语言原则**(避免误判 drift):
-  - **Skills**(user 直接见 → bilingual mix):Title / Use when / Not for / User input 标签 = 英文;Step heading 中文动词;Step body 中文 prose;技术术语 / `Notes` / `Failure modes` 节标题 = 英文
+  - **Claude-native skills**(`skills/`,user 直接见 → bilingual mix):Title / Use when / Not for / User input 标签 = 英文;Step heading 中文动词;Step body 中文 prose;技术术语 / `Notes` / `Failure modes` 节标题 = 英文
+  - **Codex-native skills**(`plugins/project-workflow/skills/`):instruction prose 保持英文,以维持现有 adapter prompt 一致性;user-facing 输出仍必须匹配用户语言
   - **Agents**(LLM-only system prompts → 由内容性质决定):
     - **结构化 methodology**(4-phase / Phase 1/2/3 / mandatory rules)= **英文**(LLM instruction following 在英文 prompt 上更稳)
     - **User-facing 输出模板 / Q&A 措辞 / 推荐内容**(Agent 生成后直给用户看)= **可中文**(match user 语言)

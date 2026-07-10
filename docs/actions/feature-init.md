@@ -58,6 +58,10 @@ Light lane:
 
 The directory number is the next available three-digit number unless the user supplied a non-conflicting number.
 
+## Codex Adapter Contract
+
+When `.claude/rules/` compatibility files exist, the Codex adapter inventories their scope metadata first, then resolves and fresh-reads global, matching, and ambiguous rules after module/file scope is known through the [Codex scoped-rule bridge](../adapters/codex-scoped-rule-bridge.md). Report global, matched, skipped, and ambiguous sets. The implementation handoff must name global and matched rule paths so a resumed Codex session can fresh-read them. Claude-native rule loading is unchanged.
+
 ## Invariants
 
 - Resolve the target project root before creating files. Prefer cwd, then nearest parent, then a single matching child; if multiple candidates exist, ask and do not guess.
@@ -71,3 +75,4 @@ The directory number is the next available three-digit number unless the user su
 
 - Confirm created files match the selected lane.
 - Report lane, module decision, unresolved placeholders, and next action.
+- For Codex, report all four bridge source sets and include applicable rule paths in the implementation handoff.

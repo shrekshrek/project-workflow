@@ -11,20 +11,21 @@ Match the user's language and preserve source-file language. Read [`../../docs/a
 
 - Use this only after implementation has started and the accepted contract is materially wrong.
 - Show the proposed decision and affected files before final application.
+- Read [`../../docs/adapters/codex-scoped-rule-bridge.md`](../../docs/adapters/codex-scoped-rule-bridge.md) completely before resolving convention input for affected modules.
 - Run [`../../docs/reviewers/decision-completeness-auditor.md`](../../docs/reviewers/decision-completeness-auditor.md) in a general subagent when available, or in the main session otherwise.
 - Never silently rewrite frozen history or automatically commit.
 
 ## Workflow
 
 1. Resolve the active feature and read `spec.md`, `plan.md`, and `tasks.md`. Light-lane work has no frozen spec; stop and recommend upgrading the artifact when the discovered risk requires one.
-2. Establish the triggering discovery and decide whether it is a true contract/module error. Minor clarification belongs in plan prior decisions or task implementation notes.
+2. Establish the triggering discovery and decide whether it is a true contract/module error. Minor clarification belongs in plan prior decisions or task implementation notes. Resolve the proposed affected module/file population through the Codex bridge and fresh-read global, matching, and ambiguous compatibility rules before drafting the revision.
 3. Allocate the next four-digit ADR number from `docs/adr/`, excluding `0000-template.md`.
 4. Draft a new ADR with context, decision, alternatives, and consequences. Search existing Proposed/Accepted ADRs for contradictions; with user approval, mark an overturned ADR `Superseded by NNNN`.
 5. Update the affected spec sections and append a dated revision-record entry referencing the ADR.
 6. Synchronize plan prior decisions, architecture/module impact, risks, and current-truth update-pending notes.
 7. Rebalance tasks and validation when scope or ordering changed.
-8. For module-boundary changes, update sibling alignment and only add nested `AGENTS.md` guidance when the module is genuinely exceptional relative to its parent.
+8. For module-boundary changes, update sibling alignment and only add nested `AGENTS.md` guidance when the module is genuinely exceptional relative to its parent. Recompute bridge resolution after any affected module/file population or boundary change, then fresh-read newly global, matching, or ambiguous rules before the audit.
 9. Audit newly introduced decisions against the pre-change baseline and confirmed evidence. Must-fix findings block application.
 10. Show the complete diff and obtain approval before finalizing the revision.
 
-Report the ADR, changed contract sections, synchronized files, superseded decisions, audit findings, current-truth follow-up, and whether `$spec-quality-check` should run again.
+Report the ADR, changed contract sections, synchronized files, superseded decisions, audit findings, bridge global/matched/skipped/ambiguous sets, current-truth follow-up, and whether `$spec-quality-check` should run again. Name the applicable rule paths in the resumed implementation handoff.

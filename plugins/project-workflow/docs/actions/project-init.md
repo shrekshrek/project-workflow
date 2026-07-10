@@ -34,6 +34,10 @@ Minimum baseline:
 
 For multi-tier projects, create tier-level `AGENTS.md` files only when there is durable tier-specific guidance.
 
+## Codex Adapter Contract
+
+After generating `.claude/rules/` compatibility files, the Codex adapter validates them through the [Codex scoped-rule bridge](../adapters/codex-scoped-rule-bridge.md). It reports global, matched, skipped, and ambiguous rule sets; ambiguous scope metadata must be surfaced rather than silently ignored. This validation does not change Claude-native rule loading.
+
 ## Invariants
 
 - `AGENTS.md` is the cross-tool convention entry point.
@@ -49,3 +53,4 @@ For multi-tier projects, create tier-level `AGENTS.md` files only when there is 
 - Search generated markdown for unresolved `{{...}}` placeholders; plugin-only templates and example assets should not exist in the target project.
 - Verify generated rule files have clear descriptions and sensible path scopes.
 - Summarize created files, known deferred decisions, and next action.
+- For Codex, verify bridge scope resolution and report all four source sets.

@@ -26,6 +26,10 @@ This action owns the full endpoint gate: L1, L2, L3, current-truth check, and pr
 - Domain doc check: contradiction vs `docs/specs/<area>.md` and update-pending for `feature-archive`.
 - Proof bundle: write delivery evidence to `tasks.md`.
 
+## Codex Adapter Contract
+
+When `.claude/rules/` compatibility files exist, the Codex adapter resolves them through the [Codex scoped-rule bridge](../adapters/codex-scoped-rule-bridge.md) against the complete changed-file population before L2. Global, matched, skipped, and ambiguous source sets belong in the proof bundle. An ambiguity that may hide a critical convention blocks readiness. These A-class compatibility inputs apply to L2 only and must not become L3 requirements; Claude-native rule loading is unchanged.
+
 ## Proof Bundle
 
 Record at least:
@@ -33,6 +37,7 @@ Record at least:
 - diff summary
 - tests/checks run and result
 - L2 convention verdict
+- L2 convention source sets: global, matched, skipped, and ambiguous when the adapter performs scoped-rule resolution
 - L3 spec verdict, or explicit light-lane skip rationale
 - A-class convention changes or drift suggestions (also append each suggestion as a plain-text line to the project's drift ledger; write-side is append-only free text — recurrence clustering happens at read time, in this action's recurrence hint and in `agents-md-revise`)
 - current-truth status: no relevant domain doc / aligned / update pending (name the document)

@@ -22,6 +22,7 @@ const copiedFiles = [
   ["docs/gotchas.md", "docs/gotchas.md"],
   ["docs/tooling.md", "docs/tooling.md"],
   ["docs/quickstart.md", "docs/quickstart.md"],
+  ["docs/adapters/codex-scoped-rule-bridge.md", "docs/adapters/codex-scoped-rule-bridge.md"],
 ];
 
 const templateDocFiles = [

@@ -24,6 +24,10 @@ Do not use for an empty greenfield project; use [`project-init`](project-init.md
 - Removed stale scaffold placeholders/defaults.
 - Summary of values changed and items requiring human review.
 
+## Codex Adapter Contract
+
+When `.claude/rules/` compatibility files exist, the Codex adapter inventories their metadata and resolves them against real project paths through the [Codex scoped-rule bridge](../adapters/codex-scoped-rule-bridge.md). It reports global, matched, skipped, and ambiguous sets. An ambiguity that may hide a critical convention blocks application until clarified. Claude-native rule loading is unchanged.
+
 ## Invariants
 
 - Replace only scaffold/default values that are demonstrably stale or selected by the user.
@@ -37,3 +41,4 @@ Do not use for an empty greenfield project; use [`project-init`](project-init.md
 - Search for unresolved placeholders and old scaffold names.
 - Check path-scoped rule frontmatter / path matching against the actual directory layout.
 - Confirm no example-only assets became active project files.
+- For Codex, verify normalized bridge scopes and report all four source sets.

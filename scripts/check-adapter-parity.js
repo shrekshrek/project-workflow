@@ -31,6 +31,24 @@ const codexForbidden = [
   "Claude Code execution",
 ];
 
+const codexRuleBridgeActions = [
+  "agents-md-revise",
+  "feature-done",
+  "feature-init",
+  "project-init",
+  "project-personalize",
+  "spec-revise",
+];
+const codexRuleBridgeRef = "docs/adapters/codex-scoped-rule-bridge.md";
+const codexRuleBridgePath = path.join(repoRoot, codexRuleBridgeRef);
+const codexRuleBridgeMarkers = [
+  ".claude/rules/**/*.md",
+  "paths:",
+  "globs:",
+  "ambiguous",
+  "L3",
+];
+
 function skillNames(root) {
   if (!fs.existsSync(root)) return [];
   return fs.readdirSync(root, { withFileTypes: true })
@@ -53,6 +71,17 @@ const claudeNames = skillNames(claudeSkillsRoot);
 const codexNames = skillNames(codexSkillsRoot);
 const claudeManifest = JSON.parse(fs.readFileSync(claudeManifestPath, "utf8"));
 const codexManifest = JSON.parse(fs.readFileSync(codexManifestPath, "utf8"));
+
+if (!fs.existsSync(codexRuleBridgePath)) {
+  problems.push(`missing ${codexRuleBridgeRef}`);
+} else {
+  const bridgeContent = fs.readFileSync(codexRuleBridgePath, "utf8");
+  for (const marker of codexRuleBridgeMarkers) {
+    if (!bridgeContent.includes(marker)) {
+      problems.push(`Codex scoped-rule bridge: required contract marker missing ${JSON.stringify(marker)}`);
+    }
+  }
+}
 
 if (claudeManifest.name !== "project-workflow" || codexManifest.name !== "project-workflow") {
   problems.push("Both plugin manifests must keep the project-workflow identity");
@@ -107,6 +136,11 @@ for (const name of expected) {
           problems.push(`Codex ${name}: broken local reference ${match[1]}`);
         }
       }
+      if (codexRuleBridgeActions.includes(name) && !content.includes(codexRuleBridgeRef)) {
+        problems.push(`Codex ${name}: scoped-rule bridge reference missing`);
+      }
+    } else if (content.includes(codexRuleBridgeRef)) {
+      problems.push(`Claude ${name}: Codex-only scoped-rule bridge leaked into Claude runtime adapter`);
     }
   }
 

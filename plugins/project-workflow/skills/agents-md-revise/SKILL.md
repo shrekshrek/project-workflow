@@ -10,13 +10,14 @@ Match the user's language. Read [`../../docs/actions/agents-md-revise.md`](../..
 ## Codex execution contract
 
 - Scope is A-class engineering conventions only: root/nested `AGENTS.md` and scoped rules.
+- Read [`../../docs/adapters/codex-scoped-rule-bridge.md`](../../docs/adapters/codex-scoped-rule-bridge.md) completely before resolving `.claude/rules/` compatibility scope.
 - Use a general subagent with [`../../docs/reviewers/decision-completeness-auditor.md`](../../docs/reviewers/decision-completeness-auditor.md) before applying generated patches; main-session fallback is valid.
 - Findings require objective evidence. Do not turn preferences, pattern guesses, backlog, or product-domain changes into convention patches.
 - Apply only changes the user approves; never commit automatically.
 
 ## Workflow
 
-1. Read root and applicable nested `AGENTS.md`, scoped rule files, `.claude/refresh-ignore`, and `.claude/drift-ledger.md` when present.
+1. Read root and applicable nested `AGENTS.md`, `.claude/refresh-ignore`, and `.claude/drift-ledger.md` when present. Resolve `.claude/rules/` through the Codex bridge for the requested tier/rule scope; read global, matching, and ambiguous rules and record definite non-matches.
 2. Extract testable statements about commands, dependencies/versions, directory structure, ports/configuration, framework rules, and tier boundaries.
 3. Inspect manifests, lockfiles, tool-version files, actual directories, configuration examples, and recent relevant commits.
 4. Compare each convention statement with objective state. Every drift item must cite old text, observed state, evidence source, and a narrow proposed patch.
@@ -27,4 +28,4 @@ Match the user's language. Read [`../../docs/actions/agents-md-revise.md`](../..
 9. Simulate approved patches and audit newly introduced decisions against the current baseline and observed project state. Must-fix findings block application.
 10. Apply approved patches atomically, remove resolved drift-ledger lines, write approved permanent ignores, and show the final diff.
 
-Report applied and skipped drift, evidence, audit result, advisory items, unresolved questions, and a commit-message draft.
+Report applied and skipped drift, evidence, audit result, bridge global/matched/skipped/ambiguous sets, advisory items, unresolved questions, and a commit-message draft.

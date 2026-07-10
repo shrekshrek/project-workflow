@@ -25,6 +25,10 @@ Do not use to rewrite historical feature specs, create backlog items, or make su
 - Advisory (read-only, not in the apply flow): current-truth freshness — for each `docs/specs/<area>.md`, if its "最后核对" date is older than ~30 days and commits landed since, flag it as possibly stale and suggest a `feature-archive` sweep or manual verification. Coarse signal only; no area-to-path precision mapping, no behavior-level comparison.
 - Summary of applied changes and follow-up manual review.
 
+## Codex Adapter Contract
+
+When `.claude/rules/` compatibility files exist, the Codex adapter resolves them through the [Codex scoped-rule bridge](../adapters/codex-scoped-rule-bridge.md). It reports global, matched, skipped, and ambiguous rule sets. An ambiguity that may hide a critical convention blocks application until clarified. This explicit bridge does not change Claude-native rule loading.
+
 ## Invariants
 
 - Only A-class conventions are in scope.
@@ -38,3 +42,4 @@ Do not use to rewrite historical feature specs, create backlog items, or make su
 - Search for unresolved placeholders.
 - Verify updated commands and paths exist or are explicitly documented as deferred.
 - Check path-scoped rule descriptions and path matching after edits.
+- For Codex, verify and report all four scoped-rule bridge source sets.
