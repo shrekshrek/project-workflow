@@ -68,6 +68,10 @@ jobs:
         run: |
           node scripts/check-adapter-parity.js
 
+      - name: Check workflow semantic contracts
+        run: |
+          node scripts/check-workflow-contracts.cjs
+
       - name: Check rule templates and hook input contracts
         run: |
           node scripts/check-template-contracts.js
@@ -75,3 +79,7 @@ jobs:
       - name: Check lifecycle archive links
         run: |
           node scripts/check-lifecycle-links.cjs
+
+      - name: Check local Markdown links
+        run: |
+          node scripts/check-markdown-links.cjs

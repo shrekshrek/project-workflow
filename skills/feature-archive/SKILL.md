@@ -8,7 +8,7 @@ description: Lifecycle closure for delivered features. Default sweep mode finds 
 
 # Feature Archive
 
-Canonical action spec: `docs/actions/feature-archive.md`. Follow that file for methodology rules; this skill adds Claude Code execution details.
+Before acting, Read `${CLAUDE_PLUGIN_ROOT}/docs/actions/feature-archive.md` completely. It is the canonical methodology contract and wins on scope, outputs, invariants, and validation; this skill adds Claude Code execution details.
 
 交付后的生命周期收尾:合并持久结论进 current truth(E 类),然后把已交付 feature **整目录移入 `docs/specs/changes/archive/`** —— 活动区只留进行中的工作,历史 spec 物理离场,不再污染检索([spec-driven.md §5.1](../../docs/spec-driven.md#51-生命周期状态全集--物理归档))。
 

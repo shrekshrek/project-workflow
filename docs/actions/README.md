@@ -9,7 +9,7 @@ If an adapter conflicts with an action spec, the action spec wins. Update this d
 | Action | Purpose |
 |---|---|
 | [`project-init`](project-init.md) | Create a greenfield project-workflow baseline |
-| [`project-personalize`](project-personalize.md) | Adapt a copied or existing project-workflow-shaped project |
+| [`project-personalize`](project-personalize.md) | Adapt a copied scaffold or retrofit a non-empty existing codebase |
 | [`feature-init`](feature-init.md) | Create a feature artifact only when needed |
 | [`spec-quality-check`](spec-quality-check.md) | Gate full-lane feature specs before implementation |
 | [`spec-revise`](spec-revise.md) | Revise frozen spec/plan/tasks during implementation |

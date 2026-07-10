@@ -49,9 +49,10 @@ For full-lane `READY`, move the top `spec.md` status marker to `已实现`. This
 
 ## Verdict
 
+- Verdict contract: L1 failure or unreliable required checks = `BLOCKED`; fixable L2/L3/current-truth findings = `NEEDS WORK`; all required gates and proof complete = `READY`.
 - `READY`: L1 passes, no blocking L2/L3 findings, proof bundle written.
 - `NEEDS WORK`: fixable findings remain.
-- `BLOCKED`: missing required context, missing spec, or checks cannot run for a reason that prevents a reliable verdict.
+- `BLOCKED`: L1 fails, required context/spec is missing, or checks cannot run for a reason that prevents a reliable verdict.
 
 `READY` means the implementation passes checks against the feature artifact. It does not mean the feature is closed: every delivered feature is eventually moved to `docs/specs/changes/archive/` by [`feature-archive`](feature-archive.md) (its sweep mode makes this a cheap periodic batch, not a per-feature ceremony). If the current-truth check reported "update pending", the proof bundle must say so explicitly and archiving that feature must include the current-truth merge — a READY feature with a pending merge is not silently complete.
 

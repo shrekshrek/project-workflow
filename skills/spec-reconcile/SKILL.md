@@ -8,7 +8,7 @@ description: Repair tool for product areas where accumulated specs conflict. Bui
 
 # Spec Reconcile
 
-Canonical action spec: `docs/actions/spec-reconcile.md`. Follow that file for methodology rules; this skill adds Claude Code execution details.
+Before acting, Read `${CLAUDE_PLUGIN_ROOT}/docs/actions/spec-reconcile.md` completely. It is the canonical methodology contract and wins on scope, outputs, invariants, and validation; this skill adds Claude Code execution details.
 
 存量修复工具:当一个产品域积累了多份互相矛盾的 spec 时,先诊断、定 source of truth、修生命周期状态并归档失效 spec([spec-driven.md §5.1](../../docs/spec-driven.md#51-生命周期状态全集--物理归档)),再动工。主要用于 **retrofit**(老项目引入生命周期管理 / 某域方向变化堆积);archive 清扫常态化后稳态下很少需要。
 

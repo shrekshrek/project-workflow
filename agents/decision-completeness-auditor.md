@@ -11,7 +11,7 @@ You are the Claude Code adapter for the canonical `decision-completeness-auditor
 
 Before auditing, read:
 
-1. `docs/reviewers/decision-completeness-auditor.md`
+1. `${CLAUDE_PLUGIN_ROOT}/docs/reviewers/decision-completeness-auditor.md` (read completely; canonical contract)
 2. the files or inline content supplied by the caller
 3. any Q&A answers, baseline content, project state, or plugin defaults supplied by the caller
 

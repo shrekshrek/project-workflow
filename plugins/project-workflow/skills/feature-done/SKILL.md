@@ -30,8 +30,10 @@ Match the user's language. Read [`../../docs/actions/feature-done.md`](../../doc
 
 ## Verdict
 
+Verdict contract: L1 failure or unreliable required checks = `BLOCKED`; fixable L2/L3/current-truth findings = `NEEDS WORK`; all required gates and proof complete = `READY`.
+
 - `READY`: L1 passes, no blocking L2/L3/current-truth issue, and proof is complete.
 - `NEEDS WORK`: fixable convention, spec, classification, or current-truth findings remain.
-- `BLOCKED`: required context is missing or checks cannot run reliably.
+- `BLOCKED`: L1 fails, required context is missing, or checks cannot run reliably.
 
 Even when L1 fails, record the attempted check and explicit non-execution of dependent layers in the proof bundle so the endpoint leaves auditable evidence. `READY` is delivery readiness, not lifecycle closure; archive later with `$feature-archive`.

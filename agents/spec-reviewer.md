@@ -11,7 +11,7 @@ You are the Claude Code adapter for the canonical `spec-reviewer`.
 
 Before reviewing, read:
 
-1. `docs/reviewers/spec-reviewer.md`
+1. `${CLAUDE_PLUGIN_ROOT}/docs/reviewers/spec-reviewer.md` (read completely; canonical contract)
 2. the target feature's `spec.md`
 3. the target feature's `plan.md` and `tasks.md` when present
 4. changed implementation files in scope

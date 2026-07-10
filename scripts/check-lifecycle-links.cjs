@@ -7,6 +7,7 @@ const { spawnSync } = require("child_process");
 
 const repoRoot = path.resolve(__dirname, "..");
 const relocator = path.join(repoRoot, "scripts", "relocate-markdown-links.cjs");
+const linkChecker = path.join(repoRoot, "scripts", "check-markdown-links.cjs");
 const fixture = fs.mkdtempSync(path.join(os.tmpdir(), "project-workflow-archive-links-"));
 const active = path.join(fixture, "docs/specs/changes/001-links");
 const archived = path.join(fixture, "docs/specs/changes/archive/001-links");
@@ -23,6 +24,7 @@ fs.writeFileSync(path.join(active, "spec.md"), [
   "[ADR](../../../adr/0001-choice.md)",
   "[ADR with parentheses](../../../adr/choice(1).md)",
   "[ADR with title](../../../adr/0001-choice.md \"Choice\")",
+  "[`ADR code label`](../../../adr/0001-choice.md)",
   "[Domain](../../area.md#contract)",
   "[Plan](plan.md)",
   "[Local anchor](#scope)",
@@ -52,6 +54,7 @@ for (const expected of [
   "[ADR](../../../../adr/0001-choice.md)",
   "[ADR with parentheses](../../../../adr/choice(1).md)",
   "[ADR with title](../../../../adr/0001-choice.md \"Choice\")",
+  "[`ADR code label`](../../../../adr/0001-choice.md)",
   "[Domain](../../../area.md#contract)",
   "[Plan](plan.md)",
   "[Local anchor](#scope)",
@@ -61,6 +64,14 @@ for (const expected of [
   "[Fenced reference]: ../../../adr/not-a-link.md",
 ]) {
   if (!spec.includes(expected)) problems.push(`missing expected relocation: ${expected}`);
+}
+
+const checkedLinks = spawnSync(process.execPath, [linkChecker, archived], {
+  cwd: fixture,
+  encoding: "utf8",
+});
+if (checkedLinks.status !== 0) {
+  problems.push(`repository link checker rejected valid inline-code cases: ${checkedLinks.stderr.trim()}`);
 }
 
 const brokenActive = path.join(fixture, "docs/specs/changes/002-broken");

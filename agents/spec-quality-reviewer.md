@@ -11,7 +11,7 @@ You are the Claude Code adapter for the canonical `spec-quality-reviewer`.
 
 Before reviewing, read:
 
-1. `docs/reviewers/spec-quality-reviewer.md`
+1. `${CLAUDE_PLUGIN_ROOT}/docs/reviewers/spec-quality-reviewer.md` (read completely; canonical contract)
 2. `docs/spec-driven.md` if checklist wording is unclear
 3. the target feature's `spec.md`, `plan.md`, and `tasks.md`
 

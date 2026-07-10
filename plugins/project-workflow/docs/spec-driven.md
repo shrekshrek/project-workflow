@@ -267,105 +267,7 @@ docs/specs/changes/
 
 ### 3.6 完整示范(用户邀请流)
 
-#### `docs/specs/changes/002-invitation/spec.md`
-
-```markdown
-# 002 invitation — Spec
-
-> 创建于 2026-05-08 · 状态:已确认
-
-## 1. Outcomes
-
-管理员在团队设置页输入邮箱发邀请,被邀请者收到邮件、点链接 24 小时内可注册并自动加入团队。
-管理员可以在管理页面看到所有未使用的邀请,可手动撤销。
-
-## 2. Scope boundaries
-
-**做**:
-- 单邮箱邀请、邮件发送、链接过期、注册自动入队
-- 管理页面查看 + 撤销未使用邀请
-
-**不做**:
-- 多渠道(SMS / Slack / 企业微信)、邀请配额、追踪 UI、批量邀请
-
-## 3. Constraints
-
-- 邀请 token 256-bit,HMAC-SHA256 签名(不是加密)
-- 24h 过期,过期访问返回 410 Gone
-- 同邮箱 24h 内最多发 3 次(速率限制)
-- 邮件发送失败必须可重试 3 次
-
-## 4. Verification
-
-- 单测:invitation service 的过期/重复使用/token 伪造/速率限制四场景
-- 集成:POST + 邮件 mock 验 payload + GET 验 token 解码
-- 手测:真实邮箱发,完整 happy path
-- 上线指标:发送成功率 ≥ 99%
-```
-
-#### `docs/specs/changes/002-invitation/plan.md`
-
-```markdown
-# 002 invitation — Plan
-
-> 基于 spec.md
-
-## 1. 模块影响范围
-
-- `backend/src/invitations/` —— 新增模块
-- `backend/src/users/` —— 改:加 `accept_invitation` 方法
-- `backend/src/email/` —— 改:加邀请模板
-- `frontend/layers/invitations/` —— 新增 layer
-- `frontend/layers/teams/` —— 改:设置页加 form
-
-## 2. 架构决策
-
-- 邀请数据模型:`invitations(id, team_id, email, token_hash, expires_at, created_by, used_at)`
-- 邀请链接走 frontend 路由 `/i/<token>` → 调 backend `GET /invitations/<token>` → 落地页注册流
-- 注册时校验 token 并在事务里 join team
-
-## 3. Prior decisions
-
-- Resend 不选 SES:已有 Resend 账号,SES 要跑域名验证
-- token 存 hash 不存原文(类似密码):泄露 db 不能复用
-- 邀请链接经前端而非直打 backend:UX(401 跳登录易处理)
-
-## 4. 风险与未决
-
-- 风险:Resend 配额上限不够支撑大量邀请 → 上线后观察
-- 未决:邀请邮件文案 → 实施时跟产品对一遍
-```
-
-#### `docs/specs/changes/002-invitation/tasks.md`
-
-```markdown
-# 002 invitation — Tasks
-
-> 基于 spec.md + plan.md
-
-## 任务清单
-
-### 后端
-- [ ] migration: invitations 表(2h)
-- [ ] backend: POST /invitations + Resend(2h)
-- [ ] backend: GET /invitations/<token> + 注册时校验(1.5h)
-- [ ] backend: DELETE /invitations/<id> 撤销(0.5h)
-
-### 前端
-- [ ] 团队设置页:发邀请 form(1h)
-- [ ] 邀请管理页:列表 + 撤销(1.5h)
-- [ ] 邀请落地页:接受 → 注册流(1h)
-
-### 验证
-- [ ] e2e: 发→收邮件→点链接→注册→入队(0.5h)
-- [ ] 单测覆盖 spec.md §4 的四个核心场景(0.5h)
-
-## 实施记录
-
-- (实施时填)
-```
-
----
+完整 `spec.md` / `plan.md` / `tasks.md` 样例已移到按需参考的 [`docs/examples/full-feature-artifact.md`](examples/full-feature-artifact.md)。正文只保留规则与协作 SOP,避免示例中的路径、接口和技术选择被误当成默认值。
 
 <a id="365-phase-a填-todos-的-ai-协作-sop"></a>
 ### 3.6.5 Phase A:填 TODOs 的 AI 协作 SOP(主会话用 ── primary mode)
@@ -634,20 +536,7 @@ docs/specs/changes/
 
 ## 7. 维护工具
 
-按 feature 生命周期顺序,project-workflow ship 的工具:
-
-| 任务 | 工具 |
-|---|---|
-| 起新 feature artifact | [`/feature-init <slug>`](../skills/feature-init/SKILL.md) —— 全道创建 `spec/plan/tasks`;轻车道只创建 `tasks.md` |
-| spec 写完后质量自检(实施前 gate) | [`/spec-quality-check`](../skills/spec-quality-check/SKILL.md) —— 机械化 §3.7 7 问 + dispatch [`spec-quality-reviewer`](reviewers/spec-quality-reviewer.md) 做主观二审 |
-| spec / plan 实施中发现错 | [`/spec-revise`](../skills/spec-revise/SKILL.md) —— orchestrate [workflow.md §3.5](workflow.md#35-开发中发现-specplan-错怎么办) / [§2.6](workflow.md#26-module-中途变更feature-实施中发现边界要调整) SOP(ADR + `## 修订记录` + plan prior decisions + tasks rebalance) |
-| 完成交付(实施后) | [`/feature-done`](../skills/feature-done/SKILL.md) —— 默认端点门禁:L1 / L2 / L3 / current-truth check / proof bundle 聚合成一个 READY / NEEDS WORK / BLOCKED verdict;局部复查 = 重跑本 skill 或主会话直接 dispatch [`spec-reviewer`](reviewers/spec-reviewer.md) / [`agents-md-reviewer`](reviewers/agents-md-reviewer.md) |
-| 生命周期收尾(周期性清扫或单 feature) | [`/feature-archive`](../skills/feature-archive/SKILL.md) —— 合并持久结论进 `docs/specs/<area>.md`,已交付 feature 整目录移入 `docs/specs/changes/archive/`,被取代的老 spec 标 已取代/已废弃(§5.1) |
-| 多 spec 漂移诊断(存量烂摊子 retrofit / 怀疑老 spec 误导实施时) | [`/spec-reconcile`](../skills/spec-reconcile/SKILL.md) —— 冲突矩阵 + 精选 source of truth + 生命周期修正 + 归档 |
-| A 类约定(AGENTS.md 多层 + path-scoped rules)主动 refresh | [`/agents-md-revise`](../skills/agents-md-revise/SKILL.md) —— P4 主战场 |
-
-**外部备选**(可选,跟 project-workflow 工具并存):
-- GitHub Spec Kit `/speckit.clarify` —— Q&A 引导补全 spec(若装 Spec Kit)。project-workflow 的等价路径是主会话 conversational fill(§3.6.5),不需要单独 skill。
+运行时入口和精确职责不在本文重复。按生命周期使用 [`feature-init`](actions/feature-init.md) → full lane 的 [`spec-quality-check`](actions/spec-quality-check.md) → [`feature-done`](actions/feature-done.md) → 周期性 [`feature-archive`](actions/feature-archive.md);只有契约实质变化、历史 spec 冲突或 A 类约定 drift 时,才分别使用 [`spec-revise`](actions/spec-revise.md)、[`spec-reconcile`](actions/spec-reconcile.md) 或 [`agents-md-revise`](actions/agents-md-revise.md)。完整入口表见 [`docs/actions/`](actions/README.md) 和 [`quickstart.md`](quickstart.md)。
 
 ---
 

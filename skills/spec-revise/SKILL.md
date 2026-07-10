@@ -7,7 +7,7 @@ description: Orchestrate mid-implementation spec/plan/module revision per workfl
 
 # Spec Revise
 
-Canonical action spec: `docs/actions/spec-revise.md`. Follow that file for methodology rules; this skill adds Claude Code execution details.
+Before acting, Read `${CLAUDE_PLUGIN_ROOT}/docs/actions/spec-revise.md` completely. It is the canonical methodology contract and wins on scope, outputs, invariants, and validation; this skill adds Claude Code execution details.
 
 Orchestrate the mid-implementation revision SOP from [`workflow.md §3.5`](../../docs/workflow.md#35-开发中发现-specplan-错怎么办) (spec/plan errors) and [`workflow.md §2.6`](../../docs/workflow.md#26-module-中途变更feature-实施中发现边界要调整) (module boundary changes).
 

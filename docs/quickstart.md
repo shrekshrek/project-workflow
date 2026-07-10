@@ -2,34 +2,43 @@
 
 当你想在真实项目里按最短路径使用 project-workflow 时,读这份。完整方法论见 [`workflow.md`](workflow.md),action 权威定义见 [`actions/`](actions/),跨工具边界见 [`cross-tool-methodology.md`](cross-tool-methodology.md)。
 
-本文按 **workflow action** 写。命令示例是当前成熟的 **Claude Code adapter** 入口;Codex 安装 `plugins/project-workflow/` 后使用同名 `$skill`;OpenCode / 手工模式执行同一 action,但入口可以不同。
+本文使用 Claude Code 命令示例;Codex 安装 plugin 后使用同名 `$skill`,手工模式按 [`docs/actions/`](actions/) 执行同一 action。
 
-| Action | Canonical spec | Claude Code adapter | Codex / manual fallback |
-|---|---|---|---|
-| 初始化项目约定 | [`project-init`](actions/project-init.md) / [`project-personalize`](actions/project-personalize.md) | `/project-workflow:project-init` 或 `/project-workflow:project-personalize` | Codex:`$project-init` / `$project-personalize`;manual:复制 `template/`,按 action spec 填 `AGENTS.md` / path-scoped rules / hooks |
-| 创建 feature artifact | [`feature-init`](actions/feature-init.md) | `/project-workflow:feature-init <slug>` | Codex:`$feature-init <slug>`;manual:先判断是否需要 project-workflow;需要时全道创建 `spec/plan/tasks`,轻车道只创建 `tasks.md` |
-| 实施前质量门 | [`spec-quality-check`](actions/spec-quality-check.md) | `/project-workflow:spec-quality-check <slug>` | Codex:`$spec-quality-check <slug>`;manual:按 action spec + `spec-driven.md §3.7` 7 问检查 |
-| 中途修订 | [`spec-revise`](actions/spec-revise.md) | `/project-workflow:spec-revise <slug>` | Codex:`$spec-revise <slug>`;manual:按 action spec 修 spec、ADR、plan、tasks |
-| 完成交付 | [`feature-done`](actions/feature-done.md) | `/project-workflow:feature-done <slug>` | Codex:`$feature-done <slug>`;manual:手动跑 L1/L2/L3 + proof bundle |
-| 生命周期收尾 | [`feature-archive`](actions/feature-archive.md) | `/project-workflow:feature-archive <slug>` | Codex:`$feature-archive <slug>`;manual:按 action spec 合并 current truth + 标老 spec 状态 |
-| 多 spec 漂移诊断 | [`spec-reconcile`](actions/spec-reconcile.md) | `/project-workflow:spec-reconcile <area>` | Codex:`$spec-reconcile <area>`;manual:按 action spec 做冲突矩阵 + 状态修正 |
-| 约定刷新 | [`agents-md-revise`](actions/agents-md-revise.md) | `/project-workflow:agents-md-revise` | Codex:`$agents-md-revise`;manual:按 action spec 扫 A 类约定和真实项目 drift |
+日常主路径只有这一条:
+
+```text
+一次初始化
+  → 小改直接做;需要追踪时 feature-init(no artifact / light / full)
+  → full lane 与用户补完草稿后跑 spec-quality-check
+  → 实施
+  → feature-done
+  → feature-archive 周期性批量收尾
+```
+
+四个低频入口不属于日常必经步骤:
+
+| 仅在这种情况出现 | Action |
+|---|---|
+| 复制脚手架或任意非空既有代码库 retrofit | [`project-personalize`](actions/project-personalize.md) |
+| 已确认契约在实施中发生实质变化 | [`spec-revise`](actions/spec-revise.md) |
+| 存量 active specs 已经互相冲突 | [`spec-reconcile`](actions/spec-reconcile.md) |
+| 客观项目状态与 A 类约定发生 drift | [`agents-md-revise`](actions/agents-md-revise.md) |
 
 ## 1. 初始化项目约定
 
-新项目:
+空目录或真正的新项目:
 
 ```text
 /project-workflow:project-init
 ```
 
-已有脚手架 / 复制来的项目:
+已有脚手架、复制来的项目或任意非空既有代码库:
 
 ```text
 /project-workflow:project-personalize
 ```
 
-预期结果:在功能开发前,项目里已有 `AGENTS.md`、路径级规则语义、hooks 和 ADR 模板。Feature spec 模板保留在 plugin 内,由 `feature-init` 在创建具体 `docs/specs/changes/<NNN>-<slug>/` 时复制;目标项目默认不保留 `docs/specs/changes/_template/`。Claude Code adapter 默认把路径级规则 materialize 为 `.claude/rules/`;Codex adapter 优先通过嵌套 `AGENTS.md` 和显式规则章节承载同一语义,并用 `.codex/hooks.json` 映射 runtime enforcement。必要时只把 `.claude/rules/` 当兼容输入读取。
+预期结果:在功能开发前,项目里已有 `AGENTS.md`、路径级规则语义、hook adapter 和 ADR 模板。只有确认了安全、快速的单文件命令时 edit hook 才标 active;否则明确是 scaffold/inactive,端点检查仍由 `feature-done` 执行。Feature spec 模板保留在 plugin 内,由 `feature-init` 在创建具体 `docs/specs/changes/<NNN>-<slug>/` 时复制;目标项目默认不保留 `docs/specs/changes/_template/`。Claude Code adapter 默认把路径级规则 materialize 为 `.claude/rules/`;Codex adapter 优先通过嵌套 `AGENTS.md` 和显式规则章节承载同一语义,并用 `.codex/hooks.json` 映射 runtime enforcement。必要时只把 `.claude/rules/` 当兼容输入读取。
 
 ## 2. 判断是否需要 feature artifact
 

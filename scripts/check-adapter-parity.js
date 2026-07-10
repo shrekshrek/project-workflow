@@ -8,6 +8,7 @@ const claudeSkillsRoot = path.join(repoRoot, "skills");
 const codexPackageRoot = path.join(repoRoot, "plugins", "project-workflow");
 const codexSkillsRoot = path.join(repoRoot, "plugins", "project-workflow", "skills");
 const actionsRoot = path.join(repoRoot, "docs", "actions");
+const claudeAgentsRoot = path.join(repoRoot, "agents");
 const claudeManifestPath = path.join(repoRoot, ".claude-plugin", "plugin.json");
 const codexManifestPath = path.join(repoRoot, "plugins", "project-workflow", ".codex-plugin", "plugin.json");
 
@@ -53,6 +54,14 @@ const codexRuleBridgeMarkers = [
   "unsupported",
   "ambiguous",
   "L3",
+];
+const expectedReviewerAdapters = [
+  "agents-md-reviewer",
+  "codebase-explorer",
+  "decision-completeness-auditor",
+  "spec-quality-reviewer",
+  "spec-reviewer",
+  "tech-researcher",
 ];
 
 function skillNames(root) {
@@ -159,10 +168,16 @@ for (const name of expected) {
       if (lifecycleLinkActions.includes(name) && !content.includes(lifecycleLinkScriptRef)) {
         problems.push(`Codex ${name}: lifecycle link relocator reference missing`);
       }
-    } else if (content.includes(codexRuleBridgeRef)) {
-      problems.push(`Claude ${name}: Codex-only scoped-rule bridge leaked into Claude runtime adapter`);
-    } else if (lifecycleLinkActions.includes(name) && !content.includes(lifecycleLinkScriptRef)) {
-      problems.push(`Claude ${name}: lifecycle link relocator reference missing`);
+    } else {
+      const canonicalRuntimeRef = `\${CLAUDE_PLUGIN_ROOT}/docs/actions/${name}.md`;
+      if (!content.includes(canonicalRuntimeRef) || !content.includes("Read") || !content.includes("completely")) {
+        problems.push(`Claude ${name}: installed-plugin canonical Read must use ${canonicalRuntimeRef}`);
+      }
+      if (content.includes(codexRuleBridgeRef)) {
+        problems.push(`Claude ${name}: Codex-only scoped-rule bridge leaked into Claude runtime adapter`);
+      } else if (lifecycleLinkActions.includes(name) && !content.includes(lifecycleLinkScriptRef)) {
+        problems.push(`Claude ${name}: lifecycle link relocator reference missing`);
+      }
     }
   }
 
@@ -174,6 +189,19 @@ for (const name of expected) {
         problems.push(`Codex ${name}: forbidden Claude-native marker ${JSON.stringify(marker)}`);
       }
     }
+  }
+}
+
+for (const name of expectedReviewerAdapters) {
+  const adapterPath = path.join(claudeAgentsRoot, `${name}.md`);
+  if (!fs.existsSync(adapterPath)) {
+    problems.push(`missing Claude reviewer adapter agents/${name}.md`);
+    continue;
+  }
+  const content = fs.readFileSync(adapterPath, "utf8");
+  const canonicalRuntimeRef = `\${CLAUDE_PLUGIN_ROOT}/docs/reviewers/${name}.md`;
+  if (!content.includes(canonicalRuntimeRef) || !content.includes("read completely")) {
+    problems.push(`Claude reviewer ${name}: canonical Read must use ${canonicalRuntimeRef}`);
   }
 }
 

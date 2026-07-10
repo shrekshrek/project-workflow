@@ -159,6 +159,16 @@ for (const config of [
   }
 }
 
+const codexHookConfig = fs.readFileSync(path.join(repoRoot, "template", ".codex", "hooks.json"), "utf8");
+if (!codexHookConfig.includes("commandWindows") || !codexHookConfig.includes("powershell -NoProfile")) {
+  problems.push("template/.codex/hooks.json: Windows command override is required");
+}
+
+const hookContent = fs.readFileSync(hookPath, "utf8");
+for (const marker of ["Scripts', `${name}.exe`", "Scripts', `${name}.cmd`", ".bin', `${name}.cmd`"]) {
+  if (!hookContent.includes(marker)) problems.push(`template hook: missing Windows local-bin marker ${JSON.stringify(marker)}`);
+}
+
 if (problems.length > 0) {
   console.error("Template contract check failed:");
   for (const problem of problems) console.error(`- ${problem}`);

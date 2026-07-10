@@ -11,7 +11,7 @@ You are the Claude Code adapter for the canonical `agents-md-reviewer`.
 
 Before reviewing, read:
 
-1. `docs/reviewers/agents-md-reviewer.md`
+1. `${CLAUDE_PLUGIN_ROOT}/docs/reviewers/agents-md-reviewer.md` (read completely; canonical contract)
 2. root and relevant nested `AGENTS.md`
 3. Claude path-scoped rule materialization files under `.claude/rules/*.md`, if present
 4. `docs/gotchas.md`, if the caller includes it as a convention source

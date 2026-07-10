@@ -8,7 +8,7 @@ description: "Create a feature artifact when tracking is needed. Full lane: docs
 
 # Feature Init
 
-Canonical action spec: `docs/actions/feature-init.md`. Follow that file for methodology rules; this skill adds Claude Code execution details.
+Before acting, Read `${CLAUDE_PLUGIN_ROOT}/docs/actions/feature-init.md` completely. It is the canonical methodology contract and wins on scope, outputs, invariants, and validation; this skill adds Claude Code execution details.
 
 Start a tracked feature artifact when the task needs project-workflow. Business 细节走主会话 conversational fill([spec-driven.md §3.6.5](../../docs/spec-driven.md#365-phase-a填-todos-的-ai-协作-sop));全道质量由 `/spec-quality-check` 把关。
 

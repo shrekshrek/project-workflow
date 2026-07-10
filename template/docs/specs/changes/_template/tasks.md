@@ -4,21 +4,17 @@
 
 ## 1. 任务清单
 
-### Setup(若 plan 标注新增模块)
-- [ ] 建 `<tier>/<module-path>/` 目录
-- [ ] 五件套文件(`{__init__,models,schemas,service,router}.py` 或 tier 等价)
-- [ ] 注册 router 到 `main.py` / wire into app
-- [ ] Alembic migration(若改 DB schema)
+### Setup(仅当 plan 标注新增 component/module)
+- [ ] 建 `<component-or-tier>/<module-path>/` 及该栈所需的最小入口文件
+- [ ] 接入父级 composition/registration point
+- [ ] 若 plan 明确包含持久化结构变化,添加并验证对应 migration
 
-### Backend
-- [ ] {{TODO 拆 30min-2h 颗粒度}}
+### `<component-or-tier>`
+- [ ] {{TODO 按实际受影响 component 分组,拆 30min-2h 颗粒度;复制本节可增加分组}}
 
-### Frontend(若适用)
-- [ ] {{TODO}}
-
-### Tests
+### Verification
 - [ ] {{TODO 单测}}
-- [ ] {{TODO 集成 / e2e}}
+- [ ] {{TODO 适用时添加集成 / e2e / CLI / 数据断言}}
 
 ### Acceptance
 - [ ] spec §4 Verification 全部 pass

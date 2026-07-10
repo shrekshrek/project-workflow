@@ -7,7 +7,7 @@ paths:
 # Testing Conventions
 
 > **方法论占位模板** —— 各栈自填测试框架、命令、覆盖率门槛。
-> 后端测试模式踩坑见 [`docs/gotchas.md`](../../docs/gotchas.md) #9-#10(每请求独立 session、NullPool 等)。
+> 若本项目已有可复发的测试基础设施故障,记录在 [`docs/gotchas.md`](../../docs/gotchas.md),不要从其他技术栈复制默认答案。
 
 ## 测试框架
 

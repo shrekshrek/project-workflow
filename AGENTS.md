@@ -63,7 +63,9 @@ scripts/
 ├── check-adapter-parity.js  check 9+9 action parity + runtime isolation
 ├── check-template-contracts.js  check Claude rule frontmatter + shared hook input handling
 ├── relocate-markdown-links.cjs  preserve local links after feature archive moves
-└── check-lifecycle-links.cjs  regression-check archive link relocation
+├── check-lifecycle-links.cjs  regression-check archive link relocation
+├── check-markdown-links.cjs  verify local Markdown destinations across source + runtime adapters + release docs
+└── check-workflow-contracts.cjs  check lane / retrofit / verdict / hook / neutral-template semantics
 ```
 
 ## 修改纪律
@@ -76,6 +78,8 @@ scripts/
 - **Adapter parity**:修改任一端 skill 或 action 后运行 `node scripts/check-adapter-parity.js`;Codex skill 不得出现 Claude-only 交互、具名 agent dispatch 或 `/project-workflow:*` 命令
 - **Template contracts**:修改 `.claude/rules/` 模板或共享 hook 后运行 `node scripts/check-template-contracts.js`;规则只接受官方 `paths:` YAML list,description 无字符硬门槛,malformed hook input 必须安全退出
 - **Lifecycle links**:修改 `feature-archive` / `spec-reconcile` 后运行 `node scripts/check-lifecycle-links.cjs`;归档移动必须重定位并验证本地 Markdown links
+- **Workflow contracts**:修改 lane classification / retrofit / verdict / hook activation / feature templates 后运行 `node scripts/check-workflow-contracts.cjs`
+- **Docs links**:修改或移动 Markdown 后运行 `node scripts/check-markdown-links.cjs`
 - **不在方法论里塞栈细节**(workflow.md / gotchas.md 通用,具体命令样例引用外部仓库)
 - **plugin skill 简洁**:每个 SKILL.md < 200 行,职责单一;超长的静态查表** relocation** 到同目录 `reference.md`(如 `skills/project-init/reference.md`)—— 不是删内容;SKILL.md 标出强制 Read 点,执行时必须先读对应节再填表
 - **skill description 写好**:Claude 据此判断何时自动调用

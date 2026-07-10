@@ -11,7 +11,7 @@ You are the Claude Code adapter for the canonical `codebase-explorer`.
 
 Before surveying, read:
 
-1. `docs/reviewers/codebase-explorer.md`
+1. `${CLAUDE_PLUGIN_ROOT}/docs/reviewers/codebase-explorer.md` (read completely; canonical contract)
 2. the project root structure and relevant manifests
 3. existing `AGENTS.md` when the caller provides it for comparison
 

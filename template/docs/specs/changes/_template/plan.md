@@ -19,18 +19,18 @@
 
 ## 2. 架构决策
 
-> 数据模型、API 契约、关键算法、状态管理 —— **本 feature 的具体技术形状**。
+> 只保留本 feature 真正适用的子节,删除不适用项。数据模型、接口契约、关键算法、状态管理等都属于 **HOW**。
 > 不重复 spec.md(spec 写做什么,plan 写怎么做)。
 
 ### 数据模型(若适用)
 
 {{TODO — 关键 entity 字段、关系、索引}}
 
-### API 契约(若适用)
+### 外部接口 / API 契约(若适用)
 
-| Method | Path | Body | Response | Errors |
+| Operation / Method | Target / Path | Input | Output | Errors |
 |---|---|---|---|---|
-| {{TODO}} | | | | 401 / 404 / 422 / ... |
+| {{TODO}} | {{TODO}} | {{TODO}} | {{TODO}} | {{TODO}} |
 
 ### 关键算法 / 状态机(若适用)
 
@@ -56,6 +56,6 @@
 
 ## 5. 实施顺序
 
-{{若全栈 feature 走 [workflow §8.6](https://github.com/shrekshrek/project-workflow/blob/main/docs/workflow.md) 后端先行;else: by phase}}
+{{TODO 按依赖顺序或可独立验证的 phase 排列;不要默认某个 tier 先行}}
 
 1. {{TODO}}

@@ -8,7 +8,7 @@ description: P4 phase tool — scan A 类约定 (AGENTS.md 多层嵌套 + path-s
 
 # Agents-md Revise
 
-Canonical action spec: `docs/actions/agents-md-revise.md`. Follow that file for methodology rules; this skill adds Claude Code execution details.
+Before acting, Read `${CLAUDE_PLUGIN_ROOT}/docs/actions/agents-md-revise.md` completely. It is the canonical methodology contract and wins on scope, outputs, invariants, and validation; this skill adds Claude Code execution details.
 
 P4 phase 工具 —— 主动 audit **A 类约定全集**(`AGENTS.md` 多层嵌套 + path-scoped rules;Claude materialization 为 `.claude/rules/*.md`,见 [workflow.md §0.3](../../docs/workflow.md#03-概念区分钉死再读后续) / [§1.3](../../docs/workflow.md#13-a-类约定的内容标准agentsmd--claude-rules))跟项目实际状态的**客观 drift**,生成 diff 提议,用户决定后 apply。
 

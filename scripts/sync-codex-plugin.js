@@ -10,6 +10,7 @@ const sourceRepoUrl = "https://github.com/shrekshrek/project-workflow/blob/main"
 
 const copiedDirs = [
   ["docs/actions", "docs/actions"],
+  ["docs/examples", "docs/examples"],
   ["docs/reviewers", "docs/reviewers"],
   ["template", "template"],
 ];
@@ -24,10 +25,6 @@ const copiedFiles = [
   ["docs/quickstart.md", "docs/quickstart.md"],
   ["docs/adapters/codex-scoped-rule-bridge.md", "docs/adapters/codex-scoped-rule-bridge.md"],
   ["scripts/relocate-markdown-links.cjs", "scripts/relocate-markdown-links.cjs"],
-];
-
-const templateDocFiles = [
-  ["docs/gotchas.md", "template/docs/gotchas.md"],
 ];
 
 const removedTemplateFiles = [
@@ -98,11 +95,6 @@ function copyDir(source, target) {
   fs.cpSync(source, target, { recursive: true });
 }
 
-function copyFile(source, target) {
-  fs.mkdirSync(path.dirname(target), { recursive: true });
-  fs.copyFileSync(source, target);
-}
-
 function copyTextFile(source, target, transform = (value) => value) {
   fs.mkdirSync(path.dirname(target), { recursive: true });
   fs.writeFileSync(target, transform(fs.readFileSync(source, "utf8")));
@@ -129,18 +121,6 @@ for (const targetRel of removedTemplateFiles) {
     }
   } else {
     fs.rmSync(target, { force: true });
-  }
-}
-
-for (const [sourceRel, targetRel] of templateDocFiles) {
-  const source = path.join(repoRoot, sourceRel);
-  const target = path.join(repoRoot, targetRel);
-  if (checkOnly) {
-    if (!textFileEquals(source, target)) {
-      problems.push(`diff ${path.relative(repoRoot, target)}`);
-    }
-  } else {
-    copyFile(source, target);
   }
 }
 

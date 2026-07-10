@@ -31,11 +31,19 @@ let projectRoot = process.env.CLAUDE_PROJECT_DIR || process.cwd();
 // 解决"用户没激活 venv 就开 AI 工具时 hook 用错版本"问题
 function localBin(name) {
   const root = projectRoot;
-  const candidates = [
+  const windowsCandidates = [
+    path.join(root, '.venv', 'Scripts', `${name}.exe`),
+    path.join(root, '.venv', 'Scripts', `${name}.cmd`),
+    path.join(root, 'venv', 'Scripts', `${name}.exe`),
+    path.join(root, 'venv', 'Scripts', `${name}.cmd`),
+    path.join(root, 'node_modules', '.bin', `${name}.cmd`),
+  ];
+  const posixCandidates = [
     path.join(root, '.venv', 'bin', name),         // Python venv
     path.join(root, 'venv', 'bin', name),          // Python venv 替代名
     path.join(root, 'node_modules', '.bin', name), // Node 工具
   ];
+  const candidates = process.platform === 'win32' ? windowsCandidates : posixCandidates;
   for (const c of candidates) if (fs.existsSync(c)) return c;
   return name; // fallback: PATH 查找
 }

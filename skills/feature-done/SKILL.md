@@ -8,7 +8,7 @@ description: Default end-of-feature gate. Runs L1 (mechanical checks) → L2 (AG
 
 # Feature Done
 
-Canonical action spec: `docs/actions/feature-done.md`. Follow that file for methodology rules; this skill adds Claude Code execution details.
+Before acting, Read `${CLAUDE_PLUGIN_ROOT}/docs/actions/feature-done.md` completely. It is the canonical methodology contract and wins on scope, outputs, invariants, and validation; this skill adds Claude Code execution details.
 
 唯一端点入口:L1 → L2 → L3 → current-truth check → proof bundle,单一 verdict。
 
@@ -137,6 +137,8 @@ User input: `$ARGUMENTS` — feature slug or "current"
 **门健康遥测**(服务 [workflow.md §7.9/§7.10](../../docs/workflow.md#79-不要让-review-门空转太安静) 的门校准):数据源是近 2-3 个已交付 feature 的 `tasks.md` proof bundle(grep Item 3 / 4 / 5b 的 finding 计数,不新建存储)。某门(L2 / L3 / drift 5b)**连续 ≥ 3 个 feature 任何 severity 都是零** → 提示 "「<门>」连续 N 个 feature 零产出 —— 约定可能已内化,考虑降频或退轻车道(§7.9)"。只提示不决策;读不到历史 proof bundle 就省略本行,不算错误。
 
 Verdict 判定:
+
+Verdict contract: L1 failure or unreliable required checks = `BLOCKED`; fixable L2/L3/current-truth findings = `NEEDS WORK`; all required gates and proof complete = `READY`.
 
 | L1 | L2 | L3 | Verdict |
 |---|---|---|---|

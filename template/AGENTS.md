@@ -89,9 +89,9 @@ docs/
 - Commit 格式:{{COMMIT_FORMAT}}(如 conventional commits)
 - Proof bundle:填入 `docs/specs/changes/<NNN>-<slug>/tasks.md` 末尾 `## Proof Bundle` 节;走 PR 时复制该节到 PR 描述
 
-## 工程坑清单(P0 必扫)
+## 项目工程坑
 
-P0 完成、第一次起服务之前,务必扫一遍工程陷阱清单 [`docs/gotchas.md`](docs/gotchas.md)。10 条覆盖 Docker / 包管理 / 测试基建 / async 跨 loop 等,**全是 AI 第一次搭项目会踩**。
+[`docs/gotchas.md`](docs/gotchas.md) 只记录本项目已经验证过、可能复发的工程陷阱。新项目可以为空;遇到真实故障后再沉淀,不要复制与当前技术栈无关的经验。
 
 ## 代码修改原则(KISS + 最小合理变更)
 
@@ -114,19 +114,20 @@ P0 完成、第一次起服务之前,务必扫一遍工程陷阱清单 [`docs/go
 
 - ✅ **Always**(允许且无需确认):
   - 加测试
-  - 改模块内部
-  - 写 schema
+  - 在已确认范围内修改模块内部实现
+  - 运行项目已声明的检查命令
 
 - ⚠️ **Ask first**(高影响,需要确认):
   - 改 API 契约
   - 加依赖
-  - 改数据库迁移
-  - 改权限定义
+  - 做不可逆的数据或状态迁移
+  - 改认证、授权或安全边界
+  - 触发仓库外部写操作
 
 - 🚫 **Never**:
   - 提交 `.env*` / secret
   - 跳过测试
-  - 用 raw SQL 绕开 ORM(如适用)
+  - 在未获授权时执行破坏性操作或扩大任务范围
 
 ---
 

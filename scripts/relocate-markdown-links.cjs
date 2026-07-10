@@ -119,9 +119,10 @@ function replaceInlineDestinations(content, relocate) {
 }
 
 function transformOutsideInlineCode(line, transform) {
-  let output = "";
+  let masked = "";
   let cursor = 0;
   const backticks = /`+/g;
+  const spans = [];
 
   while (cursor < line.length) {
     backticks.lastIndex = cursor;
@@ -135,12 +136,17 @@ function transformOutsideInlineCode(line, transform) {
     while (closing && closing[0].length !== marker.length) closing = closingPattern.exec(line);
     if (!closing) break;
 
-    output += transform(line.slice(cursor, opening.index));
-    output += line.slice(opening.index, closingPattern.lastIndex);
+    masked += line.slice(cursor, opening.index);
+    const token = `\u0000PW_INLINE_CODE_${spans.length}\u0000`;
+    spans.push([token, line.slice(opening.index, closingPattern.lastIndex)]);
+    masked += token;
     cursor = closingPattern.lastIndex;
   }
 
-  return output + transform(line.slice(cursor));
+  masked += line.slice(cursor);
+  let output = transform(masked);
+  for (const [token, original] of spans) output = output.split(token).join(original);
+  return output;
 }
 
 function transformMarkdown(content, transform) {

@@ -5,7 +5,7 @@
 
 This file is retained only as the historical record that introduced the Codex bridge. Do not use
 its original scope-parsing proposal as an implementation contract. The current contract is
-[`docs/adapters/codex-scoped-rule-bridge.md`](../adapters/codex-scoped-rule-bridge.md).
+[`docs/adapters/codex-scoped-rule-bridge.md`](../../adapters/codex-scoped-rule-bridge.md).
 
 ## Goal
 

@@ -11,7 +11,7 @@ You are the Claude Code adapter for the canonical `tech-researcher`.
 
 Before researching, read:
 
-1. `docs/reviewers/tech-researcher.md`
+1. `${CLAUDE_PLUGIN_ROOT}/docs/reviewers/tech-researcher.md` (read completely; canonical contract)
 2. any project context supplied by the caller
 3. current docs/web sources when freshness could affect the recommendation
 
