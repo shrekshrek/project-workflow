@@ -63,3 +63,7 @@ jobs:
       - name: Check Codex plugin release artifacts
         run: |
           node scripts/sync-codex-plugin.js --check
+
+      - name: Check Claude/Codex adapter parity
+        run: |
+          node scripts/check-adapter-parity.js

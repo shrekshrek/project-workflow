@@ -11,11 +11,11 @@ const sourceRepoUrl = "https://github.com/shrekshrek/project-workflow/blob/main"
 const copiedDirs = [
   ["docs/actions", "docs/actions"],
   ["docs/reviewers", "docs/reviewers"],
-  ["skills", "skills"],
   ["template", "template"],
 ];
 
 const copiedFiles = [
+  ["skills/project-init/reference.md", "skills/project-init/reference.md"],
   ["docs/workflow.md", "docs/workflow.md"],
   ["docs/spec-driven.md", "docs/spec-driven.md"],
   ["docs/cross-tool-methodology.md", "docs/cross-tool-methodology.md"],
@@ -32,9 +32,14 @@ const removedTemplateFiles = [
   "template/docs/spec-driven.md",
 ];
 
+const removedPluginDirs = [
+  "agents",
+];
+
 function transformPluginDoc(content) {
   return content
     .replace(/\]\(\.\.\/README\.md([^)#]*)?(#[^)]+)?\)/g, `](${sourceRepoUrl}/README.md$2)`)
+    .replace(/\]\(\.\.\/scripts\/([^)]+)\)/g, `](${sourceRepoUrl}/scripts/$1)`)
     .replace(/\]\(\.\.\/agents\/([^)]+)\)/g, "](reviewers/$1)");
 }
 
@@ -102,6 +107,17 @@ function copyTextFile(source, target, transform = (value) => value) {
 }
 
 const problems = [];
+
+for (const targetRel of removedPluginDirs) {
+  const target = path.join(pluginRoot, targetRel);
+  if (checkOnly) {
+    if (walkFiles(target).length > 0) {
+      problems.push(`extra ${path.relative(repoRoot, target)}/`);
+    }
+  } else {
+    fs.rmSync(target, { recursive: true, force: true });
+  }
+}
 
 for (const targetRel of removedTemplateFiles) {
   const target = path.join(repoRoot, targetRel);

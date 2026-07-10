@@ -9,8 +9,6 @@ description: Initialize a project's v3 starter kit (AGENTS.md + .claude/ + tier-
 
 Canonical action spec: `docs/actions/project-init.md`. Follow that file for methodology rules; this skill adds Claude Code execution details. **静态查表(placeholder 映射 / globs 推导 / mini-Q&A 题库 / defaults 清单)在同目录 [`reference.md`](reference.md)—— 是 relocation 不是删减;Step 4 开始前必须 Read R1-R4+R6,Step 5.1 开始前必须 Read R5,Step 8 报告前 Read R7。不得凭记忆填表。**
 
-Initialize a new (or existing-but-no-AGENTS.md) project's project-workflow baseline. Q&A walks the user through stack and conventions, then writes 10+ files in one pass.
-
 **Use when**: P0 — project's first day, no AGENTS.md yet.
 **Not for**: starting a feature (`/feature-init`) / refreshing existing A 类约定 (`/agents-md-revise`) / scaffold-cloned or retrofit 项目(`/project-personalize`,它处理替换 scaffold defaults、补 tier-level、扫既有代码)。
 
@@ -198,7 +196,3 @@ head -10 .claude/rules/*.md
 | Fullstack 但某 tier 不存在 | 询问是否实际是 (b) Web Backend |
 | 推不出 STYLE_HIGHLIGHT(冷门栈) | 填 1-2 条,删第 3 行 |
 | `find -delete` / `rmdir` 被 sandbox 拦 | 改单文件 `rm` 循环 + `rmdir` |
-
-## Notes
-
-- **跟 feature-init 区别**:feature-init 每 feature 跑一次(P2);project-init 整个项目跑一次(P0)。**方法论本体**:workflow.md §1 P0 —— 不装 plugin 也能纯手工跑。

@@ -55,7 +55,7 @@
 - Worktree / sub-agent 体验已经被本项目验证过
 
 **Codex 的定位**:
-- `AGENTS.md`、skills、plugins、hooks 都有官方机制,适合做第二个正式 adapter
+- `AGENTS.md`、skills、plugins、hooks 都有官方机制;本仓库在 `plugins/project-workflow/` 维护独立 Codex-native adapter,不复制 Claude runtime skill
 - 与 Claude Code 的差异主要在配置格式和触发入口,不在 methodology core
 - 正式安装分发包在 `plugins/project-workflow/`;canonical action 定义仍在 `docs/actions/`
 
@@ -72,6 +72,8 @@
 | 该选一个主 adapter 吗? | 是。先让一个 adapter 稳定,再移植到另一个;不要两边同时发明流程 |
 | Claude/Codex 能共用什么? | `AGENTS.md`, `docs/actions/`, `docs/reviewers/`, `docs/specs/`, `docs/specs/changes/`, ADR, proof bundle, L1/L2/L3 语义 |
 | Claude/Codex 不能共用什么? | plugin manifest、hook 配置、skill 安装路径、sub-agent 配置格式 |
+
+两端不能共用的还包括 **SKILL.md runtime body**:action 语义共用,但交互、命令名、subagent dispatch、plugin-root 解析必须 host-native。源仓库 CI 用 [`scripts/check-adapter-parity.js`](https://github.com/shrekshrek/project-workflow/blob/main/scripts/check-adapter-parity.js) 保证 action 集合相同而不是文件内容相同。
 | 切换工具的成本? | 低到中(weeks),前提是上层资产保持工具无关 |
 
 ### 2.4 Codex native adapter surface

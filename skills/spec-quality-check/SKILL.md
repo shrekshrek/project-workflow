@@ -113,18 +113,18 @@ Sub-agent 返回结构化报告(Q3/Q4/Q5/Q7 各项 ✅/⚠️边缘/❌ + spec.m
 - {{N/7}} passed, {{M/7}} borderline, {{K/7}} failed
 - **Ready for implementation?**
   - 0 failed + 0 borderline → ✅ Ready
-  - 0 failed + ≤2 borderline → ⚠️ Proceed with caution(borderline 项有空再修)
-  - ≥1 failed → ❌ Do not implement yet — fix failures first
+  - 0 failed + ≥1 borderline → ⚠️ Borderline;记录风险、接受理由和后续修法后才可实施
+  - ≥1 failed → ❌ Blocked;修完并重跑后才可实施
 ```
 
 ## Step 5 — 建议下一步
 
-> 本 gate **不强制修**:Step 4 verdict 已含每条失败的修法指引(指向具体节);用户自行判断是否 ship / 修,skill 不替用户决定、不再逐条追问。
+> 本 gate 不直接代修 artifact,但 **Failed 阻断实施**;Borderline 只有在 plan.md 风险节或 tasks.md 实施记录中显式记录风险、接受理由和后续修法后才可继续。
 > 本 gate **不自动翻 `spec.md` 状态为 `已确认`**:`已确认` 是用户接受 spec 并准备开始实施的冻结标记。Ready / Caution 后,提示用户开始实施前标记 `已确认`;只有用户明确要求时才替用户改这一行。
 
 ```markdown
 📋 下一步:
-- ✅ Ready / ⚠️ Caution → 进入实施(完整 post-gate roadmap 见 [workflow.md §3.0](../../docs/workflow.md#30-p2-流程全景skill-视角))
+- ✅ Ready / ⚠️ Borderline 已记录 → 进入实施(完整 post-gate roadmap 见 [workflow.md §3.0](../../docs/workflow.md#30-p2-流程全景skill-视角))
 - ❌ Failed → 修完后**重跑** `/project-workflow:spec-quality-check` verify
 ```
 
@@ -135,7 +135,7 @@ Sub-agent 返回结构化报告(Q3/Q4/Q5/Q7 各项 ✅/⚠️边缘/❌ + spec.m
 | 找不到 feature 目录 | 提示用户列 `ls docs/specs/changes/` 自选 |
 | spec.md 缺六要素中的一个 | M1 ❌,sub-agent 不跑(没意义)|
 | spec.md 是空骨架(全是 `{{TODO}}`)| 提示用户 "spec 还没填,先跟 AI 在对话里填 §1/§3/§4,再跑 quality-check" |
-| Sub-agent 返回 "Outcomes 模糊但可接受" | 标 ⚠️ borderline,不强制改 |
+| Sub-agent 返回 "Outcomes 模糊但可接受" | 标 ⚠️ borderline;不强制改正文,但实施前必须记录接受风险 |
 
 ## Notes
 

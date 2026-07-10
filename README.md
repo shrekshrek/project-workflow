@@ -50,8 +50,8 @@ The intended outcome is practical: fewer repeated reminders, fewer unreviewed AI
 |---|---|---|
 | 📘 **Methodology core** | 5-phase blueprint (P0 Project Setup / P2 Feature + Module Setup sub-flow / P3 Maintenance / P4 Drift Refresh; no P1 by design — see workflow.md §0.2) + canonical action specs + 4 pillars + cross-tool boundaries + spec-driven 3-file template + 10 工程陷阱 | [`docs/`](docs/) |
 | 🧰 **Starter template** | Baseline project scaffold: portable core files plus current runtime enforcement assets (`CLAUDE.md`, `.claude/` rules/hooks, `.codex/` hooks). It is language/framework-agnostic, but not tool-empty. | [`template/`](template/) |
-| 🤖 **Claude Code adapter** | Slash commands automating high-ROI workflow actions | [`.claude-plugin/`](.claude-plugin/) + [`skills/`](skills/) |
-| 🧩 **Codex adapter** | Installable Codex plugin package for public workflow actions | [`plugins/project-workflow/`](plugins/project-workflow/) + [`.agents/plugins/`](.agents/plugins/) |
+| 🤖 **Claude Code adapter** | 9 Claude-native slash-command skills + 6 named sub-agents | [`.claude-plugin/`](.claude-plugin/) + [`skills/`](skills/) + [`agents/`](agents/) |
+| 🧩 **Codex adapter** | 9 Codex-native skills using bundled canonical reviewer specs | [`plugins/project-workflow/`](plugins/project-workflow/) + [`.agents/plugins/`](.agents/plugins/) |
 
 > **Concrete project example** (example-of-one, not authoritative source): [`shrekshrek/full-stack-scaffolding-fastapi-nuxt4`](https://github.com/shrekshrek/full-stack-scaffolding-fastapi-nuxt4) — a FastAPI + Nuxt 4 full-stack scaffold that follows project-workflow methodology. The methodology's arguments are self-contained in `docs/`; the scaffold is just one concrete instantiation.
 
@@ -76,7 +76,7 @@ Claude Code exposes the same 9 workflow actions as Codex — one entry point per
 
 ### Codex plugin
 
-The Codex plugin package lives at [`plugins/project-workflow/`](plugins/project-workflow/), and this repo exposes it through [`.agents/plugins/marketplace.json`](.agents/plugins/marketplace.json). Codex exposes the same 9 workflow actions.
+The Codex plugin package lives at [`plugins/project-workflow/`](plugins/project-workflow/), and this repo exposes it through [`.agents/plugins/marketplace.json`](.agents/plugins/marketplace.json). Codex exposes the same 9 workflow actions through its own native skill implementations; the Codex skills are not copies of the Claude runtime adapter.
 
 Install the GitHub version in Codex:
 
@@ -166,7 +166,7 @@ The plugin identity is `project-workflow` for both Claude Code and Codex. Local 
 
 ## Reviewer Agents
 
-Canonical reviewer/auditor methodology lives in [`docs/reviewers/`](docs/reviewers/). Claude files in [`agents/`](agents/) are thin runtime adapters that point back to those specs. Codex plugin skills read the same reviewer specs directly and may use any available Codex subagent; custom-agent name dispatch is not required for correctness.
+Canonical reviewer/auditor methodology lives in [`docs/reviewers/`](docs/reviewers/). Claude files in [`agents/`](agents/) are thin runtime adapters that point back to those specs. Codex-native skills read the bundled reviewer specs directly and may use any available general subagent, with main-session fallback; the Codex package does not ship Claude named-agent adapters.
 
 | Role | Canonical spec | Claude adapter | Codex adapter | Used by |
 |---|---|---|---|---|
@@ -179,19 +179,22 @@ Canonical reviewer/auditor methodology lives in [`docs/reviewers/`](docs/reviewe
 
 ## Maintaining the Codex package
 
-The Codex plugin contains a bundled copy of core docs and `template/` because installed Codex plugins do not share the Claude Code plugin install directory. Treat those bundled files as release artifacts. After changing `docs/actions/`, `docs/reviewers/`, selected core docs, or `template/`, run:
+The Codex plugin contains a bundled copy of core docs and `template/` because installed Codex plugins do not share the Claude Code plugin install directory. Treat those bundled files as release artifacts. Its `SKILL.md` bodies are a separately maintained Codex-native adapter and are deliberately not overwritten by the sync script; shared non-runtime references such as `project-init/reference.md` are still synchronized. After changing shared core assets or either adapter, run:
 
 ```bash
 node scripts/sync-codex-plugin.js
 node scripts/sync-codex-plugin.js --check
+node scripts/check-adapter-parity.js
 ```
+
+The parity check enforces the same 9 public actions on both adapters, canonical action references, the `< 200` line limit, and absence of Claude-only runtime markers in Codex skills.
 
 ## Read this first
 
 - [`docs/project-workflow-overview.drawio`](docs/project-workflow-overview.drawio) — ⭐ Visual one-page overview (2 tabs: Lifecycle + Skill ↔ Agent dispatch). Open in [draw.io](https://app.diagrams.net) or VS Code Draw.io Integration extension.
 - [`docs/quickstart.md`](docs/quickstart.md) — shortest daily path for using project-workflow in a real project
 - [`docs/actions/`](docs/actions/) — canonical workflow action specs used by all runtime adapters
-- [`docs/reviewers/`](docs/reviewers/) — canonical reviewer/auditor/researcher specs used by Claude and Codex agent adapters
+- [`docs/reviewers/`](docs/reviewers/) — canonical reviewer/auditor/researcher specs used by both runtime adapters
 - [`docs/workflow.md`](docs/workflow.md) — ⭐ Core 5-phase blueprint
 - [`docs/cross-tool-methodology.md`](docs/cross-tool-methodology.md) — core vs runtime adapter boundaries for Claude Code / Codex / manual use
 - [`docs/gotchas.md`](docs/gotchas.md) — ⭐ 10 engineering pitfalls (from real validation)
@@ -213,7 +216,7 @@ v1 source preserved at git tag [`v1.1.0`](../../tree/v1.1.0). Install via `git c
 
 ## Status
 
-The current release ships a mature **Claude Code adapter** with **9 skills + 6 sub-agents** covering the full P0→P2→P3→P4 lifecycle plus post-delivery spec lifecycle management, and an action-complete **Codex plugin** exposing the same 9 workflow skills. Both adapters share one action surface; there is no separate helper-command layer.
+The current release ships a mature **Claude-native adapter** with **9 skills + 6 named sub-agents** and a separate **Codex-native plugin adapter** exposing the same 9 workflow skills through bundled canonical action/reviewer specs. Both adapters share one action surface and one methodology core; runtime interaction, subagent dispatch, commands, and plugin-root handling stay native to each host.
 
 The methodology docs (`workflow.md` / `actions/` / `reviewers/` / `cross-tool-methodology.md` / `spec-driven.md` / `gotchas.md` / `tooling.md`) are complete and self-contained. A concrete instantiation exists at the public scaffold linked above, but the docs do not depend on it for authority.
 

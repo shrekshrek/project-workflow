@@ -75,6 +75,8 @@ Codex supports additional instruction override filenames, but project-workflow d
 
 Adapter 设计必须遵守一个约束:**不要复制 methodology core**。例如 Claude 和 Codex 可以各有 hook 配置,但 action 的触发/输入/输出/不变量只能在 `docs/actions/` 定义一次;reviewer 的任务方法只能在 `docs/reviewers/` 定义一次;L1/L2/L3 的含义只能在 core 文档定义一次。
 
+Runtime adapter 本身则应保持 **host-native 且薄**:根 `skills/` 使用 Claude Code 的交互、具名 agent 和 slash-command 语义;`plugins/project-workflow/skills/` 使用 Codex 的 `$skill`、通用 subagent/main-session fallback 和 Codex 工具语义。两端保持同一 action 集合并引用同名 canonical spec,但不得把一端 SKILL.md 原样复制给另一端。源仓库的 [`scripts/check-adapter-parity.js`](../scripts/check-adapter-parity.js) 机械校验 action parity、canonical 引用、行数和 runtime marker 隔离。
+
 Adapter 不设 helper 命令层:`feature-done` 是端点的唯一入口,其内部层(L1/L2/L3/proof bundle)的局部重跑通过重跑该 action(幂等 + 缓存复用)或在会话内直接 dispatch `docs/reviewers/` 定义的 reviewer 完成。历史上 Claude Code 曾有 `/l1-review` / `/l2-review` / `/l3-review` / `/proof-bundle` 四个 helper skill,已在 v3.0 合并进 `feature-done`。
 
 ---
@@ -124,8 +126,8 @@ The near-term target is:
 
 1. Keep Claude Code plugin as the first mature adapter.
 2. Make the methodology docs adapter-neutral.
-3. Package the installable Codex distribution in `plugins/project-workflow/`; it may duplicate core docs and templates as a release artifact, but must reference the same `docs/actions/` and `docs/reviewers/` semantics.
+3. Package the installable Codex distribution in `plugins/project-workflow/`; it may duplicate core docs and templates as release artifacts, while its skills remain a separate Codex-native adapter referencing the same `docs/actions/` and `docs/reviewers/` semantics.
 4. Do not keep a second repo-local Codex skills tree once the plugin package exists; duplicate runtime entry points make discovery and maintenance worse.
-5. Do not make Codex custom-agent name dispatch required for correctness. Codex skills should run the same reviewer spec through any available subagent or the main session.
+5. Do not make Codex custom-agent name dispatch required for correctness. Codex skills run the same reviewer spec through any available general subagent or the main session; Claude named-agent wrappers stay outside the Codex package.
 
 This keeps the project from turning into two diverging tools that happen to share a name.

@@ -1,6 +1,6 @@
 {
   "name": "project-workflow",
-  "version": "3.1.4",
+  "version": "3.2.0",
   "description": "Spec-driven project workflow for Codex and Claude Code with project initialization, feature specs, reviews, delivery gates, and spec lifecycle management.",
   "author": {
     "name": "shrek.wang"
@@ -29,9 +29,7 @@
     "defaultPrompt": [
       "Use $project-init to initialize this repository.",
       "Use $feature-init to create a feature artifact when needed.",
-      "Use $feature-done to review completed feature work.",
-      "Use $feature-archive to close delivered specs into current truth and archive history.",
-      "Use $spec-reconcile when accumulated specs conflict."
+      "Use $feature-done to review completed feature work."
     ]
   }
 }

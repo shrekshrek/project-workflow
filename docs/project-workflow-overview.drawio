@@ -8,7 +8,7 @@
         <mxCell id="title" value="project-workflow v3 — Spec-driven AI development blueprint" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=22;fontStyle=1;fontColor=#1A237E;" vertex="1" parent="1">
           <mxGeometry x="40" y="20" width="1620" height="32" as="geometry"/>
         </mxCell>
-        <mxCell id="subtitle" value="methodology core + Claude/Codex adapters  ·  统一 action surface: 9 workflow skills + 6 sub-agents(Claude 与 Codex 同集,无 helper 层)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontColor=#546E7A;" vertex="1" parent="1">
+        <mxCell id="subtitle" value="methodology core + Claude/Codex native adapters  ·  统一 action surface: 双端各 9 skills;Claude 6 named agents,Codex 复用 reviewer specs" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontColor=#546E7A;" vertex="1" parent="1">
           <mxGeometry x="40" y="54" width="1620" height="20" as="geometry"/>
         </mxCell>
 
@@ -231,7 +231,7 @@
         <mxCell id="title2" value="Skill ↔ Sub-agent dispatch network" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=20;fontStyle=1;fontColor=#1A237E;" vertex="1" parent="1">
           <mxGeometry x="40" y="20" width="1320" height="30" as="geometry"/>
         </mxCell>
-        <mxCell id="subtitle2" value="9 skills (左) 调用 6 sub-agents (右)。Sub-agent 上下文独立、read-only 主导;局部复查也可在主会话直接 dispatch reviewer。" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontColor=#546E7A;" vertex="1" parent="1">
+        <mxCell id="subtitle2" value="双端各 9 skills (左)复用 6 reviewer specs (右)。Claude 用 named agents;Codex 用 general subagent 或主会话 fallback。" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontColor=#546E7A;" vertex="1" parent="1">
           <mxGeometry x="40" y="54" width="1320" height="20" as="geometry"/>
         </mxCell>
 

@@ -40,7 +40,7 @@ skills/                Claude Code skills(9 个,与 Codex 同一 action surface,
 plugins/
 └── project-workflow/ Codex installable plugin package
     ├── .codex-plugin/plugin.json
-    ├── skills/
+    ├── skills/       Codex-native skills(9 个,与 Claude 同 action surface,独立 runtime adapter)
     ├── docs/
     └── template/      release artifact copied from root template/
 
@@ -61,7 +61,8 @@ docs/                  方法论文档
 └── tooling.md         工具链对比
 template/              starter scaffold(core files + Claude compatibility assets)
 scripts/
-└── sync-codex-plugin.js  sync/check Codex plugin release artifacts
+├── sync-codex-plugin.js  sync/check Codex core release artifacts
+└── check-adapter-parity.js  check 9+9 action parity + runtime isolation
 ```
 
 ## 修改纪律
@@ -70,6 +71,8 @@ scripts/
 - **Action source of truth**:workflow action 的触发、输入、输出、不变量、验证写在 `docs/actions/`;修改 Claude/Codex skill 前先改对应 action spec
 - **Reviewer source of truth**:L2/L3/research/audit 的方法写在 `docs/reviewers/`;修改 `agents/` 或 Codex plugin reviewer 调用前先改对应 reviewer spec
 - **Codex plugin release artifact**:`plugins/project-workflow/docs/` 和 `plugins/project-workflow/template/` 是安装包副本,不要手改;改源目录后运行 `node scripts/sync-codex-plugin.js`
+- **双端 native adapter**:根 `skills/` 是 Claude-native;`plugins/project-workflow/skills/` 是 Codex-native。两边必须保持同一 9-action 集合并引用同名 `docs/actions/`,但 runtime 交互 / subagent / 命令写法分别维护;禁止把一边的 SKILL.md 原样同步到另一边
+- **Adapter parity**:修改任一端 skill 或 action 后运行 `node scripts/check-adapter-parity.js`;Codex skill 不得出现 Claude-only 交互、具名 agent dispatch 或 `/project-workflow:*` 命令
 - **不在方法论里塞栈细节**(workflow.md / gotchas.md 通用,具体命令样例引用外部仓库)
 - **plugin skill 简洁**:每个 SKILL.md < 200 行,职责单一;超长的静态查表** relocation** 到同目录 `reference.md`(如 `skills/project-init/reference.md`)—— 不是删内容;SKILL.md 标出强制 Read 点,执行时必须先读对应节再填表
 - **skill description 写好**:Claude 据此判断何时自动调用

@@ -59,8 +59,7 @@ User input: `$ARGUMENTS` — feature slug or "current"
 
 找不到 → 问用户。跑命令(`<cmd> 2>&1`,用 AGENTS.md 原文,不加额外 flag),解析为紧凑报告:lint 错误数 / typecheck 错误数 / tests passed-failed-skipped / coverage / exit code。失败项给 `file:line` + 1 行原因,不 dump 全文。
 
-**L1 红**:STOP。输出失败项 + "Fix L1 before L2/L3."。verdict = 🔴 BLOCKED。
-若 check 需要容器 / server 而未起,fail fast 提示先起再重跑。**不自动 fix**。
+**L1 红**:记 verdict = 🔴 BLOCKED,但继续 L2/L3/current-truth/proof,让一次端点运行留下完整可审计证据。若 check 需要容器 / server 而未起,记录阻塞原因并继续可独立执行的 reviewer。**不自动 fix**。
 
 ## Step 4 — L2 A 类约定合规(缓存有效则复用)
 

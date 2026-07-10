@@ -1,142 +1,32 @@
 ---
 name: spec-quality-check
-model: sonnet
-description: Pre-implementation gate that verifies a feature's spec/plan/tasks quality per spec-driven.md §3.7 7-questions checklist. Mechanical checks (six-elements, "不做" presence, format) + dispatches spec-quality-reviewer sub-agent for subjective items (Outcomes specificity, Constraints真假, verifiable steps). Use AFTER /feature-init + you've filled TODOs, BEFORE starting implementation.
+description: "Run the Codex-native pre-implementation quality gate for a full-lane feature spec, plan, and tasks. Combines mechanical checks with the canonical subjective reviewer and blocks failed artifacts."
 ---
 
-**Response language**: Match the user's prompt language. File citations stay as-is.
+# Spec Quality Check (Codex)
 
-# Spec Quality Check
+Match the user's language. Read [`../../docs/actions/spec-quality-check.md`](../../docs/actions/spec-quality-check.md) and [`../../docs/reviewers/spec-quality-reviewer.md`](../../docs/reviewers/spec-quality-reviewer.md) completely before reviewing.
 
-Canonical action spec: `docs/actions/spec-quality-check.md`. Follow that file for methodology rules; this skill adds Claude Code execution details.
+## Workflow
 
-Run the 7-question quality checklist from [`spec-driven.md §3.7`](../../docs/spec-driven.md#37-specplan-写完后的质量自检7-问-checklist) as a **pre-implementation gate**。
-
-**Use when**: `/feature-init` already ran + you filled in spec.md / plan.md / tasks.md TODOs in the main conversational session — **right before starting implementation**.
-
-**Not for**: spec creation (use `/feature-init`) / mid-implementation revision (use `/spec-revise`) / code-vs-spec compliance review (that's `/feature-done` 的 L3 层).
-
-User input: `$ARGUMENTS` — `<feature-slug>` or empty (use most recent feature).
-
-## Step 1 — 定位 feature
-
-目标解析:
-
-| 输入 | 处理 |
-|---|---|
-| `<slug>` | 找 `docs/specs/changes/<NNN>-<slug>/` |
-| 空 | 用 `docs/specs/changes/` 活动区内 `spec.md` mtime 最新的 feature,排除 `archive/` |
-
-读 `spec.md` + `plan.md` + `tasks.md`。
-
-**change spec 形态判定**(读 `spec.md` 节标题):
-- 含 `## Delta` 或 `## Motivation` → **brownfield**
-- 含 `## 1. Outcomes` → **greenfield**
-- 无法判定 → 看 `## Domain References`;有则 brownfield,无则 greenfield
-
-**车道判定**:`spec.md` 缺失 = **轻车道** → 报 "N/A(轻车道…)" 并退出。
-
-## Step 2 — Mechanical checks (分形 M 表)
-
-逐条机械验证,产出 ✅ / ❌ + 失败原因。**brownfield 不跑 M1/M2 的 Outcomes/Scope 项**,改跑 M1b/M2b。
-
-### Greenfield M 表
-
-| # | 检查 | 实现 |
-|---|---|---|
-| **M1** | 六要素齐(§1–§4 + plan Prior decisions + plan §1 模块影响) | grep `^## ` |
-| **M2** | §2 Scope 有 `**做**` + `**不做**` 各 ≥1 条非 TODO | 节内 grep |
-| **M3** | §4 Verification ≥3 条可测项 | 数 bullet |
-| **M4** | plan §1.1 Sibling Alignment(多模块) | 同旧 |
-| **M5** | tasks ≥3 项 | 同旧 |
-| **M6** | N/A(greenfield 首次归档时由 `/feature-archive` 创建/更新 domain doc) | — |
-| **M7** | N/A | — |
-
-### Brownfield M 表
-
-| # | 检查 | 实现 |
-|---|---|---|
-| **M1b** | Motivation + Domain References + Delta + Constraints + Verification + plan 两要素 | grep 节标题 |
-| **M2b** | Delta 含 Added/Modified/Removed 三子节,至少一处非 TODO | grep |
-| **M3b** | Verification ≥2 条( brownfield 默认) | 数 bullet |
-| **M4** | 同 greenfield | 同旧 |
-| **M5** | 同 greenfield | 同旧 |
-| **M6** | spec 引用 `docs/specs/<area>.md` 且不矛盾,或显式 deviation | 路径 + 对照 |
-| **M7** | 同 M2b(Delta 非空) | 与 M2b 可合并判 |
-
-**M 表共用**:M4/M5 两形态都跑;失败形态专属项则只跑对应表。
-
-## Step 3 — Subjective checks (dispatch spec-quality-reviewer sub-agent)
-
-剩 4 个问题需要主观判断,**dispatch [`spec-quality-reviewer`](../../agents/spec-quality-reviewer.md) sub-agent**:
-
-```
-Task tool:
-  subagent_type: spec-quality-reviewer
-  prompt: """
-    Spec to assess: docs/specs/changes/<NNN>-<slug>/spec.md + plan.md + tasks.md
-
-    Subjective checks (per spec-driven.md §3.7; **shape-aware**):
-      - brownfield: Q3 on Verification; Q4 on Motivation/Delta specificity (NOT domain doc duplication); Q5 Constraints; Q7 tasks
-      - greenfield: Q3–Q5 on §4/§1/§3; Q7 tasks
-
-    Per agent's mandatory 4-phase methodology, return structured report
-    with verdict per question + cited evidence.
-  """
-```
-
-Sub-agent 返回结构化报告(Q3/Q4/Q5/Q7 各项 ✅/⚠️边缘/❌ + spec.md 原文引用 + 修法建议)。
-
-## Step 4 — Aggregate verdict
-
-合并 Step 2(M1-M7)+ Step 3(Q3/Q4/Q5/Q7)→ 7 问 verdict + M6/M7 机械项(Q3 由 Step 3 主观判定为主,M3 计数为辅):
-
-```markdown
-# Spec Quality Check Report — <NNN>-<slug>
-
-## ✅ Passed (N)
-- Q1 六要素齐
-- ...
-
-## ⚠️ Borderline (M)
-- Q4 Outcomes "提升用户体验" 偏模糊。建议改成具体:"<example>"
-- ...
-
-## ❌ Failed (K)
-- Q2 Scope 没写"不做"清单
-  → 修:在 §2 加 "**不做**:" 子节,显式列出 deferred items
-- Q3 Verification 全是 "覆盖率 80%" 这种空话
-  → 修:每条改成可执行断言("POST /todos returns 201 with todo body")
-- ...
+1. Resolve the feature by slug/number, or use the newest active full-lane feature. Exclude `archive/`.
+2. If `spec.md` is absent, report that the light lane does not use this gate and stop without failure.
+3. Detect greenfield vs brownfield from the document shape.
+4. Run the canonical mechanical checks:
+   - required sections and no mission-critical TODOs;
+   - explicit included and excluded scope for greenfield;
+   - concrete Delta with Added/Modified/Removed for brownfield;
+   - executable verification items;
+   - affected modules and sibling alignment where applicable;
+   - implementation-sized tasks with validation/proof work;
+   - current-truth reference and non-contradiction when a domain document exists.
+5. Run the canonical subjective reviewer in a general subagent when available, passing the three artifact paths and detected shape. If no subagent is available, execute the same methodology in the main session.
+6. Aggregate findings without double-counting the same root cause. Cite exact file sections or lines.
 
 ## Verdict
-- {{N/7}} passed, {{M/7}} borderline, {{K/7}} failed
-- **Ready for implementation?**
-  - 0 failed + 0 borderline → ✅ Ready
-  - 0 failed + ≤2 borderline → ⚠️ Proceed with caution(borderline 项有空再修)
-  - ≥1 failed → ❌ Do not implement yet — fix failures first
-```
 
-## Step 5 — 建议下一步
+- `READY`: no failed or unresolved checks.
+- `BORDERLINE`: no failures, but risk remains. Implementation may proceed only after the accepted risk, reason, and follow-up are recorded in `plan.md` or `tasks.md`.
+- `BLOCKED`: at least one failed check; do not start implementation.
 
-> 本 gate **不强制修**:Step 4 verdict 已含每条失败的修法指引(指向具体节);用户自行判断是否 ship / 修,skill 不替用户决定、不再逐条追问。
-> 本 gate **不自动翻 `spec.md` 状态为 `已确认`**:`已确认` 是用户接受 spec 并准备开始实施的冻结标记。Ready / Caution 后,提示用户开始实施前标记 `已确认`;只有用户明确要求时才替用户改这一行。
-
-```markdown
-📋 下一步:
-- ✅ Ready / ⚠️ Caution → 进入实施(完整 post-gate roadmap 见 [workflow.md §3.0](../../docs/workflow.md#30-p2-流程全景skill-视角))
-- ❌ Failed → 修完后**重跑** `/project-workflow:spec-quality-check` verify
-```
-
-## Failure modes
-
-| 错误 | 应对 |
-|---|---|
-| 找不到 feature 目录 | 提示用户列 `ls docs/specs/changes/` 自选 |
-| spec.md 缺六要素中的一个 | M1 ❌,sub-agent 不跑(没意义)|
-| spec.md 是空骨架(全是 `{{TODO}}`)| 提示用户 "spec 还没填,先跟 AI 在对话里填 §1/§3/§4,再跑 quality-check" |
-| Sub-agent 返回 "Outcomes 模糊但可接受" | 标 ⚠️ borderline,不强制改 |
-
-## Notes
-
-- 互补:`/feature-init` 创建 spec/plan/tasks 骨架;本 skill 验收已填内容质量;`/spec-revise` = 贵阶段 fix(implementation 中);`/feature-done` L3 层 = code vs spec(本 skill = spec 内部)
+Do not automatically mark `spec.md` as confirmed. After `READY`, or after the user accepts and records a `BORDERLINE` risk, tell the user to confirm the spec before implementation. Do not edit artifacts unless the user asks for the fixes.
