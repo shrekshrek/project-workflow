@@ -306,14 +306,14 @@ docs/specs/changes/
 
 #### 末尾提示
 
-"全部填完。建议跑 `/project-workflow:spec-quality-check` 做 pre-impl gate 验证。"
+先判断 plan 是否形成架构/模块边界、持久跨 feature 技术决定或取代既有 ADR。命中 `ADR_REQUIRED` 才从 plugin 模板实例化 ADR 并在 plan 引用;否则只在 Prior decisions 写 why。然后提示:"全部填完。建议跑 `/project-workflow:spec-quality-check` 做 pre-impl gate 验证。"
 
 #### 这跟 /spec-revise 的区别
 
 | 维度 | Phase A AI 协作填 | /spec-revise(State 4 修订)|
 |---|---|---|
 | Spec 状态 | Draft → Filled(见 [§3.8](#38-spec-编辑边界只有-1-条线)) | Frozen |
-| ADR | ❌ 无需 | ✅ 必须 |
+| ADR | 按 `ADR_REQUIRED` 条件创建 | 按 `ADR_REQUIRED` 条件创建 |
 | `## 修订记录` | ❌ 无需 | ✅ 必须 |
 | 跨文件同步 | 自然(初次写 plan/tasks 一并) | ✅ 必须 orchestrate |
 | Skill? | ❌ 主会话 AI 读本节直接做(/feature-init Step 6.2 引导 user 走本路径)| ✅ /spec-revise |
@@ -340,6 +340,8 @@ docs/specs/changes/
 - **Failed 项 > 0**:不要开始实施。先修 spec / plan / tasks,再重跑 quality check。
 - **Failed = 0,但有 borderline**:可以进入实施,但要在 plan.md `## 4. 风险与未决` 或 tasks.md 实施记录里写清楚风险、接受理由和后续修法。
 - **全部 pass**:进入实施。
+
+7 问之外还有一组条件式 current-truth 检查:已有 domain doc 时检查 Domain References/Delta;没有则 N/A,不为了通过 gate 造空文档。ADR 仍按上节的规划判断创建,不属于本质量 gate 的独立硬门禁。
 
 开始后才发现要回炒成本高 5-10x,所以 failed 项不能带进实现阶段。
 
@@ -452,7 +454,7 @@ Draft / Filled / Validated **本质同档**(自由编辑);Frozen / Revised **本
 
 `docs/specs/<area>.md` 回答"这个产品域**现在**怎么工作";feature spec 回答"这**一次** tracked change 想做什么"。两者分工:
 
-- **何时创建**:P0 `project-init` 只创建 `docs/specs/index.md`;`/feature-init` 只有在已有实质当前事实可写时才创建新 area,否则 greenfield change 先不建 E;`/feature-archive` 在首个 READY greenfield feature 后把持久结论沉淀成 `docs/specs/<area>.md`。
+- **何时创建**:P0 `project-init` 只创建 `docs/specs/index.md`;`feature-init` 只读取已有实质 area doc,不创建 E 类正文。首个 READY greenfield feature 由 `/feature-archive` 把持久结论沉淀成 `docs/specs/<area>.md`;retrofit 的历史冲突修复可由 `/spec-reconcile` 建立或修正 current truth。
 - **谁维护**:`feature-done` Step 5.5 发现持久行为变更 → proof pending → `feature-archive` **必须** merge 回 `docs/specs/<area>.md`。
 - **内容标准**:简洁、面向未来(现状是什么),不写演进史(那是 archive + ADR 的事)。**替换式维护**:合并 = 改写相关段落、删被推翻的旧句,不追加堆叠;单文件目标约 **150 行**左右,明显超过时检查是否该拆域或删过时细节;复杂 domain 只要内容仍是当前态、结构清晰、有用,可以超过。行为事实链接该域有效 ADR("为什么"一跳可达),不复述论证。
 - **新鲜度自声明**:标题下第一行固定为 `> 最后核对:YYYY-MM-DD`,每次合并更新。feature 编号 / 来源写进 archive note、proof bundle 或 commit message,不要写进 E 类文件头部。过时的核对日期是可见的怀疑信号——绕过 feature 管线的改动无法被机制抓住,但至少让读者知道该打折扣。

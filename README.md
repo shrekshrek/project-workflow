@@ -43,6 +43,16 @@ The intended outcome is practical: fewer repeated reminders, fewer unreviewed AI
 
 ---
 
+## Start here
+
+- Users: [`docs/quickstart.md`](docs/quickstart.md).
+- Runtime contract authors: [`docs/actions/`](docs/actions/) and [`docs/reviewers/`](docs/reviewers/).
+- Visual overview: [`docs/project-workflow-overview.drawio`](docs/project-workflow-overview.drawio).
+
+Deep reference, not required reading: [`workflow.md`](docs/workflow.md), [`spec-driven.md`](docs/spec-driven.md), [`cross-tool-methodology.md`](docs/cross-tool-methodology.md), [`tooling.md`](docs/tooling.md), and the plugin evidence library [`gotchas.md`](docs/gotchas.md).
+
+---
+
 ## What's in v3
 
 | Layer | What | Where |
@@ -125,7 +135,7 @@ $spec-reconcile <area>
 $agents-md-revise
 ```
 
-For an empty greenfield target, run `$project-init` once to materialize conventions and ADR/domain baselines. Hook assets are added only when a safe per-file command is verified. For any non-empty existing codebase or copied scaffold, use `$project-personalize`.
+For an empty greenfield target, run `$project-init` once to materialize conventions and the domain index. ADRs are created only when a qualifying decision exists; hook assets are added only when a safe per-file command is verified. For any non-empty existing codebase or copied scaffold, use `$project-personalize`.
 
 ### Manual fallback
 
@@ -203,20 +213,6 @@ node scripts/check-markdown-links.cjs
 ```
 
 These checks enforce the same 9 public actions, installed-plugin-safe canonical reads, the `< 200` line limit, structural verdict/receipt/template contracts, deterministic endpoint fixture inputs and verdict truth tables, release-copy synchronization, and local Markdown paths/fragments. They do not execute model reviewers. When reviewer or endpoint behavior changes, run the model endpoint smoke in [`docs/examples/reviewer-mutation-smoke.md`](docs/examples/reviewer-mutation-smoke.md) and record the result in the release PR/task.
-
-## Start here
-
-- Users: [`docs/quickstart.md`](docs/quickstart.md).
-- Runtime contract authors: [`docs/actions/`](docs/actions/) and [`docs/reviewers/`](docs/reviewers/).
-- Visual overview: [`docs/project-workflow-overview.drawio`](docs/project-workflow-overview.drawio).
-
-Deep reference, not required reading: [`workflow.md`](docs/workflow.md), [`spec-driven.md`](docs/spec-driven.md), [`cross-tool-methodology.md`](docs/cross-tool-methodology.md), [`tooling.md`](docs/tooling.md), and the plugin evidence library [`gotchas.md`](docs/gotchas.md).
-
-## Status
-
-The current release ships a mature **Claude-native adapter** with **9 skills + 6 named sub-agents** and a separate **Codex-native plugin adapter** exposing the same 9 workflow skills through bundled canonical action/reviewer specs. Both adapters share one action surface and one methodology core; runtime interaction, subagent dispatch, commands, and plugin-root handling stay native to each host.
-
-The methodology docs (`workflow.md` / `actions/` / `reviewers/` / `cross-tool-methodology.md` / `spec-driven.md` / `gotchas.md` / `tooling.md`) are complete and self-contained. A concrete instantiation exists at the public scaffold linked above, but the docs do not depend on it for authority.
 
 ## License
 

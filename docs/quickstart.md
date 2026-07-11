@@ -38,7 +38,7 @@
 /project-workflow:project-personalize
 ```
 
-预期结果:项目里有 `AGENTS.md`、路径级规则和 ADR/domain baseline。只有确认安全、快速的单文件命令后才生成 hook assets;否则项目内不安装 no-op hook,端点检查由 `feature-done` 执行。Feature templates 保留在 plugin,创建 feature 时只实例化 concrete files。
+预期结果:项目里有 `AGENTS.md`、路径级规则、ADR 使用说明和 domain index。具体 ADR/area doc 只在真实决定或持久事实出现时创建。只有确认安全、快速的单文件命令后才生成 hook assets;否则项目内不安装 no-op hook,端点检查由 `feature-done` 执行。Feature templates 保留在 plugin,创建 feature 时只实例化 concrete files。
 
 ## 2. 判断是否需要 feature artifact
 
@@ -89,7 +89,7 @@
 - L1 机械检查
 - L2 项目约定 review
 - L3 code-vs-spec review
-- current-truth check(仅当 `docs/specs/<area>.md` 存在)
+- current-truth check(持久产品行为发生变化时必须判断是否需要合并;域文档尚不存在则记录 `area unresolved`,不要猜文件名)
 - delivery receipt 写入 `tasks.md` 的兼容标题 `## Proof Bundle`
 
 需要局部复查某一层时重跑 `feature-done`(幂等,复用有效缓存),或在主会话直接 dispatch reviewer sub-agent;没有独立的 helper 命令。
@@ -114,7 +114,7 @@
 
 ## 5. 发现约定漂移时刷新
 
-周期性、重大依赖/框架变更后,或你发现自己反复提醒 AI 同一件事时,运行:
+当重大依赖/框架、命令或目录已经变化,你反复提醒 AI 同一件事,或有其他客观 drift 证据时,运行:
 
 ```text
 /project-workflow:agents-md-revise
@@ -127,6 +127,6 @@
 | 场景 | 简化做法 |
 |---|---|
 | tiny/local、低风险且未改变已声明 current truth | 不建 feature artifact,直接做并跑相关检查;hook 只在已安装且 active 时提供增量反馈 |
-| 探索性 spike | 在临时 branch / worktree 做;决策留下来时再写 ADR |
+| 探索性 spike | 在临时 branch / worktree 做;只有留下持久架构/跨功能技术决定时才写 ADR |
 | 生产 hotfix | 先修;之后补测试并记录后续技术债 |
-| 架构 / API / 数据模型变更 | 不要跳过 spec;使用 feature spec + ADR |
+| 架构 / API / 数据模型变更 | 不要跳过 spec;使用全车道 feature spec。仅架构/模块边界、持久跨功能技术决定或取代既有 ADR 时再写 ADR |

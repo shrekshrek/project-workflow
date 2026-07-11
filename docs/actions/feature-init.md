@@ -69,6 +69,7 @@ When `.claude/rules/` compatibility files exist, the Codex adapter resolves and 
 - Do not plant endpoints, entities, field names, error codes, module paths, or technology choices without traceable support.
 - If pre-filling from conversation, mark the source briefly.
 - New module decisions must be explicit in plan/tasks; unclear ownership is a question, not a guess.
+- The full-lane handoff tells the main session to create an ADR during conversational fill only when `ADR_REQUIRED` is satisfied; feature-init does not create speculative ADRs before the decision exists.
 - Full-lane features must pass [`spec-quality-check`](spec-quality-check.md) before implementation.
 
 ## Validation

@@ -181,7 +181,7 @@ head -10 .claude/rules/*.md
 
 **⚠️ Aspirational refs**:AGENTS.md 引用了 P0 不生成的文件(docker-compose / app 主入口 / CI 等)——按 Q&A 答案从 [reference.md R7](reference.md) 动态列举"文件 → 怎么获得"表。提醒:想要 ready-to-run 全栈 → clone scaffold 后跑 `/project-personalize`;`/project-init` 是**约定层 init**,不是 code scaffolder。
 
-**📋 下一步**:1) `git init && git add . && git commit -m "P0: initial project setup"` 2) 写 ADR 捕获 P0 重大决策(framework / ORM / DB / 前端栈 / pkg-mgr;Context 可引 tech-researcher 报告) 3) `/project-workflow:feature-init <first-feature-slug>`。`docs/gotchas.md` 只在项目真实踩坑后追加。方法论见 workflow.md §1 P0。
+**📋 下一步**:1) `git init && git add . && git commit -m "P0: initial project setup"` 2) 仅当决定改变架构/模块边界、形成持久跨 feature 技术决定或取代既有 ADR 时写 ADR;普通 framework / ORM / DB / 前端栈 / pkg-mgr 选择不因名称本身自动起 ADR,拿不准可引用 tech-researcher 报告 3) `/project-workflow:feature-init <first-feature-slug>`。`docs/gotchas.md` 只在项目真实踩坑后追加。方法论见 workflow.md §1 P0。
 
 ## Failure modes
 

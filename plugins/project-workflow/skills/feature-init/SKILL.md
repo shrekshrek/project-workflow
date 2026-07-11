@@ -32,4 +32,4 @@ Match the user's language. Read [`../../docs/actions/feature-init.md`](../../doc
 8. Run the complexity-triggered trace/audit. Remove or defer unanchored endpoints, fields, error codes, paths, packages, and technology choices.
 9. Verify that files landed under the resolved target root and that no existing feature directory was overwritten.
 
-Report the chosen lane, spec shape, area, module decision, created files, unresolved placeholders, trace/audit result and trigger reason, compact bridge counts plus applicable/ambiguous paths, and next action.
+Report the chosen lane, spec shape, area, module decision, created files, unresolved placeholders, trace/audit result and trigger reason, compact bridge counts plus applicable/ambiguous paths, and next action. For full lane, remind the main session that conversational fill creates an ADR only for architecture/module boundaries, durable cross-feature technical decisions, or superseding an existing ADR.

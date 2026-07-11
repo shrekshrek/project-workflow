@@ -18,7 +18,7 @@ Do not use as the main gate for light-lane features; `feature-done` checks their
 
 ## Checks
 
-Required quality questions:
+Required checks: seven core quality questions, plus conditional current-truth checks:
 
 1. Outcomes describe concrete user/system behavior, not generic intent.
 2. Scope boundaries include explicit "do" and "do not" items.

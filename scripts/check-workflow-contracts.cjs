@@ -109,6 +109,15 @@ for (const relative of ["skills/spec-revise/SKILL.md", "plugins/project-workflow
 requireMarkers("skills/spec-revise/SKILL.md", ["${CLAUDE_PLUGIN_ROOT}/template/docs/adr/0000-template.md", "worktree 保持不变"]);
 requireMarkers("plugins/project-workflow/skills/spec-revise/SKILL.md", ["plugin's bundled `template/docs/adr/0000-template.md`", "only then apply"]);
 
+requireMarkers("docs/quickstart.md", ["area unresolved"]);
+forbidMarkers("docs/quickstart.md", ["current-truth check(仅当", "使用 feature spec + ADR"]);
+requireMarkers("template/docs/adr/README.md", ["ADR_REQUIRED"]);
+forbidMarkers("template/docs/adr/README.md", ["/agents-md-revise` 周期性点名", "零引用 + 60 天以上"]);
+for (const relative of ["docs/actions/agents-md-revise.md", "skills/agents-md-revise/SKILL.md", "plugins/project-workflow/skills/agents-md-revise/SKILL.md"]) {
+  forbidMarkers(relative, ["current-truth freshness", "current-truth 新鲜度", "ADR orphan", "ADR 孤儿"]);
+}
+forbidMarkers("skills/agents-md-revise/SKILL.md", ["every 2-4 weeks", "每 2-4 周", "每 2 周"]);
+
 for (const relative of ["docs/workflow.md", "skills/agents-md-revise/SKILL.md"]) {
   forbidMarkers(relative, ["Item 5a", "Item 5b", "proof bundle 5 项"]);
 }

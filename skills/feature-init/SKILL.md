@@ -157,8 +157,9 @@ cp "$SRC/plan.md" "$SRC/tasks.md" "$CHANGE_DIR/"
    (差量于父级)+ CLAUDE.md 1 行 alias;不反常不加(workflow §2.3)
 
 💡 Conversational fill 引导:主会话接着聊业务想法,AI 据 placeholder 迭代填(§3.6.5 SOP);
-   不确定 stack 说 'research X vs Y' → tech-researcher;要查外部库版本约束说 '拉 context7 文档'
+   不确定 stack 说 'research X vs Y' → tech-researcher;要查外部库当前版本/约束 → tech-researcher 查官方文档
    → 摘进 plan.md §2;不确定细节用 `(待 ADR-NNNN-XXX)` defer,不 plant 'reasonable default';
+   只有架构/模块边界、持久跨 feature 技术决定或取代既有 ADR 时才实例化 ADR并在 plan 引用;
    对照 `.claude/rules/<framework>.md` 已定 idiom 写,避免 drift
 ```
 

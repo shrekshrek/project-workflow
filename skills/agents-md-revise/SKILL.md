@@ -1,7 +1,7 @@
 ---
 name: agents-md-revise
 model: sonnet
-description: P4 phase tool — scan A 类约定 (AGENTS.md 多层嵌套 + path-scoped rules; Claude materialization is .claude/rules/*.md) against actual project state, detect objective drift (commands / deps / dir structure / framework versions / config), generate diff suggestions, apply approved patches with a commit message draft. Critical-only (no subjective suggestions, no hook auto-trigger). Use periodically (every 2-4 weeks / month) or when sensing reproducible drift signal.
+description: P4 phase tool — scan A 类约定 (AGENTS.md 多层嵌套 + path-scoped rules; Claude materialization is .claude/rules/*.md) against actual project state, detect objective drift (commands / deps / dir structure / framework versions / config), generate diff suggestions, apply approved patches with a commit message draft. Critical-only (no subjective suggestions, no hook auto-trigger). Use when observed repository state, repeated corrections, or an explicit audit request gives a credible drift signal.
 ---
 
 > **Response language**: Match the user's prompt language (中文 / English / etc.) in all natural-language output — headers, drift descriptions, decisions. Code, commands, file paths stay as-is.
@@ -12,7 +12,7 @@ Before acting, Read `${CLAUDE_PLUGIN_ROOT}/docs/actions/agents-md-revise.md` com
 
 P4 phase 工具 —— 主动 audit **A 类约定全集**(`AGENTS.md` 多层嵌套 + path-scoped rules;Claude materialization 为 `.claude/rules/*.md`,见 [workflow.md §0.3](../../docs/workflow.md#03-概念区分钉死再读后续) / [§1.3](../../docs/workflow.md#13-a-类约定的内容标准agentsmd--claude-rules))跟项目实际状态的**客观 drift**,生成 diff 提议,用户决定后 apply。
 
-**Use when**: P4 phase — 周期(每 2-4 周 / 月)主动 audit;或感知到 "反复跟 AI 提醒同一件事 ≥ 2 次" 的 drift 信号。仅做**客观可验证 drift**(命令 / 依赖 / 目录 / 版本 / 配置不一致),零误报。
+**Use when**: P4 phase — 命令、依赖、目录、版本或配置已经变化;感知到 "反复跟 AI 提醒同一件事 ≥ 2 次";或用户明确要求做约定 drift audit。仅做**客观可验证 drift**,零误报;没有信号时不按日历例行运行。
 
 **Not for**:A 类约定**创建**(→ `/project-init` 或 `/project-personalize`)/ in-feature 调整(→ `/spec-revise`)/ per-feature backlog(→ `/feature-done` receipt `Drift`)/ code vs 约定合规检查(→ `/feature-done` L2)/ 产品 spec 生命周期与 current truth 维护(→ `/feature-archive` / `/spec-reconcile`;本 skill 只管 A 类工程约定)/ **主观模式信号 / hook 自动触发**(project-workflow 不做,[workflow §0.5](../../docs/workflow.md#05-实现策略的核心信念))。
 
@@ -102,20 +102,6 @@ git log --since="30 days ago" --pretty=format:"%s" 2>/dev/null | head -30
 **`.claude/refresh-ignore` 跳过列表**:若存在,每行一条明文 ignore 声明(`<file>: <约定要点> —— <原因>`)。对比时通读,**语义匹配**命中的 drift 跳过(不用哈希 —— LLM 算不稳定,明文人也能维护)。
 
 **drift-ledger 聚类**(只读 advisory):若存在 `.claude/drift-ledger.md`(`feature-done` receipt `Drift` 的 per-feature 账本),通读全部条目做**语义聚类**(写入端只 append 自由文本,聚类在读取端),按组报 `📒 「<gist>」× N features —— 建议 codify 进 <目标文件>`。≥ 2 次重现 = 最强 codify 信号;用户点头的项 patch 走 Step 4 正常流(此时已是客观 drift),**apply 后删掉 ledger 对应行**(只留未处理项)。
-
-**current-truth 新鲜度**(只读 advisory,粗粒度):若存在 `docs/specs/*.md`,读各文件顶部 `> 最后核对:` 日期;超过 ~30 天且期间有 commit(`git log --since=<日期> --oneline | head -5`)→ 报 `🕐 docs/specs/<area>.md 最后核对 <日期>,期间有 N+ commits —— 可能过时,建议 /feature-archive 清扫或人工核对`。只做日期 + 提交量的粗信号,**不做域↔路径映射、不做行为级比对**。
-
-## Step 3.5 — ADR 孤儿 advisory(只读,不进 apply 流)
-
-> 范围:只抓**被遗忘的孤儿 ADR**(零引用 + 老)—— 客观事实,非弱关联。只读 advisory,**不进 Step 4 的客观 drift apply 流**,供人判。
-> (「被反复 defer 但未实现」那类是"可能过时"的弱关联,本 skill 明确不做,见下 ❌ 列表。)
-
-`ls docs/adr/*.md`(无目录则跳过本步)。逐个解析 frontmatter `状态`;`Deprecated` / `Superseded by NNNN` → 已闭环,跳过。对 `Accepted` / `Proposed`:全仓库 grep 反向引用(`ADR-NNNN` / `ADR NNNN` / `<NNNN>-<topic>` 文件名,扫 docs/specs/changes、plan、源码)。**零反向引用 AND age(ADR 日期或 mtime)> 60 天** → 列入 advisory:
-```
-🗂️ ADR 孤儿 advisory(N 条,需人判,非客观 drift):
-   · ADR-0003「<title>」Accepted,60+ 天无引用 —— 仍有效?该 Superseded?
-```
-零孤儿则不输出。
 
 ## Step 4 — 用户逐条决定
 

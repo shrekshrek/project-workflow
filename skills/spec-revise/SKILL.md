@@ -82,7 +82,7 @@ ls docs/adr/ | grep -E '^[0-9]{4}-' | sort -rn | head -1
 
 ADR 草稿纳入最终 proposed diff;除非出现新歧义,不单独追加 approval。
 
-### 4.5 反向 supersede 核对(防旧 ADR 状态撒谎)
+### 3.5 反向 supersede 核对(防旧 ADR 状态撒谎)
 
 第 1 次确认前已经按 topic 扫过既有 `Accepted` / `Proposed` ADR。这里只按已确认结果拟定旧状态更新;拿不准的新冲突才追加问题。`ADR_REQUIRED=no` 跳过 Step 3 全部内容。
 

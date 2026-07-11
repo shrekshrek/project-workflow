@@ -120,10 +120,10 @@
         <mxCell id="lane_p4" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3E5F5;strokeColor=#6A1B9A;strokeWidth=2;" vertex="1" parent="1">
           <mxGeometry x="40" y="656" width="1620" height="100" as="geometry"/>
         </mxCell>
-        <mxCell id="lane_p4_label" value="&lt;b&gt;P4&lt;/b&gt;&lt;br/&gt;Drift Refresh&lt;br/&gt;&lt;span style=&#39;font-size:10px;color:#546E7A;&#39;&gt;主动 / 周期性&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=14;fontStyle=1;fontColor=#6A1B9A;" vertex="1" parent="1">
+        <mxCell id="lane_p4_label" value="&lt;b&gt;P4&lt;/b&gt;&lt;br/&gt;Drift Refresh&lt;br/&gt;&lt;span style=&#39;font-size:10px;color:#546E7A;&#39;&gt;客观信号触发&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=14;fontStyle=1;fontColor=#6A1B9A;" vertex="1" parent="1">
           <mxGeometry x="50" y="666" width="140" height="80" as="geometry"/>
         </mxCell>
-        <mxCell id="p4_trigger" value="&lt;b&gt;Trigger&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:11px;&#39;&gt;用户感知 drift / 周期到 / 大依赖升级&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=11;" vertex="1" parent="1">
+        <mxCell id="p4_trigger" value="&lt;b&gt;Trigger&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:11px;&#39;&gt;客观不一致 / 反复提醒 / 大依赖升级&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=11;" vertex="1" parent="1">
           <mxGeometry x="210" y="672" width="220" height="65" as="geometry"/>
         </mxCell>
         <mxCell id="skill_amdrevise" value="&lt;b&gt;/agents-md-revise&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;扫 A 约定 全集 vs 项目实际状态&lt;br/&gt;客观 drift → 逐条 yes/no/ignore → apply + commit 草稿&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#6A1B9A;fontSize=11;align=center;" vertex="1" parent="1">
@@ -192,7 +192,7 @@
         <mxCell id="doc_b" value="&lt;b&gt;B · 变更 (Changes)&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;docs/specs/changes/&lt;NNN&gt;-&lt;slug&gt;/{spec, plan, tasks}.md&lt;br/&gt;时间维度:&lt;b&gt;per-change 生命周期&lt;/b&gt; — 这次 change 做什么 + 怎么做 + 步骤?&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;fontSize=10;align=left;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
           <mxGeometry x="364" y="930" width="314" height="90" as="geometry"/>
         </mxCell>
-        <mxCell id="doc_c" value="&lt;b&gt;C · 决策 (ADR)&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;docs/adr/NNNN-&lt;title&gt;.md  (扁平,不嵌套)&lt;br/&gt;时间维度:&lt;b&gt;时间戳快照,append-only&lt;/b&gt; — 当时为什么这么选?trade-off?&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF8E1;strokeColor=#F57F17;fontSize=11;align=left;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
+        <mxCell id="doc_c" value="&lt;b&gt;C · 决策 (ADR)&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;docs/adr/NNNN-&lt;title&gt;.md  (扁平,不嵌套)&lt;br/&gt;时间维度:&lt;b&gt;Accepted 后正文冻结;新 ADR 取代旧决定&lt;/b&gt; — 当时为什么这么选?trade-off?&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF8E1;strokeColor=#F57F17;fontSize=11;align=left;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
           <mxGeometry x="688" y="930" width="314" height="90" as="geometry"/>
         </mxCell>
         <mxCell id="doc_d" value="&lt;b&gt;D · 工具基础设施 (Infra)&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;.claude/{hooks, settings.json} + .gitignore&lt;br/&gt;时间维度:&lt;b&gt;跟项目演化&lt;/b&gt; — 工具自动跑什么?&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3E5F5;strokeColor=#6A1B9A;fontSize=10;align=left;verticalAlign=middle;spacing=8;" vertex="1" parent="1">

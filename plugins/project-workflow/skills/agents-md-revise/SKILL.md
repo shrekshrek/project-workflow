@@ -22,10 +22,8 @@ Match the user's language. Read [`../../docs/actions/agents-md-revise.md`](../..
 3. Inspect manifests, lockfiles, tool-version files, actual directories, configuration examples, and recent relevant commits.
 4. Compare each convention statement with objective state. Every drift item must cite old text, observed state, evidence source, and a narrow proposed patch.
 5. Respect semantic matches in the refresh-ignore file. Cluster repeated drift-ledger entries and recommend codification only when evidence supports a durable convention.
-6. Report coarse current-truth freshness separately as read-only advisory; never edit product-domain documents in this action.
-7. Report old zero-reference ADRs separately as advisory; they do not enter the convention apply flow.
-8. Present at most five drift decisions per batch. The user may apply, skip, ignore permanently, or stop.
-9. Simulate approved patches and run the complexity-triggered trace/audit. Missing trace or must-fix findings block application.
-10. Apply approved patches atomically, remove resolved drift-ledger lines, write approved permanent ignores, and show the final diff.
+6. Present at most five drift decisions per batch. The user may apply, skip, ignore permanently, or stop.
+7. Simulate approved patches and run the complexity-triggered trace/audit. Missing trace or must-fix findings block application.
+8. Apply approved patches atomically, remove resolved drift-ledger lines, write approved permanent ignores, and show the final diff.
 
-Report applied and skipped drift, evidence, trace/audit result and trigger reason, compact bridge counts plus applicable/ambiguous paths, advisory items, unresolved questions, and a commit-message draft.
+Report applied and skipped drift, evidence, trace/audit result and trigger reason, compact bridge counts plus applicable/ambiguous paths, unresolved questions, and a commit-message draft.

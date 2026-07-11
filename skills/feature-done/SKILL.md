@@ -101,7 +101,7 @@ User input: `$ARGUMENTS` — feature slug or "current"
 |---|---|
 | **Verdict** | READY / NEEDS WORK / BLOCKED |
 | **Change** | diff identity + exact review-scope paths + endpoint-owned outputs(`tasks.md` receipt、READY spec status、实际写入的 drift ledger);不得冒充含用户无关改动的完整 worktree population,完整 diff 以 Git 为准 |
-| **1.5 轻车道不变量反核**(仅轻车道) | 实际改动文件 grep 根 AGENTS.md「灾难性不变量 / 高爆破半径路径」声明;命中 → 🚨 误分类应走全道,verdict 至少 🟡 |
+| **轻车道不变量反核**(仅轻车道;结果并入 Checks) | 实际改动文件 grep 根 AGENTS.md「灾难性不变量 / 高爆破半径路径」声明;命中 → 🚨 误分类应走全道,verdict 至少 🟡 |
 | **Checks** | Step 3 commands、exit status、tests totals/coverage + L1 verdict;轻车道追加每个 `## 验证` item 的结果 |
 | **L2** | verdict/findings + exact applicable rule IDs + coverage/applicable-unverified/ambiguity/confidence + bridge `global/matched/skipped/ambiguous` counts + applicable/ambiguous paths |
 | **L3** | verdict/findings + exact spec item IDs + coverage/applicable-unverified/ambiguity/confidence;轻车道写 `N/A` + verification verdict |
@@ -111,7 +111,7 @@ User input: `$ARGUMENTS` — feature slug or "current"
 
 写后重读该节做 schema self-check:exact review-scope paths、endpoint-owned output paths、L2 exact rule IDs、全道 L3 exact spec IDs或轻车道 verification IDs、coverage/unverified/ambiguity/confidence、bridge counts/paths、Verdict/Checks/Current truth 缺一项都标 `UNRELIABLE`。最终回复必须逐字包含磁盘上的完整 `## Proof Bundle` block,不得改写成摘要。
 
-**Drift 重现感知**:每条未解决建议以自由文本 append 到 `.claude/drift-ledger.md`(一行一条:`- <NNN>-<slug> (YYYY-MM-DD): <一句话 gist>`;文件不存在则创建)。**不算指纹、不维护计数** —— append 前通读现有条目,若发现早前 feature 已记过同一件事(语义判断,不要求措辞一致)→ 报告尾部提示:"🔁 「<gist>」已在 N 个 feature 重现 —— codify 它:客观漂移 → `/agents-md-revise`;模式文档化 → `/spec-revise` 或手改 AGENTS.md/rules"。已 codify 的条目顺手删行(ledger 只留未处理项)。
+**Drift 重现感知**:每条未解决建议以自由文本 append 到 `.claude/drift-ledger.md`(一行一条:`- <NNN>-<slug> (YYYY-MM-DD): <一句话 gist>`;文件不存在则创建)。**不算指纹、不维护计数** —— append 前通读现有条目,若发现早前 feature 已记过同一件事(语义判断,不要求措辞一致)→ 报告尾部提示:"🔁 「<gist>」已在 N 个 feature 重现 —— 可行动的 A 类约定候选走 `/agents-md-revise`;只有本 feature 的冻结契约真的变了才走 `/spec-revise`"。已 codify 的条目顺手删行(ledger 只留未处理项)。
 
 **Overall READY 且全道** → 把 `spec.md` 顶部状态行粗体标记挪到 `已实现`(幂等,只动标记不改措辞;这是交付标记非契约修订,见 [spec-driven.md §3.8](../../docs/spec-driven.md#38-spec-编辑边界只有-1-条线))。轻车道 / 非 READY → 跳过。
 
