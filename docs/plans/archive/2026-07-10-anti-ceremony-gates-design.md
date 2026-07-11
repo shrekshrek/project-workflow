@@ -1,7 +1,7 @@
 # Anti-ceremony gate hardening design
 
 > Date: 2026-07-10
-> Status: implemented; pending release
+> Status: implemented in v3.5.1
 
 ## Goal
 

@@ -12,6 +12,7 @@
   → full lane 与用户补完草稿后跑 spec-quality-check
   → 实施
   → feature-done
+  → commit / PR / merge
   → feature-archive 周期性批量收尾
 ```
 
@@ -94,7 +95,7 @@
 
 需要局部复查某一层时重跑 `feature-done`(幂等,复用有效缓存),或在主会话直接 dispatch reviewer sub-agent;没有独立的 helper 命令。
 
-交付合并后,周期性跑一次生命周期清扫(不必每个 feature 都立刻跑,攒几个一起也行):
+把 `feature-done` 生成的 delivery receipt 随交付 commit / PR / merge 后,周期性跑一次生命周期清扫(不必每个 feature 都立刻跑,攒几个一起也行):
 
 ```text
 /project-workflow:feature-archive

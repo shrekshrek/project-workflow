@@ -17,7 +17,7 @@ Upgrade migration: an older `## Proof Bundle` that has checked L1/L2/L3 rows but
 ## Inputs
 
 - Feature directory/slug, or nothing (sweep mode).
-- Each candidate's delivery receipt (must have `Verdict: READY`) and `spec.md` status (`已实现`, or `已取代`/`已废弃` set by `spec-reconcile`). A missing Verdict routes to the visible legacy-migration list.
+- Each candidate's delivery receipt must have `Verdict: READY`. When `spec.md` exists, its status must be `已实现`, or `已取代`/`已废弃` as set by `spec-reconcile`; light-lane candidates have no `spec.md` and rely on the READY receipt. A missing Verdict routes to the visible legacy-migration list.
 - Related current-truth documents (`docs/specs/<area>.md`), if any.
 - Related earlier specs and ADRs in the same product area.
 
@@ -41,7 +41,7 @@ Upgrade migration: an older `## Proof Bundle` that has checked L1/L2/L3 rows but
 
 - A READY feature is not current truth until its durable conclusions are merged.
 - Archiving is `git mv`, never deletion; archived directories are read-only history.
-- Never archive an in-flight feature (spec status `草稿`/`已确认`, or delivery receipt missing/non-READY).
+- Never archive an in-flight feature (full-lane spec status `草稿`/`已确认`, or delivery receipt missing/non-READY in either lane).
 - There is no "historical foundation" status: if parts of an archived spec remain valid (data model, API, pipeline), those facts belong in `docs/specs/<area>.md` — extract them during the merge instead of keeping the old spec in the active tree as a reference.
 - Do not edit implementation code.
 

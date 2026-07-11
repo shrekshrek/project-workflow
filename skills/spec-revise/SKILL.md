@@ -53,7 +53,7 @@ Then walk through the [§3.5 judgment table](../../docs/workflow.md#35-开发中
 Q&A 决策:
 - **真错** → 分类 `ADR_REQUIRED`;若为 yes,先扫既有 Accepted/Proposed ADR 找可能 supersede/冲突项。展示“决定 + 原因 + affected files + ADR_REQUIRED + supersede 决定”并取得第 1 次确认后进 Step 3
 - **不必修(只是模糊/难做)**→ 引导用户写 plan.md prior decisions(`§3` 加一条)+ 退出。**不强行起 ADR / 改 spec**——避免过度 ceremony 把 plan.md 当 release note 用。
-- **module 边界变更** → 自动跑 §2.6 流程(走 Step 5.5)
+- **module 边界变更** → 自动跑 §2.6 流程(走 Step 4.5)
 
 ### ADR_REQUIRED 判据
 
@@ -86,13 +86,13 @@ ADR 草稿纳入最终 proposed diff;除非出现新歧义,不单独追加 appro
 
 第 1 次确认前已经按 topic 扫过既有 `Accepted` / `Proposed` ADR。这里只按已确认结果拟定旧状态更新;拿不准的新冲突才追加问题。`ADR_REQUIRED=no` 跳过 Step 3 全部内容。
 
-## Step 5 — 改 spec.md
+## Step 4 — 改 spec.md
 
-### 5.1 改正文(对应 §3.5 / §2.6 的"改 spec.md 节")
+### 4.1 改正文(对应 §3.5 / §2.6 的"改 spec.md 节")
 
 按已确认 decision 拟定 spec.md 最终内容,暂不落盘。
 
-### 5.2 在 `## 修订记录` 节追加
+### 4.2 在 `## 修订记录` 节追加
 
 格式(标准化):
 
@@ -102,7 +102,7 @@ ADR 草稿纳入最终 proposed diff;除非出现新歧义,不单独追加 appro
 
 若 spec.md 没有 `## 修订记录` 节(老 spec 或自定 template),在 proposed diff 中创建该节并追加条目,不要求用户手工编辑。
 
-## Step 5.5 — (--module 模式追加)Module 边界变更
+## Step 4.5 — (--module 模式追加)Module 边界变更
 
 按 [§2.6](../../docs/workflow.md#26-module-中途变更feature-实施中发现边界要调整):
 
@@ -113,18 +113,18 @@ ADR 草稿纳入最终 proposed diff;除非出现新歧义,不单独追加 appro
 
 按第 1 次确认的范围在内存中拟定这些变化;只有发现新 module ambiguity 时再提问。
 
-## Step 6 — 改 plan.md
+## Step 5 — 改 plan.md
 
-- **6.1 `## 3. Prior decisions` 加一条**:`- 改 spec.md §<N>: <改了什么>。原因:<一句话>;来源:<用户确认 / ADR-NNNN>。`
-- **6.2 `## 1. 模块影响范围`**:若 §5.5 触发 module 变更,更新 module list。
-- **6.3 `## 2. 架构决策`**:若 ADR 涉及架构层(数据模型 / API 契约 / 关键算法),加 1-2 句简述引 ADR。
+- **5.1 `## 3. Prior decisions` 加一条**:`- 改 spec.md §<N>: <改了什么>。原因:<一句话>;来源:<用户确认 / ADR-NNNN>。`
+- **5.2 `## 1. 模块影响范围`**:若 Step 4.5 触发 module 变更,更新 module list。
+- **5.3 `## 2. 架构决策`**:若 ADR 涉及架构层(数据模型 / API 契约 / 关键算法),加 1-2 句简述引 ADR。
 
-### 6.4 Current truth / 老 spec 联动(按需)
+### 5.4 Current truth / 老 spec 联动(按需)
 
 - 若修订改变了 `docs/specs/<area>.md` 已记录的持久行为 → **不在本 skill 直接改 E 类文档**;在 plan/tasks 记录 `current truth update pending`,交给 `/feature-done` 标入 proof bundle 后由 `/feature-archive` 写回
 - 若修订**取代**了更早 spec 的方向 → 提示交付后跑 `/feature-archive` 或 `/spec-reconcile` 给老 spec 打状态标记并归档([spec-driven.md §5.1](../../docs/spec-driven.md#51-生命周期状态全集--物理归档)),本 skill 不直接改老 spec
 
-## Step 7 — 改 tasks.md(若任务列表变化)
+## Step 6 — 改 tasks.md(若任务列表变化)
 
 按修订决策评估:
 - 已完成的 task 是否要重做?
@@ -133,7 +133,7 @@ ADR 草稿纳入最终 proposed diff;除非出现新歧义,不单独追加 appro
 
 按已确认 revision 拟定 `tasks.md` 最终内容;新增歧义才提问,不逐 task 重复确认。
 
-## Step 7.5 — 按复杂度选择 trace check / auditor
+## Step 6.5 — 按复杂度选择 trace check / auditor
 
 普通单一用户决定、无 ADR、无新 ownership/port/package/infra 且每个具体值有直接来源 → 主 skill 输出紧凑 trace matrix。存在 ADR、新模块/基础设施决策、弱证据或生成决策跨多文件 → dispatch [`decision-completeness-auditor`](../../agents/decision-completeness-auditor.md):
 
@@ -145,19 +145,19 @@ ADR 草稿纳入最终 proposed diff;除非出现新歧义,不单独追加 appro
 
 **Block 规则**:🚫 > 0 → 不落盘,按 feedback 修 proposed contents 后重跑;⚠️ 不 block。
 
-## Step 7.6 — Consolidated Diff Review Gate(第 2 次确认)
+## Step 6.6 — Consolidated Diff Review Gate(第 2 次确认)
 
-从 pre-skill on-disk 内容与 proposed final contents 生成 unified diff,附 7.5 audit 摘要(`✅ N / ⚠️ M / 🚫 K`)。不得用当前 worktree 的其他未提交变化冒充本次 patch。
+从 pre-skill on-disk 内容与 proposed final contents 生成 unified diff,附 6.5 audit 摘要(`✅ N / ⚠️ M / 🚫 K`)。不得用当前 worktree 的其他未提交变化冒充本次 patch。
 
 展示一个完整 diff 后 AskUserQuestion:
 
 | 选项 | 处理 |
 |---|---|
-| ✅ 接受 | 一次性 apply proposed patch,再进 Step 8 |
-| ⚠️ 改某项 | 改完重跑 7.5 + 7.6 |
+| ✅ 接受 | 一次性 apply proposed patch,再进 Step 7 |
+| ⚠️ 改某项 | 改完重跑 6.5 + 6.6 |
 | 🚫 放弃 | 丢弃内存草稿,worktree 保持不变 |
 
-## Step 8 — 总结
+## Step 7 — 总结
 
 报告 revision record、`ADR_REQUIRED` 结论/文件、改动文件、trace/audit 结果和下一步。Commit 草稿有 ADR 时引用 ADR,无 ADR 时引用 revision topic。
 
@@ -170,8 +170,8 @@ ADR 草稿纳入最终 proposed diff;除非出现新歧义,不单独追加 appro
 | spec.md 无 `## 修订记录` 节(老 spec)| proposed diff 自动创建该节 |
 | 用户走完 Step 2 决定 "其实不必修" | 引导写 plan.md prior decisions + 退出,不起 ADR |
 | 多个 ADR 同时起(并发 revision)| 警告"建议一次只 revise 一个 topic",用户确认后 continue |
-| Step 7.5 audit 标 🚫 | worktree 未改;据 feedback 修 proposed contents 后重跑 |
-| Step 7.6 user 放弃 | 丢弃草稿;不得改动或 checkout 用户原有文件 |
+| Step 6.5 audit 标 🚫 | worktree 未改;据 feedback 修 proposed contents 后重跑 |
+| Step 6.6 user 放弃 | 丢弃草稿;不得改动或 checkout 用户原有文件 |
 
 ## Notes
 
