@@ -55,10 +55,13 @@ function materializeFeature({ target, number, slug, lane, shape }) {
 
   const requestedTarget = path.resolve(target);
   const requestedStat = fs.lstatSync(requestedTarget);
-  if (requestedStat.isSymbolicLink() || !requestedStat.isDirectory()) {
-    throw new Error(`Target root must be a real directory: ${requestedTarget}`);
+  if (!requestedStat.isDirectory() && !requestedStat.isSymbolicLink()) {
+    throw new Error(`Target root must resolve to a directory: ${requestedTarget}`);
   }
   const targetRoot = fs.realpathSync(requestedTarget);
+  if (!fs.statSync(targetRoot).isDirectory()) {
+    throw new Error(`Target root must resolve to a directory: ${requestedTarget}`);
+  }
   const agentsState = destinationState(targetRoot, "AGENTS.md");
   if (!agentsState.exists || !fs.statSync(agentsState.target).isFile()) throw new Error(`Target root missing AGENTS.md: ${targetRoot}`);
   const specsState = destinationState(targetRoot, "docs/specs");

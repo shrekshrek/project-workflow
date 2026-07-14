@@ -29,7 +29,7 @@ User input: `$ARGUMENTS` — optional `<feature-slug>` and/or `--spec` / `--modu
 
 Ask user: "什么发现触发了这次 revision?简述。"
 
-Then walk through the [§3.5 judgment table](../../docs/workflow.md#35-开发中发现-specplan-错怎么办) with user — 打开该表逐行对照本次发现,不凭记忆复述;表是判定"真错 / 看影响 / 检查"与处理路径的唯一定义。
+随后与用户逐行对照 [§3.5 judgment table](../../docs/workflow.md#35-开发中发现-specplan-错怎么办)——打开原表核对本次发现,不凭记忆复述;该表是判定"真错 / 看影响 / 检查"与处理路径的唯一定义。
 
 Q&A 决策:
 - **真错** → 分类 `ADR_REQUIRED`;若为 yes,先扫既有 Accepted/Proposed ADR 找可能 supersede/冲突项。展示“决定 + 原因 + affected files + ADR_REQUIRED + supersede 决定”并取得第 1 次确认后进 Step 3

@@ -25,6 +25,28 @@ function read(file) {
   return fs.readFileSync(file, "utf8");
 }
 
+function snapshotTree(rootDir) {
+  const snapshot = [];
+  function walk(directory, relative = "") {
+    for (const entry of fs.readdirSync(directory, { withFileTypes: true }).sort((left, right) => left.name.localeCompare(right.name))) {
+      if (entry.name === ".git") continue;
+      const rel = path.join(relative, entry.name);
+      const fullPath = path.join(directory, entry.name);
+      const stat = fs.lstatSync(fullPath);
+      if (stat.isSymbolicLink()) {
+        snapshot.push(["symlink", rel, fs.readlinkSync(fullPath)]);
+      } else if (stat.isDirectory()) {
+        snapshot.push(["directory", rel]);
+        walk(fullPath, rel);
+      } else if (stat.isFile()) {
+        snapshot.push(["file", rel, fs.readFileSync(fullPath).toString("base64")]);
+      }
+    }
+  }
+  walk(rootDir);
+  return snapshot;
+}
+
 function listChangeDirs(runDir) {
   const changes = path.join(runDir, "docs/specs/changes");
   if (!fs.existsSync(changes)) return [];
@@ -45,6 +67,11 @@ function gradeScenario(name, config, runDir) {
 
   if (config.lane === "none") {
     if (newDirs.length !== 0) problems.push(`${name}: expected no new artifact, found ${JSON.stringify(newDirs)}`);
+    const baseSnapshot = snapshotTree(path.join(fixtureRoot, config.base));
+    const runSnapshot = snapshotTree(runDir);
+    if (JSON.stringify(runSnapshot) !== JSON.stringify(baseSnapshot)) {
+      problems.push(`${name}: no-artifact run changed the project tree`);
+    }
   } else {
     const expectedName = path.basename(config.expectDir);
     if (!newDirs.includes(expectedName)) {
@@ -56,23 +83,28 @@ function gradeScenario(name, config, runDir) {
     const featureDir = path.join(runDir, config.expectDir);
     const files = fs.readdirSync(featureDir).sort();
     if (config.lane === "full") {
-      for (const required of ["plan.md", "spec.md", "tasks.md"]) {
-        if (!files.includes(required)) problems.push(`${name}: full lane missing ${required}`);
+      const expectedFiles = ["plan.md", "spec.md", "tasks.md"];
+      if (JSON.stringify(files) !== JSON.stringify(expectedFiles)) {
+        problems.push(`${name}: full lane files must be exactly ${JSON.stringify(expectedFiles)}, found ${JSON.stringify(files)}`);
       }
     } else if (config.lane === "light") {
-      if (!files.includes("tasks.md")) problems.push(`${name}: light lane missing tasks.md`);
-      if (files.includes("spec.md") || files.includes("plan.md")) {
-        problems.push(`${name}: light lane must not create spec.md/plan.md, found ${JSON.stringify(files)}`);
+      const expectedFiles = ["tasks.md"];
+      if (JSON.stringify(files) !== JSON.stringify(expectedFiles)) {
+        problems.push(`${name}: light lane files must be exactly ${JSON.stringify(expectedFiles)}, found ${JSON.stringify(files)}`);
       }
     }
 
     const specPath = path.join(featureDir, "spec.md");
     if (config.shape && fs.existsSync(specPath)) {
       const spec = read(specPath);
-      const isBrownfield = spec.includes("## Delta") || spec.includes("## Motivation");
+      const isBrownfield = ["## Motivation", "## Domain References", "## Delta"].every((heading) => spec.includes(heading));
       const isGreenfield = spec.includes("## 1. Outcomes");
-      if (config.shape === "brownfield" && !isBrownfield) problems.push(`${name}: spec.md is not brownfield-shaped`);
-      if (config.shape === "greenfield" && !isGreenfield) problems.push(`${name}: spec.md is not greenfield-shaped`);
+      if (config.shape === "brownfield" && (!isBrownfield || isGreenfield)) {
+        problems.push(`${name}: spec.md is not exclusively brownfield-shaped`);
+      }
+      if (config.shape === "greenfield" && (!isGreenfield || isBrownfield)) {
+        problems.push(`${name}: spec.md is not exclusively greenfield-shaped`);
+      }
     }
 
     const artifactText = files
@@ -226,6 +258,56 @@ async function validateMaterializer() {
       problems.push("materializer full create selected the wrong spec shape");
     }
 
+    const brownfield = runMaterializer(runDir, ["--number", "006", "--slug", "materializer-brownfield", "--lane", "full", "--shape", "brownfield"]);
+    if (brownfield.status !== 0) problems.push(`materializer brownfield create failed: ${brownfield.stderr.trim()}`);
+    const brownfieldDir = path.join(runDir, "docs/specs/changes/006-materializer-brownfield");
+    for (const [output, template] of [["spec.md", "spec-brownfield.md"], ["plan.md", "plan.md"], ["tasks.md", "tasks.md"]]) {
+      const outputPath = path.join(brownfieldDir, output);
+      if (!fs.existsSync(outputPath)) {
+        problems.push(`materializer brownfield create missing ${output}`);
+      } else if (read(outputPath) !== read(path.join(root, "template/docs/specs/changes/_template", template))) {
+        problems.push(`materializer brownfield create ${output} differs from ${template}`);
+      }
+    }
+
+    const symlinkRoot = path.join(tempRoot, "symlink-root-real");
+    fs.cpSync(path.join(fixtureRoot, "base-empty"), symlinkRoot, { recursive: true });
+    const symlinkAlias = path.join(tempRoot, "symlink-root-alias");
+    fs.symlinkSync(symlinkRoot, symlinkAlias, "dir");
+    const symlinkRootAttempt = runMaterializer(symlinkAlias, ["--number", "001", "--slug", "symlink-root", "--lane", "light"]);
+    if (symlinkRootAttempt.status !== 0) {
+      problems.push(`materializer rejected a symlinked project root: ${symlinkRootAttempt.stderr.trim()}`);
+    }
+    if (!fs.existsSync(path.join(symlinkRoot, "docs/specs/changes/001-symlink-root/tasks.md"))) {
+      problems.push("materializer did not write through the normalized symlink project root");
+    }
+
+    const rollbackRun = path.join(tempRoot, "rollback-target");
+    fs.cpSync(path.join(fixtureRoot, "base-empty"), rollbackRun, { recursive: true });
+    const { materializeFeature } = require(materializer);
+    const originalCopyFileSync = fs.copyFileSync;
+    let copyCount = 0;
+    let rollbackThrew = false;
+    try {
+      fs.copyFileSync = (...args) => {
+        copyCount += 1;
+        if (copyCount === 2) throw new Error("injected copy failure");
+        return originalCopyFileSync(...args);
+      };
+      materializeFeature({ target: rollbackRun, number: "001", slug: "rollback", lane: "full", shape: "greenfield" });
+    } catch {
+      rollbackThrew = true;
+    } finally {
+      fs.copyFileSync = originalCopyFileSync;
+    }
+    if (!rollbackThrew) problems.push("materializer rollback smoke did not trigger the injected copy failure");
+    if (fs.existsSync(path.join(rollbackRun, "docs/specs/changes/001-rollback"))) {
+      problems.push("materializer left a partial feature directory after copy failure");
+    }
+    if (fs.existsSync(path.join(rollbackRun, "docs/specs/changes/.project-workflow-nnn-001.lock"))) {
+      problems.push("materializer left a reservation after copy failure");
+    }
+
     const symlinkRun = path.join(tempRoot, "symlink-target");
     fs.cpSync(path.join(fixtureRoot, "base-empty"), symlinkRun, { recursive: true });
     const externalChanges = path.join(tempRoot, "external-changes");
@@ -323,7 +405,7 @@ async function main() {
       for (const problem of problems) console.error(`- ${problem}`);
       process.exit(1);
     }
-    console.log("Feature-init scenario fixtures OK: bases and expectations are coherent; materializer lane/shape/NNN/no-clobber/concurrency and cache-fallback checks passed (no model executed).");
+    console.log("Feature-init scenario fixtures OK: bases and expectations are coherent; materializer lane/shape/NNN/no-clobber/rollback/symlink-root/concurrency and cache-fallback checks passed (no model executed).");
   }
 }
 

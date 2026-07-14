@@ -2,7 +2,7 @@
 
 Behavior-equivalence harness for the generative `feature-init` action. Adapter thinning (or any material `feature-init` skill/action edit) must show equivalent outcomes on this matrix before and after the change. Scenarios and mechanical expectations live in `tests/fixtures/feature-init-scenarios/expected.json`.
 
-Covered behaviors: lane classification (full / light / no-artifact), target-root resolution, NNN numbering over the shared active+archive sequence, concurrent NNN reservation, brownfield/greenfield shape detection, mechanical no-clobber of existing directories, `{{TODO}}` retention, plant refusal, module-ownership non-guessing, and compatible cached `PLUGIN_ROOT` fallback with all three root environment variables unset.
+Covered behaviors: lane classification (full / light / no-artifact), target-root resolution (including a symlinked project-root entry), NNN numbering over the shared active+archive sequence, concurrent NNN reservation, brownfield/greenfield shape detection, exact lane file sets, mechanical no-clobber and failed-copy rollback, no-artifact whole-tree preservation, `{{TODO}}` retention, plant refusal, module-ownership non-guessing, and compatible cached `PLUGIN_ROOT` fallback with all three root environment variables unset.
 
 ## Run protocol
 
