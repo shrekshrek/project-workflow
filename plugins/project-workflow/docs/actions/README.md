@@ -6,6 +6,14 @@ Each file defines one methodology action: when it applies, required inputs, outp
 
 If an adapter conflicts with an action spec, the action spec wins. Update this directory first, then update adapters.
 
+## Shared runtime conventions
+
+Single authoritative home for rules that several actions need. Action specs and runtime skills cite this section instead of restating it.
+
+- **Feature directory resolution**: a feature lives in `docs/specs/changes/<NNN>-<slug>/`. Resolve a slug/number argument to the matching directory; resolve an empty or `current` argument to the most recently modified active feature (artifact-file mtime), always excluding `archive/`. Multiple or zero candidates is a user question, not a guess.
+- **NNN numbering**: three digits, one global sequence shared by the active tree and `archive/`; next number = max across both + 1 (zero-padded, `001` when empty). Archived numbers are never reused.
+- **Plugin root resolution**: prefer `PROJECT_WORKFLOW_PLUGIN_ROOT`, then `CLAUDE_PLUGIN_ROOT`, then `CODEX_PLUGIN_ROOT`; when unset or invalid, search `~/.claude/plugins/cache` and `~/.codex/plugins/cache` for the most recently installed compatible package containing both `template/` and the required asset. Compatibility is asset-specific; never choose a package by lexical path order. If resolution fails, stop — never recreate plugin assets inside the target project.
+
 | Action | Purpose |
 |---|---|
 | [`project-init`](project-init.md) | Create a greenfield project-workflow baseline |

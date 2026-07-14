@@ -56,6 +56,9 @@ requireMarkers("skills/feature-done/SKILL.md", ["blocking partial", "## 验证",
 requireMarkers("plugins/project-workflow/skills/feature-done/SKILL.md", ["100% applicable coverage", "## 验证", "receipt-only edits", "structurally validate", "block verbatim"]);
 requireMarkers("docs/actions/feature-done.md", ["Light-lane verification", "100%-coverage evidence", "receipt-only edits", "greenfield full-lane delivery", "area unresolved", "validate the receipt structurally", "block verbatim"]);
 requireMarkers("plugins/project-workflow/skills/feature-done/SKILL.md", ["greenfield full-lane delivery", "update pending", "area unresolved"]);
+for (const relative of verdictFiles) {
+  requireMarkers(relative, ["independently executable", "non-execution only"]);
+}
 
 for (const relative of ["docs/reviewers/agents-md-reviewer.md", "docs/reviewers/spec-reviewer.md"]) {
   requireMarkers(relative, ["coverage is 100%", "exact changed", "applicable but unverified", "UNRELIABLE"]);
@@ -81,6 +84,13 @@ requireMarkers("template/docs/specs/changes/_template/tasks-light.md", ["verific
 requireMarkers("docs/actions/feature-init.md", ["do not create a pseudo-lane", "Use full lane for high-risk or contract-shaped work", "Use light lane only when all are true"]);
 requireMarkers("skills/feature-init/SKILL.md", ["无需新 artifact", "轻车道", "全道"]);
 requireMarkers("plugins/project-workflow/skills/feature-init/SKILL.md", ["no artifact", "light lane", "full lane"]);
+for (const relative of ["docs/actions/feature-init.md", "skills/feature-init/SKILL.md", "plugins/project-workflow/skills/feature-init/SKILL.md"]) {
+  requireMarkers(relative, ["materialize-feature-artifact.cjs", "no-clobber"]);
+}
+requireMarkers("scripts/materialize-feature-artifact.cjs", [".project-workflow-nnn-", "wx"]);
+requireMarkers("docs/actions/README.md", ["most recently installed compatible package", "required asset"]);
+requireMarkers("skills/feature-init/SKILL.md", ["-print0", "xargs -0 ls -t", "scripts/materialize-feature-artifact.cjs"]);
+requireMarkers("skills/project-init/SKILL.md", ["-print0", "xargs -0 ls -t", "scripts/materialize-project-baseline.cjs"]);
 requireMarkers("docs/workflow.md", ["未改变已声明 current truth", "契约/流程语义变更仍按风险选 light/full"]);
 
 requireMarkers("docs/actions/project-personalize.md", ["complete, partial, unrelated, or missing project-workflow baseline", "A non-empty codebase without `AGENTS.md` is retrofit, not greenfield"]);

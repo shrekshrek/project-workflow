@@ -21,15 +21,7 @@ User input: `$ARGUMENTS` — optional `<feature-slug>` and/or `--spec` / `--modu
 
 ## Step 1 — 定位 feature
 
-目标 feature 目录解析:
-
-| 输入 | 处理 |
-|---|---|
-| `<slug>`(如 `email-verification`)| 找 `docs/specs/changes/<NNN>-email-verification/` |
-| 空 / "current" | 找最近活跃的 feature(`docs/specs/changes/` 下 mtime 最新,排除 `archive/`)|
-| 多个匹配 / 不明 | 请用户挑 |
-
-读该 feature 的 `spec.md` + `plan.md` + `tasks.md`,为后续步骤准备 context。
+按 canonical [Shared runtime conventions](../../docs/actions/README.md#shared-runtime-conventions) 的 feature 定位约定解析 `$ARGUMENTS`(slug / 空 / "current";多个匹配或不明 → 请用户挑,不猜)。读该 feature 的 `spec.md` + `plan.md` + `tasks.md`,为后续步骤准备 context。
 
 **车道判定**:`spec.md` 缺失 = **轻车道**。本 skill 只修订 frozen full-lane spec;轻车道风险升级时先补全道 artifact。
 
@@ -37,18 +29,7 @@ User input: `$ARGUMENTS` — optional `<feature-slug>` and/or `--spec` / `--modu
 
 Ask user: "什么发现触发了这次 revision?简述。"
 
-Then walk through the [§3.5 judgment table](../../docs/workflow.md#35-开发中发现-specplan-错怎么办) with user:
-
-```
-| 发现 | 是不是真错 | 处理 |
-|---|---|---|
-| Scope 漏写"不做" → AI 多做了 | ✅ 真错 | spec.md §2 必修 |
-| Outcomes 模糊 | ⚠️ 看影响 | 已写错方向 → 必修;否则 plan.md prior decisions 加澄清 |
-| Verification 不可机械化 | ✅ 真错 | spec.md §4 必修 |
-| 数据模型/API 契约跟实际冲突 | ⚠️ 检查 | 模型错改 spec;代码错改代码 |
-| 需要拆/合/改 module | ✅ 真错 | 走 §2.6(本 skill 自动转 --module 模式)|
-| Constraints 太死 | ⚠️ 看 | 真不必要 → 改 + revision record;若是持久技术决策再加 ADR |
-```
+Then walk through the [§3.5 judgment table](../../docs/workflow.md#35-开发中发现-specplan-错怎么办) with user — 打开该表逐行对照本次发现,不凭记忆复述;表是判定"真错 / 看影响 / 检查"与处理路径的唯一定义。
 
 Q&A 决策:
 - **真错** → 分类 `ADR_REQUIRED`;若为 yes,先扫既有 Accepted/Proposed ADR 找可能 supersede/冲突项。展示“决定 + 原因 + affected files + ADR_REQUIRED + supersede 决定”并取得第 1 次确认后进 Step 3
@@ -135,7 +116,7 @@ ADR 草稿纳入最终 proposed diff;除非出现新歧义,不单独追加 appro
 
 ## Step 6.5 — 按复杂度选择 trace check / auditor
 
-普通单一用户决定、无 ADR、无新 ownership/port/package/infra 且每个具体值有直接来源 → 主 skill 输出紧凑 trace matrix。存在 ADR、新模块/基础设施决策、弱证据或生成决策跨多文件 → dispatch [`decision-completeness-auditor`](../../agents/decision-completeness-auditor.md):
+dispatch 与否按 canonical [Dispatch Boundary](../../docs/reviewers/decision-completeness-auditor.md#dispatch-boundary) 判:简单单源修订且每个具体值有直接来源 → 主 skill 输出紧凑 trace matrix;命中 boundary(本 skill 的 ADR 属触发项)→ dispatch [`decision-completeness-auditor`](../../agents/decision-completeness-auditor.md):
 
 - `files_to_audit`: proposed final inline contents for `docs/specs/changes/<NNN>-<slug>/{spec,plan,tasks}.md` +(仅 ADR_REQUIRED)新/被 supersede ADR +(module mode)约定文件
 - `baseline`: spec/plan/tasks 的**修订前**内容(让 auditor 只审本次修订新增的决策;ADR 是全新文件无 baseline,审全文)

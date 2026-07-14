@@ -32,6 +32,33 @@ Required checks: seven core quality questions, plus conditional current-truth ch
 
 Mechanical checks may detect missing sections and placeholders; subjective checks judge clarity, traceability, and risk.
 
+### Mechanical check table
+
+Canonical mechanical materialization of the checks above. Adapters run this table verbatim and report per-item pass/fail with the failure reason; do not maintain adapter-local variants.
+
+Shape detection (spec.md section headers): `## Delta` or `## Motivation` → brownfield; `## 1. Outcomes` → greenfield; otherwise brownfield only if `## Domain References` exists.
+
+Greenfield shape:
+
+| # | Check |
+|---|---|
+| M1 | Six required elements present (spec §1–§4 + plan Prior decisions + plan module impact) |
+| M2 | Scope has explicit `做` and `不做` lists, each with ≥1 non-TODO item |
+| M3 | Verification has ≥3 testable items |
+| M4 | plan §1.1 Sibling Alignment filled (multi-module work only) |
+| M5 | tasks.md has ≥3 items |
+| M6 / M7 | N/A (first archive creates/updates the domain doc) |
+
+Brownfield shape (M1/M2 replaced by M1b/M2b; M4/M5 shared):
+
+| # | Check |
+|---|---|
+| M1b | Motivation + Domain References + Delta + Constraints + Verification + both plan elements present |
+| M2b | Delta has Added/Modified/Removed subsections, ≥1 non-TODO |
+| M3b | Verification has ≥2 testable items (brownfield default) |
+| M6 | Spec cites `docs/specs/<area>.md` without contradiction, or records an explicit deviation |
+| M7 | Delta non-empty (may be judged together with M2b) |
+
 ## Verdict
 
 - `READY`: no failed checks.

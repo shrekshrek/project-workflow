@@ -44,7 +44,7 @@ User input: `$ARGUMENTS` — 空 = 清扫模式;或 feature slug / NNN / "curren
 
 无 pending 的 feature 跳过本步直接归档。
 
-`$PLUGIN_ROOT` 解析同其他 skill:优先 `PROJECT_WORKFLOW_PLUGIN_ROOT` / `CLAUDE_PLUGIN_ROOT` / `CODEX_PLUGIN_ROOT`;否则在 `~/.claude/plugins/cache` 与 `~/.codex/plugins/cache` 下查找包含 `template/` 的 project-workflow plugin 根目录。解析不到则停止,不要临时在目标项目创建模板。
+`$PLUGIN_ROOT` 解析按 canonical [Shared runtime conventions](../../docs/actions/README.md#shared-runtime-conventions)(本 skill 需要的 asset 是 `template/`)。解析不到则停止,不要临时在目标项目创建模板。
 
 ## Step 3 — 被取代老 spec 标记(如有)
 
@@ -86,11 +86,7 @@ node "$PLUGIN_ROOT/scripts/relocate-markdown-links.cjs" \
 
 ## Invariants(强制)
 
-- **不改实施代码**;归档是 `git mv` 不是删除;archive 内容只读
-- 进行中 feature(草稿 / 已确认 / delivery receipt 非 READY)**永不归档**
-- Current truth 更新后必须不与已交付行为矛盾、尺寸受控或有合理 domain 复杂度理由、新鲜度行已更新
-- 状态标记与归档清单逐份经用户确认,不静默批量执行
-- archive 内所有本地 Markdown link 必须可解析;移动后必须运行统一 relocation 工具,不得手算或只给所有链接机械加 `../`
+按 canonical Invariants + Current-Truth Document Discipline 执行(不改代码 / git mv 非删除 / 进行中永不归档 / 逐份经用户确认 / 尺寸与新鲜度纪律)。Claude 端补充:移动后必须运行统一 relocation 工具重定位本地 Markdown link,不得手算或机械加 `../`。
 
 ## Failure modes
 

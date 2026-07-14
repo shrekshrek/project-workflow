@@ -52,6 +52,8 @@ For full-lane `READY`, move the top `spec.md` status marker to `已实现`. This
 
 ## Verdict
 
+Run every review layer that remains independently executable even after an earlier layer fails. In particular, an L1 failure blocks the final verdict but does not by itself suppress L2, L3, the current-truth check, or receipt assembly. Record non-execution only for a layer whose own required inputs or environment are unavailable, with the exact reason.
+
 - Verdict contract: L1 failure or unreliable required checks = `BLOCKED`; blocking L2/L3/light-verification/current-truth findings = `NEEDS WORK`; evidence-backed required gates with only explicit nonblocking advisories = `READY`.
 - `READY`: L1 passes, L2/L3 are evidence-backed PASS or an allowed explicit skip, light-lane verification passes when applicable, no blocking current-truth issue remains, and the delivery receipt is complete. Explicitly nonblocking advisories are allowed.
 - `NEEDS WORK`: blocking or fixable findings remain.
@@ -69,5 +71,7 @@ L2/L3/Drift finding counts live in the delivery receipt; do not add a duplicate 
 - The delivery receipt is written at the endpoint, not guessed early.
 - An empty findings array without reviewer evidence is unreliable and blocks READY.
 - Endpoint-owned receipt-only edits and the status-only `已确认` → `已实现` transition do not invalidate cached L2/L3 results; changes to tasks outside `## Proof Bundle` or to the spec contract still invalidate them.
+- Cached results are only trustworthy when change detection is trustworthy: when the review scope is an untracked directory (git cannot see internal changes), force a fresh run unless a file-mtime comparison proves nothing changed.
+- Drift ledger contract: the endpoint appends unresolved drift suggestions as free-text lines (feature id + date + one-line gist); recurrence detection is semantic clustering at read time — no fingerprints or counters are maintained. Entries already codified into conventions are removed so the ledger holds open items only.
 - Historical specs remain archived; delivery evidence goes to `tasks.md`.
 - `已实现` is a delivery marker, not a claim that the spec is still the current product baseline; the spec's final resting place is `docs/specs/changes/archive/` (see [`feature-archive`](feature-archive.md) / [`spec-reconcile`](spec-reconcile.md)).

@@ -46,7 +46,7 @@ User input: `$ARGUMENTS` — 产品域名 / 模块路径 / 逗号分隔的 `<NNN
 
 ## Step 4 — 应用(标记 + 归档)+ 报告 current-truth gaps
 
-先解析 `$PLUGIN_ROOT`:优先 `PROJECT_WORKFLOW_PLUGIN_ROOT` / `CLAUDE_PLUGIN_ROOT` / `CODEX_PLUGIN_ROOT`;否则在 `~/.claude/plugins/cache` 与 `~/.codex/plugins/cache` 下查找包含 `scripts/relocate-markdown-links.cjs` 的 project-workflow plugin 根目录。解析不到则停止,不得跳过 link relocation。
+先按 canonical [Shared runtime conventions](../../docs/actions/README.md#shared-runtime-conventions) 解析 `$PLUGIN_ROOT`(本 skill 需要的 asset 是 `scripts/relocate-markdown-links.cjs`)。解析不到则停止,不得跳过 link relocation。
 
 1. 对每份 loser spec 应用标记(状态行挪标记 + 状态行下加替代链接行;不动正文),然后 `git mv docs/specs/changes/<NNN>-<slug> docs/specs/changes/archive/<NNN>-<slug>`(`mkdir -p docs/specs/changes/archive` 如需)。每次 move 后运行 `$PLUGIN_ROOT/scripts/relocate-markdown-links.cjs <old-dir> <new-dir>`;`$PLUGIN_ROOT` 解析同 `/feature-archive`。工具按旧/新位置重算本地 Markdown links并验证目标;missing target 阻断本步。
 2. `docs/specs/changes/index.md` 存在则同步(编号 → 标题 / 状态 / 位置)。
@@ -73,11 +73,7 @@ User input: `$ARGUMENTS` — 产品域名 / 模块路径 / 逗号分隔的 `<NNN
 
 ## Invariants(强制)
 
-- **只读代码,不改代码**;不删历史,supersede = 标记 + 归档,不是删除
-- 每条冲突必须引用到具体文件 + 节;引不出原文的"感觉过时"不报
-- 状态变更与归档移动全部经用户逐条裁决
-- archive move 后必须用统一工具重定位并验证本地 Markdown links;不手算路径,missing target 不得忽略
-- E 类输出必须是 current truth,不是 archived changes 索引 / 待 reconcile 清单
+全部按 canonical Invariants 执行(只读代码 / 不删历史 / 冲突必须引原文 / 用户逐条裁决 / link relocation 验证 / E 类输出是 current truth 不是历史索引);此处不复述。
 
 ## Failure modes
 

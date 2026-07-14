@@ -1,0 +1,103 @@
+{
+  "full-brownfield-api": {
+    "base": "base-numbered",
+    "prompt": "feature-init password-reset: 给 auth 加密码重置——一个提交 email 的 POST 端点 + 邮件一次性 token;属于 API 契约变更。",
+    "prescribedAnswers": {},
+    "lane": "full",
+    "expectDir": "docs/specs/changes/004-password-reset",
+    "shape": "brownfield",
+    "mustRetainTodoMarker": true,
+    "forbiddenPlantPatterns": ["/api/", "verify-token", "reset_token"],
+    "sentinel": "docs/specs/changes/002-existing-thing/tasks.md"
+  },
+  "light-lane-small": {
+    "base": "base-numbered",
+    "prompt": "feature-init profile-avatar-fallback: 用户头像加载失败时显示 initials fallback。纯前端 additive 小改,不碰 API/schema,不碰 billing。",
+    "prescribedAnswers": {},
+    "lane": "light",
+    "expectDir": "docs/specs/changes/004-profile-avatar-fallback",
+    "shape": null,
+    "mustRetainTodoMarker": true,
+    "forbiddenPlantPatterns": [],
+    "sentinel": "docs/specs/changes/002-existing-thing/tasks.md"
+  },
+  "no-artifact-typo": {
+    "base": "base-numbered",
+    "prompt": "feature-init fix-typo: 把登录失败提示里的错别字改掉,一行文案。",
+    "prescribedAnswers": {},
+    "lane": "none",
+    "expectDir": null,
+    "shape": null,
+    "mustRetainTodoMarker": false,
+    "forbiddenPlantPatterns": [],
+    "sentinel": "docs/specs/changes/002-existing-thing/tasks.md"
+  },
+  "nnn-empty-start": {
+    "base": "base-empty",
+    "prompt": "feature-init first-feature: 项目第一个追踪 feature,新建一个数据导入模块(全新领域,需要新模块)。",
+    "prescribedAnswers": {},
+    "lane": "full",
+    "expectDir": "docs/specs/changes/001-first-feature",
+    "shape": "greenfield",
+    "mustRetainTodoMarker": true,
+    "forbiddenPlantPatterns": [],
+    "sentinel": null
+  },
+  "greenfield-high-blast": {
+    "base": "base-numbered",
+    "prompt": "feature-init billing-report: 新增账单导出报表能力,会改 src/billing/ 下的代码。",
+    "prescribedAnswers": { "module": "扩展既有 src/billing/ 模块,不新建" },
+    "lane": "full",
+    "expectDir": "docs/specs/changes/004-billing-report",
+    "shape": "greenfield",
+    "mustRetainTodoMarker": true,
+    "forbiddenPlantPatterns": ["/api/"],
+    "sentinel": "docs/specs/changes/002-existing-thing/tasks.md"
+  },
+  "no-clobber-existing": {
+    "base": "base-numbered",
+    "prompt": "feature-init 002-existing-thing: 对既有 existing-thing 追加一个小的 additive 后续改动(不碰 API/schema/billing),注意编号。",
+    "prescribedAnswers": { "collision": "改用自动编号" },
+    "lane": "light",
+    "expectDir": "docs/specs/changes/004-existing-thing",
+    "shape": null,
+    "mustRetainTodoMarker": true,
+    "forbiddenPlantPatterns": [],
+    "sentinel": "docs/specs/changes/002-existing-thing/tasks.md"
+  },
+  "target-root-from-subdir": {
+    "base": "base-numbered",
+    "cwd": "subdir",
+    "prompt": "feature-init subdir-launched: 小的 additive 改动,轻车道即可。",
+    "prescribedAnswers": {},
+    "lane": "light",
+    "expectDir": "docs/specs/changes/004-subdir-launched",
+    "shape": null,
+    "mustRetainTodoMarker": true,
+    "forbiddenPlantPatterns": [],
+    "sentinel": "docs/specs/changes/002-existing-thing/tasks.md",
+    "forbidPaths": ["subdir/docs"]
+  },
+  "plugin-root-cache-fallback": {
+    "base": "base-numbered",
+    "prompt": "feature-init cached-plugin-root: 小的 additive 文档生成改动,轻车道即可。",
+    "prescribedAnswers": {},
+    "runtimeSetup": {
+      "unsetEnvironment": ["PROJECT_WORKFLOW_PLUGIN_ROOT", "CLAUDE_PLUGIN_ROOT", "CODEX_PLUGIN_ROOT"],
+      "requireCachedPluginFallback": true
+    },
+    "lane": "light",
+    "expectDir": "docs/specs/changes/004-cached-plugin-root",
+    "shape": null,
+    "mustRetainTodoMarker": true,
+    "forbiddenPlantPatterns": [],
+    "sentinel": "docs/specs/changes/002-existing-thing/tasks.md"
+  },
+  "module-ownership-ask": {
+    "base": "base-numbered",
+    "prompt": "feature-init cross-module-sync: 需要 user 和 billing 两个模块联动,主家不明。",
+    "interactionOnly": true,
+    "expectedBehavior": "Step 4 必须停下问用户哪个模块承担/怎么拆;不得自行指定 owner 或编造新模块。回答前不生成文件。",
+    "sentinel": "docs/specs/changes/002-existing-thing/tasks.md"
+  }
+}

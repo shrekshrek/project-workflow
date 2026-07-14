@@ -36,4 +36,4 @@ Verdict contract: L1 failure or unreliable required checks = `BLOCKED`; blocking
 - `NEEDS WORK`: fixable convention, spec, classification, or current-truth findings remain.
 - `BLOCKED`: L1 fails, required context is missing, or checks cannot run reliably.
 
-Even when L1 fails, record the attempted check and explicit non-execution of dependent layers in the delivery receipt so the endpoint leaves auditable evidence. `READY` is delivery readiness, not lifecycle closure; archive later with `$feature-archive`.
+Even when L1 fails, continue every independently executable layer and assemble the receipt; record non-execution only for a layer whose own required inputs or environment are unavailable. `READY` is delivery readiness, not lifecycle closure; archive later with `$feature-archive`.

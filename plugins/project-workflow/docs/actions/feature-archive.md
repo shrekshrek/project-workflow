@@ -42,6 +42,7 @@ Upgrade migration: an older `## Proof Bundle` that has checked L1/L2/L3 rows but
 - A READY feature is not current truth until its durable conclusions are merged.
 - Archiving is `git mv`, never deletion; archived directories are read-only history.
 - Never archive an in-flight feature (full-lane spec status `草稿`/`已确认`, or delivery receipt missing/non-READY in either lane).
+- Status marks and the archive batch are confirmed with the user per item; never applied silently in bulk.
 - There is no "historical foundation" status: if parts of an archived spec remain valid (data model, API, pipeline), those facts belong in `docs/specs/<area>.md` — extract them during the merge instead of keeping the old spec in the active tree as a reference.
 - Do not edit implementation code.
 

@@ -20,51 +20,13 @@ User input: `$ARGUMENTS` — `<feature-slug>` or empty (use most recent feature)
 
 ## Step 1 — 定位 feature
 
-目标解析:
+按 canonical [Shared runtime conventions](../../docs/actions/README.md#shared-runtime-conventions) 的 feature 定位约定解析 `$ARGUMENTS`(slug → 匹配目录;空 → 最近活动 feature;始终排除 `archive/`)。读 `spec.md` + `plan.md` + `tasks.md`。
 
-| 输入 | 处理 |
-|---|---|
-| `<slug>` | 找 `docs/specs/changes/<NNN>-<slug>/` |
-| 空 | 用 `docs/specs/changes/` 活动区内 `spec.md` mtime 最新的 feature,排除 `archive/` |
-
-读 `spec.md` + `plan.md` + `tasks.md`。
-
-**change spec 形态判定**(读 `spec.md` 节标题):
-- 含 `## Delta` 或 `## Motivation` → **brownfield**
-- 含 `## 1. Outcomes` → **greenfield**
-- 无法判定 → 看 `## Domain References`;有则 brownfield,无则 greenfield
-
-**车道判定**:`spec.md` 缺失 = **轻车道** → 报 "N/A(轻车道…)" 并退出。
+**change spec 形态判定 + 车道判定**:按 canonical action doc 的 [Mechanical check table](../../docs/actions/spec-quality-check.md#mechanical-check-table) shape detection 判 brownfield/greenfield;`spec.md` 缺失 = **轻车道** → 报 "N/A(轻车道…)" 并退出。
 
 ## Step 2 — Mechanical checks (分形 M 表)
 
-逐条机械验证,产出 ✅ / ❌ + 失败原因。**brownfield 不跑 M1/M2 的 Outcomes/Scope 项**,改跑 M1b/M2b。
-
-### Greenfield M 表
-
-| # | 检查 | 实现 |
-|---|---|---|
-| **M1** | 六要素齐(§1–§4 + plan Prior decisions + plan §1 模块影响) | grep `^## ` |
-| **M2** | §2 Scope 有 `**做**` + `**不做**` 各 ≥1 条非 TODO | 节内 grep |
-| **M3** | §4 Verification ≥3 条可测项 | 数 bullet |
-| **M4** | plan §1.1 Sibling Alignment(多模块) | 同旧 |
-| **M5** | tasks ≥3 项 | 同旧 |
-| **M6** | N/A(greenfield 首次归档时由 `/feature-archive` 创建/更新 domain doc) | — |
-| **M7** | N/A | — |
-
-### Brownfield M 表
-
-| # | 检查 | 实现 |
-|---|---|---|
-| **M1b** | Motivation + Domain References + Delta + Constraints + Verification + plan 两要素 | grep 节标题 |
-| **M2b** | Delta 含 Added/Modified/Removed 三子节,至少一处非 TODO | grep |
-| **M3b** | Verification ≥2 条( brownfield 默认) | 数 bullet |
-| **M4** | 同 greenfield | 同旧 |
-| **M5** | 同 greenfield | 同旧 |
-| **M6** | spec 引用 `docs/specs/<area>.md` 且不矛盾,或显式 deviation | 路径 + 对照 |
-| **M7** | 同 M2b(Delta 非空) | 与 M2b 可合并判 |
-
-**M 表共用**:M4/M5 两形态都跑;失败形态专属项则只跑对应表。
+**唯一 M 表定义在 canonical action doc 的 [Mechanical check table](../../docs/actions/spec-quality-check.md#mechanical-check-table)**(M1-M7 / M1b-M3b,含形态分工)。按形态逐条机械验证(grep 节标题 / 节内 grep / 数 bullet),产出 ✅ / ❌ + 失败原因;不得凭记忆复述表项。
 
 ## Step 3 — Subjective checks (dispatch spec-quality-reviewer sub-agent)
 

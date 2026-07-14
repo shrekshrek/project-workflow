@@ -107,7 +107,7 @@ Dispatch [`codebase-explorer`](../../agents/codebase-explorer.md) sub-agent,prom
 
 ## Step 4.D — 按 patch 复杂度选择 trace check / auditor
 
-若只是把 manifest/现有代码中的客观值同步进单一文件,或应用用户明确给出的替换 → 主 skill 输出紧凑 trace matrix。若 patch 新增 ownership/port/package/path/infra、证据弱、或生成决定跨多文件 → dispatch [`decision-completeness-auditor`](../../agents/decision-completeness-auditor.md)审 4.A/B/C:
+dispatch 与否按 canonical [Dispatch Boundary](../../docs/reviewers/decision-completeness-auditor.md#dispatch-boundary) 判:简单单源同步或用户明确给出的替换 → 主 skill 输出紧凑 trace matrix;命中 boundary → dispatch [`decision-completeness-auditor`](../../agents/decision-completeness-auditor.md)审 4.A/B/C:
 - `files_to_audit`: 本次涉及的所有文件(根 AGENTS.md + tier-level + `.claude/rules/*`)inline content
 - `qa_answers`: Step 2 选的 paths + 4.A 替换答案 + 4.B tier 答案 + 4.C 接受/拒绝决定;`language_conventions`: null
 - `plugin_hardcoded_defaults`: 同 `/project-init` reference.md R6 清单

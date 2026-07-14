@@ -8,7 +8,7 @@
 **project-workflow v3** —— spec-driven feature development blueprint + runtime adapters。
 
 四层资产(本仓库):
-1. `docs/` —— 方法论文档(5 阶段、4 支柱、canonical actions、spec 三件套、10 工程陷阱)
+1. `docs/` —— 方法论文档(5 阶段、4 支柱、canonical actions、spec 三件套、gotchas 示范 ledger)
 2. `template/` —— starter scaffold(方法论核心 + Claude compatibility assets,语言中立但非 tool-empty)
 3. `.claude-plugin/` + `skills/` —— Claude Code adapter 资产(当前最成熟)
 4. `plugins/project-workflow/` + `.agents/plugins/` —— Codex plugin 分发资产(installable plugin package + local marketplace)
@@ -54,7 +54,7 @@ docs/                  方法论文档
 ├── reviewers/         reviewer/auditor/researcher canonical specs
 ├── workflow.md        ⭐ 5 阶段 + 4 支柱(核心)
 ├── cross-tool-methodology.md  core vs runtime adapter 边界
-├── gotchas.md         ⭐ 10 工程陷阱
+├── gotchas.md         example-of-one gotchas 证据库(示范短版)
 ├── spec-driven.md     spec/plan/tasks 详解
 └── tooling.md         工具链对比
 template/              starter scaffold(core files + Claude compatibility assets)
@@ -63,6 +63,8 @@ scripts/
 ├── check-adapter-parity.js  check 9+9 action parity + runtime isolation
 ├── check-template-contracts.js  check Claude rule frontmatter + shared hook input handling
 ├── check-reviewer-fixtures.cjs  check reviewer smoke fixture inputs + verdict truth tables
+├── check-feature-init-fixtures.cjs  check/grade feature-init behavior scenario matrix
+├── materialize-feature-artifact.cjs  atomically create a no-clobber feature artifact from the selected lane template
 ├── materialize-project-baseline.cjs  stage/apply P0 baseline (used by project-init / project-personalize)
 ├── relocate-markdown-links.cjs  preserve local links after feature archive moves
 ├── check-lifecycle-links.cjs  regression-check archive link relocation
@@ -82,7 +84,7 @@ scripts/
 - **Lifecycle links**:修改 `feature-archive` / `spec-reconcile` 后运行 `node scripts/check-lifecycle-links.cjs`;归档移动必须重定位并验证本地 Markdown links
 - **Workflow contracts**:修改 lane classification / retrofit / verdict / hook activation / feature templates 后运行 `node scripts/check-workflow-contracts.cjs`
 - **Docs links**:修改或移动 Markdown 后运行 `node scripts/check-markdown-links.cjs`
-- **不在方法论里塞栈细节**(workflow.md / gotchas.md 通用,具体命令样例引用外部仓库)
+- **不在方法论正文塞栈细节**:workflow.md §0-§7/§9-§10、`docs/actions/`、`docs/reviewers/`、`template/` 保持栈中立;`template/docs/gotchas.md` 是生成项目用的空 ledger,必须栈中立。两处显式豁免:`docs/gotchas.md` 是 plugin 自身的 example-of-one 证据库(允许栈偏向,只收真实复现过的坑);workflow.md §8 是栈适配示范附录(换栈只重写该节)
 - **plugin skill 简洁**:每个 SKILL.md < 200 行,职责单一;超长的静态查表** relocation** 到同目录 `reference.md`(如 `skills/project-init/reference.md`)—— 不是删内容;SKILL.md 标出强制 Read 点,执行时必须先读对应节再填表
 - **skill description 写好**:Claude 据此判断何时自动调用
 - **文档先于工具**:任何新 skill / 命令想法,先问 "这是 workflow SOP 的哪一步自动化?SOP 写过没?"。SOP 不清晰时做工具是把混乱固化(对应 workflow.md §7.2 反模式)

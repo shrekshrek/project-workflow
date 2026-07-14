@@ -9,6 +9,8 @@ Canonical P0 action for creating a greenfield project-workflow baseline in an em
 
 Do not use for any non-empty existing codebase or copied scaffold, whether or not it already has `AGENTS.md`; use [`project-personalize`](project-personalize.md).
 
+Misuse guard: if the target looks like the project-workflow repository itself (e.g. it contains `docs/workflow.md` plus `skills/feature-init/`), warn and require explicit confirmation before continuing — initializing the methodology repo as a target project is almost always a mistake.
+
 ## Inputs
 
 - Target directory, defaulting to the current working directory.

@@ -21,12 +21,7 @@ User input: `$ARGUMENTS` — feature slug or "current"
 
 ## Step 1 — 定位 feature + 车道判定
 
-| 输入 | 处理 |
-|---|---|
-| `<slug>`(如 `email-verification`)| `docs/specs/changes/<NNN>-<slug>/`(取最新匹配 NNN)|
-| `<NNN>` / `<NNN>-<slug>`(如 `002`)| `docs/specs/changes/<NNN>-*/` |
-| `current` / 空 | 最近的 `docs/specs/changes/<NNN>-*/`(mtime / NNN 最新;排除 `archive/`)|
-| `<full-path>` | 直接用 |
+按 canonical [Shared runtime conventions](../../docs/actions/README.md#shared-runtime-conventions) 的 feature 定位约定解析 `$ARGUMENTS`(slug / NNN / `current` / 空;本 skill 额外接受 `<full-path>` 直接用)。
 
 校验 `tasks.md` 存在。**车道判定**:`spec.md` 存在 = 全道;缺失(仅 tasks.md)= 轻车道(L3 跳过)。两者都无 → 报 "No feature artifact in `docs/specs/changes/`. Run `/project-workflow:feature-init <slug>` first." 退出。
 
@@ -59,7 +54,7 @@ User input: `$ARGUMENTS` — feature slug or "current"
 
 找不到 → 问用户。跑命令(`<cmd> 2>&1`,用 AGENTS.md 原文,不加额外 flag),解析为紧凑报告:lint 错误数 / typecheck 错误数 / tests passed-failed-skipped / coverage / exit code。失败项给 `file:line` + 1 行原因,不 dump 全文。
 
-**L1 红**:记 verdict = 🔴 BLOCKED,但继续 L2/L3/current-truth/proof,让一次端点运行留下完整可审计证据。若 check 需要容器 / server 而未起,记录阻塞原因并继续可独立执行的 reviewer。**不自动 fix**。
+**L1 红**:记 verdict = 🔴 BLOCKED,但继续每个 independently executable 的 L2/L3/current-truth/proof,让一次端点运行留下完整可审计证据。只有某层自身所需输入或环境不可用时才记录 non-execution only + 原因。若 check 需要容器 / server 而未起,记录阻塞原因并继续可独立执行的 reviewer。**不自动 fix**。
 
 ## Step 4 — L2 A 类约定合规(缓存有效则复用)
 

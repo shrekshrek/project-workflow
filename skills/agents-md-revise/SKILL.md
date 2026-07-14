@@ -119,7 +119,7 @@ git log --since="30 days ago" --pretty=format:"%s" 2>/dev/null | head -30
 
 ## Step 4.5 — 按 patch 复杂度选择 trace check / auditor
 
-单文件 patch 只同步 Step 2 已观察到的命令/路径/版本 → 主 skill 输出紧凑 trace matrix。新增 convention、ownership/port/package/path/infra,证据弱或跨文件 patch → dispatch [`decision-completeness-auditor`](../../agents/decision-completeness-auditor.md)审待打 patch 内容:
+dispatch 与否按 canonical [Dispatch Boundary](../../docs/reviewers/decision-completeness-auditor.md#dispatch-boundary) 判:patch 只同步 Step 2 已观察到的客观值 → 主 skill 输出紧凑 trace matrix;命中 boundary → dispatch [`decision-completeness-auditor`](../../agents/decision-completeness-auditor.md)审待打 patch 内容:
 
 - `files_to_audit`: 每个待 patch 文件的**应用后 inline content**(用 Step 4 用户答 y 的 patches 模拟 apply,**不实际改盘**)
 - `baseline`: 每个待 patch 文件的 **pre-patch on-disk 内容** —— 让 auditor 只审 patch 新增决策,不误判既有 baseline(如既有 `--concurrency=50`)

@@ -57,7 +57,7 @@ Deep reference, not required reading: [`workflow.md`](docs/workflow.md), [`spec-
 
 | Layer | What | Where |
 |---|---|---|
-| 📘 **Methodology core** | 5-phase blueprint (P0 Project Setup / P2 Feature + Module Setup sub-flow / P3 Maintenance / P4 Drift Refresh; no P1 by design — see workflow.md §0.2) + canonical action specs + 4 pillars + cross-tool boundaries + spec-driven 3-file template + 10 工程陷阱 | [`docs/`](docs/) |
+| 📘 **Methodology core** | 5-phase blueprint (P0 Project Setup / P2 Feature + Module Setup sub-flow / P3 Maintenance / P4 Drift Refresh; no P1 by design — see workflow.md §0.2) + canonical action specs + 4 pillars + cross-tool boundaries + spec-driven 3-file template + demonstrative gotchas ledger | [`docs/`](docs/) |
 | 🧰 **Starter template** | Plugin-side baseline and optional hook assets. Project init materializes conventions always and hooks only when a safe command is verified. | [`template/`](template/) |
 | 🤖 **Claude Code adapter** | 9 Claude-native slash-command skills + 6 named sub-agents | [`.claude-plugin/`](.claude-plugin/) + [`skills/`](skills/) + [`agents/`](agents/) |
 | 🧩 **Codex adapter** | 9 Codex-native skills using bundled canonical reviewer specs | [`plugins/project-workflow/`](plugins/project-workflow/) + [`.agents/plugins/`](.agents/plugins/) |
@@ -199,7 +199,7 @@ Exception and maintenance actions appear only when their condition exists:
 
 ## Maintaining the Codex package
 
-The Codex plugin contains a bundled copy of core docs and `template/` because installed Codex plugins do not share the Claude Code plugin install directory. Treat those bundled files as release artifacts. Its `SKILL.md` bodies are a separately maintained Codex-native adapter and are deliberately not overwritten by the sync script; shared non-runtime references such as `project-init/reference.md` are still synchronized. After changing shared core assets or either adapter, run:
+The Codex plugin contains a bundled copy of runtime core docs, templates, and required materializers because installed Codex plugins do not share the Claude Code plugin install directory. Treat those bundled files as release artifacts. Maintainer-only feature-init fixtures, grading scripts, and scenario instructions remain in the source repository/CI and are not shipped in the installed plugin. Its `SKILL.md` bodies are a separately maintained Codex-native adapter and are deliberately not overwritten by the sync script; shared non-runtime references such as `project-init/reference.md` are still synchronized. After changing shared core assets or either adapter, run:
 
 ```bash
 node scripts/sync-codex-plugin.js
@@ -207,12 +207,13 @@ node scripts/sync-codex-plugin.js --check
 node scripts/check-adapter-parity.js
 node scripts/check-workflow-contracts.cjs
 node scripts/check-reviewer-fixtures.cjs
+node scripts/check-feature-init-fixtures.cjs
 node scripts/check-template-contracts.js
 node scripts/check-lifecycle-links.cjs
 node scripts/check-markdown-links.cjs
 ```
 
-These checks enforce the same 9 public actions, installed-plugin-safe canonical reads, the `< 200` line limit, structural verdict/receipt/template contracts, deterministic endpoint fixture inputs and verdict truth tables, release-copy synchronization, and local Markdown paths/fragments. They do not execute model reviewers. When reviewer or endpoint behavior changes, run the model endpoint smoke in [`docs/examples/reviewer-mutation-smoke.md`](docs/examples/reviewer-mutation-smoke.md) and record the result in the release PR/task.
+These checks enforce the same 9 public actions, installed-plugin-safe canonical reads, the `< 200` line limit, structural verdict/receipt/template contracts, deterministic endpoint and feature-init fixture inputs, mechanical no-clobber behavior, verdict truth tables, release-copy synchronization, and local Markdown paths/fragments. They do not execute model reviewers or generative skills. When reviewer, endpoint, or feature-init generation behavior changes, run the applicable model smoke in [`docs/examples/reviewer-mutation-smoke.md`](docs/examples/reviewer-mutation-smoke.md) or [`docs/examples/feature-init-scenario-matrix.md`](docs/examples/feature-init-scenario-matrix.md) and record the result in the release PR/task.
 
 ## License
 

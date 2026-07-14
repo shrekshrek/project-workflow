@@ -125,6 +125,8 @@
 
 ## 什么时候可以跳过完整流程
 
+本表是 [workflow.md §9 何时偏离手册](workflow.md#9-何时偏离手册) 的快捷镜像;两处不一致时以 §9 为准。
+
 | 场景 | 简化做法 |
 |---|---|
 | tiny/local、低风险且未改变已声明 current truth | 不建 feature artifact,直接做并跑相关检查;hook 只在已安装且 active 时提供增量反馈 |

@@ -19,13 +19,7 @@ User input: `$ARGUMENTS` — feature slug + optional description.
 
 ## Step 0 — 确认目标项目根
 
-`TARGET_ROOT` 是本次 feature artifact 的唯一写入根目录,必须包含 `AGENTS.md` 和 `docs/specs/`。
-
-- 当前 cwd 满足 → `TARGET_ROOT="$PWD"`。
-- 当前 cwd 不满足,但最近父级目录满足 → 使用该父级并在报告中写明。
-- 当前 cwd 不满足,但只有一个直接子目录满足 → 使用该子目录并在报告中写明。
-- 多个候选或没有候选 → 先问用户目标项目目录;不要猜。
-
+`TARGET_ROOT` 是本次 feature artifact 的唯一写入根目录,必须包含 `AGENTS.md` 和 `docs/specs/`。解析顺序按 canonical Invariants(cwd → 最近父级 → 单一子目录 → 问用户,不猜);用了非 cwd 候选要在报告中写明。
 后续 Bash / Edit / Write / apply_patch 都必须写入 `$TARGET_ROOT` 下的路径;不要依赖先前 `cd` 状态或裸 `docs/specs/...` 相对路径。创建完成后验证文件确实落在 `$TARGET_ROOT/docs/specs/changes/<NNN>-<slug>/`。
 
 ## Step 1 — 解析输入
@@ -47,9 +41,7 @@ Slug 要求(strip 后):kebab-case(`a-z0-9-`)、2-40 chars、不以 `-` 开头结
 { ls "$TARGET_ROOT/docs/specs/changes/" ; ls "$TARGET_ROOT/docs/specs/changes/archive/" 2>/dev/null ; } | grep -E '^[0-9]{3}-' | sort -rn | head -1
 ```
 
-最大编号 +1 补零到 3 位(**active + archive 共用序列**,归档编号不复用);空则从 `001` 起。
-
-**NNN 前缀冲突**(Step 1 给了 NNN 时):等于 auto → 静默用;大于 auto → 问用哪个;≤ existing → 报 collision,改 auto 或换 slug。
+编号规则与 **NNN 前缀冲突**(Step 1 给了 NNN 时)按 canonical [Shared runtime conventions](../../docs/actions/README.md#shared-runtime-conventions) + canonical Outputs 的冲突三分支处理;不覆盖既有目录。
 
 ## Step 3 — 读项目 context
 
@@ -78,57 +70,37 @@ Slug 要求(strip 后):kebab-case(`a-z0-9-`)、2-40 chars、不以 `-` 开头结
 
 ## Step 4 — 检测 Module Setup 需要(workflow §2)
 
-| 情形 | 模块决策 |
-|---|---|
-| 明确扩展某一既有模块 | 不建新模块;plan 注 "extends `<X>`" |
-| 横跨 2+ 模块,主家不明 | 问用户:哪个承担 / 怎么拆 |
-| 全新领域 | **需新建模块** —— plan/tasks 加 skeleton |
-| 跨 tier feature | 逐 tier 单独判 |
-
-**不确定时先问用户,不编造模块决定。** 新模块的反常判定(跟父级约定是否不同)不预问——99% 选 n,作 Step 6.2 reminder 给 user 自判(workflow §2.3)。
+判定按 [workflow.md §2](../../docs/workflow.md#2-module-setupp2-内的-sub-flow非独立-phase):扩展既有模块 → 不建新模块,plan 注 "extends `<X>`";全新领域 → 需新建模块,plan/tasks 加 skeleton;跨 tier 逐 tier 单独判。**横跨 2+ 模块主家不明或任何不确定 → 先问用户,不编造模块决定。** 新模块的反常判定不预问——作 Step 6.2 reminder 给 user 自判(workflow §2.3)。
 
 ## Step 4.5 — 入口分流(无需新 artifact / 轻车道 / 全道)
 
-先判**是否需要新 artifact**(判据 [spec-driven §3.2.5](../../docs/spec-driven.md#325-入口分流先判是否需要-project-workflow))。**不启动 project-workflow**:小 bugfix / 文案样式微调 / 局部测试期望修复 / 低风险文档 / 键盘级局部改 / 已确认 spec 下的实施任务(spec/plan 错走 `/spec-revise`)。
+分流语义(是否需要新 artifact / 3 道 trip / 不确定分级 / Bundle rule / 升级安全闸)**整体按 canonical Lane Classification 执行**,细化判据见 [spec-driven §3.2.5](../../docs/spec-driven.md#325-入口分流先判是否需要-project-workflow);此处只记 Claude 执行点:
 
-**行为变更下限**(上列的例外):改变 `docs/specs/<area>.md` 已声明的用户可见行为或持久规则时,无论 diff 多小至少走轻车道 —— domain doc 唯一写入口是 `feature-done` pending → `feature-archive` merge,绕过即腐化。未声明的局部行为小改不因此强制进入 project-workflow。
-
-命中"无需 artifact" → 输出 "No new project-workflow artifact needed; continue directly and close with checks." 停止本 skill;直接做仍遵守 AGENTS.md / path rules / lint / test / hook。
-
-需要 artifact 时,3 道 trip **全 yes 才轻车道,任一 no → 全道**:
-
-| # | 判据 | no → |
-|---|------|------|
-| 1 规模 | ≤ ~1 个内聚模块 / 单一职责,**且 Step 4 未判定新建模块**;文件数只是辅助信号 | 全道 |
-| 2 可逆性 | additive / bugfix / polish 易回滚;**非**数据迁移 / API 或 schema 契约变更 | 全道 |
-| 3 爆破半径 | 不触达根 AGENTS.md「灾难性不变量 / 高爆破半径路径」节声明的路径(节缺失则问用户保守判)| 全道 |
-
-**不确定时分级**:不确定是否触达 API / DB / security / auth / multi-tenant / 迁移 / 跨模块契约 → 全道;不确定 UI 文案 / 样式 / 组件拆分 / 测试写法 → 不因此升级;不确定业务目标 → 先问用户,不建 spec。
-
-**Bundle rule**:多个相关小改合成一个中等 feature,不碎 spec。轻车道是优化不是逃生舱;直接实施或轻车道中发现触达高危面 → 停,补 artifact 再继续。
+- 命中"无需新 artifact" → 输出 "No new project-workflow artifact needed; continue directly and close with checks." 停止本 skill;直接做仍遵守 AGENTS.md / path rules / lint / test / hook。
+- **行为变更下限**:改变 `docs/specs/<area>.md` 已声明行为/持久规则 → 无论 diff 多小至少走轻车道(domain doc 唯一写入口是 `feature-done` pending → `feature-archive` merge,绕过即腐化)。
+- 3 道 trip(规模 / 可逆性 / 爆破半径)**全 yes 才轻车道,任一 no → 全道**;规模项要求 Step 4 未判定新建模块;爆破半径对照根 AGENTS.md「灾难性不变量 / 高爆破半径路径」节(节缺失则问用户保守判)。
+- 不确定分级与 Bundle rule 按 canonical;不确定业务目标 → 先问用户,不建 spec。
 
 ## Step 5 — 生成 change artifact(按车道)
 
-模板源 `$PLUGIN_ROOT/template/docs/specs/changes/_template/`。全道 = `{spec,plan,tasks}.md`;轻车道 = 仅 `tasks-light.md` → `tasks.md`。
+模板源 `$PLUGIN_ROOT/template/docs/specs/changes/_template/`。全道 = `{spec,plan,tasks}.md`;轻车道 = 仅 `tasks-light.md` → `tasks.md`。创建必须调用 packaged materializer;不要用 `mkdir -p` + `cp` 自行重写 no-clobber 逻辑。
 
 ```bash
 PLUGIN_ROOT="${PROJECT_WORKFLOW_PLUGIN_ROOT:-${CLAUDE_PLUGIN_ROOT:-${CODEX_PLUGIN_ROOT:-}}}"
-if [ -z "$PLUGIN_ROOT" ] || [ ! -d "$PLUGIN_ROOT/template" ]; then
-  PLUGIN_ROOT="$(find "$HOME/.claude/plugins/cache" "$HOME/.codex/plugins/cache" -type d -path '*/project-workflow*/template' -print 2>/dev/null | sort | tail -1 | sed 's#/template$##')"
+MATERIALIZER="${PLUGIN_ROOT:+$PLUGIN_ROOT/scripts/materialize-feature-artifact.cjs}"
+if [ -z "$PLUGIN_ROOT" ] || [ ! -d "$PLUGIN_ROOT/template" ] || [ ! -f "$MATERIALIZER" ]; then
+  MATERIALIZER="$(find "$HOME/.claude/plugins/cache" "$HOME/.codex/plugins/cache" -type f -path '*/project-workflow*/scripts/materialize-feature-artifact.cjs' -print0 2>/dev/null | xargs -0 ls -t 2>/dev/null | grep '/scripts/materialize-feature-artifact.cjs$' | head -1)"
+  PLUGIN_ROOT="${MATERIALIZER%/scripts/materialize-feature-artifact.cjs}"
 fi
-[ -n "$PLUGIN_ROOT" ] && [ -d "$PLUGIN_ROOT/template" ] || { echo "Cannot resolve project-workflow plugin root"; exit 1; }
-SRC="$PLUGIN_ROOT/template/docs/specs/changes/_template"
+[ -n "$PLUGIN_ROOT" ] && [ -d "$PLUGIN_ROOT/template" ] && [ -f "$MATERIALIZER" ] || { echo "Cannot resolve a compatible project-workflow package with feature materializer"; exit 1; }
+# 全道:
+node "$MATERIALIZER" --target "$TARGET_ROOT" --number "$NNN" --slug "$SLUG" --lane full --shape "$SPEC_SHAPE"
+# 轻车道(替代上一行):
+# node "$MATERIALIZER" --target "$TARGET_ROOT" --number "$NNN" --slug "$SLUG" --lane light
 CHANGE_DIR="$TARGET_ROOT/docs/specs/changes/$NNN-$SLUG"
-mkdir -p "$CHANGE_DIR"
-# 全道 —— 按 Step 3.5 SPEC_SHAPE 选 change spec 模板:
-if [ "$SPEC_SHAPE" = "greenfield" ]; then
-  cp "$SRC/spec-greenfield.md" "$CHANGE_DIR/spec.md"
-else
-  cp "$SRC/spec-brownfield.md" "$CHANGE_DIR/spec.md"
-fi
-cp "$SRC/plan.md" "$SRC/tasks.md" "$CHANGE_DIR/"
-# 轻车道: cp "$SRC/tasks-light.md" "$CHANGE_DIR/tasks.md"
 ```
+
+若 materializer 报 NNN 正被预约,只按错误中给出的 next NNN 更新 `$NNN` 后重试一次;不删除未知预约文件,也不退回手写 `mkdir` / `cp`。
 
 复制后 Edit 替换 `<NNN>` / `<slug>` / `<TODAY>` / `{{area}}`→`primary_area`(brownfield)。`{{TODO ...}}` **保留**给 conversational fill。
 
@@ -165,7 +137,7 @@ cp "$SRC/plan.md" "$SRC/tasks.md" "$CHANGE_DIR/"
 
 ### 6.3 按 pre-fill 复杂度选择 trace check / auditor
 
-纯空骨架跳过。只有用户原话/现有 domain 事实的简单单文件 pre-fill → 主 skill 输出“值 → 来源”紧凑 trace matrix。出现新 module ownership、endpoint/method/field/error/package/path/infra、弱证据,或生成决定跨 spec/plan/tasks → dispatch [`decision-completeness-auditor`](../../agents/decision-completeness-auditor.md):
+纯空骨架跳过。dispatch 与否按 canonical [Dispatch Boundary](../../docs/reviewers/decision-completeness-auditor.md#dispatch-boundary) 判:简单单源 pre-fill → 主 skill 输出“值 → 来源”紧凑 trace matrix;命中 boundary → dispatch [`decision-completeness-auditor`](../../agents/decision-completeness-auditor.md):
 - `files_to_audit`: 全道 `{spec,plan}.md`;轻车道 `tasks.md`
 - `qa_answers`: Step 4 框架决策(slug / NNN / module setup)+ chat 中 user 明确给的业务事实;`language_conventions`: null
 - `plugin_hardcoded_defaults`: `{value: "NNN-<slug>", source: "workflow.md §3 spec-driven"}` 一条

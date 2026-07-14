@@ -10,7 +10,6 @@ const sourceRepoUrl = "https://github.com/shrekshrek/project-workflow/blob/main"
 
 const copiedDirs = [
   ["docs/actions", "docs/actions"],
-  ["docs/examples", "docs/examples"],
   ["docs/reviewers", "docs/reviewers"],
   ["tests/fixtures/reviewer-smoke", "tests/fixtures/reviewer-smoke"],
   ["template", "template"],
@@ -25,8 +24,11 @@ const copiedFiles = [
   ["docs/tooling.md", "docs/tooling.md"],
   ["docs/quickstart.md", "docs/quickstart.md"],
   ["docs/adapters/codex-scoped-rule-bridge.md", "docs/adapters/codex-scoped-rule-bridge.md"],
+  ["docs/examples/full-feature-artifact.md", "docs/examples/full-feature-artifact.md"],
+  ["docs/examples/reviewer-mutation-smoke.md", "docs/examples/reviewer-mutation-smoke.md"],
   ["scripts/relocate-markdown-links.cjs", "scripts/relocate-markdown-links.cjs"],
   ["scripts/materialize-project-baseline.cjs", "scripts/materialize-project-baseline.cjs"],
+  ["scripts/materialize-feature-artifact.cjs", "scripts/materialize-feature-artifact.cjs"],
   ["scripts/check-reviewer-fixtures.cjs", "scripts/check-reviewer-fixtures.cjs"],
 ];
 
@@ -36,6 +38,12 @@ const removedTemplateFiles = [
 
 const removedPluginDirs = [
   "agents",
+  "tests/fixtures/feature-init-scenarios",
+];
+
+const removedPluginFiles = [
+  "docs/examples/feature-init-scenario-matrix.md",
+  "scripts/check-feature-init-fixtures.cjs",
 ];
 
 function transformPluginDoc(content) {
@@ -113,6 +121,15 @@ for (const targetRel of removedPluginDirs) {
     }
   } else {
     fs.rmSync(target, { recursive: true, force: true });
+  }
+}
+
+for (const targetRel of removedPluginFiles) {
+  const target = path.join(pluginRoot, targetRel);
+  if (checkOnly) {
+    if (fs.existsSync(target)) problems.push(`extra ${path.relative(repoRoot, target)}`);
+  } else {
+    fs.rmSync(target, { force: true });
   }
 }
 
