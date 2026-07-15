@@ -94,7 +94,7 @@ forbidMarkers("scripts/materialize-feature-artifact.cjs", ["assertNoSymlinkCompo
 forbidMarkers("scripts/materialize-feature-artifact.cjs", [".project-workflow-nnn-", "reservation"]);
 requireMarkers("docs/actions/README.md", ["active runtime adapter", "CLAUDE_PLUGIN_ROOT", ".codex-plugin/plugin.json", "Do not scan another host's cache", "required asset"]);
 forbidMarkers("docs/actions/README.md", ["~/.claude/plugins/cache", "~/.codex/plugins/cache", "most recently installed compatible package"]);
-requireMarkers("adapters/claude/skills/feature-init/SKILL.md", ["CLAUDE_PLUGIN_ROOT is required", "scripts/materialize-feature-artifact.cjs"]);
+requireMarkers("adapters/claude/skills/feature-init/SKILL.md", ["`CLAUDE_PLUGIN_ROOT` is required", "scripts/materialize-feature-artifact.cjs"]);
 requireRegex("adapters/claude/skills/feature-init/SKILL.md", /occupied directory.*leave it untouched.*rerun feature-init/i, "occupied-directory no-clobber rerun semantics");
 requireMarkers("adapters/claude/skills/project-init/SKILL.md", ["scripts/materialize-project-baseline.cjs", "six target-mapped files", "Do not ask stack questions"]);
 requireMarkers("docs/workflow.md", ["未改变已声明 current truth", "契约/流程语义变更仍按风险选 light/full"]);

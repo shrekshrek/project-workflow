@@ -402,7 +402,7 @@ path-scoped rules(Claude materialization: .claude/rules/ 按需加载):
 **A 类反模式**:
 - "任何文件都要看的项目级约定"塞进 path-scoped rules —— 只有匹配路径的文件触发时才加载,其他时候 AI 看不到 → 漂移
 - framework-specific 详规则全塞 AGENTS.md → 突破 < 200 行,所有 session 全部加载 → context budget 爆炸
-- 同一规则在 AGENTS.md + path-scoped rules 两边重复 → 删 AGENTS.md 那份(后者更精准 path-scoped)
+- 同一规则在 AGENTS.md + 宿主私有 path-scoped rules 两边无意重复 → 先判断 portability:跨工具约定保留在 AGENTS.md(宿主规则只放增量);仅约束该宿主的规则保留在 rules 并明确 host-specific 范围
 - 新建 path-scoped rule 但忘设 `paths:` → 失去 path-scoped 优势,等于扁平 always-on
 
 > **A 类不止 P0 写**:AGENTS.md 的更新频率与触发跨 P2/P4,详见 [§5.0 三层 AGENTS.md 的更新频率梯度](#50-三层-agentsmd-的更新频率梯度);Claude-local scoped rules 只在该项目实际采用时随相关 change 或 `project-personalize` 新增/扩充。
