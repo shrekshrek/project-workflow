@@ -5,9 +5,9 @@
 ## `docs/specs/changes/002-invitation/spec.md`
 
 ```markdown
-# 002 invitation — Spec
+# 002 invitation — Change Spec
 
-> 创建于 2026-05-08 · 状态:已确认
+> 创建于 2026-05-08 · 状态:**已确认**
 
 ## 1. Outcomes
 
@@ -21,7 +21,9 @@
 - 管理页面查看 + 撤销未使用邀请
 
 **不做**:
-- 多渠道(SMS / Slack / 企业微信)、邀请配额、追踪 UI、批量邀请
+- SMS / Slack / 企业微信等多渠道邀请
+- 邀请配额与使用追踪 UI
+- 批量邀请
 
 ## 3. Constraints
 
@@ -53,22 +55,54 @@
 - `frontend/layers/invitations/` —— 新增 layer
 - `frontend/layers/teams/` —— 改:设置页加 form
 
+### 1.1 Sibling Alignment
+
+| 兄弟模块 | 对齐方式 | 备注 |
+|---|---|---|
+| `backend/src/users/` | Align | 沿用现有 service/transaction 边界 |
+| `frontend/layers/teams/` | Deviate | 邀请落地页独立成 invitations layer,避免把注册流塞进 teams |
+
 ## 2. 架构决策
 
-- 邀请数据模型:`invitations(id, team_id, email, token_hash, expires_at, created_by, used_at)`
-- 邀请链接走 frontend 路由 `/i/<token>` → 调 backend `GET /invitations/<token>` → 落地页注册流
-- 注册时校验 token 并在事务里 join team
+### 数据模型
+
+`invitations(id, team_id, email, token_hash, expires_at, created_by, used_at)`
+
+### 外部接口 / API 契约
+
+| Operation / Method | Target / Path | Input | Output | Errors |
+|---|---|---|---|---|
+| POST | `/invitations` | email | invitation id | 400 / 429 |
+| GET | `/invitations/<token>` | token | invitation summary | 404 / 410 |
+| DELETE | `/invitations/<id>` | invitation id | 204 | 404 / 409 |
+
+### 关键流程
+
+邀请链接走 frontend 路由 `/i/<token>` → backend 校验 token → 注册时在事务里加入 team。
 
 ## 3. Prior decisions
 
-- Resend 不选 SES:已有 Resend 账号,SES 要跑域名验证
-- token 存 hash 不存原文(类似密码):泄露 db 不能复用
-- 邀请链接经前端而非直打 backend:UX(401 跳登录易处理)
+| 决策 | 为什么 |
+|---|---|
+| Resend 不选 SES | 已有 Resend 账号,SES 还需域名验证 |
+| token 存 hash 不存原文 | 数据库泄露后不能直接复用 |
+| 邀请链接先进入前端 | 登录/注册跳转由前端统一处理 |
 
 ## 4. 风险与未决
 
-- 风险:Resend 配额上限不够支撑大量邀请 → 上线后观察
-- 未决:邀请邮件文案 → 实施时跟产品对一遍
+### 风险
+
+- Resend 配额可能不足 → 上线后观察
+
+### 未决(实施时决)
+
+- 邀请邮件文案 → 实施前与产品确认
+
+## 5. 实施顺序
+
+1. 建数据模型和 invitation service,先验证 token 生命周期。
+2. 接 API 与邮件发送,完成 backend 集成测试。
+3. 接管理页和邀请落地页,最后跑端到端流程。
 ```
 
 ## `docs/specs/changes/002-invitation/tasks.md`
@@ -76,26 +110,48 @@
 ```markdown
 # 002 invitation — Tasks
 
-> 基于 spec.md + plan.md
+> 基于 plan.md
 
-## 任务清单
+## 1. 任务清单
 
-### 后端
-- [ ] migration: invitations 表(2h)
-- [ ] backend: POST /invitations + Resend(2h)
-- [ ] backend: GET /invitations/<token> + 注册时校验(1.5h)
-- [ ] backend: DELETE /invitations/<id> 撤销(0.5h)
+### Setup
 
-### 前端
+- [ ] 建 `backend/src/invitations/` 与最小入口文件
+- [ ] 接入 backend composition point
+- [ ] 添加并验证 invitations migration
+
+### Backend
+
+- [ ] POST `/invitations` + Resend(2h)
+- [ ] GET `/invitations/<token>` + 注册时校验(1.5h)
+- [ ] DELETE `/invitations/<id>` 撤销(0.5h)
+
+### Frontend
+
 - [ ] 团队设置页:发邀请 form(1h)
 - [ ] 邀请管理页:列表 + 撤销(1.5h)
 - [ ] 邀请落地页:接受 → 注册流(1h)
 
-### 验证
-- [ ] e2e: 发→收邮件→点链接→注册→入队(0.5h)
-- [ ] 单测覆盖 spec.md §4 的四个核心场景(0.5h)
+### Verification
 
-## 实施记录
+- [ ] 单测覆盖 spec.md §4 的四个核心场景
+- [ ] 集成测试覆盖 API、邮件 payload 和 token 解码
+- [ ] e2e:发→收邮件→点链接→注册→入队
+
+### Acceptance
+
+- [ ] spec §4 Verification 全部 pass
+
+## 2. 实施记录
 
 - (实施时填)
+
+## Proof Bundle
+
+- Verdict:
+- Change:`review-scope=[exact paths]; base/worktree=[Git context]; endpoint-outputs=[tasks receipt, READY status]`
+- Checks:`<command; result; totals>`
+- L2:`verdict; findings=[]; applicable-rules=[]; applicable-unverified=[]; ambiguities=[]`
+- L3:`verdict; findings=[]; applicable-items=[]; applicable-unverified=[]; ambiguities=[]`
+- Current truth:
 ```
