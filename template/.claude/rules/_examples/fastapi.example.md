@@ -25,7 +25,7 @@ paths:
 ## 输入 / 输出 schema
 
 - 所有输入 schema 继承统一 `BaseSchema`(`model_config = ConfigDict(strict=True, extra="forbid")`)
-- 用 `Field(..., min_length=N, max_length=N, regex=...)` 显式约束,不依赖 default validation
+- 用 `Field(..., min_length=N, max_length=N, pattern=...)` 显式约束,不依赖 default validation
 - 输出**返回 Pydantic schema**,不直接返 ORM model(避免懒加载 + 序列化坑)
 
 ## 依赖注入
@@ -55,7 +55,7 @@ paths:
 
 ## Settings / Config
 
-- `BaseSettings` 子类,走 `@lru_cache` 单例
+- 使用 `pydantic-settings` 的 `BaseSettings` 子类,走 `@lru_cache` 单例
 - Settings 通过 DI 注入(`Depends(get_settings)`),**不** import-time read 环境变量
 - 敏感字段(secret key / API key)用 `SecretStr` 类型
 

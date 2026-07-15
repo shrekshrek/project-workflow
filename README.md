@@ -24,16 +24,18 @@ Full framing with sources: [`docs/workflow.md §0.1`](docs/workflow.md).
 
 project-workflow helps real projects move from **chat-driven AI coding** to **spec-driven, reviewable, maintainable AI-assisted development**.
 
+Personal and team development use the same per-change workflow. A team does not need a project-workflow collaboration layer: each contributor applies the same no-artifact/light/full classification, verification, and archive rules to their own change before submitting it.
+
 v3 separates **methodology core** from **runtime adapters**:
 
 - Core: `AGENTS.md`, `docs/specs/`(域现状), `docs/specs/changes/`(tracked changes), conditional ADR, compact delivery receipt, L1/L2/L3 review model, canonical workflow actions in `docs/actions/`, and canonical reviewer specs in `docs/reviewers/`.
-- Adapters: Claude Code plugin is mature; Codex is distributed as a separate Codex plugin package. Both adapters use the same core docs and template, but their installed artifacts are separate.
+- Adapters: Claude Code and Codex each have a host-native plugin package. Both use the same core docs and template, while keeping runtime skills, manifests, and subagent dispatch host-specific.
 
 See [`docs/cross-tool-methodology.md`](docs/cross-tool-methodology.md).
 
 | Need | project-workflow answer |
 |---|---|
-| Start a project with shared conventions | P0 starter kit: `AGENTS.md`, path-scoped rules, optional verified hooks, ADR guide |
+| Start a project without guessing the stack | P0 neutral six-file baseline; personalize from repository evidence after a scaffold exists |
 | Start a feature without losing requirements in chat | P2 `spec.md` / `plan.md` / `tasks.md` |
 | Keep implementation aligned while coding | spec revise SOP, module-boundary handling, environment-enforced rules |
 | Know whether a feature is ready | L1/L2/L3 review + delivery receipt |
@@ -58,9 +60,9 @@ Deep reference, not required reading: [`workflow.md`](docs/workflow.md), [`spec-
 | Layer | What | Where |
 |---|---|---|
 | 📘 **Methodology core** | 5-phase blueprint (P0 Project Setup / P2 Feature + Module Setup sub-flow / P3 Maintenance / P4 Drift Refresh; no P1 by design — see workflow.md §0.2) + canonical action specs + 4 pillars + cross-tool boundaries + spec-driven 3-file template + demonstrative gotchas ledger | [`docs/`](docs/) |
-| 🧰 **Starter template** | Plugin-side baseline and optional hook assets. Project init materializes conventions always and hooks only when a safe command is verified. | [`template/`](template/) |
-| 🤖 **Claude Code adapter** | 9 Claude-native slash-command skills + 6 named sub-agents | [`.claude-plugin/`](.claude-plugin/) + [`skills/`](skills/) + [`agents/`](agents/) |
-| 🧩 **Codex adapter** | 9 Codex-native skills using bundled canonical reviewer specs | [`plugins/project-workflow/`](plugins/project-workflow/) + [`.agents/plugins/`](.agents/plugins/) |
+| 🧰 **Starter template** | Six-file generated baseline plus optional rules, hooks, tier examples, feature/domain/ADR templates, and safety scripts retained in the plugin library. | [`template/`](template/) |
+| 🤖 **Claude Code adapter** | 9 Claude-native slash-command skills + 6 named sub-agents | [`adapters/claude/`](adapters/claude/) + [`.claude-plugin/`](.claude-plugin/) marketplace |
+| 🧩 **Codex adapter** | 9 Codex-native skills using bundled canonical reviewer specs | [`adapters/codex/`](adapters/codex/) + [`.agents/plugins/`](.agents/plugins/) marketplace |
 
 > **Concrete project example** (example-of-one, not authoritative source): [`shrekshrek/full-stack-scaffolding-fastapi-nuxt4`](https://github.com/shrekshrek/full-stack-scaffolding-fastapi-nuxt4) — a FastAPI + Nuxt 4 full-stack scaffold that follows project-workflow methodology. The methodology's arguments are self-contained in `docs/`; the scaffold is just one concrete instantiation.
 
@@ -81,11 +83,18 @@ Then in any project:
 /project-workflow:feature-init <feature-slug>
 ```
 
-Claude Code exposes the same 9 workflow actions as Codex — one entry point per action, no separate helper commands. Normal feature delivery ends with `/project-workflow:feature-done`; partial reruns re-invoke the same command (idempotent, caches reused).
+Update the marketplace and plugin, then restart Claude Code before testing the new version:
+
+```bash
+claude plugin marketplace update project-workflow
+claude plugin update project-workflow@project-workflow
+```
+
+Claude Code exposes the same 9 workflow actions as Codex — one entry point per action, no separate helper commands. Normal feature delivery ends with `/project-workflow:feature-done`; partial reruns re-invoke the same command. Same-task reviewer results may be reused only when every input is provably unchanged.
 
 ### Codex plugin
 
-The Codex plugin package lives at [`plugins/project-workflow/`](plugins/project-workflow/), and this repo exposes it through [`.agents/plugins/marketplace.json`](.agents/plugins/marketplace.json). Codex exposes the same 9 workflow actions through its own native skill implementations; the Codex skills are not copies of the Claude runtime adapter.
+The Codex-native source adapter lives at [`adapters/codex/`](adapters/codex/). The repository marketplace resolves the self-contained generated package from the `plugin-dist` branch. Codex exposes the same 9 workflow actions through its own native skill implementations; the Codex skills are not copies of the Claude runtime adapter.
 
 Install the GitHub version in Codex:
 
@@ -103,21 +112,37 @@ codex plugin marketplace upgrade project-workflow
 codex plugin add project-workflow@project-workflow
 ```
 
+Start a new Codex task after installing or updating so the refreshed skills are loaded.
+
 If an older delivered feature still has a checkbox-style `## Proof Bundle` without `Verdict:`, rerun `feature-done` before archiving it. `feature-archive` sweep reports these as legacy migration candidates and never guesses READY from old checkboxes.
 
 <details>
 <summary>Local development install (repo contributors only)</summary>
 
-Point Codex at your working copy instead of GitHub while iterating on this repo itself:
+Build both self-contained packages into a fresh temporary directory while iterating on this repo itself. If the GitHub marketplace is already configured for the host being tested, remove it before adding this local marketplace; local and remote sources intentionally share the same marketplace and plugin names.
 
 ```bash
-codex plugin marketplace add <path-to-this-repo>
+DIST_ROOT=$(mktemp -d)
+node scripts/build-plugin-packages.cjs --out "$DIST_ROOT"
+```
+
+Claude Code:
+
+```bash
+claude plugin marketplace add "$DIST_ROOT"
+claude plugin install project-workflow@project-workflow
+```
+
+Codex:
+
+```bash
+codex plugin marketplace add "$DIST_ROOT"
 codex plugin add project-workflow@project-workflow
 ```
 
-Or in Codex App: open **Plugins**, add or open the local marketplace at `<path-to-this-repo>/.agents/plugins/marketplace.json`, then install **Project Workflow**.
+The same output root contains a Claude marketplace at `.claude-plugin/marketplace.json` and a Codex marketplace at `.agents/plugins/marketplace.json`. In Codex App, add the generated output directory as the local marketplace, install **Project Workflow**, and start a new thread.
 
-Do not add both the local development source and the GitHub release source at the same time — both provide plugin name `project-workflow`, and Codex will not distinguish which one a bare `project-workflow` reference means. Run `codex plugin marketplace remove <name>` on one of them first if you need to switch.
+Do not add both the local development source and the GitHub release source at the same time. Remove the configured `project-workflow` marketplace for that host before switching sources, then reinstall and start a new task.
 
 </details>
 
@@ -135,26 +160,20 @@ $spec-reconcile <area>
 $agents-md-revise
 ```
 
-For an empty greenfield target, run `$project-init` once to materialize conventions and the domain index. ADRs are created only when a qualifying decision exists; hook assets are added only when a safe per-file command is verified. For any non-empty existing codebase or copied scaffold, use `$project-personalize`.
+For an empty greenfield target, run `$project-init` once to materialize the neutral six-file baseline: `AGENTS.md`, the one-line `CLAUDE.md` alias, `.gitignore`, `docs/specs/index.md`, `docs/adr/README.md`, and `docs/gotchas.md`. For any non-empty existing codebase or copied scaffold, use `$project-personalize`; that is where real commands, paths, tiers, and optional host-specific rules/hooks are derived from repository evidence.
 
 ### Manual fallback
 
-For tools without plugin support, copy the starter template:
+For tools without plugin support, use the same baseline materializer from this checkout:
 
 ```bash
-rsync -a \
-  --exclude '_multi_tier_examples/' \
-  --exclude 'docs/specs/_template/' \
-  --exclude 'docs/specs/changes/' \
-  --exclude 'docs/adr/0000-template.md' \
-  --exclude '.claude/rules/_examples/' \
-  --exclude '.claude/hooks/' \
-  --exclude '.claude/settings.json' \
-  --exclude '.codex/' \
-  <path-to-this-repo>/template/ <your-project>/
+node <path-to-this-repo>/scripts/materialize-project-baseline.cjs \
+  --stage <temporary-staging-dir> --target <your-project>
+node <path-to-this-repo>/scripts/materialize-project-baseline.cjs \
+  --apply-staged <temporary-staging-dir> <your-project>
 ```
 
-Then edit `AGENTS.md` placeholders (delete `{{HOOK_INDEX}}` unless you materialize verified hooks) and adapt path-scoped rules for your runtime. All reusable templates stay in the plugin/source library; the fallback installs no no-op hook files. Dockerfile / docker-compose / build scripts are your own to add per stack.
+The generated baseline contains no stack placeholders or no-op hooks. All reusable templates and optional host-specific assets stay in the plugin/source library; add them later through evidence-backed personalization. Dockerfile / docker-compose / build scripts remain project-owned.
 
 ### Source naming rule
 
@@ -174,7 +193,7 @@ Most work does **not** use all nine actions. Initialize once, then use the daily
 
 | Frequency | Action | Purpose |
 |---|---|---|
-| Once, greenfield | `project-init` | Create the project baseline and conventions. |
+| Once, greenfield | `project-init` | Create the neutral six-file project baseline. |
 | Per tracked change | `feature-init` | Choose no artifact, light tasks-only, or full spec/plan/tasks. Tiny/local work can proceed directly. |
 | Full lane only | `spec-quality-check` | Check the collaboratively completed draft before implementation. |
 | End of tracked change | `feature-done` | Run L1/L2/L3, current-truth check, and write one compact delivery receipt. |
@@ -187,7 +206,7 @@ Exception and maintenance actions appear only when their condition exists:
 | Copied scaffold or any non-empty existing codebase retrofit | `project-personalize` |
 | A confirmed contract becomes materially wrong during implementation | `spec-revise` |
 | Historical active specs contradict each other | `spec-reconcile` |
-| Objective project state drifts from `AGENTS.md` or scoped rules | `agents-md-revise` |
+| Objective project state drifts from `AGENTS.md` or explicitly selected host-specific convention files | `agents-md-revise` |
 
 > Reusable templates (feature/domain/ADR) are plugin-canonical and are not retained in generated projects. Actions instantiate only concrete artifacts when needed. To customize, fork the plugin and edit `template/`.
 >
@@ -195,15 +214,14 @@ Exception and maintenance actions appear only when their condition exists:
 
 ## Reviewer methodology
 
-[`docs/reviewers/`](docs/reviewers/) is the canonical layer for the six reviewer, auditor, and research roles. Claude exposes thin named-agent adapters in [`agents/`](agents/); Codex skills read the same bundled reviewer specs and use a general subagent or main-session fallback. See the [reviewer index](docs/reviewers/README.md) for the role map instead of duplicating it here.
+[`docs/reviewers/`](docs/reviewers/) is the canonical layer for the six reviewer, auditor, and research roles. Claude exposes thin named-agent adapters in [`adapters/claude/agents/`](adapters/claude/agents/); Codex skills read the same bundled reviewer specs and use a general subagent or main-session fallback. See the [reviewer index](docs/reviewers/README.md) for the role map instead of duplicating it here.
 
-## Maintaining the Codex package
+## Maintaining generated plugin packages
 
-The Codex plugin contains a bundled copy of runtime core docs, templates, and required materializers because installed Codex plugins do not share the Claude Code plugin install directory. Treat those bundled files as release artifacts. Maintainer-only feature-init fixtures, grading scripts, and scenario instructions remain in the source repository/CI and are not shipped in the installed plugin. Its `SKILL.md` bodies are a separately maintained Codex-native adapter and are deliberately not overwritten by the sync script; shared non-runtime references such as `project-init/reference.md` are still synchronized. After changing shared core assets or either adapter, run:
+The main branch keeps one canonical core plus separate Claude- and Codex-native adapters. `scripts/build-plugin-packages.cjs` assembles two self-contained packages in a temporary output tree; no generated package is committed on `main`. A versioned release commit on `main` publishes the validated output to the generated `plugin-dist` branch after all checks pass. Maintainer-only feature-init fixtures, grading scripts, and scenario instructions remain source-only. After changing shared core assets or either adapter, run:
 
 ```bash
-node scripts/sync-codex-plugin.js
-node scripts/sync-codex-plugin.js --check
+node scripts/build-plugin-packages.cjs --check
 node scripts/check-adapter-parity.js
 node scripts/check-workflow-contracts.cjs
 node scripts/check-reviewer-fixtures.cjs
@@ -213,7 +231,7 @@ node scripts/check-lifecycle-links.cjs
 node scripts/check-markdown-links.cjs
 ```
 
-These checks enforce the same 9 public actions, installed-plugin-safe canonical reads, the `< 200` line limit, structural verdict/receipt/template contracts, deterministic endpoint and feature-init fixture inputs, mechanical no-clobber behavior, verdict truth tables, release-copy synchronization, and local Markdown paths/fragments. They do not execute model reviewers or generative skills. When reviewer, endpoint, or feature-init generation behavior changes, run the applicable model smoke in [`docs/examples/reviewer-mutation-smoke.md`](docs/examples/reviewer-mutation-smoke.md) or [`docs/examples/feature-init-scenario-matrix.md`](docs/examples/feature-init-scenario-matrix.md) and record the result in the release PR/task.
+These checks enforce the same 9 public actions, installed-plugin-safe canonical reads, the `< 200` line limit, structural verdict/receipt/template contracts, deterministic endpoint and feature-init fixture inputs, mechanical no-clobber behavior, verdict truth tables, generated-package completeness, and source plus packaged Markdown paths/fragments. They do not execute model reviewers or generative skills. When reviewer, endpoint, or feature-init generation behavior changes, run the applicable model smoke in [`docs/examples/reviewer-mutation-smoke.md`](docs/examples/reviewer-mutation-smoke.md) or [`docs/examples/feature-init-scenario-matrix.md`](docs/examples/feature-init-scenario-matrix.md) and record the result in the release PR/task.
 
 ## License
 

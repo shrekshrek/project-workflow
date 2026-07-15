@@ -2,7 +2,7 @@
 
 This directory is the canonical reviewer / auditor / researcher layer for project-workflow.
 
-Runtime agents and skills must reference these specs instead of redefining the review method in tool-specific files. Claude Code uses `agents/*.md`. Codex plugin skills read these specs directly and may run them through any available Codex subagent. Those files are adapters: they define runtime metadata, tool availability, and dispatch details.
+Runtime agents and skills must reference these specs instead of redefining the review method in tool-specific files. Claude Code uses `adapters/claude/agents/*.md`. Codex plugin skills read these specs directly and may run them through any available Codex subagent. Those files are adapters: they define runtime metadata, tool availability, and dispatch details.
 
 | Reviewer | Purpose |
 |---|---|

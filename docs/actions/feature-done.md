@@ -13,7 +13,7 @@ This action owns the full endpoint gate: L1, L2, L3, current-truth check, and de
 
 - Feature directory or slug.
 - Current diff or changed files.
-- Project conventions from `AGENTS.md`, nested `AGENTS.md`, and path-scoped rules.
+- Project conventions from root and applicable nested `AGENTS.md`, plus host-specific convention files when the active adapter supplies them.
 - Full-lane `spec.md` when present.
 - Related domain documents (`docs/specs/<area>.md`) when the feature touches a declared product/system area.
 - Test/check command results.
@@ -27,37 +27,33 @@ This action owns the full endpoint gate: L1, L2, L3, current-truth check, and de
 - Domain doc check: contradiction vs `docs/specs/<area>.md` and update-pending for `feature-archive`. A greenfield full-lane delivery that establishes durable user/system behavior is `update pending` even when no area document exists yet; archive creates the concrete area doc from the plugin template. If spec/plan do not declare an area, record `area unresolved` rather than inventing a filename. Purely internal/non-durable work may report no relevant domain doc.
 - Delivery receipt: write compact, decision-relevant evidence to the legacy-compatible `## Proof Bundle` section in `tasks.md`, and show the same receipt in the endpoint response.
 
-## Codex Adapter Contract
-
-When `.claude/rules/` compatibility files exist, the Codex adapter resolves them against the complete changed-file population before L2. The receipt stores compact counts plus applicable/ambiguous paths; full skipped paths are debug-only. Critical ambiguity blocks readiness.
-
 ## Delivery Receipt (`## Proof Bundle` on disk)
 
 Persist only fields with a downstream consumer:
 
 - `Verdict`: READY / NEEDS WORK / BLOCKED.
-- `Change`: diff identity, the exact **review population** used by L2/L3 or light verification, and endpoint-owned output paths (`tasks.md` receipt, READY status marker, drift ledger when written). Do not claim this is the entire final worktree when unrelated user changes exist; Git remains the full content-diff source.
+- `Change`: the exact **review population** used by L2/L3 or light verification, endpoint-owned output paths (`tasks.md` receipt and READY status marker when written), and the Git base/worktree context when available. This is review traceability, not a cache key or claim about unrelated user changes; Git remains the full content-diff source.
 - `Checks`: commands, exit status, and concise test totals.
-- `L2`: verdict, findings count, exact applicable rule identifiers, 100%-coverage evidence, ambiguity/confidence, bridge counts (`global/matched/skipped/ambiguous`), and applicable/ambiguous source paths. Definite nonmatches remain count-only.
-- `L3`: verdict, findings count, exact spec-item identifiers, and the same coverage/ambiguity/confidence evidence for full lane; for light lane record `N/A` plus the separate verification result.
+- `L2`: verdict, findings, exact applicable rule identifiers, applicable-but-unverified identifiers, and ambiguities. A PASS must account for every applicable rule; do not replace the population with a percentage.
+- `L3`: verdict, findings, exact applicable spec-item identifiers, applicable-but-unverified identifiers, and ambiguities for full lane; for light lane record `N/A` plus each verification item and result.
 - `Current truth`: no relevant domain doc / aligned / update pending. Name the document when the feature declares a reliable area; otherwise record `area unresolved` for `feature-archive` to resolve.
 - `Open questions`: only unresolved items that affect handoff or release; omit when empty.
-- `Drift`: only actionable A-class convention changes or suggestions; append unresolved suggestions to the drift ledger.
+- `Drift`: only actionable A-class convention changes or suggestions; omit when empty. Persist it elsewhere only when the user explicitly asks to revise conventions.
 
-Before verdict finalization, validate the receipt structurally: exact review-scope paths, endpoint-owned output paths, required L2/L3 or light-verification IDs, coverage/unverified/ambiguity/confidence, bridge counts/paths, Verdict, Checks, and Current truth must be present. Missing evidence makes the endpoint unreliable. The response must include the exact on-disk `## Proof Bundle` block verbatim, not a summary or link. PR workflows may copy it verbatim; `feature-archive` consumes Verdict and Current truth; convention maintenance consumes Drift.
+Before verdict finalization, validate the receipt structurally: exact review-scope paths, endpoint-owned output paths, applicable and unverified L2/L3 identifiers (or light-verification identifiers), ambiguities, Verdict, Checks, and Current truth must be present. Missing evidence makes the endpoint unreliable. The response must include the exact on-disk `## Proof Bundle` block verbatim, not a summary or link. PR workflows may copy it verbatim; `feature-archive` consumes Verdict and Current truth.
 
-For light lane, also re-check that actual diff did not touch declared high-blast-radius paths; if it did, report misclassification.
+For light lane, when the project already declares disaster-invariant/high-blast-radius paths, re-check the actual diff against them; a match is a misclassification. Projects without this optional declaration rely on the semantic high-risk conditions from `feature-init` and do not need an empty path list.
 
 For full-lane `READY`, move the top `spec.md` status marker to `已实现`. This is a delivery status update, not a contract revision; do not change spec body content, and skip this for light-lane or non-READY results.
 
 ## Verdict
 
-Run every review layer that remains independently executable even after an earlier layer fails. In particular, an L1 failure blocks the final verdict but does not by itself suppress L2, L3, the current-truth check, or receipt assembly. Record non-execution only for a layer whose own required inputs or environment are unavailable, with the exact reason.
+Run every review layer that remains independently executable even after an earlier layer fails. In particular, an L1 failure prevents `READY` but does not by itself suppress L2, L3, the current-truth check, or receipt assembly. Record non-execution only for a layer whose own required inputs or environment are unavailable, with the exact reason.
 
-- Verdict contract: L1 failure or unreliable required checks = `BLOCKED`; blocking L2/L3/light-verification/current-truth findings = `NEEDS WORK`; evidence-backed required gates with only explicit nonblocking advisories = `READY`.
+- Verdict contract: failed required checks or blocking L2/L3/light-verification/current-truth findings = `NEEDS WORK`; missing required inputs or an environment that prevents required checks from running reliably = `BLOCKED`; evidence-backed required gates with only explicit nonblocking advisories = `READY`.
 - `READY`: L1 passes, L2/L3 are evidence-backed PASS or an allowed explicit skip, light-lane verification passes when applicable, no blocking current-truth issue remains, and the delivery receipt is complete. Explicitly nonblocking advisories are allowed.
 - `NEEDS WORK`: blocking or fixable findings remain.
-- `BLOCKED`: L1 fails, required context/spec is missing, or checks cannot run for a reason that prevents a reliable verdict.
+- `BLOCKED`: required context/spec is missing, or required checks cannot run for an environmental/input reason that prevents a reliable verdict.
 
 `READY` means the implementation passes checks against the feature artifact. It does not mean the feature is closed: every delivered feature is eventually moved to `docs/specs/changes/archive/` by [`feature-archive`](feature-archive.md) (its sweep mode makes this a cheap periodic batch, not a per-feature ceremony). If the current-truth check reported "update pending", the delivery receipt must say so explicitly and archiving that feature must include the current-truth merge — a READY feature with a pending merge is not silently complete.
 
@@ -71,7 +67,6 @@ L2/L3/Drift finding counts live in the delivery receipt; do not add a duplicate 
 - The delivery receipt is written at the endpoint, not guessed early.
 - An empty findings array without reviewer evidence is unreliable and blocks READY.
 - Endpoint-owned receipt-only edits and the status-only `已确认` → `已实现` transition do not invalidate cached L2/L3 results; changes to tasks outside `## Proof Bundle` or to the spec contract still invalidate them.
-- Cached results are only trustworthy when change detection is trustworthy: when the review scope is an untracked directory (git cannot see internal changes), force a fresh run unless a file-mtime comparison proves nothing changed.
-- Drift ledger contract: the endpoint appends unresolved drift suggestions as free-text lines (feature id + date + one-line gist); recurrence detection is semantic clustering at read time — no fingerprints or counters are maintained. Entries already codified into conventions are removed so the ledger holds open items only.
+- Reuse reviewer results only inside the same task when the exact scope and every reviewer input are provably unchanged. A later invocation reruns the relevant gates instead of relying on a persisted cache identity.
 - Historical specs remain archived; delivery evidence goes to `tasks.md`.
 - `已实现` is a delivery marker, not a claim that the spec is still the current product baseline; the spec's final resting place is `docs/specs/changes/archive/` (see [`feature-archive`](feature-archive.md) / [`spec-reconcile`](spec-reconcile.md)).

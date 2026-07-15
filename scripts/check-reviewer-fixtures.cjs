@@ -11,7 +11,8 @@ const expected = JSON.parse(fs.readFileSync(path.join(fixtureRoot, "expected.jso
 const problems = [];
 
 function aggregateVerdict({ l1Passed, l2Blocking, l3Blocking, lightVerificationPassed, receiptReliable }) {
-  if (!l1Passed || !receiptReliable) return "BLOCKED";
+  if (!receiptReliable) return "BLOCKED";
+  if (!l1Passed) return "NEEDS WORK";
   if (l2Blocking || l3Blocking || lightVerificationPassed === false) return "NEEDS WORK";
   return "READY";
 }

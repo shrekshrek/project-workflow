@@ -46,11 +46,11 @@ Classify each item: `single` or `distributed`.
 - `scope creep`: greenfield excluded item present; brownfield Removed item still present or Added item over-scoped
 - `verification gap`: required verification missing or failing
 
-### Phase 4: Coverage And Confidence
+### Phase 4: Completeness And Reliability
 
-Enumerate the exact changed-file population and exact spec-item identifiers (`section#item`). Report coverage = fully verified applicable spec items / all applicable spec items. Explicitly excluded/non-applicable items do not enter the denominator. Confidence is high only when coverage is 100% and no blocking spec ambiguity remains.
+Enumerate the exact changed-file population and exact spec-item identifiers (`section#item`). Record fully verified, explicitly non-applicable, applicable-but-unverified, and ambiguous items.
 
-A zero-finding result is `PASS` only when the exact changed-file population and exact applicable spec-item identifiers are enumerated, coverage is 100%, no applicable item is unverified, no blocking spec ambiguity remains, and confidence is high. Sampling or an incomplete population returns `UNRELIABLE`, not a clean pass.
+A zero-finding result is `PASS` only when the exact changed-file population and exact applicable spec-item identifiers are enumerated, no applicable item is unverified, and no blocking spec ambiguity remains. Sampling or an incomplete required population returns `UNRELIABLE`, not a clean pass.
 
 ## Output
 
@@ -64,7 +64,7 @@ Spec: docs/specs/changes/<NNN>-<slug>/spec.md
 Shape: brownfield | greenfield
 Domain context: docs/specs/<area>.md (read-only, if cited)
 Files reviewed: <count>
-Spec coverage: <X>% (<verified>/<applicable>; <non-applicable> excluded; <unverified> applicable but unverified)
+Population: <changed paths; applicable spec IDs; non-applicable; applicable but unverified>
 
 ### Missing
 ...
@@ -85,13 +85,13 @@ Spec coverage: <X>% (<verified>/<applicable>; <non-applicable> excluded; <unveri
 ...
 ```
 
-When findings are zero, collapse empty finding sections and return a compact evidence block containing the exact changed paths, exact spec-item identifiers, coverage, applicable-unverified count, ambiguity count, findings=0, and confidence.
+When findings are zero, collapse empty finding sections and return a compact evidence block containing the exact changed paths, exact spec-item identifiers, applicable-but-unverified items, ambiguities, and `findings=0`.
 
 ## Rules
 
 - Cite or skip: every finding needs a change spec section citation.
 - Do not make edits.
-- Do not report AGENTS.md / path-scoped-rule issues.
+- Do not report project-convention issues.
 - Do not invent requirements absent from the change spec.
 - Do not flag "missing" for domain doc behaviors not listed in Delta / Outcomes.
 - Never equate an empty findings array with success without the Phase 4 evidence contract.

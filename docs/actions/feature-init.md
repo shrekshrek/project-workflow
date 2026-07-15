@@ -17,7 +17,7 @@ Do not use for mid-implementation frozen-spec changes; use [`spec-revise`](spec-
 
 - Feature slug, optionally with a short description.
 - Target project root containing `AGENTS.md` and `docs/specs/`; all created files must be written under this root, not under an incidental cwd.
-- Existing project conventions from `AGENTS.md`, nested `AGENTS.md`, and path-scoped rules when present.
+- Existing project conventions from root and applicable nested `AGENTS.md`. A host adapter may also supply its own project-local convention files.
 - Existing substantive E-class domain docs (`docs/specs/<area>.md`) when present; prefer over `docs/specs/changes/archive/` when pre-filling. Do not create an empty domain doc just to make a feature brownfield.
 - Explicit feature facts already provided in the current conversation.
 
@@ -25,14 +25,14 @@ Read the active tree only: `docs/specs/changes/archive/` is closed history — e
 
 ## Lane Classification
 
-First decide whether the task needs a new project-workflow artifact at all. If no durable artifact is useful, or an accepted spec already covers the work, do not create a pseudo-lane; skip this action and implement directly under `AGENTS.md`, path rules, and relevant checks.
+First decide whether the task needs a new project-workflow artifact at all. If no durable artifact is useful, or an accepted spec already covers the work, do not create a pseudo-lane; skip this action and implement directly under the applicable project conventions and checks.
 
 When an artifact is useful, choose between two lanes. Use full lane for high-risk or contract-shaped work. Use light lane only when all are true:
 
 - small change within one cohesive module or responsibility area; file count alone is not decisive
 - additive, bugfix, or polish; no API/schema/data migration/architecture contract change
 - no new module
-- no declared disaster-invariant or high-blast-radius path is touched
+- no project-declared disaster-invariant or high-blast-radius path is touched, when the project uses such an optional declaration
 
 Uncertainty is graded:
 
@@ -58,11 +58,18 @@ Light lane:
 
 The directory number is the next available three-digit number (shared active+archive sequence, see [Shared runtime conventions](README.md#shared-runtime-conventions)) unless the user supplied a non-conflicting number. When the user supplies a number: equal to the computed next number → use it silently; greater than the computed number → ask which to use; less than or equal to an existing number → report the collision and switch to the computed number or another unused number (the slug may also change, but changing it alone never frees an occupied number). Never overwrite an existing `docs/specs/changes/<NNN>-<slug>/` directory.
 
-Adapters materialize the selected template through the packaged `scripts/materialize-feature-artifact.cjs`. The script validates the target root and number, atomically reserves the requested NNN for the short materialization window, creates the final feature directory with a no-clobber gate, copies only the selected lane files with exclusive creation, and rolls back files from a failed copy. A refusal leaves every pre-existing file untouched. Active or stale reservation files count as occupied numbers; on a reservation collision, retry once with the next NNN reported by the materializer and never delete an unknown reservation automatically.
+Adapters materialize the selected template through the packaged `scripts/materialize-feature-artifact.cjs`. The script validates the target root and requested number, normalizes an existing target-root symlink to its real directory, creates the final feature directory with an atomic no-clobber gate, copies only the selected lane files with exclusive creation, rejects symlinked destinations beneath the resolved root, and rolls back files created by a failed copy. A refusal leaves every pre-existing file untouched. If another process or earlier action occupied the number first, report the conflict and rerun feature-init to recompute the next number.
 
-## Codex Adapter Contract
+## Workflow
 
-When `.claude/rules/` compatibility files exist, the Codex adapter resolves and fresh-reads global, matching, and ambiguous rules through the [Codex scoped-rule bridge](../adapters/codex-scoped-rule-bridge.md). Report compact counts plus applicable/ambiguous paths; full skipped paths are debug-only. The handoff names global and matched paths.
+1. Resolve the target root and parse the requested slug/optional description.
+2. Read active conventions and current-truth documents, excluding archived change artifacts.
+3. Decide no artifact, light lane, or full lane using the classification above; ask only when the business goal or ownership is unclear.
+4. For full lane, choose brownfield only when a substantive domain document exists; otherwise use greenfield.
+5. Compute the next number across active and archived directories and invoke the packaged materializer with atomic no-clobber behavior.
+6. Replace structural placeholders and prefill only traceable facts. Preserve unresolved TODOs.
+7. Use an inline value-to-source trace for simple single-source prefill; run the decision-completeness auditor only for new technical specifics, weak evidence, ownership decisions, or generated decisions spanning artifacts.
+8. Validate the created population and report lane, shape, ownership, unresolved placeholders, evidence, and next action.
 
 ## Invariants
 
@@ -78,4 +85,3 @@ When `.claude/rules/` compatibility files exist, the Codex adapter resolves and 
 
 - Confirm created files match the selected lane.
 - Report lane, module decision, unresolved placeholders, and next action.
-- For Codex, report compact bridge counts and include applicable/ambiguous paths in the handoff.

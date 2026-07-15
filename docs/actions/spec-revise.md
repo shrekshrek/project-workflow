@@ -24,9 +24,17 @@ Draft specs may be edited directly before implementation starts.
 - Updated `tasks.md` if task order, scope, or validation changed.
 - New ADR only when the revision changes architecture/module boundaries, establishes a durable cross-feature technical decision, or supersedes an existing ADR.
 
-## Codex Adapter Contract
+## Workflow
 
-When `.claude/rules/` compatibility files exist, the Codex adapter resolves them against the proposed affected population before drafting and recomputes after scope changes. Report compact counts plus applicable/ambiguous paths; full skipped paths are debug-only.
+1. Resolve the active full-lane feature and read `spec.md`, `plan.md`, and `tasks.md`. Light-lane work has no frozen spec; upgrade it only when the discovered risk requires a contract.
+2. Confirm that the discovery is a material contract, verification, scope, plan, or module-boundary error. Put minor clarification in plan prior decisions or implementation notes instead.
+3. Resolve affected modules/files and fresh-read applicable conventions.
+4. Classify `ADR_REQUIRED`: yes only for architecture/module boundaries, durable cross-feature technical decisions, or superseding an ADR. When yes, scan existing Accepted/Proposed ADRs before drafting.
+5. Ask only when the revision direction, affected scope, ADR decision, or supersede action remains ambiguous. An explicit user instruction already settles the stated decision.
+6. Draft final spec/plan/tasks contents without changing the worktree. Add the dated revision record; synchronize plan decisions, risks, current-truth follow-up, tasks, and validation. Draft the conditional ADR from the packaged template when required.
+7. Update sibling alignment and propose nested `AGENTS.md` guidance only when a changed module is genuinely exceptional.
+8. Run an inline trace for a simple single-source correction or the decision-completeness auditor for an ADR, weak evidence, new technical specifics, or decisions spanning files.
+9. Show one consolidated diff, obtain one apply approval, then apply once. Rejection or a blocking audit leaves the worktree unchanged.
 
 ## Invariants
 
@@ -40,6 +48,5 @@ When `.claude/rules/` compatibility files exist, the Codex adapter resolves them
 
 ## Validation
 
-- Use two approval points: approve the proposed decision/scope (including any ADR supersede decisions), then approve one consolidated proposed diff. Draft and audit final contents without changing the worktree; apply once only after the second approval. Ask intermediate questions only when new ambiguity appears.
+- Ask decision questions only for unresolved ambiguity, then use one consolidated proposed-diff approval. Draft and audit final contents without changing the worktree; apply once after approval.
 - Confirm the next implementation step and whether [`spec-quality-check`](spec-quality-check.md) should be rerun.
-- For Codex, verify final bridge resolution and report compact counts plus applicable/ambiguous paths.

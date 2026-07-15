@@ -1,7 +1,0 @@
-{
-  "name": "project-workflow-reviewer-smoke",
-  "private": true,
-  "scripts": {
-    "test": "node --test"
-  }
-}

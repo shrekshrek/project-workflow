@@ -1,10 +1,13 @@
-name: plugin package sync check
+name: plugin source and package checks
 
 on:
   push:
     branches: [main]
   pull_request:
     branches: [main]
+
+permissions:
+  contents: read
 
 # 防止 commit msg "v2.X.Y" 跟 plugin manifests `version` 漂移。
 # 历史背景:维护期间 commit msg 先升版,plugin.json `version` 字段忘改 →
@@ -14,15 +17,23 @@ on:
 jobs:
   version-sync:
     runs-on: ubuntu-latest
+    outputs:
+      release: ${{ steps.commit_version.outputs.release }}
+      commit_ver: ${{ steps.commit_version.outputs.commit_ver }}
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 1
+          fetch-depth: 2
 
       - name: Extract version from latest commit message
         id: commit_version
         run: |
           MSG=$(git log -1 --format=%s)
+          RELEASE=false
+          if echo "$MSG" | grep -qE '^release: v[0-9]+\.[0-9]+\.[0-9]+(-[a-z0-9.]+)?([[:space:]].*)?$'; then
+            RELEASE=true
+          fi
+          echo "release=$RELEASE" >> "$GITHUB_OUTPUT"
           # 匹配 "vX.Y.Z" 或 "vX.Y.Z-rc.N" 形式,小写 v
           COMMIT_VER=$(echo "$MSG" | grep -oE 'v[0-9]+\.[0-9]+\.[0-9]+(-[a-z0-9.]+)?' | head -1 | sed 's/^v//')
           if [ -z "$COMMIT_VER" ]; then
@@ -36,8 +47,8 @@ jobs:
         id: manifest_versions
         if: steps.commit_version.outputs.skip != 'true'
         run: |
-          CLAUDE_VER=$(jq -r .version .claude-plugin/plugin.json)
-          CODEX_VER=$(jq -r .version plugins/project-workflow/.codex-plugin/plugin.json)
+          CLAUDE_VER=$(jq -r .version adapters/claude/.claude-plugin/plugin.json)
+          CODEX_VER=$(jq -r .version adapters/codex/.codex-plugin/plugin.json)
           echo "claude_ver=$CLAUDE_VER" >> "$GITHUB_OUTPUT"
           echo "codex_ver=$CODEX_VER" >> "$GITHUB_OUTPUT"
 
@@ -51,18 +62,41 @@ jobs:
           echo "Claude plugin version: $CLAUDE_VER"
           echo "Codex plugin version: $CODEX_VER"
           if [ "$COMMIT_VER" != "$CLAUDE_VER" ]; then
-            echo "::error::Version drift detected. Commit msg says v$COMMIT_VER but .claude-plugin/plugin.json says $CLAUDE_VER. Either bump plugin.json or drop the version token from commit msg."
+            echo "::error::Version drift detected. Commit msg says v$COMMIT_VER but adapters/claude/.claude-plugin/plugin.json says $CLAUDE_VER. Either bump plugin.json or drop the version token from commit msg."
             exit 1
           fi
           if [ "$COMMIT_VER" != "$CODEX_VER" ]; then
-            echo "::error::Version drift detected. Commit msg says v$COMMIT_VER but plugins/project-workflow/.codex-plugin/plugin.json says $CODEX_VER. Either bump plugin.json or drop the version token from commit msg."
+            echo "::error::Version drift detected. Commit msg says v$COMMIT_VER but adapters/codex/.codex-plugin/plugin.json says $CODEX_VER. Either bump plugin.json or drop the version token from commit msg."
             exit 1
           fi
           echo "::notice::Version sync OK: v$COMMIT_VER"
 
-      - name: Check Codex plugin release artifacts
+      - name: Require a new version for release commits
+        if: steps.commit_version.outputs.release == 'true'
         run: |
-          node scripts/sync-codex-plugin.js --check
+          previous_version() {
+            CURRENT_PATH="$1"
+            LEGACY_PATH="$2"
+            if git cat-file -e "HEAD^:${CURRENT_PATH}" 2>/dev/null; then
+              git show "HEAD^:${CURRENT_PATH}" | jq -r .version
+            elif git cat-file -e "HEAD^:${LEGACY_PATH}" 2>/dev/null; then
+              git show "HEAD^:${LEGACY_PATH}" | jq -r .version
+            else
+              echo "__missing__"
+            fi
+          }
+
+          RELEASE_VERSION="${{ steps.commit_version.outputs.commit_ver }}"
+          PREVIOUS_CLAUDE=$(previous_version adapters/claude/.claude-plugin/plugin.json .claude-plugin/plugin.json)
+          PREVIOUS_CODEX=$(previous_version adapters/codex/.codex-plugin/plugin.json plugins/project-workflow/.codex-plugin/plugin.json)
+          if [ "$RELEASE_VERSION" = "$PREVIOUS_CLAUDE" ] || [ "$RELEASE_VERSION" = "$PREVIOUS_CODEX" ]; then
+            echo "::error::Release v$RELEASE_VERSION reuses the previous plugin version. Bump both manifests so installed caches can distinguish the release."
+            exit 1
+          fi
+
+      - name: Build and validate generated plugin packages
+        run: |
+          node scripts/build-plugin-packages.cjs --check
 
       - name: Check Claude/Codex adapter parity
         run: |
@@ -91,3 +125,29 @@ jobs:
       - name: Check local Markdown links
         run: |
           node scripts/check-markdown-links.cjs
+
+  publish:
+    needs: version-sync
+    if: github.event_name == 'push' && needs.version-sync.outputs.release == 'true'
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build release packages
+        run: node scripts/build-plugin-packages.cjs --out "$RUNNER_TEMP/plugin-dist"
+
+      - name: Publish generated plugin branch
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_VERSION: ${{ needs.version-sync.outputs.commit_ver }}
+        run: |
+          cd "$RUNNER_TEMP/plugin-dist"
+          git init -b plugin-dist
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add --all
+          git commit -m "build: project-workflow v${RELEASE_VERSION} from ${GITHUB_SHA}"
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git push --force origin plugin-dist

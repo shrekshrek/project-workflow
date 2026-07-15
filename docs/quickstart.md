@@ -4,6 +4,8 @@
 
 本文使用 Claude Code 命令示例;Codex 安装 plugin 后使用同名 `$skill`,手工模式按 [`docs/actions/`](actions/) 执行同一 action。
 
+个人和团队使用同一条流程。团队成员各自在自己的 change 内完成分流、实施、验证和归档后提交即可,不需要额外 team mode 或协作层。
+
 日常主路径只有这一条:
 
 ```text
@@ -39,11 +41,11 @@
 /project-workflow:project-personalize
 ```
 
-预期结果:项目里有 `AGENTS.md`、路径级规则、ADR 使用说明和 domain index。具体 ADR/area doc 只在真实决定或持久事实出现时创建。只有确认安全、快速的单文件命令后才生成 hook assets;否则项目内不安装 no-op hook,端点检查由 `feature-done` 执行。Feature templates 保留在 plugin,创建 feature 时只实例化 concrete files。
+`project-init` 的预期结果只有六个中立文件:`AGENTS.md`、一行 alias `CLAUDE.md`、`.gitignore`、`docs/specs/index.md`、`docs/adr/README.md`、`docs/gotchas.md`。它不猜语言、命令、tier、rules 或 hooks。代码 scaffold 存在后运行 `project-personalize`,再从真实仓库证据补这些内容。可选 rules/hooks/tier examples 与 feature/domain/ADR templates 始终保留在 plugin library,不是被删除。
 
 ## 2. 判断是否需要 feature artifact
 
-小 bugfix、文案、样式、局部测试修复、低风险文档编辑,以及已确认 spec 下的实施任务,不要启动 project-workflow;直接做,遵守 `AGENTS.md` / path rules,最后说明改动和验证结果。
+小 bugfix、文案、样式、局部测试修复、低风险文档编辑,以及已确认 spec 下的实施任务,不要启动新的 artifact;直接做,遵守适用的 `AGENTS.md` 和当前宿主提供的项目约定,最后说明改动和验证结果。
 
 需要持久追踪、验证记录或规约保护时,再运行:
 
@@ -121,7 +123,7 @@
 /project-workflow:agents-md-revise
 ```
 
-它会让 `AGENTS.md` 和路径级规则语义跟真实项目保持接近,避免约定只留在聊天记录里。Claude Code adapter 会检查 `.claude/rules/`;Codex adapter 会优先检查嵌套 `AGENTS.md` 和显式规则章节。
+它会让 root/nested `AGENTS.md` 跟真实项目保持接近,避免约定只留在聊天记录里。只有用户把宿主私有 convention files 明确纳入本次修订时才同时处理;Codex 不读取或翻译 Claude-private `.claude/rules/`。
 
 ## 什么时候可以跳过完整流程
 

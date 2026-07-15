@@ -17,17 +17,12 @@ function parseArgs(argv) {
   return values;
 }
 
-function existingNumbers(changesRoot, ignoredReservation = null) {
+function existingNumbers(changesRoot) {
   return [changesRoot, path.join(changesRoot, "archive")].flatMap((directory) => {
     if (!fs.existsSync(directory)) return [];
-    return fs.readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
-      if (entry.isDirectory() && /^\d{3}-/.test(entry.name)) return [Number(entry.name.slice(0, 3))];
-      const reservationMatch = /^\.project-workflow-nnn-(\d{3})\.lock$/.exec(entry.name);
-      const candidate = path.join(directory, entry.name);
-      return directory === changesRoot && reservationMatch && candidate !== ignoredReservation
-        ? [Number(reservationMatch[1])]
-        : [];
-    });
+    return fs.readdirSync(directory, { withFileTypes: true })
+      .filter((entry) => entry.isDirectory() && /^\d{3}-/.test(entry.name))
+      .map((entry) => Number(entry.name.slice(0, 3)));
   });
 }
 
@@ -59,9 +54,7 @@ function materializeFeature({ target, number, slug, lane, shape }) {
     throw new Error(`Target root must resolve to a directory: ${requestedTarget}`);
   }
   const targetRoot = fs.realpathSync(requestedTarget);
-  if (!fs.statSync(targetRoot).isDirectory()) {
-    throw new Error(`Target root must resolve to a directory: ${requestedTarget}`);
-  }
+  if (!fs.statSync(targetRoot).isDirectory()) throw new Error(`Target root must resolve to a directory: ${requestedTarget}`);
   const agentsState = destinationState(targetRoot, "AGENTS.md");
   if (!agentsState.exists || !fs.statSync(agentsState.target).isFile()) throw new Error(`Target root missing AGENTS.md: ${targetRoot}`);
   const specsState = destinationState(targetRoot, "docs/specs");
@@ -72,64 +65,36 @@ function materializeFeature({ target, number, slug, lane, shape }) {
   if (!changesState.exists) fs.mkdirSync(changesState.target);
   if (!fs.statSync(changesState.target).isDirectory()) throw new Error(`Changes path is not a directory: ${changesState.target}`);
 
-  const reservation = path.join(changesState.target, `.project-workflow-nnn-${number}.lock`);
-  let reservationHandle;
+  const used = existingNumbers(changesState.target);
+  const maxUsed = used.length ? Math.max(...used) : 0;
+  if (Number(number) <= maxUsed) {
+    throw new Error(`Feature number ${number} is not greater than existing maximum ${String(maxUsed).padStart(3, "0")}; rerun feature-init to recompute the next number`);
+  }
+
+  const featureRelative = path.join(changesRelative, `${number}-${slug}`);
+  const featureState = destinationState(targetRoot, featureRelative);
+  if (featureState.exists) throw new Error(`Refusing to overwrite existing feature directory: ${featureState.target}`);
+
+  const templateRoot = path.resolve(__dirname, "..", "template", "docs", "specs", "changes", "_template");
+  const mappings = sourceMap(lane, shape);
+  const copied = [];
+  fs.mkdirSync(featureState.target); // Atomic no-clobber gate for the final path.
   try {
-    reservationHandle = fs.openSync(reservation, "wx", 0o600);
-    fs.writeFileSync(reservationHandle, JSON.stringify({ pid: process.pid, createdAt: new Date().toISOString() }));
+    for (const [sourceName, targetName] of mappings) {
+      const source = path.join(templateRoot, sourceName);
+      const destination = path.join(featureState.target, targetName);
+      fs.copyFileSync(source, destination, fs.constants.COPYFILE_EXCL);
+      copied.push(targetName);
+    }
   } catch (error) {
-    if (reservationHandle !== undefined) {
-      try { fs.closeSync(reservationHandle); } catch {}
-      try { fs.unlinkSync(reservation); } catch {}
+    for (const targetName of copied.reverse()) {
+      try { fs.unlinkSync(path.join(featureState.target, targetName)); } catch {}
     }
-    if (error.code === "EEXIST") {
-      const used = existingNumbers(changesState.target);
-      const retry = (used.length ? Math.max(...used) : Number(number)) + 1;
-      const retryInstruction = retry <= 999
-        ? `retry with ${String(retry).padStart(3, "0")}`
-        : "no three-digit feature number remains";
-      throw new Error(`Feature number ${number} is currently reserved by another feature-init; ${retryInstruction}`);
-    }
+    try { fs.rmdirSync(featureState.target); } catch {}
     throw error;
   }
 
-  try {
-    const used = existingNumbers(changesState.target, reservation);
-    const maxUsed = used.length ? Math.max(...used) : 0;
-    if (Number(number) <= maxUsed) {
-      throw new Error(`Feature number ${number} is not greater than existing maximum ${String(maxUsed).padStart(3, "0")}`);
-    }
-
-    const featureRelative = path.join(changesRelative, `${number}-${slug}`);
-    const featureState = destinationState(targetRoot, featureRelative);
-    if (featureState.exists) throw new Error(`Refusing to overwrite existing feature directory: ${featureState.target}`);
-
-    const templateRoot = path.resolve(__dirname, "..", "template", "docs", "specs", "changes", "_template");
-    const mappings = sourceMap(lane, shape);
-    const copied = [];
-    fs.mkdirSync(featureState.target); // Atomic no-clobber gate for the final path.
-    try {
-      for (const [sourceName, targetName] of mappings) {
-        const source = path.join(templateRoot, sourceName);
-        const destination = path.join(featureState.target, targetName);
-        fs.copyFileSync(source, destination, fs.constants.COPYFILE_EXCL);
-        copied.push(targetName);
-      }
-    } catch (error) {
-      for (const targetName of copied.reverse()) {
-        try { fs.unlinkSync(path.join(featureState.target, targetName)); } catch {}
-      }
-      try { fs.rmdirSync(featureState.target); } catch {}
-      throw error;
-    }
-
-    return { directory: featureState.target, files: copied.sort(), lane, shape: lane === "full" ? shape : null };
-  } finally {
-    try { fs.closeSync(reservationHandle); } catch {}
-    try { fs.unlinkSync(reservation); } catch (error) {
-      if (error.code !== "ENOENT") throw error;
-    }
-  }
+  return { directory: featureState.target, files: copied.sort(), lane, shape: lane === "full" ? shape : null };
 }
 
 if (require.main === module) {

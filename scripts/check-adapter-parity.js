@@ -4,13 +4,14 @@ const fs = require("fs");
 const path = require("path");
 
 const repoRoot = path.resolve(__dirname, "..");
-const claudeSkillsRoot = path.join(repoRoot, "skills");
-const codexPackageRoot = path.join(repoRoot, "plugins", "project-workflow");
-const codexSkillsRoot = path.join(repoRoot, "plugins", "project-workflow", "skills");
+const claudeAdapterRoot = path.join(repoRoot, "adapters", "claude");
+const codexAdapterRoot = path.join(repoRoot, "adapters", "codex");
+const claudeSkillsRoot = path.join(claudeAdapterRoot, "skills");
+const codexSkillsRoot = path.join(codexAdapterRoot, "skills");
 const actionsRoot = path.join(repoRoot, "docs", "actions");
-const claudeAgentsRoot = path.join(repoRoot, "agents");
-const claudeManifestPath = path.join(repoRoot, ".claude-plugin", "plugin.json");
-const codexManifestPath = path.join(repoRoot, "plugins", "project-workflow", ".codex-plugin", "plugin.json");
+const claudeAgentsRoot = path.join(claudeAdapterRoot, "agents");
+const claudeManifestPath = path.join(claudeAdapterRoot, ".claude-plugin", "plugin.json");
+const codexManifestPath = path.join(codexAdapterRoot, ".codex-plugin", "plugin.json");
 
 const expected = [
   "agents-md-revise",
@@ -33,28 +34,9 @@ const codexForbidden = [
   "Claude Code execution",
 ];
 
-const codexRuleBridgeActions = [
-  "agents-md-revise",
-  "feature-done",
-  "feature-init",
-  "project-init",
-  "project-personalize",
-  "spec-revise",
-];
-const codexRuleBridgeRef = "docs/adapters/codex-scoped-rule-bridge.md";
-const codexRuleBridgePath = path.join(repoRoot, codexRuleBridgeRef);
 const lifecycleLinkActions = ["feature-archive", "spec-reconcile"];
 const lifecycleLinkScriptRef = "scripts/relocate-markdown-links.cjs";
 const lifecycleLinkScriptPath = path.join(repoRoot, lifecycleLinkScriptRef);
-const packagedLifecycleLinkScriptPath = path.join(codexPackageRoot, lifecycleLinkScriptRef);
-const codexRuleBridgeMarkers = [
-  ".claude/rules/**/*.md",
-  "paths:",
-  "YAML list",
-  "unsupported",
-  "ambiguous",
-  "L3",
-];
 const expectedReviewerAdapters = [
   "agents-md-reviewer",
   "codebase-explorer",
@@ -62,6 +44,38 @@ const expectedReviewerAdapters = [
   "spec-quality-reviewer",
   "spec-reviewer",
   "tech-researcher",
+];
+
+const requiredReviewerRefs = {
+  "agents-md-revise": ["decision-completeness-auditor"],
+  "feature-done": ["agents-md-reviewer", "spec-reviewer"],
+  "feature-init": ["decision-completeness-auditor"],
+  "project-personalize": ["codebase-explorer", "decision-completeness-auditor", "tech-researcher"],
+  "spec-quality-check": ["spec-quality-reviewer"],
+  "spec-revise": ["decision-completeness-auditor"],
+};
+
+const reachableReviewers = [...new Set(Object.values(requiredReviewerRefs).flat())].sort();
+
+const canonicalOwnership = {
+  "agents-md-revise": ["## Workflow", "## Invariants", "## Validation"],
+  "feature-archive": ["## Workflow", "## Invariants", "## Validation"],
+  "feature-done": ["## Review Layers", "## Delivery Receipt", "## Verdict", "## Invariants"],
+  "feature-init": ["## Lane Classification", "## Workflow", "## Invariants", "## Validation"],
+  "project-init": ["## Workflow", "## Invariants"],
+  "project-personalize": ["## Workflow", "## Invariants", "## Validation"],
+  "spec-quality-check": ["## Checks", "### Mechanical check table", "## Workflow", "## Verdict"],
+  "spec-reconcile": ["## Workflow", "## Verdict", "## Invariants"],
+  "spec-revise": ["## Workflow", "## Invariants", "## Validation"],
+};
+
+const adapterOwnedSectionHeadings = [
+  "## Workflow",
+  "## Verdict",
+  "## Failure modes",
+  "## Lane Classification",
+  "## Delivery Receipt",
+  "## Mechanical check table",
 ];
 
 function skillNames(root) {
@@ -91,24 +105,6 @@ if (!fs.existsSync(lifecycleLinkScriptPath)) {
   problems.push(`missing ${lifecycleLinkScriptRef}`);
 }
 
-if (!fs.existsSync(packagedLifecycleLinkScriptPath)) {
-  problems.push(`Codex package: missing ${lifecycleLinkScriptRef}`);
-}
-
-if (!fs.existsSync(codexRuleBridgePath)) {
-  problems.push(`missing ${codexRuleBridgeRef}`);
-} else {
-  const bridgeContent = fs.readFileSync(codexRuleBridgePath, "utf8");
-  for (const marker of codexRuleBridgeMarkers) {
-    if (!bridgeContent.includes(marker)) {
-      problems.push(`Codex scoped-rule bridge: required contract marker missing ${JSON.stringify(marker)}`);
-    }
-  }
-  if (bridgeContent.includes("globs:")) {
-    problems.push("Codex scoped-rule bridge must not retain legacy scope-key compatibility");
-  }
-}
-
 if (claudeManifest.name !== "project-workflow" || codexManifest.name !== "project-workflow") {
   problems.push("Both plugin manifests must keep the project-workflow identity");
 }
@@ -131,11 +127,22 @@ if (!sameList(codexNames, expected)) {
 if (!sameList(claudeNames, codexNames)) {
   problems.push("Claude and Codex action sets differ");
 }
+if (!sameList(reachableReviewers, [...expectedReviewerAdapters].sort())) {
+  const missing = expectedReviewerAdapters.filter((name) => !reachableReviewers.includes(name));
+  problems.push(`Reviewer call matrix leaves roles unreachable: ${missing.join(", ")}`);
+}
 
 for (const name of expected) {
   const actionPath = path.join(actionsRoot, `${name}.md`);
   if (!fs.existsSync(actionPath)) {
     problems.push(`missing canonical action docs/actions/${name}.md`);
+  } else {
+    const actionContent = fs.readFileSync(actionPath, "utf8");
+    for (const marker of canonicalOwnership[name]) {
+      if (!actionContent.includes(marker)) {
+        problems.push(`canonical ${name}: missing portable contract section ${marker}`);
+      }
+    }
   }
 
   for (const [adapter, root] of [["Claude", claudeSkillsRoot], ["Codex", codexSkillsRoot]]) {
@@ -153,6 +160,17 @@ for (const name of expected) {
     if (lines >= 200) {
       problems.push(`${adapter} ${name}: SKILL.md is ${lines} lines (must be < 200)`);
     }
+    for (const heading of adapterOwnedSectionHeadings) {
+      if (content.includes(heading)) {
+        problems.push(`${adapter} ${name}: adapter duplicates canonical-owned section ${heading}`);
+      }
+    }
+    if (/^\|\s*M(?:1|1b)\s*\|/m.test(content)) {
+      problems.push(`${adapter} ${name}: adapter duplicates the canonical mechanical check table`);
+    }
+    if (/^\|\s*\*\*?(?:Verdict|Checks|L2|L3|Current truth)\*\*?\s*\|/mi.test(content)) {
+      problems.push(`${adapter} ${name}: adapter duplicates the canonical delivery receipt schema`);
+    }
     if (adapter === "Codex") {
       const links = [...content.matchAll(/\]\(([^)#]+\.md)(?:#[^)]+)?\)/g)];
       for (const match of links) {
@@ -162,8 +180,10 @@ for (const name of expected) {
           problems.push(`Codex ${name}: broken local reference ${match[1]}`);
         }
       }
-      if (codexRuleBridgeActions.includes(name) && !content.includes(codexRuleBridgeRef)) {
-        problems.push(`Codex ${name}: scoped-rule bridge reference missing`);
+      for (const reviewer of requiredReviewerRefs[name] || []) {
+        if (!content.includes(`docs/reviewers/${reviewer}.md`)) {
+          problems.push(`Codex ${name}: canonical reviewer reference missing for ${reviewer}`);
+        }
       }
       if (lifecycleLinkActions.includes(name) && !content.includes(lifecycleLinkScriptRef)) {
         problems.push(`Codex ${name}: lifecycle link relocator reference missing`);
@@ -173,9 +193,12 @@ for (const name of expected) {
       if (!content.includes(canonicalRuntimeRef) || !content.includes("Read") || !content.includes("completely")) {
         problems.push(`Claude ${name}: installed-plugin canonical Read must use ${canonicalRuntimeRef}`);
       }
-      if (content.includes(codexRuleBridgeRef)) {
-        problems.push(`Claude ${name}: Codex-only scoped-rule bridge leaked into Claude runtime adapter`);
-      } else if (lifecycleLinkActions.includes(name) && !content.includes(lifecycleLinkScriptRef)) {
+      for (const reviewer of requiredReviewerRefs[name] || []) {
+        if (!content.includes(reviewer)) {
+          problems.push(`Claude ${name}: named reviewer dispatch missing for ${reviewer}`);
+        }
+      }
+      if (lifecycleLinkActions.includes(name) && !content.includes(lifecycleLinkScriptRef)) {
         problems.push(`Claude ${name}: lifecycle link relocator reference missing`);
       }
     }
@@ -199,13 +222,16 @@ for (const name of expectedReviewerAdapters) {
     continue;
   }
   const content = fs.readFileSync(adapterPath, "utf8");
+  if (/^model:/m.test(content)) {
+    problems.push(`Claude reviewer ${name}: fixed model selection must remain host-controlled`);
+  }
   const canonicalRuntimeRef = `\${CLAUDE_PLUGIN_ROOT}/docs/reviewers/${name}.md`;
   if (!content.includes(canonicalRuntimeRef) || !content.includes("read completely")) {
     problems.push(`Claude reviewer ${name}: canonical Read must use ${canonicalRuntimeRef}`);
   }
 }
 
-const codexAgentsRoot = path.join(repoRoot, "plugins", "project-workflow", "agents");
+const codexAgentsRoot = path.join(codexAdapterRoot, "agents");
 if (fs.existsSync(codexAgentsRoot) && fs.readdirSync(codexAgentsRoot).length > 0) {
   problems.push("Codex package must use bundled reviewer specs, not Claude agent adapters");
 }

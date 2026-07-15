@@ -54,9 +54,9 @@ For Q7 tasks:
 
 When multiple task or verification items fail, show a compact matrix with pass/borderline/fail counts.
 
-### Phase 4: Coverage And Confidence
+### Phase 4: Completeness And Reliability
 
-Report reviewed item count, assessed count, skipped count, and calibrated confidence.
+Report the reviewed items, assessed items, skipped items with reasons, and any blocking ambiguity. A mostly empty artifact is not a reliable pass.
 
 ## Output
 
@@ -66,7 +66,7 @@ Use this structure:
 ## Spec Quality Report - <NNN>-<slug>
 
 Files reviewed: <spec/plan/tasks>
-Coverage: <X>% (<assessed>/<reviewed>; <skipped> skipped)
+Population: <reviewed items; skipped items and reasons>
 
 ### Q3 Verification Mechanization
 <findings with citations and suggested rewrite>
@@ -81,7 +81,7 @@ Coverage: <X>% (<assessed>/<reviewed>; <skipped> skipped)
 <findings and matrix when useful>
 
 ### Summary
-<counts per question, confidence, most impactful finding>
+<result per question, reliability, most impactful finding>
 ```
 
 ## Rules
@@ -90,4 +90,3 @@ Coverage: <X>% (<assessed>/<reviewed>; <skipped> skipped)
 - Suggest rewrites but do not edit files.
 - Treat TODO placeholders as not ready for implementation.
 - If the artifact is mostly empty, return N/A with "not enough filled content".
-

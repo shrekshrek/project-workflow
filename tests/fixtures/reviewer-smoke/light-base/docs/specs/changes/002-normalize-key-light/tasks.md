@@ -17,9 +17,8 @@
 ## Proof Bundle
 
 - Verdict:
-- Change:`<diff identity>; review-scope=[exact paths reviewed by L2/light verification]; endpoint-outputs=[tasks.md receipt, drift ledger when written]`
+- Change:`review-scope=[exact paths reviewed by L2/light verification]; base/worktree=[Git context when available]; endpoint-outputs=[tasks.md receipt]`
 - Checks / 轻车道验证 / 不变量反核:
-- L2:
-- Rule sources:
-- L3:`N/A(light lane); verification=<PASS|FAIL>`
+- L2:`verdict; findings; applicable-rules; applicable-unverified; ambiguities`
+- L3:`N/A(light lane); verification=[item#id: PASS|FAIL]`
 - Current truth:

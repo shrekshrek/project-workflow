@@ -58,7 +58,7 @@ Find inconsistent variants for the same concept across audited files. Inconsiste
 
 ### Phase 4: Report
 
-Report must-fix items, warnings, verified items, consistency, caller obligations, and coverage.
+Report must-fix items, warnings, verified items, consistency, and caller obligations.
 
 ## Output
 
@@ -86,8 +86,8 @@ Use this structure:
 - Must-fix blocks preview/apply
 - Warnings need accept/fix/defer
 
-### Coverage
-verified=<N>, warnings=<N>, must-fix=<N>, total=<N>, confidence=<high/medium/low>
+### Completeness
+<inventoried decisions plus any decision locations that could not be assessed>
 ```
 
 ## Rules
@@ -95,4 +95,4 @@ verified=<N>, warnings=<N>, must-fix=<N>, total=<N>, confidence=<high/medium/low
 - Do not ask follow-up questions; report options for caller.
 - Do not edit files.
 - Be strict about unanchored infra/module/package/port choices.
-- Use high confidence only when must-fix is zero and all decisions are inventoried.
+- Do not return a clean result when decisions or required source material could not be inventoried.

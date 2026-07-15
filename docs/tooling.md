@@ -4,7 +4,7 @@
 >
 > **强意见,不假装中立**:本文档反映本项目的实际取舍,不是综述。
 >
-> **能力信息最后核对:2026-07-10**。产品能力会变化;安装与配置以各工具当前官方文档为准,本文只维护影响 project-workflow 边界的稳定差异。
+> **能力信息最后核对:2026-07-15**。产品能力会变化;安装与配置以各工具当前官方文档为准,本文只维护影响 project-workflow 边界的稳定差异。
 
 ---
 
@@ -51,15 +51,11 @@
 
 ### 2.2 选择理由
 
-**本项目当前主 adapter 是 Claude Code**:
-- 已有 `.claude-plugin` / `skills/` / `agents/` 实现,成熟度最高
-- Hook 系统是 [workflow §6.3 规则由环境强制](workflow.md#63-规则由环境强制environment-enforced-rules) 的关键基础设施
-- Worktree / sub-agent 体验已经被本项目验证过
-
-**Codex 的定位**:
-- `AGENTS.md`、skills、plugins、hooks 都有官方机制;本仓库在 `plugins/project-workflow/` 维护独立 Codex-native adapter,不复制 Claude runtime skill
-- 与 Claude Code 的差异主要在配置格式和触发入口,不在 methodology core
-- 正式安装分发包在 `plugins/project-workflow/`;canonical action 定义仍在 `docs/actions/`
+**本项目正式维护 Claude Code 与 Codex 两个 adapter**:
+- `adapters/claude/` 保留 Claude-native skills、named agents、manifest 与可选 hooks/rules 机制
+- `adapters/codex/` 保留 Codex-native skills、manifest 与 general-subagent/main-session fallback,不复制 Claude runtime skill
+- 两端差异只留在配置、触发、plugin-root 和 subagent dispatch;methodology core 统一由 `docs/actions/` 与 `docs/reviewers/` 定义
+- 构建脚本生成两个独立安装包并发布到 `plugin-dist`;使用者只需选择自己正在使用的宿主
 
 **Cursor 的优势**(本项目不主用):
 - 编辑器内 inline 编辑体感更快,适合**单文件小修改**
@@ -71,12 +67,12 @@
 | 问题 | 答案 |
 |---|---|
 | 装多个 IDE 工具会冲突吗? | 不会(它们读同一份代码) |
-| 该选一个主 adapter 吗? | 是。先让一个 adapter 稳定,再移植到另一个;不要两边同时发明流程 |
+| 该选一个主 adapter 吗? | 单个项目按实际宿主选择即可;本仓库同时维护两端,但流程只在 core 定义一次 |
 | Claude/Codex 能共用什么? | `AGENTS.md`, `docs/actions/`, `docs/reviewers/`, `docs/specs/`, `docs/specs/changes/`, ADR, proof bundle, L1/L2/L3 语义 |
 | Claude/Codex 不能共用什么? | plugin manifest、hook 配置、skill 安装路径、sub-agent 配置格式 |
+| 切换工具的成本? | 低到中(weeks),前提是上层资产保持工具无关 |
 
 两端不能共用的还包括 **SKILL.md runtime body**:action 语义共用,但交互、命令名、subagent dispatch、plugin-root 解析必须 host-native。源仓库 CI 用 [`scripts/check-adapter-parity.js`](../scripts/check-adapter-parity.js) 保证 action 集合相同而不是文件内容相同。
-| 切换工具的成本? | 低到中(weeks),前提是上层资产保持工具无关 |
 
 ### 2.4 Codex native adapter surface
 
@@ -86,7 +82,7 @@ Codex/Claude/manual 的完整 capability mapping 与不可变边界由 [`cross-t
 
 ## 3. 中层:Skill / Plugin 框架
 
-这一层变化快,也最容易过度投资。**不要装超过 3 个 skill 框架**,否则相互覆盖、命名冲突、心智负担。
+这一层变化快,也最容易过度投资。只安装职责明确、实际会用且不与现有 workflow 冲突的少量框架。
 
 ### 3.1 主流框架横向对比
 
@@ -128,7 +124,7 @@ Codex/Claude/manual 的完整 capability mapping 与不可变边界由 [`cross-t
 - **核心**:把 spec-driven 落到 slash commands(`/speckit.specify` / `.plan` / `.tasks` / `.clarify` / 等)
 - **优点**:跟 [spec-driven.md](spec-driven.md) 三文件结构原生对齐
 - **缺点**:`.specify/` 目录工具链,小项目偏重
-- **本项目决定**:不装工具链,**借结构和 `/speckit.clarify` 的 Q&A 概念**(已落地在 [`/spec-quality-check`](../skills/spec-quality-check/SKILL.md) + [`/agents-md-revise`](../skills/agents-md-revise/SKILL.md) 的 Q&A 形态)
+- **本项目决定**:不装工具链,只借鉴结构化澄清思路;project-workflow 分别由 [`spec-quality-check`](actions/spec-quality-check.md) 与 [`agents-md-revise`](actions/agents-md-revise.md) 处理实施前规格质量和客观约定漂移
 
 #### Fission-AI OpenSpec
 
@@ -190,9 +186,9 @@ Codex adapter 复用 methodology core,但用 Codex 原生的 `AGENTS.md` discove
 
 ```
 1. 它解决的痛点你最近遇到几次?
-   - 0 次:不装
-   - 1-2 次:可手动应对,先记录
-   - 3+ 次:可考虑
+   - 没有实际发生:不装
+   - 偶发且可手动处理:先记录
+   - 持续重复并产生明显成本:进入后续评估
 
 2. 它属于哪一层?
    - 上层(协作约定):优先,自己写
@@ -207,7 +203,7 @@ Codex adapter 复用 methodology core,但用 Codex 原生的 `AGENTS.md` discove
    - 同名 skill / hook 互覆盖 → 不装,先卸老的
    - 命名空间不同 → 可装
 
-5. 你能在 30 分钟内读懂它的核心代码吗?
+5. 你能在合理时间内读懂它的核心边界和失败模式吗?
    - 不能 → 不装(Matt-派精神)
    - 能 → 可考虑
 
@@ -226,9 +222,9 @@ Codex adapter 复用 methodology core,但用 Codex 原生的 `AGENTS.md` discove
 **修正**:挑一个 process-owning 工具(或自己写),其他用 Matt-派 small composable 补
 
 ### 6.2 装一堆从不调用的 skill
-**症状**:`~/.claude/skills/` 下 50+ skill,实际每月用到不超过 5 个
+**症状**:安装了大量 skill,长期实际使用的只有少数
 **后果**:skill list 过长,Claude 启动加载慢、context 浪费、找不着该用哪个
-**修正**:每月一次审查,3 个月没用的归档
+**修正**:定期审查；没有明确使用场景且长期未调用的归档
 
 ### 6.3 把上层投资沉在底层工具
 **症状**:把项目规则只写进 Cursor 的 `.cursor/rules/` 或 Claude 的 `CLAUDE.md`,而不是项目根 `AGENTS.md`
@@ -249,7 +245,7 @@ Codex adapter 复用 methodology core,但用 Codex 原生的 `AGENTS.md` discove
 
 ## 7. 参考与延伸
 
-- 当前能力边界:[Claude rules](https://code.claude.com/docs/en/memory#organize-rules-with-clauderules) / [Claude hooks](https://code.claude.com/docs/en/hooks) / [Codex AGENTS.md](https://learn.chatgpt.com/docs/agent-configuration/agents-md) / [Codex hooks](https://learn.chatgpt.com/docs/config-file/config-advanced#hooks) / [Codex command rules](https://learn.chatgpt.com/docs/agent-configuration/rules) / [Cursor rules](https://docs.cursor.com/context/rules-for-ai)
+- 当前能力边界:[Claude rules](https://code.claude.com/docs/en/memory#organize-rules-with-clauderules) / [Claude hooks](https://code.claude.com/docs/en/hooks) / [Codex AGENTS.md](https://learn.chatgpt.com/docs/agent-configuration/agents-md) / [Codex hooks](https://learn.chatgpt.com/docs/hooks) / [Codex command rules](https://learn.chatgpt.com/docs/agent-configuration/rules) / [Cursor rules](https://docs.cursor.com/context/rules-for-ai)
 - [OpenAI Symphony](https://github.com/openai/symphony) 当前定位为 engineering preview,含 spec 与实验性 reference implementation
 - 各框架官网 / README 链接见 [`workflow.md §参考与延伸`](workflow.md#参考与延伸),本文档的"对比"基于那些 README + 本项目实际跑过的经验
 - Matt Pocock 哲学的展开:[`docs/spec-driven.md`](spec-driven.md) 用同样的"小、可读、可拥有"精神

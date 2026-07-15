@@ -4,8 +4,8 @@
 > 重复根的内容会漂移 —— 见根 AGENTS.md / [`workflow.md §1.3 反模式`](https://github.com/shrekshrek/project-workflow/blob/main/docs/workflow.md#13-agentsmd-的内容标准)。
 
 <!--
-P0 时根据栈填齐 placeholder。
-本文件目标 < 100 行,长尾放 .claude/rules/ 或 docs/。
+仅在 project-personalize 从仓库证据确认持久 tier 差异时替换 placeholder。
+保持简洁；长尾放 docs/ 或当前宿主已采用的 scoped convention files。
 -->
 
 ## Source Layout
@@ -29,11 +29,11 @@ P0 时根据栈填齐 placeholder。
 
 - 框架:`{{TIER_TEST_FRAMEWORK}}`(如 Python pytest + httpx;Go std testing + testify + httptest;Java JUnit + MockMvc)
 - 测试文件位置:`{{TIER_TEST_DIR}}/` 镜像 `{{TIER_SRC_DIR}}/`
-- 每个 endpoint 至少:happy + 1 边界 + 1 错误路径(400 / 401 / 404 / 500 等)
+- 按实际风险覆盖 happy、边界和错误路径；不设通用固定数量
 
 ## Module Structure
 
-`{{TIER_SRC_DIR}}/<bounded-context>/` 每个领域模块,**典型分层**(具体文件名 Step 5.3 按主语言渲染):
+仅当仓库已有这种模式时，`{{TIER_SRC_DIR}}/<bounded-context>/` 可按下列职责分层；具体文件名以实际代码为准:
 
 - **HTTP 路由层**(Python `router.py` / Go `handler.go` / Java `*Controller.java` / etc.)
 - **业务逻辑**(Python `service.py` / Go `service.go` / Java `*Service.java`)
@@ -48,7 +48,8 @@ P0 时根据栈填齐 placeholder。
 ## Code Style(本 tier 特有)
 
 **Source of truth**:
-- `.claude/rules/code-style.md`(继承根)
+- 根/上级 `AGENTS.md`(继承)
+- 当前宿主已采用的 path-scoped convention file(可选)
 - `{{TIER_LINT_CONFIG}}`(如 Python `pyproject.toml` `[tool.ruff]`;Go `.golangci.yml`;Java `checkstyle.xml`)
 
 **本 tier 特殊**(不重复根,据栈选项目级"真特殊"点 1-3 条):
@@ -56,21 +57,21 @@ P0 时根据栈填齐 placeholder。
 - {{TIER_STYLE_HIGHLIGHT_2}}(如 Python "Pydantic v2 strict mode";Go "Context 必走第一个参数";Java "Record 优先于 class for DTO")
 - {{TIER_STYLE_HIGHLIGHT_3}}(如 Python "SQLAlchemy 2.0 `select()`";Go "sqlx struct tag,禁 raw SQL 拼接";Java "JPA `@Transactional` 边界明确")
 
-## 框架特殊约定(**label-only**,detail 走 `.claude/rules/<fw>.md`)
+## 框架特殊约定(**label-only**,detail 走 docs/ 或当前宿主已有的 scoped convention file)
 
-> ⚠️ 每条只给短标签(单行 ≤ 80 字符)。Detail 严禁重复 ── 违反 → 两边漂移(workflow §1.3 反模式)。
+> 每条只给短标签。Detail 不在两处重复，避免漂移(workflow §1.3 反模式)。
 
-### {{TIER_FRAMEWORK}}(critical labels,≤ 5 个)
+### {{TIER_FRAMEWORK}}(仅保留有仓库证据的 critical labels)
 
 {{TIER_FRAMEWORK_CRITICAL_LABELS}}
 
 <!-- 例(FastAPI):APIRouter 分组 / Depends DI / HTTPException 集中处理 / async 内禁 sync I/O / 输出返 Pydantic schema -->
 
-### {{TIER_ORM}}(critical labels,如适用,≤ 3 个)
+### {{TIER_ORM}}(如适用)
 
 {{TIER_ORM_CRITICAL_LABELS}}
 
-### {{TIER_QUEUE}}(critical labels,可选,≤ 3 个)
+### {{TIER_QUEUE}}(可选)
 
 {{TIER_QUEUE_CRITICAL_LABELS}}
 

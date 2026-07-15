@@ -12,7 +12,7 @@ Single authoritative home for rules that several actions need. Action specs and 
 
 - **Feature directory resolution**: a feature lives in `docs/specs/changes/<NNN>-<slug>/`. Resolve a slug/number argument to the matching directory; resolve an empty or `current` argument to the most recently modified active feature (artifact-file mtime), always excluding `archive/`. Multiple or zero candidates is a user question, not a guess.
 - **NNN numbering**: three digits, one global sequence shared by the active tree and `archive/`; next number = max across both + 1 (zero-padded, `001` when empty). Archived numbers are never reused.
-- **Plugin root resolution**: prefer `PROJECT_WORKFLOW_PLUGIN_ROOT`, then `CLAUDE_PLUGIN_ROOT`, then `CODEX_PLUGIN_ROOT`; when unset or invalid, search `~/.claude/plugins/cache` and `~/.codex/plugins/cache` for the most recently installed compatible package containing both `template/` and the required asset. Compatibility is asset-specific; never choose a package by lexical path order. If resolution fails, stop — never recreate plugin assets inside the target project.
+- **Plugin root resolution**: the active runtime adapter resolves the installed package that contains its own skill and the required asset. Claude adapters require a valid `CLAUDE_PLUGIN_ROOT`; Codex adapters walk upward from the active skill to the nearest `.codex-plugin/plugin.json`. Do not scan another host's cache or select an unrelated installation. If the host-local root or required asset is unavailable, stop — never recreate plugin assets inside the target project.
 
 | Action | Purpose |
 |---|---|

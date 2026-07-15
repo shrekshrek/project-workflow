@@ -1,7 +1,7 @@
 # WP3 Phase A — Claude skills 逐步骤四分类盘点
 
 > Date: 2026-07-14
-> Status: **implemented, release validation pending**。Phase B/C 已按本盘点落地,但 generative model scenario matrix 尚未留下可复核的实际 adapter 运行记录;deterministic fixture/materializer 通过不等于模型等价验证。上游:[capability-shift assessment](2026-07-13-capability-shift-assessment.md) Decision 4 / WP3。基线:WP2 去重后的 skill 版本(auditor boundary / M 表 / feature 定位 / PLUGIN_ROOT 已指针化,不再出现在本表)。
+> Status: **implemented, static/package validation complete; model validation pending**。本表保留 2026-07-14 Phase A 的原始分类快照;其后裁决见文末 follow-up。Phase B/C 已按本盘点落地,双端生成包和隔离安装验证通过,但 generative model scenario matrix 尚未留下可复核的实际 adapter 运行记录;deterministic fixture/materializer 通过不等于模型等价验证。上游:[capability-shift assessment](2026-07-13-capability-shift-assessment.md) Decision 4 / WP3。基线:WP2 去重后的 skill 版本(auditor boundary / M 表 / feature 定位 / plugin-root 规则已指针化,不再出现在本表)。
 
 ## 四分类
 
@@ -136,11 +136,11 @@
 - **D(可删复述)**:3 处 —— spec-revise Step 2 判断表、feature-archive Invariants 节、spec-reconcile Invariants 节(合计约 40-50 行)。
 - **I(待提升不变量)**:4 条 —— project-init 的 workflow-仓库误用守卫;feature-init 的 NNN 前缀冲突三分支;feature-done 缓存条 5(untracked 目录);feature-done drift-ledger 写读分工设计。提升进对应 `docs/actions/` 后 Codex 同获保护;skill 改指针。
 - **P 占比最高**:大部分"厚"来自 canonical 契约在执行点的受控复述,其中相当部分被 `check-workflow-contracts.cjs` 的 marker 钉死 —— 删除需先调整 marker,属 Phase B/C 范畴。
-- **Phase B 前置不变**:feature-init 行为场景矩阵(lane 分类 / TARGET_ROOT / NNN / 形态检测 / no-clobber / TODO 保留 / module 不猜 / PLUGIN_ROOT fallback)先建,再动 P/D 类内容;见 assessment WP3 Phase B/C。
+- **Phase B 前置不变**:feature-init 行为场景矩阵(lane 分类 / TARGET_ROOT / NNN / 形态检测 / explicit-number collision / TODO 保留 / plant 拒绝 / module 不猜)先建,再动 P/D 类内容;no-clobber / rollback / symlink 由 deterministic checker 单独覆盖。见 assessment WP3 Phase B/C。
 
 ## Phase B/C 执行记录(2026-07-14)
 
-**测试基建(Phase B 前置)**:`docs/examples/feature-init-scenario-matrix.md` + `tests/fixtures/feature-init-scenarios/`(9 场景:full-brownfield / light / no-artifact / NNN 空序列 / 高爆破 greenfield / no-clobber 冲突 / subdir target-root / cached PLUGIN_ROOT fallback / module 不猜 interaction-only)+ `scripts/check-feature-init-fixtures.cjs`(fixture 一致性、materializer 机械回归 + `--grade` 产物评分),已入 CI。
+**测试基建(Phase B 前置)**:`docs/examples/feature-init-scenario-matrix.md` + `tests/fixtures/feature-init-scenarios/`(8 场景:full-brownfield / light / no-artifact / NNN 空序列 / existing-module greenfield / explicit-number collision / subdir target-root / module 不猜 interaction-only)+ `scripts/check-feature-init-fixtures.cjs`(fixture 一致性、materializer 机械回归 + `--grade` 产物评分),已入 CI。
 
 **Phase B — feature-init 试点**:
 - I 提升:NNN 前缀冲突三分支 + no-clobber → `docs/actions/feature-init.md` Outputs(Codex 同获保护);skill 改指针。
@@ -152,11 +152,16 @@
 - I 提升:project-init workflow-仓库误用守卫 → `docs/actions/project-init.md` Use When;feature-done 缓存条 5(untracked 目录强制 fresh + mtime 兜底)与 drift-ledger 写读分工(自由文本 append / 读取端语义聚类 / 不算指纹)→ `docs/actions/feature-done.md` Invariants;对应 skill 原文保留(执行点邻近,canonical 现在是权威源)。
 - feature-archive 用户逐份确认不变量补进 canonical Invariants(原 canonical 未覆盖)。
 
-全量静态/机械回归(sync / parity / contracts / links / reviewer fixtures / feature-init fixtures)全绿。实际 generative adapter matrix 仍是发布前 gate;不得用 fixture coherence 或 materializer smoke 替代。
+全量静态/机械回归(package build / parity / contracts / links / reviewer fixtures / feature-init fixtures)全绿,双端隔离安装验证通过。实际 generative adapter matrix 仍是发布前 gate;不得用 fixture coherence、materializer smoke 或安装成功替代。
 
-**体积口径**:发布运行时与执行面是收缩指标;维护者 fixture/checker 单独报告,不靠删测试抵数。相对 `HEAD`:Codex package `6768 → 6652`(`-116`),Claude skills `1403 → 1307`(`-96`),canonical actions `513 → 557`(`+44`),skills + actions 合计 `-52`;完整 source working tree 因本次可复核测试/计划资产而增长,不再误写成 repo-wide contraction。
+**历史体积口径**:下列数字只记录 2026-07-14 薄化实验的旧拓扑对比,不是当前生成式双包结构的规模基线:Codex package `6768 → 6652`(`-116`),Claude skills `1403 → 1307`(`-96`),canonical actions `513 → 557`(`+44`),skills + actions 合计 `-52`。维护者 fixture/checker 单独报告,不靠删测试抵数;不把完整 source working tree 描述成收缩。
 
 **2026-07-14 correctness follow-up**:
 - 新增 packaged `scripts/materialize-feature-artifact.cjs`:目标根、NNN、lane/shape 校验,最终目录原子 no-clobber,模板 exclusive copy,复制失败回滚;Claude/Codex 两端统一调用。
-- `feature-done` canonical + 双端 adapter 明确:L1 失败阻断 verdict,但继续所有 independently executable 层;只对自身输入/环境不可用的层记录 non-execution。
+- `feature-done` canonical + 双端 adapter 明确:L1 失败阻断 `READY` 并产生 `NEEDS WORK`,但继续所有 independently executable 层;只有必要输入/环境缺失导致无法可靠运行时才是 `BLOCKED`。
 - feature-init fixtures、runner、scenario 说明保持 source-repo/CI-only;Codex release package 只携带运行时必需的 materializer,避免把维护者测试资产塞进用户安装包。
+
+**2026-07-15 capability-preservation follow-up**:
+- reviewer 的百分比 coverage/confidence marker 改为可核对的 population、applicable/unverified items、ambiguities 与引用证据;不再计算伪精确分数。
+- `refresh-ignore` 与跨 feature drift ledger 被删除;每个 receipt 只保留本 feature 的可选 `Drift`,持久约定修订由用户显式调用 `agents-md-revise`。上表关于 ledger 的内容只描述 Phase A 输入状态。
+- 发布结构改为 canonical core + `adapters/claude` / `adapters/codex`,双端自包含包在 build/release 时生成;不再维护 committed Codex mirror。

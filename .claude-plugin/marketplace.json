@@ -9,7 +9,12 @@
   "plugins": [
     {
       "name": "project-workflow",
-      "source": "./",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/shrekshrek/project-workflow.git",
+        "path": "claude/project-workflow",
+        "ref": "plugin-dist"
+      },
       "description": "Spec-driven feature development plugin (Claude Code-native). 9 skills (/project-init, /project-personalize, /feature-init, /spec-quality-check, /spec-revise, /feature-done, /feature-archive, /spec-reconcile, /agents-md-revise) + 6 sub-agents (agents-md-reviewer, spec-reviewer, spec-quality-reviewer, tech-researcher, codebase-explorer, decision-completeness-auditor).",
       "author": {
         "name": "shrek.wang"

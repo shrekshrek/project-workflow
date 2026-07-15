@@ -14,7 +14,7 @@ Do not use as the main gate for light-lane features; `feature-done` checks their
 - `spec.md`
 - `plan.md`
 - `tasks.md`
-- Relevant project conventions from `AGENTS.md` and path-scoped rules.
+- Relevant project conventions from root/applicable nested `AGENTS.md` and any host-specific convention files supplied by the active adapter.
 
 ## Checks
 
@@ -44,9 +44,9 @@ Greenfield shape:
 |---|---|
 | M1 | Six required elements present (spec §1–§4 + plan Prior decisions + plan module impact) |
 | M2 | Scope has explicit `做` and `不做` lists, each with ≥1 non-TODO item |
-| M3 | Verification has ≥3 testable items |
+| M3 | Verification is non-empty, contains no unresolved TODO, and identifies executable checks; outcome/risk coverage is judged by Q3 |
 | M4 | plan §1.1 Sibling Alignment filled (multi-module work only) |
-| M5 | tasks.md has ≥3 items |
+| M5 | tasks.md has a non-empty implementation/validation checklist with no unresolved TODO; task completeness and verifiability are judged by Q7 |
 | M6 / M7 | N/A (first archive creates/updates the domain doc) |
 
 Brownfield shape (M1/M2 replaced by M1b/M2b; M4/M5 shared):
@@ -55,7 +55,7 @@ Brownfield shape (M1/M2 replaced by M1b/M2b; M4/M5 shared):
 |---|---|
 | M1b | Motivation + Domain References + Delta + Constraints + Verification + both plan elements present |
 | M2b | Delta has Added/Modified/Removed subsections, ≥1 non-TODO |
-| M3b | Verification has ≥2 testable items (brownfield default) |
+| M3b | Verification is non-empty, contains no unresolved TODO, and identifies executable checks; Delta/risk coverage is judged by Q3 |
 | M6 | Spec cites `docs/specs/<area>.md` without contradiction, or records an explicit deviation |
 | M7 | Delta non-empty (may be judged together with M2b) |
 
@@ -66,6 +66,15 @@ Brownfield shape (M1/M2 replaced by M1b/M2b; M4/M5 shared):
 - `BLOCKED`: at least one failed check that must be fixed before implementation.
 
 `spec.md` status handling: this gate does not automatically mark `已确认`. That status means the user has accepted the spec and is starting implementation. After `READY`, or after accepted `BORDERLINE` risk is recorded, adapters should tell the user to mark `已确认` before implementation; update the status only when the user explicitly asks.
+
+## Workflow
+
+1. Resolve an active feature and stop as N/A when it is light lane.
+2. Detect greenfield or brownfield shape from the canonical section markers.
+3. Run the applicable mechanical table above without maintaining an adapter-local copy.
+4. Run the canonical spec-quality reviewer against the exact spec/plan/tasks population.
+5. Deduplicate findings by root cause, cite exact evidence, and apply the verdict contract above.
+6. Keep the gate read-only unless the user separately asks to repair the artifacts.
 
 ## Invariants
 

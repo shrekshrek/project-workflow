@@ -1,7 +1,0 @@
-{
-  "name": "project-workflow-light-verification-smoke",
-  "private": true,
-  "scripts": {
-    "test": "node --test"
-  }
-}

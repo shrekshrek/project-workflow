@@ -7,8 +7,10 @@
     {
       "name": "project-workflow",
       "source": {
-        "source": "local",
-        "path": "./plugins/project-workflow"
+        "source": "git-subdir",
+        "url": "https://github.com/shrekshrek/project-workflow.git",
+        "path": "./codex/project-workflow",
+        "ref": "plugin-dist"
       },
       "policy": {
         "installation": "AVAILABLE",

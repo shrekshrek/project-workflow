@@ -21,10 +21,19 @@ Do not use for a single active feature that is simply wrong mid-implementation; 
 
 - Conflict report: for each contradiction, the exact files and sections that disagree, and which statement the evidence supports.
 - Selected source of truth per contradiction (a spec, an ADR, a current-truth document, or the code itself).
-- With user approval, per losing spec: status mark `已取代` (link the successor) or `已废弃`, then physical move to `docs/specs/changes/archive/` (same mechanics as [`feature-archive`](feature-archive.md)), including relative-link relocation and a missing-target check. Winning delivered specs are closed through `feature-archive` as the recommended follow-up.
+- With user approval, per losing spec: status mark `已取代` (link the successor) or `已废弃`, then physical move to `docs/specs/changes/archive/` (same mechanics as [`feature-archive`](feature-archive.md)), including relative-link relocation and move-back on failure. Winning delivered specs are closed through `feature-archive` as the recommended follow-up.
 - Current-truth gaps: durable facts that exist only in scattered specs — including still-valid foundations from superseded specs (data model, API, pipeline) — merged into or listed for `docs/specs/<area>.md`. If the current-truth document is mostly archived-spec links, `NNN-<slug>` lists, or reconcile backlog, replace that with present-tense facts. There is no "historical foundation" status; surviving facts move into current truth, the spec itself is archived.
 - ADR consistency: contradictions whose loser is backed by an `Accepted` ADR get flagged for a superseding ADR or a status update.
 - Recommended next step: run `feature-archive` (sweep) for delivered features, update current truth, or start a new feature.
+
+## Workflow
+
+1. Resolve an area, module, or explicit feature list and collect at least two related active specs plus relevant current truth, ADRs, and optional implementation evidence.
+2. Extract concrete assertions and build a conflict matrix containing only direct contradictions with exact citations. Do not choose a winner automatically.
+3. Ask the user to select precedence for each contradiction and classify each losing spec as superseded or abandoned. Unresolved conflicts block new implementation in the area.
+4. After approval, prepare losing status/successor links and current-truth edits without applying them. Move each losing directory with an ordinary filesystem rename, relocate local Markdown links, and move it back before stopping if relocation fails.
+5. After successful moves, apply final statuses and extract still-valid facts into current-truth gaps; replace archive-link lists or historical narratives with present-tense facts only after approval.
+6. Flag losing directions backed by Accepted ADRs for superseding decisions or status correction. Update an existing changes index when present.
 
 ## Verdict
 

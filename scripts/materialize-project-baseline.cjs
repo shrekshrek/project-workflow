@@ -10,8 +10,7 @@ function isPluginOnly(relative) {
     || parts.includes("_template")
     || parts.includes("_examples")
     || normalized === "docs/adr/0000-template.md"
-    || normalized === ".claude/settings.json"
-    || normalized.startsWith(".claude/hooks/")
+    || normalized.startsWith(".claude/")
     || normalized.startsWith(".codex/");
 }
 
@@ -50,9 +49,10 @@ function assertNoSymlinkComponents(absolute) {
 
 function targetContext(targetRoot, options = {}) {
   const absolute = path.resolve(targetRoot);
-  if (options.rejectAncestorSymlinks) assertNoSymlinkComponents(absolute);
   const before = existingStat(absolute);
-  if (before?.isSymbolicLink()) throw new Error(`Refusing symlink target root: ${absolute}`);
+  const normalizeExistingSymlinkPath = Boolean(before && options.normalizeExistingSymlinkPath);
+  if (options.rejectAncestorSymlinks && !normalizeExistingSymlinkPath) assertNoSymlinkComponents(absolute);
+  if (before?.isSymbolicLink() && !normalizeExistingSymlinkPath) throw new Error(`Refusing symlink target root: ${absolute}`);
   if (!before) {
     if (options.allowMissing) return absolute;
     if (options.create === false) throw new Error(`Target directory does not exist: ${absolute}`);
@@ -88,11 +88,13 @@ function copyTreeNoClobber(sourceRoot, targetRoot, options = {}) {
   const target = targetContext(targetRoot, {
     create: options.createTarget !== false,
     rejectAncestorSymlinks: options.rejectTargetAncestorSymlinks === true,
+    normalizeExistingSymlinkPath: options.normalizeExistingTargetSymlinkPath === true,
   });
   const against = options.againstRoot ? targetContext(options.againstRoot, {
     create: false,
     allowMissing: true,
     rejectAncestorSymlinks: true,
+    normalizeExistingSymlinkPath: true,
   }) : null;
   const copied = [];
   const skippedExisting = [];
@@ -154,6 +156,7 @@ function materialize(templateRoot, targetRoot, options = {}) {
     ...options,
     excludePluginOnly: true,
     rejectTargetAncestorSymlinks: !options.againstRoot,
+    normalizeExistingTargetSymlinkPath: true,
   });
 }
 
@@ -161,6 +164,7 @@ function applyStaged(stagingRoot, targetRoot) {
   return copyTreeNoClobber(stagingRoot, targetRoot, {
     failOnExisting: true,
     rejectTargetAncestorSymlinks: true,
+    normalizeExistingTargetSymlinkPath: true,
     rollbackOnError: true,
   });
 }
@@ -193,4 +197,4 @@ if (require.main === module) {
   console.log(JSON.stringify(result));
 }
 
-module.exports = { applyStaged, copyTreeNoClobber, destinationState, isPluginOnly, materialize };
+module.exports = { applyStaged, assertNoSymlinkComponents, copyTreeNoClobber, destinationState, isPluginOnly, materialize };

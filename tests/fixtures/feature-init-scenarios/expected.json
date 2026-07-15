@@ -78,21 +78,6 @@
     "sentinel": "docs/specs/changes/002-existing-thing/tasks.md",
     "forbidPaths": ["subdir/docs"]
   },
-  "plugin-root-cache-fallback": {
-    "base": "base-numbered",
-    "prompt": "feature-init cached-plugin-root: 小的 additive 文档生成改动,轻车道即可。",
-    "prescribedAnswers": {},
-    "runtimeSetup": {
-      "unsetEnvironment": ["PROJECT_WORKFLOW_PLUGIN_ROOT", "CLAUDE_PLUGIN_ROOT", "CODEX_PLUGIN_ROOT"],
-      "requireCachedPluginFallback": true
-    },
-    "lane": "light",
-    "expectDir": "docs/specs/changes/004-cached-plugin-root",
-    "shape": null,
-    "mustRetainTodoMarker": true,
-    "forbiddenPlantPatterns": [],
-    "sentinel": "docs/specs/changes/002-existing-thing/tasks.md"
-  },
   "module-ownership-ask": {
     "base": "base-numbered",
     "prompt": "feature-init cross-module-sync: 需要 user 和 billing 两个模块联动,主家不明。",

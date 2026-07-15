@@ -13,7 +13,7 @@
 const fs = require("node:fs");
 const os = require("node:os");
 const path = require("node:path");
-const { spawn, spawnSync } = require("node:child_process");
+const { spawnSync } = require("node:child_process");
 
 const root = path.resolve(__dirname, "..");
 const fixtureRoot = path.join(root, "tests/fixtures/feature-init-scenarios");
@@ -142,12 +142,6 @@ function validateFixtures() {
     if (config.sentinel && !fs.existsSync(path.join(baseDir, config.sentinel))) {
       problems.push(`${name}: declared sentinel ${config.sentinel} absent in base`);
     }
-    if (config.runtimeSetup?.requireCachedPluginFallback) {
-      const unset = config.runtimeSetup.unsetEnvironment || [];
-      for (const variable of ["PROJECT_WORKFLOW_PLUGIN_ROOT", "CLAUDE_PLUGIN_ROOT", "CODEX_PLUGIN_ROOT"]) {
-        if (!unset.includes(variable)) problems.push(`${name}: cache fallback scenario must unset ${variable}`);
-      }
-    }
     if (config.interactionOnly) {
       if (!config.expectedBehavior) problems.push(`${name}: interaction-only scenario needs expectedBehavior`);
       continue;
@@ -179,43 +173,13 @@ function runMaterializer(runDir, args) {
   return spawnSync(process.execPath, [materializer, "--target", runDir, ...args], { encoding: "utf8" });
 }
 
-function runMaterializerAsync(runDir, args) {
-  return new Promise((resolve) => {
-    const child = spawn(process.execPath, [materializer, "--target", runDir, ...args]);
-    let stderr = "";
-    child.stderr.on("data", (chunk) => { stderr += chunk; });
-    child.on("exit", (status) => resolve({ status, stderr }));
-  });
-}
-
-function writeFakePlugin(rootDir, asset, mtime) {
-  fs.mkdirSync(path.join(rootDir, "template"), { recursive: true });
-  const assetPath = path.join(rootDir, asset);
-  fs.mkdirSync(path.dirname(assetPath), { recursive: true });
-  fs.writeFileSync(assetPath, "fixture");
-  fs.utimesSync(assetPath, mtime, mtime);
-}
-
-function resolveCachedPluginRoot(home, asset) {
-  const shell = `
-CANDIDATE="$(find "$HOME/.claude/plugins/cache" "$HOME/.codex/plugins/cache" -type f -path "*/project-workflow*/$1" -print0 2>/dev/null | xargs -0 ls -t 2>/dev/null | grep "/$1$" | head -1)"
-ROOT="\${CANDIDATE%/$1}"
-[ -n "$CANDIDATE" ] && [ -d "$ROOT/template" ] && [ -f "$CANDIDATE" ] || exit 1
-printf '%s' "$ROOT"
-`;
-  return spawnSync("/bin/bash", ["-c", shell, "resolver", asset], {
-    encoding: "utf8",
-    env: { ...process.env, HOME: home },
-  });
-}
-
 async function validateMaterializer() {
   if (!fs.existsSync(materializer)) {
     problems.push("missing scripts/materialize-feature-artifact.cjs");
     return;
   }
 
-  const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "project-workflow-feature-materializer-"));
+  const tempRoot = fs.mkdtempSync(path.join(fs.realpathSync(os.tmpdir()), "project-workflow-feature-materializer-"));
   try {
     const runDir = path.join(tempRoot, "target");
     fs.cpSync(path.join(fixtureRoot, "base-numbered"), runDir, { recursive: true });
@@ -275,12 +239,18 @@ async function validateMaterializer() {
     const symlinkAlias = path.join(tempRoot, "symlink-root-alias");
     fs.symlinkSync(symlinkRoot, symlinkAlias, "dir");
     const symlinkRootAttempt = runMaterializer(symlinkAlias, ["--number", "001", "--slug", "symlink-root", "--lane", "light"]);
-    if (symlinkRootAttempt.status !== 0) {
-      problems.push(`materializer rejected a symlinked project root: ${symlinkRootAttempt.stderr.trim()}`);
-    }
-    if (!fs.existsSync(path.join(symlinkRoot, "docs/specs/changes/001-symlink-root/tasks.md"))) {
-      problems.push("materializer did not write through the normalized symlink project root");
-    }
+    if (symlinkRootAttempt.status !== 0) problems.push(`materializer rejected an existing symlinked project root: ${symlinkRootAttempt.stderr.trim()}`);
+    if (!fs.existsSync(path.join(symlinkRoot, "docs/specs/changes/001-symlink-root/tasks.md"))) problems.push("materializer did not normalize an existing symlinked project root");
+
+    const ancestorOutside = path.join(tempRoot, "symlink-ancestor-outside");
+    fs.mkdirSync(ancestorOutside);
+    const ancestorProject = path.join(ancestorOutside, "project");
+    fs.cpSync(path.join(fixtureRoot, "base-empty"), ancestorProject, { recursive: true });
+    const ancestorLink = path.join(tempRoot, "symlink-ancestor-link");
+    fs.symlinkSync(ancestorOutside, ancestorLink, "dir");
+    const ancestorAttempt = runMaterializer(path.join(ancestorLink, "project"), ["--number", "001", "--slug", "symlink-ancestor", "--lane", "light"]);
+    if (ancestorAttempt.status !== 0) problems.push(`materializer rejected an existing project below a symlinked ancestor: ${ancestorAttempt.stderr.trim()}`);
+    if (!fs.existsSync(path.join(ancestorProject, "docs/specs/changes/001-symlink-ancestor/tasks.md"))) problems.push("materializer did not normalize an existing project below a symlinked ancestor");
 
     const rollbackRun = path.join(tempRoot, "rollback-target");
     fs.cpSync(path.join(fixtureRoot, "base-empty"), rollbackRun, { recursive: true });
@@ -304,9 +274,6 @@ async function validateMaterializer() {
     if (fs.existsSync(path.join(rollbackRun, "docs/specs/changes/001-rollback"))) {
       problems.push("materializer left a partial feature directory after copy failure");
     }
-    if (fs.existsSync(path.join(rollbackRun, "docs/specs/changes/.project-workflow-nnn-001.lock"))) {
-      problems.push("materializer left a reservation after copy failure");
-    }
 
     const symlinkRun = path.join(tempRoot, "symlink-target");
     fs.cpSync(path.join(fixtureRoot, "base-empty"), symlinkRun, { recursive: true });
@@ -318,61 +285,6 @@ async function validateMaterializer() {
     if (symlinkAttempt.status === 0) problems.push("materializer accepted a symlinked changes destination");
     if (fs.readdirSync(externalChanges).length !== 0) problems.push("materializer wrote through a symlinked changes destination");
 
-    for (let attempt = 0; attempt < 10; attempt += 1) {
-      const raceRun = path.join(tempRoot, `race-${attempt}`);
-      fs.cpSync(path.join(fixtureRoot, "base-numbered"), raceRun, { recursive: true });
-      const results = await Promise.all([
-        runMaterializerAsync(raceRun, ["--number", "004", "--slug", "race-a", "--lane", "light"]),
-        runMaterializerAsync(raceRun, ["--number", "004", "--slug", "race-b", "--lane", "light"]),
-      ]);
-      const successes = results.filter((result) => result.status === 0).length;
-      if (successes !== 1) {
-        problems.push(`materializer NNN reservation race expected exactly one success, got ${successes}`);
-        break;
-      }
-      const leftovers = fs.readdirSync(path.join(raceRun, "docs/specs/changes")).filter((name) => name.startsWith(".project-workflow-nnn-"));
-      if (leftovers.length) problems.push(`materializer left reservation files: ${leftovers.join(", ")}`);
-    }
-
-    const staleRun = path.join(tempRoot, "stale-reservation");
-    fs.cpSync(path.join(fixtureRoot, "base-numbered"), staleRun, { recursive: true });
-    const staleReservation = path.join(staleRun, "docs/specs/changes/.project-workflow-nnn-004.lock");
-    fs.writeFileSync(staleReservation, JSON.stringify({ pid: 999999, createdAt: "2020-01-01T00:00:00Z" }));
-    const staleAttempt = runMaterializer(staleRun, ["--number", "004", "--slug", "stale-reservation", "--lane", "light"]);
-    if (staleAttempt.status === 0 || !staleAttempt.stderr.includes("retry with 005")) {
-      problems.push(`materializer stale reservation did not advance the retry number: ${staleAttempt.stderr.trim()}`);
-    }
-    const afterStale = runMaterializer(staleRun, ["--number", "005", "--slug", "after-stale-reservation", "--lane", "light"]);
-    if (afterStale.status !== 0) problems.push(`materializer could not continue after a stale reservation: ${afterStale.stderr.trim()}`);
-
-    const fakeHome = path.join(tempRoot, "fake-home");
-    const oldRoot = path.join(fakeHome, ".claude/plugins/cache/project-workflow/project-workflow/3.9.0");
-    const newRoot = path.join(fakeHome, ".claude/plugins/cache/project-workflow/project-workflow/3.10.0");
-    const incompatibleRoot = path.join(fakeHome, ".codex/plugins/cache/project-workflow/project-workflow/99.0.0");
-    const featureAsset = "scripts/materialize-feature-artifact.cjs";
-    const baselineAsset = "scripts/materialize-project-baseline.cjs";
-    for (const asset of [featureAsset, baselineAsset]) {
-      writeFakePlugin(oldRoot, asset, new Date("2026-01-01T00:00:00Z"));
-      writeFakePlugin(newRoot, asset, new Date("2026-02-01T00:00:00Z"));
-    }
-    fs.mkdirSync(path.join(incompatibleRoot, "template"), { recursive: true });
-    for (const asset of [featureAsset, baselineAsset]) {
-      const resolved = resolveCachedPluginRoot(fakeHome, asset);
-      if (resolved.status !== 0 || resolved.stdout !== newRoot) {
-        problems.push(`cache fallback for ${asset} did not select the newest compatible package: ${resolved.stderr.trim() || resolved.stdout}`);
-      }
-    }
-
-    const resolverShapes = [
-      ["skills/feature-init/SKILL.md", featureAsset],
-      ["skills/project-init/SKILL.md", baselineAsset],
-    ];
-    for (const [skill, asset] of resolverShapes) {
-      const expectedPipeline = `-type f -path '*/project-workflow*/${asset}' -print0 2>/dev/null | xargs -0 ls -t 2>/dev/null | grep '/${asset}$' | head -1`;
-      if (!read(path.join(root, skill)).includes(expectedPipeline)) {
-        problems.push(`${skill}: cached resolver differs from the behavior-tested pipeline for ${asset}`);
-      }
-    }
   } finally {
     fs.rmSync(tempRoot, { recursive: true, force: true });
   }
@@ -405,7 +317,7 @@ async function main() {
       for (const problem of problems) console.error(`- ${problem}`);
       process.exit(1);
     }
-    console.log("Feature-init scenario fixtures OK: bases and expectations are coherent; materializer lane/shape/NNN/no-clobber/rollback/symlink-root/concurrency and cache-fallback checks passed (no model executed).");
+    console.log("Feature-init scenario fixtures OK: bases and expectations are coherent; materializer lane/shape/NNN/no-clobber/rollback/symlink checks passed (no model executed).");
   }
 }
 

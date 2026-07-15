@@ -25,7 +25,7 @@
           <mxGeometry x="1120" y="110" width="540" height="70" as="geometry"/>
         </mxCell>
 
-        <mxCell id="lifecycle_header" value="5 阶段生命周期(skill = slash command,sub-agent = LLM-only 内部协作角色)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontStyle=2;fontColor=#37474F;" vertex="1" parent="1">
+        <mxCell id="lifecycle_header" value="5 阶段生命周期(skill = host-native action 入口,sub-agent = LLM-only 内部审查角色)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontStyle=2;fontColor=#37474F;" vertex="1" parent="1">
           <mxGeometry x="40" y="200" width="1620" height="20" as="geometry"/>
         </mxCell>
 
@@ -38,13 +38,13 @@
         <mxCell id="p0_trigger" value="&lt;b&gt;Trigger&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:11px;&#39;&gt;新项目 / 已克隆 project-workflow scaffold / retrofit 既有 repo&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=11;" vertex="1" parent="1">
           <mxGeometry x="210" y="240" width="220" height="80" as="geometry"/>
         </mxCell>
-        <mxCell id="skill_projinit" value="&lt;b&gt;/project-init&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;greenfield&lt;br/&gt;Q&amp;A → 10+ 文件&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1565C0;fontSize=11;align=center;" vertex="1" parent="1">
+        <mxCell id="skill_projinit" value="&lt;b&gt;/project-init&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;empty greenfield&lt;br/&gt;六文件中立 baseline&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1565C0;fontSize=11;align=center;" vertex="1" parent="1">
           <mxGeometry x="450" y="246" width="170" height="68" as="geometry"/>
         </mxCell>
-        <mxCell id="skill_projpers" value="&lt;b&gt;/project-personalize&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;scaffold / retrofit&lt;br/&gt;扫码 + 套配置&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1565C0;fontSize=11;align=center;" vertex="1" parent="1">
+        <mxCell id="skill_projpers" value="&lt;b&gt;/project-personalize&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;scaffold / retrofit&lt;br/&gt;仓库证据 → 个性化&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1565C0;fontSize=11;align=center;" vertex="1" parent="1">
           <mxGeometry x="640" y="246" width="170" height="68" as="geometry"/>
         </mxCell>
-        <mxCell id="p0_out" value="&lt;b&gt;产出 (按文档类标记)&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:11px;&#39;&gt;&lt;b&gt;[A]&lt;/b&gt; AGENTS.md (项目 / tier / 模块 嵌套)  ·  &lt;b&gt;[A]&lt;/b&gt; path-scoped rules (Claude: .claude/rules/)&lt;br/&gt;&lt;b&gt;[D]&lt;/b&gt; verified 时才有 adapter hooks/settings  ·  &lt;b&gt;[D]&lt;/b&gt; .gitignore&lt;br/&gt;&lt;b&gt;[B]&lt;/b&gt; concrete feature artifacts 由 feature-init 创建  ·  &lt;b&gt;[C]&lt;/b&gt; docs/adr/ guide&lt;/span&gt;" style="text;html=1;strokeColor=#90A4AE;fillColor=#FAFAFA;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=11;spacing=8;rounded=0;dashed=1;" vertex="1" parent="1">
+        <mxCell id="p0_out" value="&lt;b&gt;产出 (按文档类标记)&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:11px;&#39;&gt;&lt;b&gt;project-init&lt;/b&gt;:AGENTS.md alias / .gitignore / specs index / ADR guide / gotchas&lt;br/&gt;&lt;b&gt;project-personalize&lt;/b&gt;:从证据补真实命令、路径、tier;仅经确认加入 host-private rules/hooks&lt;br/&gt;&lt;b&gt;feature-init&lt;/b&gt; 后续按需创建 concrete feature artifacts&lt;/span&gt;" style="text;html=1;strokeColor=#90A4AE;fillColor=#FAFAFA;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=11;spacing=8;rounded=0;dashed=1;" vertex="1" parent="1">
           <mxGeometry x="840" y="240" width="800" height="80" as="geometry"/>
         </mxCell>
 
@@ -60,13 +60,13 @@
         <mxCell id="e_current_truth_loop" value="&lt;b&gt;[E] current truth loop&lt;/b&gt;: /feature-init 读 E 定 brownfield → /spec-quality-check 校验引用 → /feature-done 查冲突/待更新 → /feature-archive 写回 E; /spec-reconcile 修复历史冲突与 E gaps" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FCE4EC;strokeColor=#AD1457;dashed=1;fontSize=10;align=center;verticalAlign=middle;spacing=4;fontColor=#6A1B3D;" vertex="1" parent="1">
           <mxGeometry x="420" y="352" width="1170" height="24" as="geometry"/>
         </mxCell>
-        <mxCell id="skill_featinit" value="&lt;b&gt;/feature-init&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;建 feature artifact&lt;br/&gt;读 &lt;b&gt;[E]&lt;/b&gt; 定 brownfield/greenfield&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2E7D32;fontSize=11;align=center;" vertex="1" parent="1">
+        <mxCell id="skill_featinit" value="&lt;b&gt;/feature-init&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;no artifact / light / full 分流&lt;br/&gt;full 读 &lt;b&gt;[E]&lt;/b&gt; 定 brownfield/greenfield&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2E7D32;fontSize=11;align=center;" vertex="1" parent="1">
           <mxGeometry x="210" y="382" width="180" height="60" as="geometry"/>
         </mxCell>
         <mxCell id="skill_specqc" value="&lt;b&gt;/spec-quality-check&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;Pre-impl gate&lt;br/&gt;7 问 + &lt;b&gt;[E]&lt;/b&gt; 引用/不矛盾&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2E7D32;fontSize=11;align=center;" vertex="1" parent="1">
           <mxGeometry x="430" y="382" width="180" height="60" as="geometry"/>
         </mxCell>
-        <mxCell id="step_impl" value="&lt;b&gt;Implement&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;主会话写代码&lt;br/&gt;hooks 实时校验 (P3 重叠)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F8E9;strokeColor=#558B2F;dashed=1;fontSize=11;align=center;" vertex="1" parent="1">
+        <mxCell id="step_impl" value="&lt;b&gt;Implement&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;主会话写代码&lt;br/&gt;已启用 verified hook 时增量校验&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F8E9;strokeColor=#558B2F;dashed=1;fontSize=11;align=center;" vertex="1" parent="1">
           <mxGeometry x="650" y="382" width="180" height="60" as="geometry"/>
         </mxCell>
         <mxCell id="skill_featdone" value="&lt;b&gt;/feature-done&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;唯一端点入口(幂等)&lt;br/&gt;L1 → L2 → L3 → &lt;b&gt;[E]&lt;/b&gt; check → delivery receipt&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2E7D32;strokeWidth=2;fontSize=11;align=center;fontStyle=1;" vertex="1" parent="1">
@@ -104,7 +104,7 @@
         <mxCell id="lane_p3_label" value="&lt;b&gt;P3&lt;/b&gt;&lt;br/&gt;Continuous Maintenance&lt;br/&gt;&lt;span style=&#39;font-size:10px;color:#546E7A;&#39;&gt;开发期间常驻 (跟 P2 重叠)&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=14;fontStyle=1;fontColor=#E65100;" vertex="1" parent="1">
           <mxGeometry x="50" y="556" width="140" height="80" as="geometry"/>
         </mxCell>
-        <mxCell id="p3_mech1" value="&lt;b&gt;hooks 机械强制&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;PreToolUse / PostToolUse / Stop&lt;br/&gt;auto-format · typecheck · console.log 拦截&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#E65100;fontSize=11;align=center;" vertex="1" parent="1">
+        <mxCell id="p3_mech1" value="&lt;b&gt;可选 verified hooks&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;仅在项目已有安全、快速命令&lt;br/&gt;且用户确认启用时机械校验&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#E65100;fontSize=11;align=center;" vertex="1" parent="1">
           <mxGeometry x="210" y="565" width="280" height="65" as="geometry"/>
         </mxCell>
         <mxCell id="p3_mech2" value="&lt;b&gt;端点 review (= /feature-done)&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;每 feature 完成时跑;有效 backlog/drift 自动入 delivery receipt&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#E65100;fontSize=11;align=center;" vertex="1" parent="1">
@@ -126,7 +126,7 @@
         <mxCell id="p4_trigger" value="&lt;b&gt;Trigger&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:11px;&#39;&gt;客观不一致 / 反复提醒 / 大依赖升级&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=11;" vertex="1" parent="1">
           <mxGeometry x="210" y="672" width="220" height="65" as="geometry"/>
         </mxCell>
-        <mxCell id="skill_amdrevise" value="&lt;b&gt;/agents-md-revise&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;扫 A 约定 全集 vs 项目实际状态&lt;br/&gt;客观 drift → 逐条 yes/no/ignore → apply + commit 草稿&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#6A1B9A;fontSize=11;align=center;" vertex="1" parent="1">
+        <mxCell id="skill_amdrevise" value="&lt;b&gt;/agents-md-revise&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;扫 A 约定 全集 vs 项目实际状态&lt;br/&gt;客观 drift → 逐条 apply/skip/stop → patch + commit 草稿&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#6A1B9A;fontSize=11;align=center;" vertex="1" parent="1">
           <mxGeometry x="450" y="672" width="320" height="65" as="geometry"/>
         </mxCell>
         <mxCell id="p4_out" value="&lt;b&gt;产出 (按文档类标记)&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:11px;&#39;&gt;&lt;b&gt;[A 修订]&lt;/b&gt; AGENTS.md / path-scoped rules 的 patch  ·  commit message 草稿 (`chore: refresh A 类约定`)&lt;/span&gt;" style="text;html=1;strokeColor=#90A4AE;fillColor=#FAFAFA;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=11;spacing=8;rounded=0;dashed=1;" vertex="1" parent="1">
@@ -195,7 +195,7 @@
         <mxCell id="doc_c" value="&lt;b&gt;C · 决策 (ADR)&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;docs/adr/NNNN-&lt;title&gt;.md  (扁平,不嵌套)&lt;br/&gt;时间维度:&lt;b&gt;Accepted 后正文冻结;新 ADR 取代旧决定&lt;/b&gt; — 当时为什么这么选?trade-off?&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF8E1;strokeColor=#F57F17;fontSize=11;align=left;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
           <mxGeometry x="688" y="930" width="314" height="90" as="geometry"/>
         </mxCell>
-        <mxCell id="doc_d" value="&lt;b&gt;D · 工具基础设施 (Infra)&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;.claude/{hooks, settings.json} + .gitignore&lt;br/&gt;时间维度:&lt;b&gt;跟项目演化&lt;/b&gt; — 工具自动跑什么?&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3E5F5;strokeColor=#6A1B9A;fontSize=10;align=left;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
+        <mxCell id="doc_d" value="&lt;b&gt;D · 工具基础设施 (Infra)&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;.claude / .codex host-private hooks + .gitignore&lt;br/&gt;时间维度:&lt;b&gt;跟项目演化&lt;/b&gt; — 工具自动跑什么?&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3E5F5;strokeColor=#6A1B9A;fontSize=10;align=left;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
           <mxGeometry x="1012" y="930" width="314" height="90" as="geometry"/>
         </mxCell>
         <mxCell id="doc_e" value="&lt;b&gt;E · 产品事实 (Domain Docs)&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;docs/specs/index.md + docs/specs/&lt;area&gt;.md&lt;br/&gt;时间维度:&lt;b&gt;当前态&lt;/b&gt; — 产品/系统域现在怎么工作?&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FCE4EC;strokeColor=#AD1457;fontSize=10;align=left;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
@@ -208,7 +208,7 @@
         <mxCell id="legend_skill" value="&lt;b&gt;Skill&lt;/b&gt; = 用户调用的 workflow action;Claude 用 /project-workflow:xxx,Codex 用 $xxx" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#37474F;fontSize=10;align=left;spacing=6;" vertex="1" parent="1">
           <mxGeometry x="40" y="1065" width="395" height="32" as="geometry"/>
         </mxCell>
-        <mxCell id="legend_agent" value="&lt;b&gt;Sub-agent&lt;/b&gt; = LLM 内部协作角色,只能由 skill dispatch (见 Tab 2)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF8E1;strokeColor=#F57F17;fontSize=10;align=left;spacing=6;" vertex="1" parent="1">
+        <mxCell id="legend_agent" value="&lt;b&gt;Sub-agent&lt;/b&gt; = LLM 内部协作角色,由 skill 指令或主会话按需调度 (见 Tab 2)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF8E1;strokeColor=#F57F17;fontSize=10;align=left;spacing=6;" vertex="1" parent="1">
           <mxGeometry x="445" y="1065" width="395" height="32" as="geometry"/>
         </mxCell>
         <mxCell id="legend_dashed" value="&lt;b&gt;⬚ dashed 框&lt;/b&gt; = 产出 / 状态,不是 skill" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FAFAFA;strokeColor=#90A4AE;dashed=1;fontSize=10;align=left;spacing=6;" vertex="1" parent="1">
@@ -235,7 +235,7 @@
           <mxGeometry x="40" y="54" width="1320" height="20" as="geometry"/>
         </mxCell>
 
-        <mxCell id="col_skills" value="Skills (slash commands)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=13;fontStyle=2;fontColor=#37474F;" vertex="1" parent="1">
+        <mxCell id="col_skills" value="Skills (action entries)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=13;fontStyle=2;fontColor=#37474F;" vertex="1" parent="1">
           <mxGeometry x="60" y="90" width="380" height="24" as="geometry"/>
         </mxCell>
         <mxCell id="col_agents" value="Sub-agents (LLM-only)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=13;fontStyle=2;fontColor=#37474F;" vertex="1" parent="1">
@@ -365,13 +365,13 @@
         <mxCell id="legend2_header" value="图例 · 关键观察" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=12;fontStyle=2;fontColor=#37474F;" vertex="1" parent="1">
           <mxGeometry x="60" y="790" width="200" height="20" as="geometry"/>
         </mxCell>
-        <mxCell id="legend2_a" value="&lt;b&gt;实线&lt;/b&gt; skill 必定 dispatch agent  ·  &lt;b&gt;虚线&lt;/b&gt; 条件 dispatch / skill→skill orchestration" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=11;" vertex="1" parent="1">
+        <mxCell id="legend2_a" value="&lt;b&gt;实线&lt;/b&gt; 必需 reviewer role (优先 subagent,不可用时主会话 fallback) · &lt;b&gt;虚线&lt;/b&gt; 条件 delegation / action orchestration" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=11;" vertex="1" parent="1">
           <mxGeometry x="60" y="815" width="1280" height="20" as="geometry"/>
         </mxCell>
         <mxCell id="legend2_b" value="&lt;b&gt;decision-completeness-auditor&lt;/b&gt; 是唯一被 4 个 generator skill 共用的 agent — 实施 workflow §1.12 generation discipline (Preview Gate 前 trace plant 决策)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=11;" vertex="1" parent="1">
           <mxGeometry x="60" y="838" width="1280" height="20" as="geometry"/>
         </mxCell>
-        <mxCell id="legend2_c" value="&lt;b&gt;/spec-revise / /feature-archive / /spec-reconcile&lt;/b&gt; 编排型 skill — 条件 ADR / 修订记录 / 生命周期状态编排,按复杂度 dispatch auditor,无独立 reviewer agent" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=11;" vertex="1" parent="1">
+        <mxCell id="legend2_c" value="&lt;b&gt;/spec-revise&lt;/b&gt; 仅在 canonical boundary 调 auditor; &lt;b&gt;/feature-archive / /spec-reconcile&lt;/b&gt; 做生命周期编排,无独立 reviewer agent" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=11;" vertex="1" parent="1">
           <mxGeometry x="60" y="861" width="1280" height="20" as="geometry"/>
         </mxCell>
 

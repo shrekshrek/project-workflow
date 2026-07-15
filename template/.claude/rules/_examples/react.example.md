@@ -20,7 +20,7 @@ paths:
 ## 组件设计
 
 - 函数组件 + hooks only,**禁** class 组件
-- **禁** `React.FC<Props>`(隐式 children + 类型推断弱),用 `(props: Props) => JSX.Element`
+- 项目内统一普通函数或 `React.FC<Props>` 写法；React 18+ 类型不再隐式加入 `children`，不要把二者差异写成通用禁令
 - Props destructure 在函数签名:`function Foo({ name, age }: Props)` 而非 `props.name`
 - 单文件单组件;`PascalCase.tsx` 命名,文件内 `export default` 的组件名跟文件名一致
 

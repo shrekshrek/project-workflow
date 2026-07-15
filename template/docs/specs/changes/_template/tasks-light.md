@@ -24,11 +24,10 @@
 > 由 `/project-workflow:feature-done` 填。轻车道仍跑 L1 + L2 + 验证 + 不变量反核;L3 明确跳过。端点回复原样展示此 delivery receipt。
 
 - Verdict:
-- Change:`<diff identity>; review-scope=[exact paths reviewed by L2/light verification]; endpoint-outputs=[tasks.md receipt, drift ledger when written]`
+- Change:`review-scope=[exact paths reviewed by L2/light verification]; base/worktree=[Git context when available]; endpoint-outputs=[tasks.md receipt]`
 - Checks / 轻车道验证 / 不变量反核:`<每项 command/assertion + result>`
-- L2:`verdict; findings=<N>; applicable-rules=[source#id]; coverage=<N>%; applicable-unverified=<N>; ambiguities=<N>; confidence=<level>`
-- Rule sources:`global=<N>; matched=<N>; skipped=<N>; ambiguous=<N>; applicable-paths=[...]; ambiguous-paths=[...]`
-- L3:`N/A(light lane); verification=<PASS|FAIL>`
+- L2:`verdict; findings=[rule citation or none]; applicable-rules=[source#id]; applicable-unverified=[source#id or none]; ambiguities=[item or none]`
+- L3:`N/A(light lane); verification=[item#id: PASS|FAIL]`
 - Current truth:
 - Open questions:(仅非空时保留)
-- Drift:(仅非空时保留)
+- Drift:(仅非空时保留;不会自动写入其他 ledger)

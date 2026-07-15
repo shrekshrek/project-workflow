@@ -10,6 +10,62 @@ const repoRoot = path.resolve(__dirname, "..");
 const problems = [];
 const realTmpRoot = fs.realpathSync(os.tmpdir());
 
+const retainedOptionalAssets = [
+  "docs/actions/project-personalize-reference.md",
+  "template/.claude/rules/code-style.md",
+  "template/.claude/rules/testing.md",
+  "template/.claude/rules/security.md",
+  "template/.claude/hooks/lint-on-edit.cjs",
+  "template/.claude/settings.json",
+  "template/.codex/hooks.json",
+  "template/.codex/hooks/lint-on-edit.cjs",
+  "template/_multi_tier_examples/README.md",
+  "template/_multi_tier_examples/service-tier.AGENTS.md.example",
+  "template/_multi_tier_examples/ui-tier.AGENTS.md.example",
+  "template/docs/adr/0000-template.md",
+  "template/docs/specs/_template/domain.md",
+  "template/docs/specs/changes/_template/spec-greenfield.md",
+  "template/docs/specs/changes/_template/spec-brownfield.md",
+  "template/docs/specs/changes/_template/plan.md",
+  "template/docs/specs/changes/_template/tasks.md",
+  "template/docs/specs/changes/_template/tasks-light.md",
+];
+for (const relative of retainedOptionalAssets) {
+  if (!fs.existsSync(path.join(repoRoot, relative))) problems.push(`optional capability asset missing: ${relative}`);
+}
+
+const optionalAssetContracts = {
+  "template/_multi_tier_examples/service-tier.AGENTS.md.example": {
+    required: ["project-personalize", "根/上级 `AGENTS.md`", "当前宿主已采用的 path-scoped convention file"],
+    forbidden: ["P0 时根据栈", ".claude/rules/code-style.md(继承根)"],
+  },
+  "template/_multi_tier_examples/ui-tier.AGENTS.md.example": {
+    required: ["project-personalize", "根/上级 `AGENTS.md`", "当前宿主已采用的 path-scoped convention file"],
+    forbidden: ["P0 时根据栈", ".claude/rules/code-style.md(继承根)"],
+  },
+  "template/.claude/rules/_examples/fastapi.example.md": {
+    required: ["pattern=", "pydantic-settings"],
+    forbidden: ["regex=", "- `BaseSettings` 子类"],
+  },
+  "template/.claude/rules/_examples/react.example.md": {
+    required: ["React 18+ 类型不再隐式加入 `children`"],
+    forbidden: ["**禁** `React.FC<Props>`"],
+  },
+  "template/.claude/rules/_examples/README.md": {
+    required: ["仅命中项目的 `ADR_REQUIRED` 条件时才写 ADR"],
+    forbidden: ["缺失 starter", "首批待补"],
+  },
+};
+for (const [relative, contract] of Object.entries(optionalAssetContracts)) {
+  const content = fs.readFileSync(path.join(repoRoot, relative), "utf8");
+  for (const marker of contract.required) {
+    if (!content.includes(marker)) problems.push(`${relative}: missing optional-asset contract marker ${JSON.stringify(marker)}`);
+  }
+  for (const marker of contract.forbidden) {
+    if (content.includes(marker)) problems.push(`${relative}: stale optional-asset marker remains ${JSON.stringify(marker)}`);
+  }
+}
+
 function walkFiles(root) {
   if (!fs.existsSync(root)) return [];
   return fs.readdirSync(root, { withFileTypes: true }).flatMap((entry) => {
@@ -25,12 +81,12 @@ function relative(file) {
 
 const activeSources = [
   path.join(repoRoot, "docs", "actions"),
-  path.join(repoRoot, "docs", "adapters"),
   path.join(repoRoot, "docs", "reviewers"),
   path.join(repoRoot, "docs", "cross-tool-methodology.md"),
   path.join(repoRoot, "docs", "spec-driven.md"),
   path.join(repoRoot, "docs", "workflow.md"),
-  path.join(repoRoot, "skills"),
+  path.join(repoRoot, "adapters", "claude", "skills"),
+  path.join(repoRoot, "adapters", "codex", "skills"),
   path.join(repoRoot, "template"),
 ].flatMap((entry) => (fs.statSync(entry).isDirectory() ? walkFiles(entry) : [entry]));
 
@@ -54,9 +110,13 @@ if (/@\.claude\/rules\//.test(templateAgents)) {
 const baselineRoot = fs.mkdtempSync(path.join(realTmpRoot, "project-workflow-baseline-"));
 const baselineStage = fs.mkdtempSync(path.join(realTmpRoot, "project-workflow-stage-"));
 const baselineResult = materialize(path.join(repoRoot, "template"), baselineStage, { againstRoot: baselineRoot });
-if (walkFiles(baselineRoot).length !== 0) problems.push("staging baseline wrote to target before approval/apply");
+if (walkFiles(baselineRoot).length !== 0) problems.push("staging baseline wrote to target before apply");
 const applyResult = applyStaged(baselineStage, baselineRoot);
 const baselineFiles = walkFiles(baselineRoot).map((file) => path.relative(baselineRoot, file).split(path.sep).join("/"));
+const baselineAgents = fs.readFileSync(path.join(baselineRoot, "AGENTS.md"), "utf8");
+if (/High-Blast-Radius Paths|None declared yet/.test(baselineAgents)) {
+  problems.push("materialized neutral baseline must not enable or advertise the optional high-impact path guardrail");
+}
 for (const forbidden of [
   "docs/specs/_template/domain.md",
   "docs/specs/changes/_template/tasks.md",
@@ -67,8 +127,19 @@ for (const forbidden of [
 ]) {
   if (baselineFiles.includes(forbidden)) problems.push(`materialized baseline retains plugin-only asset ${forbidden}`);
 }
-for (const required of ["AGENTS.md", "CLAUDE.md", "docs/specs/index.md", "docs/adr/README.md", ".claude/rules/security.md"]) {
+const expectedBaselineFiles = [
+  ".gitignore",
+  "AGENTS.md",
+  "CLAUDE.md",
+  "docs/adr/README.md",
+  "docs/gotchas.md",
+  "docs/specs/index.md",
+].sort();
+for (const required of expectedBaselineFiles) {
   if (!baselineFiles.includes(required)) problems.push(`materialized baseline missing ${required}`);
+}
+if (JSON.stringify(baselineFiles.sort()) !== JSON.stringify(expectedBaselineFiles)) {
+  problems.push(`materialized baseline must contain exactly six neutral files; got ${baselineFiles.sort().join(", ")}`);
 }
 if (baselineResult.skippedExisting.length !== 0) problems.push("empty-target baseline unexpectedly skipped existing files");
 if (applyResult.copied.length !== baselineResult.copied.length) problems.push("approved staged baseline did not apply the complete planned population");
@@ -104,7 +175,7 @@ const absentParent = fs.mkdtempSync(path.join(realTmpRoot, "project-workflow-abs
 const absentTarget = path.join(absentParent, "not-created-during-stage");
 const absentStage = fs.mkdtempSync(path.join(realTmpRoot, "project-workflow-absent-stage-"));
 materialize(path.join(repoRoot, "template"), absentStage, { againstRoot: absentTarget });
-if (fs.existsSync(absentTarget)) problems.push("baseline staging created an absent target before approval");
+if (fs.existsSync(absentTarget)) problems.push("baseline staging created an absent target before apply");
 fs.rmSync(absentParent, { recursive: true, force: true });
 fs.rmSync(absentStage, { recursive: true, force: true });
 
@@ -112,16 +183,17 @@ const rootLinkOutside = fs.mkdtempSync(path.join(realTmpRoot, "project-workflow-
 const rootLinkParent = fs.mkdtempSync(path.join(realTmpRoot, "project-workflow-root-link-parent-"));
 const rootLink = path.join(rootLinkParent, "target-link");
 const rootLinkStage = fs.mkdtempSync(path.join(realTmpRoot, "project-workflow-root-link-stage-"));
-fs.writeFileSync(path.join(rootLinkStage, "escape.txt"), "must stay staged\n");
+fs.writeFileSync(path.join(rootLinkStage, "through-alias.txt"), "normalized target root\n");
 fs.symlinkSync(rootLinkOutside, rootLink, "dir");
-let rootLinkRejected = false;
 try {
   applyStaged(rootLinkStage, rootLink);
 } catch (error) {
-  rootLinkRejected = /symlink target (?:root|component)/.test(error.message);
+  problems.push(`staged apply rejected an existing symlink target root: ${error.message}`);
 }
-if (!rootLinkRejected) problems.push("staged apply did not reject a symlink target root");
-if (walkFiles(rootLinkOutside).length !== 0) problems.push("staged apply wrote through a symlink target root");
+const throughAlias = path.join(rootLinkOutside, "through-alias.txt");
+if (!fs.existsSync(throughAlias) || fs.readFileSync(throughAlias, "utf8") !== "normalized target root\n") {
+  problems.push("staged apply did not normalize an existing symlink target root");
+}
 fs.rmSync(rootLinkParent, { recursive: true, force: true });
 fs.rmSync(rootLinkOutside, { recursive: true, force: true });
 fs.rmSync(rootLinkStage, { recursive: true, force: true });
@@ -156,7 +228,7 @@ try {
 } catch (error) {
   conflictRejected = /Refusing partial apply/.test(error.message);
 }
-if (!conflictRejected) problems.push("staged apply did not reject approval-time target drift");
+if (!conflictRejected) problems.push("staged apply did not reject apply-time target drift");
 if (fs.readFileSync(path.join(conflictRoot, "same.txt"), "utf8") !== "user version\n") problems.push("staged apply overwrote a conflicting file");
 if (fs.existsSync(path.join(conflictRoot, "fresh.txt"))) problems.push("staged apply partially wrote non-conflicting files after a conflict");
 fs.rmSync(conflictRoot, { recursive: true, force: true });

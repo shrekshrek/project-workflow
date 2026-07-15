@@ -86,6 +86,10 @@ const broken = spawnSync(process.execPath, [relocator, brokenActive, brokenArchi
 if (broken.status === 0 || !broken.stderr.includes("missing local targets")) {
   problems.push("missing-target fixture did not fail clearly");
 }
+fs.renameSync(brokenArchived, brokenActive);
+if (!fs.existsSync(brokenActive) || fs.existsSync(brokenArchived)) {
+  problems.push("failed relocation was not returned to the active path");
+}
 
 fs.rmSync(fixture, { recursive: true, force: true });
 
@@ -95,4 +99,4 @@ if (problems.length > 0) {
   process.exit(1);
 }
 
-console.log("Lifecycle links OK: archive relocation + missing-target failure.");
+console.log("Lifecycle links OK: archive relocation + missing-target move-back.");

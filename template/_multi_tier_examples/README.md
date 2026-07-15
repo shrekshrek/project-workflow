@@ -2,13 +2,13 @@
 
 > Tier 级 `AGENTS.md` + `CLAUDE.md` 的**结构参考模板**,**仅多 tier 项目用**。
 >
-> ⚠️ **这些不是给用户直接编辑的模板**——它们是 [`/project-init` skill](../../skills/project-init/SKILL.md)
-> (或人 + AI 手动 P0)用的**结构参考**。AI 据此理解 tier 级 AGENTS.md 应该有哪些章节、
-> 用什么 placeholder,然后基于 tier 实际栈生成最终文件。
+> ⚠️ **这些不是 `project-init` 的默认产物**。它们是 [`project-personalize`](../../docs/actions/project-personalize.md)
+> 在仓库证据表明存在多个 tier、且用户确认需要 tier-level guidance 时才读取的**结构参考**。
+> AI 必须从真实目录、manifests 和配置填内容,不能把示例默认值直接复制进项目。
 
 ## 何时用本目录
 
-[`workflow.md §0.3 Tier 概念`](https://github.com/shrekshrek/project-workflow/blob/main/docs/workflow.md#03-概念区分钉死再读后续) + [`§1.4 嵌套层次`](https://github.com/shrekshrek/project-workflow/blob/main/docs/workflow.md#14-claudemd-嵌套层次子级覆盖父级):
+[`workflow.md §0.3 Tier 概念`](../../docs/workflow.md#03-概念区分钉死再读后续) + [`§1.4 嵌套层次`](../../docs/workflow.md#14-agentsmd--claudemd-嵌套层次子级覆盖父级):
 
 | 类型 | tier 结构 | 用本目录? |
 |---|---|---|
@@ -38,12 +38,12 @@
 
 **为什么按类别而不是具体框架?** —— 2 个类别覆盖 80%+ 多 tier 项目。具体框架(FastAPI / Express / Vue / React 等)**通过 placeholder 在生成时填**,不需要 N 个具体模板。
 
-## AI-driven 生成流程(典型)
+## Evidence-driven 个性化流程(典型)
 
 ```
-用户描述项目: "Nuxt 前端 + FastAPI 后端 + Celery worker"
+仓库已有 frontend / backend / worker 三个目录与对应 manifests
         ↓
-AI 分析: 3 个 tier
+project-personalize 从仓库证据确认 3 个 tier
   - frontend(UI-style)
   - backend(service-style)
   - worker(service-style)
@@ -53,23 +53,23 @@ AI 选模板:
   - backend ← service-tier.example
   - worker ← service-tier.example(同类别,内容不同)
         ↓
-AI 据 tier 实际栈填 placeholder + 适配 tier 特殊性:
+AI 据真实配置填 placeholder + 只写 tier 相对根规则的差量:
   - frontend/AGENTS.md   填 Vue 3 + Nuxt 4 + Pinia + Nuxt UI 等
   - backend/AGENTS.md    填 FastAPI + SQLAlchemy 2.0 + Pydantic v2 等
   - worker/AGENTS.md     填 Celery 任务 + 幂等性 + retry 策略 等
         ↓
-用户看到 3 个填好的 tier-level AGENTS.md(+ 对应 CLAUDE.md)
+用户在 consolidated preview 中确认后,再一次性写入 3 组文件
 ```
 
 ## 差量原则
 
-> Tier 级 AGENTS.md **只写本 tier 跟项目根 AGENTS.md 默认不同的事**,绝不重复父级已说过的(参见 [`workflow.md §2.3`](https://github.com/shrekshrek/project-workflow/blob/main/docs/workflow.md#23-反常判定何时该写模块-claudemd) 差量原则)。
+> Tier 级 AGENTS.md **只写本 tier 跟项目根 AGENTS.md 默认不同的事**,绝不重复父级已说过的(参见 [`workflow.md §2.3`](../../docs/workflow.md#23-反常判定何时该写模块-agentsmd) 差量原则)。
 
 例:
-- 项目根 AGENTS.md 已写"覆盖率门槛 ≥ 80%" → tier AGENTS.md **不重复**
+- 项目根 AGENTS.md 已声明项目实际采用的测试门槛 → tier AGENTS.md **不重复**
 - 项目根 AGENTS.md 没写"Pydantic v2 strict mode" → backend tier 写
 - 项目根 AGENTS.md 没写"Celery 任务幂等" → worker tier 写
 
 ## 模板里能改吗?
 
-可以。这两个 `.example` 文件是**仓库维护者**调整的——加常用约定、删过时建议、改 placeholder 等。**不期望用户复制时再改**(用户拿到的是 AI 已经生成好的最终文件)。
+可以。这两个 `.example` 文件由**仓库维护者**调整,但只能保留结构和中立 placeholder。用户项目中的最终文件必须由仓库证据和用户确认生成,不能把本目录当成可直接复制的约定包。

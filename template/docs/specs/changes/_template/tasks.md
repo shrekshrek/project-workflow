@@ -30,11 +30,10 @@
 > 由 `/project-workflow:feature-done` 填。本节保留历史兼容标题,内容是会在端点回复中原样展示并由 archive/PR 消费的 delivery receipt。
 
 - Verdict:
-- Change:`<diff identity>; review-scope=[exact paths reviewed by L2/L3]; endpoint-outputs=[tasks.md receipt, READY spec status/drift ledger when written]`
+- Change:`review-scope=[exact paths reviewed by L2/L3]; base/worktree=[Git context when available]; endpoint-outputs=[tasks.md receipt, READY spec status when written]`
 - Checks:`<command/assertion; exit/result; test totals>`
-- L2:`verdict; findings=<N>; applicable-rules=[source#id]; coverage=<N>%; applicable-unverified=<N>; ambiguities=<N>; confidence=<level>`
-- Rule sources:`global=<N>; matched=<N>; skipped=<N>; ambiguous=<N>; applicable-paths=[...]; ambiguous-paths=[...]`
-- L3:`verdict; findings=<N>; spec-items=[section#item]; coverage=<N>%; applicable-unverified=<N>; ambiguities=<N>; confidence=<level>`
+- L2:`verdict; findings=[rule citation or none]; applicable-rules=[source#id]; applicable-unverified=[source#id or none]; ambiguities=[item or none]`
+- L3:`verdict; findings=[spec citation or none]; applicable-items=[section#item]; applicable-unverified=[section#item or none]; ambiguities=[item or none]`
 - Current truth:
 - Open questions:(仅非空时保留)
-- Drift:(仅非空时保留)
+- Drift:(仅非空时保留;不会自动写入其他 ledger)
