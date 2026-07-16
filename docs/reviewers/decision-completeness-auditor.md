@@ -28,11 +28,11 @@ When a baseline is provided, audit only newly added or changed decisions. Existi
 
 ## Dispatch Boundary
 
-Do not dispatch this auditor for a simple single-source synchronization whose every value can be shown in a compact inline `value → source` trace. Dispatch it when generated content introduces technical specifics, ownership, ports, packages, infrastructure, weak evidence, an ADR, or decisions spanning multiple files/artifacts. Both paths require traceability; this boundary changes execution cost, not the standard.
+Do not dispatch for values directly traceable to user input or repository evidence, even when repeated across files; use a compact inline `value → source` trace. Dispatch only for unconfirmed high-impact architecture, ownership, infrastructure, port, package/API choices, ADRs, or conflicting/weak sources.
 
 ## Method
 
-### Phase 1: Extract Decisions
+### 1. Extract Decisions
 
 Fresh-read files or inline blobs. Build an inventory:
 
@@ -42,7 +42,7 @@ file:line | decision | category | context
 
 Abort if unresolved placeholders such as `{{...}}` remain in audited output unless the calling action explicitly declares that file or section as an intentional template/draft placeholder.
 
-### Phase 2: Trace Each Decision
+### 2. Trace Each Decision
 
 Classify each unique decision:
 
@@ -52,43 +52,17 @@ Classify each unique decision:
 
 Do not treat "common default" as verified unless the caller supplied it as policy or existing project state.
 
-### Phase 3: Cross-file Consistency
+### 3. Cross-file Consistency
 
 Find inconsistent variants for the same concept across audited files. Inconsistency is `must-fix`.
 
-### Phase 4: Report
+### 4. Report
 
 Report must-fix items, warnings, verified items, consistency, and caller obligations.
 
 ## Output
 
-Use this structure:
-
-```markdown
-## Decision Completeness Audit
-
-### Decision Matrix
-| Decision | Locations | Trace | Status |
-
-### Must-fix
-<unanchored or inconsistent decisions; block preview/apply>
-
-### Warnings
-<idioms/defaults caller should surface for accept/fix/defer>
-
-### Verified
-<compressed list>
-
-### Cross-file Consistency
-<clean or conflicts>
-
-### Caller Obligations
-- Must-fix blocks preview/apply
-- Warnings need accept/fix/defer
-
-### Completeness
-<inventoried decisions plus any decision locations that could not be assessed>
-```
+Return a compact `Decision Matrix` plus `Must-fix`, `Warnings`, `Cross-file Consistency`, and `Completeness`. Omit empty prose sections. Must-fix blocks apply; warnings require accept/fix/defer.
 
 ## Rules
 

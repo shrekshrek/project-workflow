@@ -11,8 +11,8 @@ Claude execution details:
 
 - Parse `$ARGUMENTS` as an optional scope. Root/applicable nested `AGENTS.md` are the default; include `.claude/rules/` only when the user explicitly selects them.
 - Use Read/Grep/Glob/Bash for evidence. Missing `AGENTS.md` redirects to `/project-workflow:project-personalize`.
-- Use an inline value-to-source trace for simple synchronization. At the canonical audit boundary, when named-agent dispatch is available and the host has not reported exhausted capacity, you MUST dispatch `decision-completeness-auditor` with the proposed contents and evidence. No extra workflow confirmation is required; host security approvals still apply. Fallback is allowed only when dispatch is unavailable, fails, or the host reports no capacity; follow the same contract, record the execution mode and observed reason, and never treat unexplained fallback as a satisfied pre-apply audit.
+- Use inline trace for sourced synchronization; dispatch a fresh `decision-completeness-auditor` only at its narrowed canonical boundary, with fallback under the shared execution contract. Blocking or unreliable audit evidence prevents apply.
 - Ask only for material ambiguity or new policy, then use one consolidated apply gate; do not reconfirm objective stale-value synchronization item by item.
 - Apply only approved convention edits. Do not edit product specs, implementation code, or commit.
 
-Report applied/skipped drift, evidence, `Reviewer execution` for every applicable audit, audit trigger/result, unresolved questions, and a commit-message draft.
+Report applied/skipped drift, evidence, applicable audit execution/results, and unresolved questions.

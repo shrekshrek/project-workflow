@@ -13,76 +13,16 @@ Assess whether a full-lane feature artifact is good enough to implement. This re
 
 Do not review code, implementation feasibility, AGENTS.md compliance, or mechanical presence checks that the calling action can run directly.
 
-## Method
+## Review
 
-### Phase 1: Fresh Read
+Fresh-read the three artifacts and assess every relevant item:
 
-Fresh-read `spec.md`, `plan.md`, and `tasks.md`. Map:
+- Q3 verification: runnable check/assertion = pass; subjective = fail; concrete without execution anchor = borderline.
+- Q4 outcomes: actor/system + action + success condition = pass; vague aspiration = fail; missing success condition = borderline.
+- Q5 constraints: hard/external/measurable = pass; wish = fail; preference belongs in plan/risk and is borderline.
+- Q7 tasks: concrete output/check = pass; broad bucket = fail; work without verification = borderline.
 
-- outcomes
-- constraints
-- verification items
-- task checklist
-
-### Phase 2: Evaluate Each Question
-
-For Q3 verification:
-
-- pass when each item has a runnable test, command, API check, data assertion, or clear machine-checkable condition
-- fail when it depends on subjective judgment
-- borderline when behavior is concrete but lacks an execution anchor
-
-For Q4 outcomes:
-
-- pass when outcome states actor/system, action, and success condition
-- fail when it is vague aspiration
-- borderline when user action is named but success condition is missing
-
-For Q5 constraints:
-
-- pass when it is hard, externally required, or measurable
-- fail when it is a wish
-- borderline when it is a preference that should move to plan/risk
-
-For Q7 tasks:
-
-- pass when each task has a concrete output or check
-- fail when it is a broad bucket
-- borderline when it names work but no verification step
-
-### Phase 3: Matrix When Needed
-
-When multiple task or verification items fail, show a compact matrix with pass/borderline/fail counts.
-
-### Phase 4: Completeness And Reliability
-
-Report the reviewed items, assessed items, skipped items with reasons, and any blocking ambiguity. A mostly empty artifact is not a reliable pass.
-
-## Output
-
-Use this structure:
-
-```markdown
-## Spec Quality Report - <NNN>-<slug>
-
-Files reviewed: <spec/plan/tasks>
-Population: <reviewed items; skipped items and reasons>
-
-### Q3 Verification Mechanization
-<findings with citations and suggested rewrite>
-
-### Q4 Outcomes Specificity
-<findings with citations and suggested rewrite>
-
-### Q5 Constraints Reality
-<findings with citations and suggested action>
-
-### Q7 Tasks Verifiability
-<findings and matrix when useful>
-
-### Summary
-<result per question, reliability, most impactful finding>
-```
+Report reviewed items, skipped items with reasons, blocking ambiguity, citations, and concise rewrites. Use a pass/borderline/fail matrix only when several items fail. A mostly empty artifact is not a reliable pass.
 
 ## Rules
 

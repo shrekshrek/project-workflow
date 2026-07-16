@@ -30,7 +30,7 @@ Do not use to rewrite historical feature specs, create backlog items, or make su
 3. Inspect objective repository evidence: manifests, lockfiles, tool-version files, actual paths, configuration examples, and relevant recent changes.
 4. For each mismatch, record the old text, observed state, evidence source, and a narrow proposed patch. Exclude preferences and weak pattern guesses.
 5. Ask only about material ambiguity or genuinely new policy, at most five decisions per batch. Objective stale-value synchronization proceeds to the consolidated preview without a separate decision round.
-6. Draft approved patches without editing the worktree. Use an inline value-to-source trace for simple synchronization and the decision-completeness auditor only for new technical specifics, weak evidence, or generated decisions spanning files.
+6. Draft approved patches without editing the worktree. Use an inline trace for repository- or user-sourced synchronization and the decision-completeness auditor only for unconfirmed high-impact policy or conflicting/weak evidence.
 7. Show one consolidated diff, apply only approved patches, then validate the changed commands, paths, and placeholders.
 
 ## Reviewer Execution

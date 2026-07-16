@@ -63,12 +63,12 @@ Adapters materialize the selected template through the packaged `scripts/materia
 ## Workflow
 
 1. Resolve the target root and parse the requested slug/optional description.
-2. Read active conventions and current-truth documents, excluding archived change artifacts.
+2. Read active conventions, search current-truth indexes/headings, and open only domain documents relevant to the feature; exclude archived and unrelated artifacts.
 3. Decide no artifact, light lane, or full lane using the classification above; ask only when the business goal or ownership is unclear.
 4. For full lane, choose brownfield only when a substantive domain document exists; otherwise use greenfield.
 5. Compute the next number across active and archived directories and invoke the packaged materializer with atomic no-clobber behavior.
 6. Replace structural placeholders and prefill only traceable facts. Preserve unresolved TODOs.
-7. Use an inline value-to-source trace for simple single-source prefill; run the decision-completeness auditor only for new technical specifics, weak evidence, ownership decisions, or generated decisions spanning artifacts.
+7. Use an inline value-to-source trace for repository- or user-sourced prefill; run the decision-completeness auditor only for unconfirmed high-impact choices, ADRs, or conflicting/weak evidence.
 8. Validate the created population and report lane, shape, ownership, unresolved placeholders, evidence, and next action.
 
 ## Reviewer Execution

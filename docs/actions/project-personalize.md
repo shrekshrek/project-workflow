@@ -35,7 +35,7 @@ Do not use for an empty greenfield project; use [`project-init`](project-init.md
 4. For a missing baseline, stage the neutral six-file template with `scripts/materialize-project-baseline.cjs`; do not write the target yet.
 5. Use the codebase-explorer methodology only for a nontrivial or unclear structure survey. When a material stack, library, or tool choice remains unresolved and current external evidence would change the result, run the tech-researcher methodology, present 2-3 suitable candidates and one recommendation, and let the user make the final choice. Derive commands, source/test paths, project-specific rules, and tier ownership from repository evidence; ask only for material gaps.
 6. Validate selected host-private rules and hooks only when they already exist or the user chose them. Never copy optional assets by default.
-7. Run an inline trace for simple synchronization and the decision-completeness auditor only for new technical specifics, weak evidence, or generated decisions spanning files.
+7. Run an inline trace for repository- or user-sourced synchronization and the decision-completeness auditor only for unconfirmed high-impact choices, ADRs, or conflicting/weak evidence.
 8. Preflight unchanged baselines and staged destinations, show one consolidated diff/new-file list, and apply once after approval. Normalize an existing target-root symlink to its real directory, but reject symlinked destination components and an absent target below a symlinked ancestor. Conflicts, rejection, or a blocking audit leave the target unchanged.
 9. Validate placeholders, commands, source/test paths, project-specific rules/boundaries, real tier ownership, aliases, selected rule scopes, hook status, and `AGENTS.md` concision.
 

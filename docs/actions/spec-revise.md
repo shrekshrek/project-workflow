@@ -29,11 +29,11 @@ Draft specs may be edited directly before implementation starts.
 1. Resolve the active full-lane feature and read `spec.md`, `plan.md`, and `tasks.md`. Light-lane work has no frozen spec; upgrade it only when the discovered risk requires a contract.
 2. Confirm that the discovery is a material contract, verification, scope, plan, or module-boundary error. Put minor clarification in plan prior decisions or implementation notes instead.
 3. Resolve affected modules/files and fresh-read applicable conventions.
-4. Classify `ADR_REQUIRED`: yes only for architecture/module boundaries, durable cross-feature technical decisions, or superseding an ADR. When yes, scan existing Accepted/Proposed ADRs before drafting.
+4. Classify `ADR_REQUIRED`: yes only for architecture/module boundaries, durable cross-feature technical decisions, or superseding an ADR. When yes, search ADR filenames, titles, status fields, and existing references first, then open only candidates relevant to the affected area or decision.
 5. Ask only when the revision direction, affected scope, ADR decision, or supersede action remains ambiguous. An explicit user instruction already settles the stated decision.
 6. Draft final spec/plan/tasks contents without changing the worktree. Add the dated revision record; synchronize plan decisions, risks, current-truth follow-up, tasks, and validation. Draft the conditional ADR from the packaged template when required.
 7. Update sibling alignment and propose nested `AGENTS.md` guidance only when a changed module is genuinely exceptional.
-8. Run an inline trace for a simple single-source correction or the decision-completeness auditor for an ADR, weak evidence, new technical specifics, or decisions spanning files.
+8. Run an inline trace for repository- or user-sourced corrections; use the decision-completeness auditor only for an ADR, unconfirmed high-impact choices, or conflicting/weak evidence.
 9. Show one consolidated diff, obtain one apply approval, then apply once. Rejection or a blocking audit leaves the worktree unchanged.
 
 ## Reviewer Execution
@@ -48,7 +48,7 @@ When the auditor boundary applies, follow the canonical [reviewer execution cont
 - Module-boundary changes update affected module notes and future validation expectations.
 - Specific decisions must be traceable to user input, existing project convention, revision record, or an applicable ADR.
 - If the revision changes durable behavior recorded in `docs/specs/<area>.md`, keep the domain document read-only during this in-flight revision and record `current truth update pending` for [`feature-done`](feature-done.md) → [`feature-archive`](feature-archive.md). If it supersedes earlier specs, record a follow-up for [`feature-archive`](feature-archive.md) or [`spec-reconcile`](spec-reconcile.md) to mark and archive them.
-- When an ADR is required, scan existing `Accepted`/`Proposed` ADRs for decisions it overturns or contradicts; with user approval, flip the old ADR's status to `Superseded by NNNN` and note the takeover in the new ADR.
+- When an ADR is required, use metadata/reference search to find relevant `Accepted`/`Proposed` candidates; never load the whole ADR directory. With user approval, flip an overturned ADR's status to `Superseded by NNNN` and note the takeover in the new ADR.
 
 ## Validation
 

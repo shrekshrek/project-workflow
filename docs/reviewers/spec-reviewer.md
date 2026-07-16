@@ -15,77 +15,31 @@ Review implementation against the **change spec** (B class), not domain docs (E 
 
 Do not review project conventions, code style, architecture preferences, or spec quality.
 
-## Method
+## Review
 
-### Phase 0: Detect shape
-
-- If `spec.md` has `## Delta` or `## Motivation` → **brownfield**
-- If `spec.md` has `## 1. Outcomes` → **greenfield**
-
-### Phase 1: Extract Testable Spec Items
-
-Fresh-read `spec.md`, `plan.md`, and `tasks.md`. Extract testable items from the shape-appropriate sections only:
+Detect `brownfield` from `## Delta` / `## Motivation`, or `greenfield` from `## 1. Outcomes`. Fresh-read the artifact and extract testable items only from:
 
 | Shape | Extract from |
 |---|---|
 | Greenfield | Outcomes, Scope (do + don't), Constraints, Verification |
 | Brownfield | Delta subsections, Constraints, Verification |
 
-Classify each item: `single` or `distributed`.
+Classify items as `single` or `distributed`; enumerate the full distributed population before verification. Sampling must be justified and leaves sampled applicable items unverified.
 
-### Phase 2: Verify Every Item
-
-- Verify single items directly.
-- Enumerate the full population for distributed items before checking.
-- Do not spot-check unless explicitly justified.
-
-### Phase 3: Categorize Findings
+Categorize findings as:
 
 - `missing`: change spec required it but implementation lacks it
 - `deviation`: implemented but differs from change spec
 - `scope creep`: greenfield excluded item present; brownfield Removed item still present or Added item over-scoped
 - `verification gap`: required verification missing or failing
 
-### Phase 4: Completeness And Reliability
-
-Enumerate the exact changed-file population and exact spec-item identifiers (`section#item`). Record fully verified, explicitly non-applicable, applicable-but-unverified, and ambiguous items.
+Enumerate the exact changed-file population and exact spec-item identifiers (`section#item`). Record non-applicable, applicable but unverified, and ambiguous items.
 
 A zero-finding result is `PASS` only when the exact changed-file population and exact applicable spec-item identifiers are enumerated, no applicable item is unverified, and no blocking spec ambiguity remains. Sampling or an incomplete required population returns `UNRELIABLE`, not a clean pass.
 
 ## Output
 
-Use this structure:
-
-```markdown
-## L3 Spec Compliance Review
-
-Feature: <slug>
-Spec: docs/specs/changes/<NNN>-<slug>/spec.md
-Shape: brownfield | greenfield
-Domain context: docs/specs/<area>.md (read-only, if cited)
-Files reviewed: <count>
-Population: <changed paths; applicable spec IDs; non-applicable; applicable but unverified>
-
-### Missing
-...
-
-### Deviations
-...
-
-### Scope Creep
-...
-
-### Verification Gaps
-...
-
-### Spec Ambiguities
-<ambiguity, blocking=yes|no, reason>
-
-### Summary
-...
-```
-
-When findings are zero, collapse empty finding sections and return a compact evidence block containing the exact changed paths, exact spec-item identifiers, applicable-but-unverified items, ambiguities, and `findings=0`.
+Return verdict, feature/spec/shape, exact changed paths and applicable spec IDs, non-applicable and unverified items, ambiguities, and cited findings by category. Omit empty sections.
 
 ## Rules
 
@@ -94,5 +48,5 @@ When findings are zero, collapse empty finding sections and return a compact evi
 - Do not report project-convention issues.
 - Do not invent requirements absent from the change spec.
 - Do not flag "missing" for domain doc behaviors not listed in Delta / Outcomes.
-- Never equate an empty findings array with success without the Phase 4 evidence contract.
+- Never equate empty findings with success without the population evidence above.
 - Mark every ambiguity as blocking or advisory. Advisory means it cannot change compliance for the current implementation; otherwise it is blocking.

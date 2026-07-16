@@ -11,9 +11,9 @@ Claude execution details:
 
 - Resolve `$ARGUMENTS` through the shared active-feature rules. This action requires an accepted spec; light lane stops for an explicit upgrade decision.
 - Read root/applicable nested `AGENTS.md`, recomputing applicability if the affected module population changes.
-- If `ADR_REQUIRED`, instantiate only from `${CLAUDE_PLUGIN_ROOT}/template/docs/adr/0000-template.md`; scan relevant ADRs first.
+- If `ADR_REQUIRED`, search ADR filenames, titles, status fields, and references first; open only candidates relevant to the affected area or decision, then instantiate only from `${CLAUDE_PLUGIN_ROOT}/template/docs/adr/0000-template.md`.
 - Ask only about unresolved revision/ADR ambiguity, then use one consolidated apply approval. Draft proposed diff contents in memory/staging so the worktree remains unchanged before approval.
-- Use an inline trace for a simple single-source correction. At the canonical audit boundary, when named-agent dispatch is available and the host has not reported exhausted capacity, you MUST dispatch `decision-completeness-auditor`; blocking findings prevent apply. No extra workflow confirmation is required; host security approvals still apply. Fallback is allowed only when dispatch is unavailable, fails, or the host reports no capacity; follow the same contract, record the execution mode and observed reason, and never treat unexplained fallback as a satisfied pre-apply audit.
+- Use inline trace for sourced corrections; dispatch a fresh `decision-completeness-auditor` only at its narrowed canonical boundary, with fallback under the shared execution contract. Blocking or unreliable audit evidence prevents apply.
 - Apply the approved consolidated diff once. Do not restore with checkout, rewrite unrelated history, or commit.
 
 Report the revision record, ADR decision/file, synchronized sections, `Reviewer execution` for every applicable audit, trace/audit result, current-truth follow-up, and whether to rerun spec-quality-check.

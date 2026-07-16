@@ -840,7 +840,7 @@ project-workflow 对模块**长什么样**有 opinionated 偏好(不强制):
 | `/spec-quality-check` | **实施前** | **spec 本身**够不够好(7 问质量) |
 | `/feature-done` 的 L3 层 | **实施后端点** | **代码**做了 spec 说要做的事吗(code-vs-spec drift) |
 
-**局部复查怎么做**:`feature-done` 是 L1+L2+L3+proof-bundle 的唯一端点入口,不再拆分独立的 helper 命令。需要单独重跑某一层时:L1 直接跑项目 check 命令;L2 / L3 按 [`agents-md-reviewer`](reviewers/agents-md-reviewer.md) / [`spec-reviewer`](reviewers/spec-reviewer.md) 执行;proof bundle 修补则重跑 `feature-done`(幂等,复用有效缓存)。
+**局部复查怎么做**:`feature-done` 是 L1+L2+L3+proof-bundle 的唯一端点入口,不再拆分独立的 helper 命令。需要单独重跑某一层时:L1 直接跑项目 check 命令;L2 / L3 按 [`agents-md-reviewer`](reviewers/agents-md-reviewer.md) / [`spec-reviewer`](reviewers/spec-reviewer.md) 执行;proof bundle 修补则重跑 `feature-done`(幂等)。
 
 **详细机制见**:[§3.1 规划阶段](#31-规划阶段)(决策清单)/ [§3.2 实现阶段](#32-实现阶段不要打断-ai-执行流)(不打断纪律)/ [§3.3 交付阶段 delivery receipt](#33-交付阶段delivery-receipt) / [§3.4 与平台流程协作](#34-与平台流程的协作) / [§3.5 中途修订](#35-开发中发现-specplan-错怎么办) / [§3.7 7 问 quality](spec-driven.md#37-specplan-写完后的质量自检7-问-checklist)。
 

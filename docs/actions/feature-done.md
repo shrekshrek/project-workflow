@@ -24,15 +24,12 @@ This action owns the full endpoint gate: L1, L2, L3, current-truth check, and de
 - L2 Project conventions: compare changed code to A-class conventions via the `agents-md-reviewer` spec.
 - L3 Change-spec compliance: compare implementation to `docs/specs/changes/.../spec.md` via `spec-reviewer`; **brownfield** = Delta + Constraints + Verification; **greenfield** = §1–§4; domain docs are context only, not the L3 baseline.
 - Light-lane verification: when no `spec.md` exists, execute or mechanically check every item under `tasks.md` `## 验证`; L3 remains N/A, but an unverified or failed item blocks READY.
-- Domain doc check: contradiction vs `docs/specs/<area>.md` and update-pending for `feature-archive`. A greenfield full-lane delivery that establishes durable user/system behavior is `update pending` even when no area document exists yet; archive creates the concrete area doc from the plugin template. If spec/plan do not declare an area, record `area unresolved` rather than inventing a filename. Purely internal/non-durable work may report no relevant domain doc.
+- Domain doc check: compare only a declared/relevant `docs/specs/<area>.md`. Resolved durable behavior with no existing area document is `update pending`; genuinely unknown ownership is `area unresolved`; internal/non-durable work is `no relevant domain doc`.
 - Delivery receipt: write compact, decision-relevant evidence to the legacy-compatible `## Proof Bundle` section in `tasks.md`, and show the same receipt in the endpoint response.
 
 ## Reviewer Execution
 
-- When the active host exposes reviewer dispatch capability and capacity is available, each applicable L2/L3 reviewer must run in a fresh host-native subagent invocation. Do not retask an existing reviewer instance. No extra workflow confirmation is required; host security approvals still apply.
-- Main-session fallback is allowed only when dispatch is unavailable, fails, or the host reports no capacity. The endpoint must still execute the same canonical reviewer contract and record the observed reason; preference or convenience is not a valid reason.
-- Reused same-session results retain their original execution evidence only while the canonical reviewer contract, every reviewer input, relevant endpoint output, and the exact review population remain provably unchanged. Reuse the completed result, never the reviewer instance.
-- If required dispatch was skipped, or execution evidence is missing for an applicable reviewer, that layer is unreliable and blocks `READY`; aggregate the endpoint as `BLOCKED`, not as a zero-finding pass.
+Run L2/L3 under the shared [reviewer execution contract](../reviewers/README.md#reviewer-execution-contract). Same-session result reuse requires unchanged contract, inputs, outputs, and exact population; missing execution evidence blocks `READY`.
 
 ## Delivery Receipt (`## Proof Bundle` on disk)
 
@@ -42,13 +39,13 @@ Persist only fields with a downstream consumer:
 - `Change`: the exact **review population** used by L2/L3 or light verification, endpoint-owned output paths (`tasks.md` receipt and READY status marker when written), and the Git base/worktree context when available. This is review traceability, not a cache key or claim about unrelated user changes; Git remains the full content-diff source.
 - `Checks`: commands, exit status, and concise test totals.
 - `Review execution`: for every applicable L2/L3 reviewer, record reviewer identifier, execution mode (`fresh-subagent`, `result-reuse`, `main-session fallback`, or allowed `N/A`), completion status, and fallback reason or `none`. `result-reuse` must retain or reference the original execution evidence.
-- `L2` / `L3` for full lane: verdict, reviewed baseline sources, findings, applicable-but-unverified identifiers, and ambiguities. The baseline is the consulted convention files for L2 and the spec path plus shape-specific section set for L3. Reviewers must still return exact applicable identifiers to the endpoint so it can validate complete coverage; the persisted receipt never repeats full applicable-rule or applicable-spec lists as separate fields. Expand only cited findings, unverified identifiers, and ambiguities whenever any are non-empty.
+- `L2` / `L3` for full lane: always persist verdict and baseline; add findings, applicable-but-unverified identifiers, or ambiguities only when non-empty. A PASS never persists applicable IDs or populations, including inside baseline; those remain transient validation evidence.
 - `L2` / `L3` for light lane: retain the exact applicable-rule identifiers for L2 and record `N/A` plus every verification item and result for L3, because `tasks.md` is the only feature-local acceptance baseline.
-- `Current truth`: no relevant domain doc / aligned / update pending. Name the document when the feature declares a reliable area; otherwise record `area unresolved` for `feature-archive` to resolve.
+- `Current truth`: no relevant domain doc / aligned / update pending / area unresolved. Use `area unresolved` only for durable behavior whose ownership is genuinely unknown.
 - `Open questions`: only unresolved items that affect handoff or release; omit when empty.
 - `Drift`: only actionable A-class convention changes or suggestions; omit when empty. Persist it elsewhere only when the user explicitly asks to revise conventions.
 
-Before verdict finalization, validate each full-lane reviewer result against its canonical exact-population contract, then project it into the compact receipt. Validate the receipt structurally: exact review-scope paths, endpoint-owned output paths, reviewer execution and any fallback reason, full-lane baselines plus unverified identifiers and ambiguities (or light-lane applicable/verification identifiers), Verdict, Checks, and Current truth must be present. Missing reviewer population evidence or receipt evidence makes the endpoint unreliable. The response must include the exact on-disk `## Proof Bundle` block verbatim, not a summary or link. PR workflows may copy it verbatim; `feature-archive` consumes Verdict and Current truth.
+Validate each full-lane reviewer result against its exact-population contract before compacting it. The receipt must contain scope, endpoint outputs, reviewer execution, verdict, checks, baselines, relevant exceptions, and current truth. Return one verdict line plus the exact on-disk `## Proof Bundle`; do not restate its layer details outside the block.
 
 For light lane, when the project already declares disaster-invariant/high-blast-radius paths, re-check the actual diff against them; a match is a misclassification. Projects without this optional declaration rely on the semantic high-risk conditions from `feature-init` and do not need an empty path list.
 
@@ -74,9 +71,7 @@ L2/L3/Drift finding counts live in the delivery receipt; do not add a duplicate 
 - L1/L2/L3 are separate because they answer different questions.
 - The delivery receipt is written at the endpoint, not guessed early.
 - An empty findings array without reviewer evidence is unreliable and blocks READY.
-- Full-lane receipt compaction happens only after the endpoint validates the reviewer's exact changed-file and applicable-item population; never infer complete coverage from `findings=none` alone.
-- Never add `applicable-rule-ids`, `applicable-spec-ids`, or equivalent full-population fields to a full-lane receipt; exact IDs remain transient reviewer evidence, while cited exceptions retain their necessary IDs.
-- Main-session reviewer output without an allowed, explicit fallback reason is not reviewer evidence when host-native dispatch was available.
+- Full-lane compaction follows exact changed-file/applicable-item validation; never infer coverage from `findings=none`, and never persist applicable-rule/spec IDs or populations.
 - Endpoint-owned receipt-only edits and the status-only `已确认` → `已实现` transition do not invalidate cached L2/L3 results; changes to tasks outside `## Proof Bundle` or to the spec contract still invalidate them.
 - Reuse completed reviewer results only inside the same task when the canonical reviewer contract, exact scope, every reviewer input, applicable population, and relevant endpoint outputs are provably unchanged. Never reuse or retask the reviewer instance. A later invocation reruns the relevant gates instead of relying on a persisted cache identity.
 - Historical specs remain archived; delivery evidence goes to `tasks.md`.

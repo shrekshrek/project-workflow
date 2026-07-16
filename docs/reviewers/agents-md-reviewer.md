@@ -19,91 +19,25 @@ Do not review functional correctness, design taste, feature-spec compliance, gen
 - convention source files
 - optional feature/spec path for context only
 
-For Claude, path-scoped rules may arrive as `.claude/rules/*.md` with a `paths:` YAML list; rules without `paths:` are global. For Codex, convention input is root and nested `AGENTS.md`; Claude-private files are not translated or treated as Codex instructions.
+For Claude, only project-root `.claude/rules/*.md` may be supplied; user-level `~/.claude/rules/` are excluded unless explicitly selected. Rules with a `paths:` YAML list are scoped; those without it are project-global. Codex uses root/nested `AGENTS.md` and does not translate Claude-private files.
 
-## Method
+## Review
 
-### Phase 1: Extract Checklist
+1. Fresh-read each convention source and extract testable `single` or `distributed` rules.
+2. Enumerate exact changed paths, exact applicable rule identifiers (`source#heading` or line), and definite non-matches before judging findings.
+3. For distributed rules, verify the whole applicable population; if unavoidable sampling leaves applicable but unverified items, explain it and return `UNRELIABLE`.
+4. Cite each violation and mark every ambiguity blocking or advisory. Show a compact population matrix only for a distributed failure.
 
-Fresh-read every convention source. Build a checklist of testable rules. Classify each rule:
-
-- `single`: applies once
-- `distributed`: applies per endpoint, module, test file, schema, component, or other population
-
-For distributed rules, identify the full population and the verifier before checking anything.
-
-### Phase 2: Verify Rules
-
-- Verify single rules directly.
-- For distributed rules, enumerate the whole population first, then check every element.
-- Do not spot-check unless the population is too large; if sampling is unavoidable, state the sample and reason.
-- Mark rules whose path scope clearly does not match the changed files as definite non-matches. They are not part of the applicable population.
-
-### Phase 3: Matrix For Distributed Failures
-
-When any distributed rule fails, show the whole population matrix, not only the failing item.
-
-Example:
-
-```text
-Rule: every endpoint has happy, edge, and auth-error tests
-                  happy  edge  auth-error
-POST /todos        yes    yes   yes
-GET /todos         yes    yes   no
-DELETE /todos/:id  yes    no    no
-```
-
-### Phase 4: Completeness And Reliability
-
-Report:
-
-- exact changed-file population
-- exact applicable-rule identifiers (`source-path#heading` or line)
-- fully verified applicable rules
-- sampled rules and why sampling was unavoidable
-- definite non-matches
-- applicable but unverified
-- blocking and advisory ambiguities
-
-A zero-finding result is `PASS` only when the exact changed-file population and exact applicable-rule identifiers are enumerated, no applicable rule is unverified, and no blocking ambiguity remains. If no rules apply, return `PASS (no applicable rules)` only after enumerating the changed files, resolving every rule source, and confirming zero blocking ambiguity. Sampling or an incomplete required population returns `UNRELIABLE`, not a clean pass.
+A zero-finding `PASS` requires complete changed-file/rule populations, no unverified applicable rule, and no blocking ambiguity. `PASS (no applicable rules)` additionally requires resolving every source against the changed paths.
 
 ## Output
 
-Use this structure:
-
-```markdown
-## L2 Project Convention Review
-
-Scope: <files reviewed>
-Rules source: <files consulted>
-Population: <changed paths; applicable rule IDs; definite non-matches; applicable but unverified>
-
-### Violations
-<rule citation, file:line, issue, suggested fix>
-
-### Partial / Borderline
-<rule citation, reason, blocking=yes|no>
-
-### Verified
-<short sample of checked items>
-
-### Ambiguities
-<unclear or contradictory convention rules>
-
-### Findings By Convention Source
-<root -> tier -> module -> path-scoped rules>
-
-### Summary
-<reliability, blocking/advisory counts, most impactful finding>
-```
-
-When findings are zero, collapse empty finding sections and return a compact evidence block containing the exact changed paths, exact applicable rule identifiers, applicable-but-unverified items, ambiguities, and `findings=0`. Do not emit pages of empty headings.
+Return verdict, changed paths, rule sources, applicable rule IDs, definite non-matches, unverified items, ambiguities, and cited findings. Omit empty report sections.
 
 ## Rules
 
 - Cite or skip: every finding needs a convention citation.
 - Do not make edits.
-- Keep findings precise with file:line references where possible.
-- Surface ambiguous conventions as feedback to the caller.
-- Never equate an empty findings array with success without the Phase 4 evidence contract.
+- Keep findings precise with file:line references.
+- Never equate empty findings with success without the population evidence above.
 - Mark every partial/borderline item as blocking or advisory. Advisory means no declared convention is currently violated; otherwise it is blocking.

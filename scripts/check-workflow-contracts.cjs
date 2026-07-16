@@ -33,14 +33,10 @@ function forbidRegex(relative, regex, label) {
 }
 
 function requireReviewerExecutionContract(relative, dispatchVerb) {
-  requireRegex(relative, new RegExp(`\\bMUST ${dispatchVerb}\\b`), `mandatory ${dispatchVerb} semantics`);
-  if (dispatchVerb === "spawn") {
-    requireRegex(relative, /MUST spawn a fresh general subagent/i, "fresh Codex subagent semantics");
-    requireRegex(relative, /never retask an existing subagent instance/i, "no Codex reviewer retask semantics");
-  }
-  requireRegex(relative, /no extra workflow confirmation[\s\S]{0,120}host security approvals still apply/i, "workflow-vs-host authorization boundary");
-  requireRegex(relative, /fallback is allowed only when[\s\S]{0,220}(?:capacity|slot)[\s\S]{0,160}observed reason/i, "evidenced fallback conditions");
-  requireRegex(relative, /Review(?:er)? execution/i, "reviewer execution evidence");
+  requireRegex(relative, /\bfresh\b/i, "fresh reviewer semantics");
+  requireRegex(relative, /(?:shared|canonical) execution contract/i, "canonical reviewer execution contract reference");
+  requireRegex(relative, /fallback/i, "fallback semantics");
+  requireRegex(relative, /Review(?:er)? execution|audit execution/i, "reviewer execution evidence");
   forbidMarkers(relative, ["Attempt dispatch before fallback"]);
 }
 
@@ -64,12 +60,12 @@ forbidMarkers("adapters/claude/skills/feature-done/SKILL.md", [
 ]);
 requireMarkers("adapters/claude/skills/feature-done/SKILL.md", ["agents-md-reviewer", "spec-reviewer", "## Proof Bundle", "same-session"]);
 requireMarkers("adapters/codex/skills/feature-done/SKILL.md", ["agents-md-reviewer.md", "spec-reviewer.md", "## Proof Bundle", "same-session", "never reviewer instances", "result-reuse"]);
-requireMarkers("docs/actions/feature-done.md", ["Light-lane verification", "Reviewers must still return exact applicable identifiers", "receipt-only edits", "greenfield full-lane delivery", "area unresolved", "Validate the receipt structurally", "block verbatim", "review traceability, not a cache key"]);
+requireMarkers("docs/actions/feature-done.md", ["Light-lane verification", "transient validation evidence", "receipt-only edits", "Resolved durable behavior with no existing area document is `update pending`", "area unresolved", "exact on-disk `## Proof Bundle`", "review traceability, not a cache key"]);
 forbidMarkers("docs/actions/feature-done.md", ["reproducible diff identity", "content fingerprint"]);
-requireMarkers("docs/actions/feature-done.md", ["independently executable", "non-execution only", "Review execution", "dispatch capability", "fallback reason", "blocks `READY`"]);
-requireMarkers("docs/actions/feature-done.md", ["transient reviewer evidence", "exact changed-file and applicable-item population", "never infer complete coverage from `findings=none` alone", "Never add `applicable-rule-ids`, `applicable-spec-ids`"]);
+requireMarkers("docs/actions/feature-done.md", ["independently executable", "non-execution only", "Reviewer Execution", "../reviewers/README.md#reviewer-execution-contract", "missing execution evidence blocks `READY`"]);
+requireMarkers("docs/actions/feature-done.md", ["exact changed-file/applicable-item validation", "never infer coverage from `findings=none`", "A PASS never persists applicable IDs or populations", "never persist applicable-rule/spec IDs or populations"]);
 
-requireMarkers("docs/actions/spec-quality-check.md", ["Reviewer execution", "dispatch capability", "fallback reason", "blocks `READY`"]);
+requireMarkers("docs/actions/spec-quality-check.md", ["Reviewer Execution", "../reviewers/README.md#reviewer-execution-contract", "fallback reason", "`BLOCKED`"]);
 const runtimeActions = ["project-init", "project-personalize", "feature-init", "spec-quality-check", "spec-revise", "feature-done", "feature-archive", "spec-reconcile", "agents-md-revise"];
 for (const action of ["feature-done", "feature-init", "project-personalize", "spec-quality-check", "spec-revise", "agents-md-revise"]) {
   requireReviewerExecutionContract(`adapters/claude/skills/${action}/SKILL.md`, "dispatch");
@@ -98,6 +94,8 @@ for (const relative of ["docs/reviewers/agents-md-reviewer.md", "docs/reviewers/
   forbidMarkers(relative, ["coverage is 100%", "coverage is at least 95%", "coverage >= 95%", "confidence", "skipped-critical"]);
 }
 requireMarkers("docs/reviewers/agents-md-reviewer.md", ["definite non-matches", "applicable population"]);
+requireMarkers("docs/reviewers/agents-md-reviewer.md", ["project-root `.claude/rules/*.md`", "user-level `~/.claude/rules/` are excluded"]);
+requireMarkers("adapters/claude/agents/agents-md-reviewer.md", ["project-root `.claude/rules/*.md`", "never user-level `~/.claude/rules/`"]);
 for (const relative of [
   "docs/reviewers/agents-md-reviewer.md",
   "docs/reviewers/spec-reviewer.md",
@@ -107,6 +105,7 @@ for (const relative of [
   forbidMarkers(relative, ["coverage percentage", "coverage score", "confidence score", "confidence=<"]);
 }
 requireMarkers("docs/reviewers/spec-quality-reviewer.md", ["Q3", "Q4", "Q5", "Q7", "reviewed items", "blocking ambiguity"]);
+requireMarkers("docs/actions/spec-quality-check.md", ["1. The spec/plan minimum set", "3. Verification is executable", "4. Outcomes describe", "5. Constraints are concrete"]);
 requireMarkers("docs/reviewers/decision-completeness-auditor.md", ["Decision Matrix", "Must-fix", "Warnings", "Cross-file Consistency", "Completeness"]);
 
 for (const relative of [
@@ -120,8 +119,8 @@ for (const relative of [
   requireRegex(relative, /^- Current truth:/m, "receipt Current truth field");
   forbidMarkers(relative, ["coverage=", "confidence=", "Rule sources:", "drift ledger"]);
 }
-requireRegex("template/docs/specs/changes/_template/tasks.md", /^- L2:.*baseline=\[.*findings=\[.*unverified=\[.*ambiguities=/m, "compact full-lane L2 receipt");
-requireRegex("template/docs/specs/changes/_template/tasks.md", /^- L3:.*baseline=\[.*findings=\[.*unverified=\[.*ambiguities=/m, "compact full-lane L3 receipt");
+requireRegex("template/docs/specs/changes/_template/tasks.md", /^- L2:.*baseline=\[.*only when non-empty/m, "compact full-lane L2 receipt");
+requireRegex("template/docs/specs/changes/_template/tasks.md", /^- L3:.*baseline=\[.*only when non-empty/m, "compact full-lane L3 receipt");
 forbidMarkers("template/docs/specs/changes/_template/tasks.md", ["applicable-rules=", "applicable-items=", "applicable-unverified="]);
 requireRegex("template/docs/specs/changes/_template/tasks-light.md", /^- L2:.*findings=\[.*applicable-rules=.*applicable-unverified=.*ambiguities=/m, "light-lane L2 evidence shape");
 requireRegex("template/docs/specs/changes/_template/tasks-light.md", /^- L3:.*verification=\[/m, "light-lane L3 verification field");
@@ -195,8 +194,9 @@ requireMarkers("adapters/claude/skills/spec-revise/SKILL.md", ["${CLAUDE_PLUGIN_
 requireRegex("adapters/claude/skills/spec-revise/SKILL.md", /worktree remains unchanged/i, "pre-approval unchanged-worktree semantics");
 requireMarkers("adapters/codex/skills/spec-revise/SKILL.md", ["bundled `template/docs/adr/0000-template.md`", "approved consolidated diff"]);
 
-requireMarkers("docs/quickstart.md", ["area unresolved"]);
+requireMarkers("docs/quickstart.md", ["领域明确但文档尚不存在", "update pending", "只有领域归属未知", "area unresolved"]);
 forbidMarkers("docs/quickstart.md", ["current-truth check(仅当", "使用 feature spec + ADR"]);
+for (const relative of ["docs/quickstart.md", "docs/workflow.md"]) forbidMarkers(relative, ["复用有效缓存"]);
 requireMarkers("template/docs/adr/README.md", ["ADR_REQUIRED"]);
 forbidMarkers("template/docs/adr/README.md", ["/agents-md-revise` 周期性点名", "零引用 + 60 天以上"]);
 for (const relative of ["docs/actions/agents-md-revise.md", "adapters/claude/skills/agents-md-revise/SKILL.md", "adapters/codex/skills/agents-md-revise/SKILL.md"]) {
@@ -207,7 +207,7 @@ forbidMarkers("adapters/claude/skills/agents-md-revise/SKILL.md", ["every 2-4 we
 for (const relative of ["docs/workflow.md", "adapters/claude/skills/agents-md-revise/SKILL.md"]) {
   forbidMarkers(relative, ["Item 5a", "Item 5b", "proof bundle 5 项"]);
 }
-requireMarkers("docs/reviewers/decision-completeness-auditor.md", ["## Dispatch Boundary", "simple single-source synchronization", "decisions spanning multiple files/artifacts"]);
+requireMarkers("docs/reviewers/decision-completeness-auditor.md", ["## Dispatch Boundary", "directly traceable", "unconfirmed high-impact"]);
 for (const relative of [
   "adapters/claude/skills/feature-init/SKILL.md", "adapters/claude/skills/project-personalize/SKILL.md", "adapters/claude/skills/spec-revise/SKILL.md", "adapters/claude/skills/agents-md-revise/SKILL.md",
   "adapters/codex/skills/feature-init/SKILL.md", "adapters/codex/skills/project-personalize/SKILL.md", "adapters/codex/skills/spec-revise/SKILL.md", "adapters/codex/skills/agents-md-revise/SKILL.md",

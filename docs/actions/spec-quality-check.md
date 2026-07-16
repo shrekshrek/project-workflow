@@ -14,17 +14,16 @@ Do not use as the main gate for light-lane features; `feature-done` checks their
 - `spec.md`
 - `plan.md`
 - `tasks.md`
-- Relevant project conventions from root/applicable nested `AGENTS.md` and any host-specific convention files supplied by the active adapter.
 
 ## Checks
 
 Required checks: seven core quality questions, plus conditional current-truth checks:
 
-1. Outcomes describe concrete user/system behavior, not generic intent.
-2. Scope boundaries include explicit "do" and "do not" items.
-3. Constraints are concrete enough to constrain implementation.
-4. Verification is executable and maps to the risky behavior.
-5. Plan identifies affected modules/tier boundaries.
+1. The spec/plan minimum set exists: Outcomes, Scope, Constraints, Verification, prior decisions, and module impact.
+2. Scope includes explicit "do" and "do not" items.
+3. Verification is executable and maps to the risky behavior.
+4. Outcomes describe concrete user/system behavior, not generic intent.
+5. Constraints are concrete enough to constrain implementation.
 6. Multi-module work has sibling alignment: align, deviate with reason, or codify.
 7. Tasks are implementation-sized and include validation/proof work.
 8. Only when the touched area has a `docs/specs/<area>.md`: the spec cites it and does not contradict it, or explicitly records why it deviates. Projects without current-truth documents skip this check.
@@ -69,10 +68,7 @@ Brownfield shape (M1/M2 replaced by M1b/M2b; M4/M5 shared):
 
 ## Reviewer Execution
 
-- When the active host exposes reviewer dispatch capability and capacity is available, the adapter must run the canonical subjective reviewer in a fresh host-native subagent invocation. Do not retask an existing reviewer instance. No extra workflow confirmation is required; host security approvals still apply.
-- Main-session fallback is allowed only when dispatch is unavailable, fails, or the host reports no capacity. The adapter must still run the same reviewer contract and record the observed reason; preference or convenience is not a valid reason.
-- Report `Reviewer execution` with the reviewer identifier, execution mode (`fresh-subagent` or `main-session fallback`), completion status, and fallback reason or `none`.
-- If dispatch was required but skipped, or reviewer execution evidence is missing, the subjective result is unreliable and blocks `READY`; return `BLOCKED` rather than treating an empty findings list as success.
+Run the canonical subjective reviewer under the shared [reviewer execution contract](../reviewers/README.md#reviewer-execution-contract). Record reviewer, mode, status, and fallback reason; missing required execution evidence returns `BLOCKED`.
 
 ## Workflow
 

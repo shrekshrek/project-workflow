@@ -14,7 +14,7 @@ Claude execution details:
 - For a partial/missing baseline, use `${CLAUDE_PLUGIN_ROOT}/scripts/materialize-project-baseline.cjs --stage` in a disposable directory. A missing baseline does not copy host-private rules, hooks, or tier examples.
 - Treat `.claude/rules/` and hooks as host-private: preserve them unless selected, and activate a new hook only under the canonical verified-command rule.
 - Read `${CLAUDE_PLUGIN_ROOT}/docs/actions/project-personalize-reference.md` only when repository evidence or a user decision makes a specific section relevant; it supplies examples, never defaults.
-- Use an inline trace for simple synchronization; `decision-completeness-auditor` applies only at its canonical boundary. At each applicable role boundary, when named-agent dispatch is available and the host has not reported exhausted capacity, you MUST dispatch the corresponding named agent. No extra workflow confirmation is required; host security approvals still apply. Fallback is allowed only when dispatch is unavailable, fails, or the host reports no capacity; follow the same contract and record the execution mode and observed reason.
+- Use inline trace or fresh named agents at the canonical `codebase-explorer`, `tech-researcher`, and `decision-completeness-auditor` boundaries; fallback follows the shared execution contract.
 - Show one `Consolidated Preview + Apply Gate`; use native approval, then preflight and apply once. Rejection, an unsafe destination symlink/conflict, or a blocking audit leaves the target unchanged.
 - Do not rewrite feature history or commit.
 

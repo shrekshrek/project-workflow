@@ -5,11 +5,11 @@ description: "Run the Codex-native pre-implementation quality gate for a full-la
 
 # Spec Quality Check (Codex)
 
-Match the user's language. Read [`../../../../docs/actions/spec-quality-check.md`](../../../../docs/actions/spec-quality-check.md) and [`../../../../docs/reviewers/spec-quality-reviewer.md`](../../../../docs/reviewers/spec-quality-reviewer.md) completely before reviewing.
+Match the user's language. Read [`../../../../docs/actions/spec-quality-check.md`](../../../../docs/actions/spec-quality-check.md) completely before reviewing. The fresh subagent reads the canonical reviewer spec; read it in the main session only for an allowed fallback.
 
 - Resolve an active feature through shared runtime rules; light lane is N/A.
 - Run the canonical mechanical table directly; do not reproduce or alter it here.
-- At the applicable reviewer boundary, when Codex dispatch is available and capacity is not reported exhausted, you MUST spawn a fresh general subagent with exact paths and detected shape; never retask an existing subagent instance. No extra workflow confirmation is required; host security approvals still apply. Fallback is allowed only when dispatch is unavailable, fails, or the host reports no capacity; follow the same contract and record the execution mode and observed reason.
+- Dispatch a fresh general subagent to run [`spec-quality-reviewer`](../../../../docs/reviewers/spec-quality-reviewer.md) with the exact artifact paths and shape under the canonical execution contract.
 - Deduplicate findings by root cause and cite exact evidence.
 - Keep the gate read-only unless the user separately requests fixes. Do not mark the spec confirmed automatically or commit.
 

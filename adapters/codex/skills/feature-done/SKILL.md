@@ -5,14 +5,14 @@ description: "Run the Codex-native end-of-feature gate and write the canonical d
 
 # Feature Done (Codex)
 
-Match the user's language. Read [`../../../../docs/actions/feature-done.md`](../../../../docs/actions/feature-done.md), [`../../../../docs/reviewers/agents-md-reviewer.md`](../../../../docs/reviewers/agents-md-reviewer.md), and [`../../../../docs/reviewers/spec-reviewer.md`](../../../../docs/reviewers/spec-reviewer.md) completely before acting.
+Match the user's language. Read [`../../../../docs/actions/feature-done.md`](../../../../docs/actions/feature-done.md) completely before acting. Do not read reviewer specs in the main session before dispatch; each fresh subagent reads its linked spec. Main-session reading is fallback-only.
 
 - Resolve the active feature through shared runtime rules and exclude `archive/`.
 - Run project checks and capture evidence even when another independently executable layer fails.
-- At each applicable L2/L3 boundary, when Codex dispatch is available and capacity is not reported exhausted, you MUST spawn a fresh general subagent with the canonical reviewer spec and exact scope; never retask an existing subagent instance. No extra workflow confirmation is required; host security approvals still apply. Fallback is allowed only when dispatch is unavailable, fails, or the host reports no capacity; follow the same contract and record the execution mode and observed reason.
+- Dispatch fresh general subagents for [`agents-md-reviewer`](../../../../docs/reviewers/agents-md-reviewer.md) and [`spec-reviewer`](../../../../docs/reviewers/spec-reviewer.md) under the canonical execution contract.
 - Reuse completed same-session results, never reviewer instances, only when the canonical reviewer spec, scope, inputs, applicable population, and relevant endpoint outputs are provably unchanged; record `result-reuse` and retain or reference the original execution evidence.
 - Reviewers are read-only. This skill may update only the canonical receipt and allowed READY status marker; never auto-fix code or commit.
-- Persist `Review execution` evidence for L2/L3, including reviewer, mode, completion status, and fallback reason or `none`.
-- Re-read the receipt structurally and include the exact on-disk `## Proof Bundle` block verbatim.
+- For a full-lane PASS, persist only reviewer verdict and baseline; never persist applicable IDs or populations.
+- Persist `Reviewer execution`, re-read the receipt structurally, and return its exact on-disk `## Proof Bundle`.
 
 Apply the canonical verdict contract. `READY` is delivery readiness; lifecycle closure remains `$feature-archive`.

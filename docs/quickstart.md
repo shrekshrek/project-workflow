@@ -92,10 +92,10 @@
 - L1 机械检查
 - L2 项目约定 review
 - L3 code-vs-spec review
-- current-truth check(持久产品行为发生变化时必须判断是否需要合并;域文档尚不存在则记录 `area unresolved`,不要猜文件名)
+- current-truth check(持久产品行为且领域明确但文档尚不存在时记录 `update pending`;只有领域归属未知时才记录 `area unresolved`)
 - delivery receipt 写入 `tasks.md` 的兼容标题 `## Proof Bundle`
 
-需要局部复查某一层时重跑 `feature-done`(幂等,复用有效缓存),或在主会话直接 dispatch reviewer sub-agent;没有独立的 helper 命令。
+需要局部复查某一层时重跑 `feature-done`(幂等),或在主会话直接 dispatch reviewer sub-agent;没有独立的 helper 命令。
 
 把 `feature-done` 生成的 delivery receipt 随交付 commit / PR / merge 后,周期性跑一次生命周期清扫(不必每个 feature 都立刻跑,攒几个一起也行):
 

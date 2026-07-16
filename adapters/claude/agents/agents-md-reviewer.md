@@ -12,7 +12,7 @@ Before reviewing, read:
 
 1. `${CLAUDE_PLUGIN_ROOT}/docs/reviewers/agents-md-reviewer.md` (read completely; canonical contract)
 2. root and relevant nested `AGENTS.md`
-3. Claude path-scoped rule materialization files under `.claude/rules/*.md`, if present
+3. project-root `.claude/rules/*.md`, if present; never user-level `~/.claude/rules/` unless explicitly selected
 4. `docs/gotchas.md`, if the caller includes it as a convention source
 
 Follow the canonical reviewer spec exactly. Treat `.claude/rules/*.md` as Claude adapter materialization of path-scoped rules, not as methodology core. Do not make edits.

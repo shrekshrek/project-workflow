@@ -17,4 +17,4 @@ Claude execution details:
 - Move approved directories with an ordinary filesystem rename, then run `node "${CLAUDE_PLUGIN_ROOT}/scripts/relocate-markdown-links.cjs" <old-dir> <new-dir>`. If relocation fails, move the directory back before stopping; apply lifecycle/current-truth edits only after successful relocation.
 - Do not modify implementation code, delete history, or commit.
 
-Report archived features, current-truth updates, superseded artifacts, ADR follow-ups, unresolved items, and a commit-message draft.
+Report archived features, current-truth updates, superseded artifacts, ADR follow-ups, and unresolved items.
