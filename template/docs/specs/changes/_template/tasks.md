@@ -33,8 +33,8 @@
 - Change:`review-scope=[exact paths reviewed by L2/L3]; base/worktree=[Git context when available]; endpoint-outputs=[tasks.md receipt, READY spec status when written]`
 - Checks:`<command/assertion; exit/result; test totals>`
 - Review execution:`L2=<reviewer; mode=fresh-subagent|result-reuse|main-session fallback; status; fallback-reason=none|exact reason>; L3=<same shape>`
-- L2:`verdict; findings=[rule citation or none]; applicable-rules=[source#id]; applicable-unverified=[source#id or none]; ambiguities=[item or none]`
-- L3:`verdict; findings=[spec citation or none]; applicable-items=[section#item]; applicable-unverified=[section#item or none]; ambiguities=[item or none]`
+- L2:`verdict; baseline=[convention source paths]; findings=[rule citation or none]; unverified=[source#id or none]; ambiguities=[item or none]`
+- L3:`verdict; baseline=[spec path + greenfield §1-§4 | brownfield Delta/Constraints/Verification]; findings=[spec citation or none]; unverified=[section#item or none]; ambiguities=[item or none]`
 - Current truth:
 - Open questions:(仅非空时保留)
 - Drift:(仅非空时保留;不会自动写入其他 ledger)

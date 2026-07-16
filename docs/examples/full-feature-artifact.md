@@ -152,7 +152,7 @@
 - Change:`review-scope=[exact paths]; base/worktree=[Git context]; endpoint-outputs=[tasks receipt, READY status]`
 - Checks:`<command; result; totals>`
 - Review execution:`L2=<reviewer; mode=fresh-subagent|result-reuse|main-session fallback; status; fallback-reason>; L3=<same shape>`
-- L2:`verdict; findings=[]; applicable-rules=[]; applicable-unverified=[]; ambiguities=[]`
-- L3:`verdict; findings=[]; applicable-items=[]; applicable-unverified=[]; ambiguities=[]`
+- L2:`verdict; baseline=[AGENTS.md + applicable nested/host convention paths]; findings=[]; unverified=[]; ambiguities=[]`
+- L3:`verdict; baseline=[spec.md + greenfield §1-§4 | brownfield Delta/Constraints/Verification]; findings=[]; unverified=[]; ambiguities=[]`
 - Current truth:
 ```

@@ -64,9 +64,10 @@ forbidMarkers("adapters/claude/skills/feature-done/SKILL.md", [
 ]);
 requireMarkers("adapters/claude/skills/feature-done/SKILL.md", ["agents-md-reviewer", "spec-reviewer", "## Proof Bundle", "same-session"]);
 requireMarkers("adapters/codex/skills/feature-done/SKILL.md", ["agents-md-reviewer.md", "spec-reviewer.md", "## Proof Bundle", "same-session", "never reviewer instances", "result-reuse"]);
-requireMarkers("docs/actions/feature-done.md", ["Light-lane verification", "every applicable rule", "receipt-only edits", "greenfield full-lane delivery", "area unresolved", "validate the receipt structurally", "block verbatim", "review traceability, not a cache key"]);
+requireMarkers("docs/actions/feature-done.md", ["Light-lane verification", "Reviewers must still return exact applicable identifiers", "receipt-only edits", "greenfield full-lane delivery", "area unresolved", "Validate the receipt structurally", "block verbatim", "review traceability, not a cache key"]);
 forbidMarkers("docs/actions/feature-done.md", ["reproducible diff identity", "content fingerprint"]);
 requireMarkers("docs/actions/feature-done.md", ["independently executable", "non-execution only", "Review execution", "dispatch capability", "fallback reason", "blocks `READY`"]);
+requireMarkers("docs/actions/feature-done.md", ["transient enumeration", "exact changed-file and applicable-item population", "never infer complete coverage from `findings=none` alone"]);
 
 requireMarkers("docs/actions/spec-quality-check.md", ["Reviewer execution", "dispatch capability", "fallback reason", "blocks `READY`"]);
 const runtimeActions = ["project-init", "project-personalize", "feature-init", "spec-quality-check", "spec-revise", "feature-done", "feature-archive", "spec-reconcile", "agents-md-revise"];
@@ -116,11 +117,14 @@ for (const relative of [
   requireRegex(relative, /^- Change:.*review-scope=\[exact paths reviewed.*endpoint-outputs=/m, "exact review scope and endpoint outputs");
   requireRegex(relative, /^- Checks/m, "receipt Checks field");
   requireRegex(relative, /^- Review execution:/m, "reviewer execution evidence field");
-  requireRegex(relative, /^- L2:.*findings=\[.*applicable-rules=.*applicable-unverified=.*ambiguities=/m, "L2 evidence shape");
-  requireRegex(relative, /^- L3:.*verification=\[|^- L3:.*applicable-items=.*applicable-unverified=.*ambiguities=/m, "receipt L3 field");
   requireRegex(relative, /^- Current truth:/m, "receipt Current truth field");
   forbidMarkers(relative, ["coverage=", "confidence=", "Rule sources:", "drift ledger"]);
 }
+requireRegex("template/docs/specs/changes/_template/tasks.md", /^- L2:.*baseline=\[.*findings=\[.*unverified=\[.*ambiguities=/m, "compact full-lane L2 receipt");
+requireRegex("template/docs/specs/changes/_template/tasks.md", /^- L3:.*baseline=\[.*findings=\[.*unverified=\[.*ambiguities=/m, "compact full-lane L3 receipt");
+forbidMarkers("template/docs/specs/changes/_template/tasks.md", ["applicable-rules=", "applicable-items=", "applicable-unverified="]);
+requireRegex("template/docs/specs/changes/_template/tasks-light.md", /^- L2:.*findings=\[.*applicable-rules=.*applicable-unverified=.*ambiguities=/m, "light-lane L2 evidence shape");
+requireRegex("template/docs/specs/changes/_template/tasks-light.md", /^- L3:.*verification=\[/m, "light-lane L3 verification field");
 requireMarkers("template/docs/specs/changes/_template/tasks-light.md", ["verification=[item#id: PASS|FAIL]"]);
 
 requireMarkers("docs/actions/feature-init.md", ["do not create a pseudo-lane", "Use full lane for high-risk or contract-shaped work", "Use light lane only when all are true"]);
