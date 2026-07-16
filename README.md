@@ -214,7 +214,7 @@ Exception and maintenance actions appear only when their condition exists:
 
 ## Reviewer methodology
 
-[`docs/reviewers/`](docs/reviewers/) is the canonical layer for the six reviewer, auditor, and research roles. Claude exposes thin named-agent adapters in [`adapters/claude/agents/`](adapters/claude/agents/); Codex skills read the same bundled reviewer specs. At an applicable dispatch boundary, both adapters must use their native subagent mechanism whenever dispatch and capacity are available. Main-session fallback is limited to unavailable/failed dispatch or exhausted capacity and must carry explicit execution evidence. See the [reviewer index](docs/reviewers/README.md) for the role map and fail-closed contract.
+[`docs/reviewers/`](docs/reviewers/) is the canonical layer for the six reviewer, auditor, and research roles. Claude exposes thin named-agent adapters in [`adapters/claude/agents/`](adapters/claude/agents/); Codex skills read the same bundled reviewer specs. At an applicable dispatch boundary, both adapters must use a fresh native subagent invocation whenever dispatch and capacity are available; they may reuse an explicitly allowed, unchanged completed result, but never retask an existing reviewer instance. Main-session fallback is limited to unavailable/failed dispatch or exhausted capacity and must carry explicit execution evidence. See the [reviewer index](docs/reviewers/README.md) for the role map and fail-closed contract.
 
 ## Maintaining generated plugin packages
 

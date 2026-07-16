@@ -26,7 +26,7 @@
 - Verdict:
 - Change:`review-scope=[exact paths reviewed by L2/light verification]; base/worktree=[Git context when available]; endpoint-outputs=[tasks.md receipt]`
 - Checks / 轻车道验证 / 不变量反核:`<每项 command/assertion + result>`
-- Review execution:`L2=<reviewer; mode=subagent|main-session fallback; status; fallback-reason=none|exact reason>; L3=N/A(light lane)`
+- Review execution:`L2=<reviewer; mode=fresh-subagent|result-reuse|main-session fallback; status; fallback-reason=none|exact reason>; L3=N/A(light lane)`
 - L2:`verdict; findings=[rule citation or none]; applicable-rules=[source#id]; applicable-unverified=[source#id or none]; ambiguities=[item or none]`
 - L3:`N/A(light lane); verification=[item#id: PASS|FAIL]`
 - Current truth:

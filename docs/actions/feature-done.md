@@ -29,9 +29,9 @@ This action owns the full endpoint gate: L1, L2, L3, current-truth check, and de
 
 ## Reviewer Execution
 
-- When the active host exposes reviewer dispatch capability and capacity is available, each applicable L2/L3 reviewer must run in a host-native subagent. No extra workflow confirmation is required; host security approvals still apply.
+- When the active host exposes reviewer dispatch capability and capacity is available, each applicable L2/L3 reviewer must run in a fresh host-native subagent invocation. Do not retask an existing reviewer instance. No extra workflow confirmation is required; host security approvals still apply.
 - Main-session fallback is allowed only when dispatch is unavailable, fails, or the host reports no capacity. The endpoint must still execute the same canonical reviewer contract and record the observed reason; preference or convenience is not a valid reason.
-- Reused same-session subagent results retain their original execution evidence only while every reviewer input and the exact review population remain provably unchanged.
+- Reused same-session results retain their original execution evidence only while the canonical reviewer contract, every reviewer input, relevant endpoint output, and the exact review population remain provably unchanged. Reuse the completed result, never the reviewer instance.
 - If required dispatch was skipped, or execution evidence is missing for an applicable reviewer, that layer is unreliable and blocks `READY`; aggregate the endpoint as `BLOCKED`, not as a zero-finding pass.
 
 ## Delivery Receipt (`## Proof Bundle` on disk)
@@ -41,7 +41,7 @@ Persist only fields with a downstream consumer:
 - `Verdict`: READY / NEEDS WORK / BLOCKED.
 - `Change`: the exact **review population** used by L2/L3 or light verification, endpoint-owned output paths (`tasks.md` receipt and READY status marker when written), and the Git base/worktree context when available. This is review traceability, not a cache key or claim about unrelated user changes; Git remains the full content-diff source.
 - `Checks`: commands, exit status, and concise test totals.
-- `Review execution`: for every applicable L2/L3 reviewer, record reviewer identifier, execution mode (`subagent`, `main-session fallback`, or allowed `N/A`), completion status, and fallback reason or `none`.
+- `Review execution`: for every applicable L2/L3 reviewer, record reviewer identifier, execution mode (`fresh-subagent`, `result-reuse`, `main-session fallback`, or allowed `N/A`), completion status, and fallback reason or `none`. `result-reuse` must retain or reference the original execution evidence.
 - `L2`: verdict, findings, exact applicable rule identifiers, applicable-but-unverified identifiers, and ambiguities. A PASS must account for every applicable rule; do not replace the population with a percentage.
 - `L3`: verdict, findings, exact applicable spec-item identifiers, applicable-but-unverified identifiers, and ambiguities for full lane; for light lane record `N/A` plus each verification item and result.
 - `Current truth`: no relevant domain doc / aligned / update pending. Name the document when the feature declares a reliable area; otherwise record `area unresolved` for `feature-archive` to resolve.
@@ -76,6 +76,6 @@ L2/L3/Drift finding counts live in the delivery receipt; do not add a duplicate 
 - An empty findings array without reviewer evidence is unreliable and blocks READY.
 - Main-session reviewer output without an allowed, explicit fallback reason is not reviewer evidence when host-native dispatch was available.
 - Endpoint-owned receipt-only edits and the status-only `已确认` → `已实现` transition do not invalidate cached L2/L3 results; changes to tasks outside `## Proof Bundle` or to the spec contract still invalidate them.
-- Reuse reviewer results only inside the same task when the exact scope and every reviewer input are provably unchanged. A later invocation reruns the relevant gates instead of relying on a persisted cache identity.
+- Reuse completed reviewer results only inside the same task when the canonical reviewer contract, exact scope, every reviewer input, applicable population, and relevant endpoint outputs are provably unchanged. Never reuse or retask the reviewer instance. A later invocation reruns the relevant gates instead of relying on a persisted cache identity.
 - Historical specs remain archived; delivery evidence goes to `tasks.md`.
 - `已实现` is a delivery marker, not a claim that the spec is still the current product baseline; the spec's final resting place is `docs/specs/changes/archive/` (see [`feature-archive`](feature-archive.md) / [`spec-reconcile`](spec-reconcile.md)).

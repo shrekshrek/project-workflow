@@ -34,6 +34,10 @@ function forbidRegex(relative, regex, label) {
 
 function requireReviewerExecutionContract(relative, dispatchVerb) {
   requireRegex(relative, new RegExp(`\\bMUST ${dispatchVerb}\\b`), `mandatory ${dispatchVerb} semantics`);
+  if (dispatchVerb === "spawn") {
+    requireRegex(relative, /MUST spawn a fresh general subagent/i, "fresh Codex subagent semantics");
+    requireRegex(relative, /never retask an existing subagent instance/i, "no Codex reviewer retask semantics");
+  }
   requireRegex(relative, /no extra workflow confirmation[\s\S]{0,120}host security approvals still apply/i, "workflow-vs-host authorization boundary");
   requireRegex(relative, /fallback is allowed only when[\s\S]{0,220}(?:capacity|slot)[\s\S]{0,160}observed reason/i, "evidenced fallback conditions");
   requireRegex(relative, /Review(?:er)? execution/i, "reviewer execution evidence");
@@ -59,7 +63,7 @@ forbidMarkers("adapters/claude/skills/feature-done/SKILL.md", [
   "git checkout HEAD",
 ]);
 requireMarkers("adapters/claude/skills/feature-done/SKILL.md", ["agents-md-reviewer", "spec-reviewer", "## Proof Bundle", "same-session"]);
-requireMarkers("adapters/codex/skills/feature-done/SKILL.md", ["agents-md-reviewer.md", "spec-reviewer.md", "## Proof Bundle", "same-session"]);
+requireMarkers("adapters/codex/skills/feature-done/SKILL.md", ["agents-md-reviewer.md", "spec-reviewer.md", "## Proof Bundle", "same-session", "never reviewer instances", "result-reuse"]);
 requireMarkers("docs/actions/feature-done.md", ["Light-lane verification", "every applicable rule", "receipt-only edits", "greenfield full-lane delivery", "area unresolved", "validate the receipt structurally", "block verbatim", "review traceability, not a cache key"]);
 forbidMarkers("docs/actions/feature-done.md", ["reproducible diff identity", "content fingerprint"]);
 requireMarkers("docs/actions/feature-done.md", ["independently executable", "non-execution only", "Review execution", "dispatch capability", "fallback reason", "blocks `READY`"]);
@@ -82,7 +86,7 @@ for (const filename of fs.readdirSync(path.join(repoRoot, "adapters/claude/agent
   forbidRegex(relative, /[\u3400-\u9fff]/u, "non-English runtime instruction prose");
   requireRegex(relative, /\*\*Response language\*\*:\s*Match the calling (?:skill's|user's) language/i, "caller-language response contract");
 }
-requireMarkers("docs/reviewers/README.md", ["Reviewer execution contract", "dispatch capability", "observed reason", "host security approvals still apply", "fail closed"]);
+requireMarkers("docs/reviewers/README.md", ["Reviewer execution contract", "dispatch capability", "fresh subagent invocation", "never an agent instance", "fresh-subagent", "result-reuse", "observed reason", "host security approvals still apply", "fail closed"]);
 requireRegex("docs/reviewers/README.md", /Codex plugin skills[\s\S]{0,160}must use[\s\S]{0,160}subagent/i, "mandatory Codex reviewer index wording");
 for (const action of ["feature-init", "project-personalize", "spec-revise", "agents-md-revise"]) {
   requireMarkers(`docs/actions/${action}.md`, ["## Reviewer Execution", "../reviewers/README.md", "`Reviewer execution`", "blocking"]);

@@ -69,9 +69,9 @@ Brownfield shape (M1/M2 replaced by M1b/M2b; M4/M5 shared):
 
 ## Reviewer Execution
 
-- When the active host exposes reviewer dispatch capability and capacity is available, the adapter must run the canonical subjective reviewer in a host-native subagent. No extra workflow confirmation is required; host security approvals still apply.
+- When the active host exposes reviewer dispatch capability and capacity is available, the adapter must run the canonical subjective reviewer in a fresh host-native subagent invocation. Do not retask an existing reviewer instance. No extra workflow confirmation is required; host security approvals still apply.
 - Main-session fallback is allowed only when dispatch is unavailable, fails, or the host reports no capacity. The adapter must still run the same reviewer contract and record the observed reason; preference or convenience is not a valid reason.
-- Report `Reviewer execution` with the reviewer identifier, execution mode (`subagent` or `main-session fallback`), completion status, and fallback reason or `none`.
+- Report `Reviewer execution` with the reviewer identifier, execution mode (`fresh-subagent` or `main-session fallback`), completion status, and fallback reason or `none`.
 - If dispatch was required but skipped, or reviewer execution evidence is missing, the subjective result is unreliable and blocks `READY`; return `BLOCKED` rather than treating an empty findings list as success.
 
 ## Workflow
