@@ -899,7 +899,7 @@ Open questions / Drift —— 仅非空时保留
 
 同一 receipt 必须在端点回复中直接展示,不能只写文件路径。PR 可原样复制;feature-archive 消费 Verdict/Current truth;P4 消费 Drift。
 
-Full-lane reviewer 仍在运行时枚举 exact changed paths 与全部 applicable rule/spec IDs,`feature-done` 必须先验证该 population 完整,再把结果压缩为 baseline + exceptions 落盘。压缩的是永久记录,不是 review 深度。轻车道没有独立 spec 基线,继续在 receipt 保留 L2 applicable IDs 与逐项验证结果。
+Full-lane reviewer 仍在运行时枚举 exact changed paths 与全部 applicable rule/spec IDs,`feature-done` 必须先验证该 population 完整,再把结果压缩为 baseline + exceptions 落盘;receipt 不另存完整 applicable-ID 字段。压缩的是永久记录,不是 review 深度。轻车道没有独立 spec 基线,继续在 receipt 保留 L2 applicable IDs 与逐项验证结果。
 
 **关键设计**:`feature-done` 是端点**组合点**,proof bundle 是证据**落点** —— reviewer 各管各,组合在端点 action 发生,结果写回 proof bundle。不要把 L1/L2/L3 的规则源混成一个泛泛的"统一检查"。
 

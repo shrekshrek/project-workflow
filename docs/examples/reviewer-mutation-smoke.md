@@ -13,7 +13,7 @@ node scripts/check-reviewer-fixtures.cjs
 
 ## Endpoint expectations
 
-- `clean`: `feature-done 001-normalize-key` returns `READY`; transient L2/L3 evidence lists exact changed paths, every applicable rule/spec-item ID, no applicable-but-unverified items, and no blocking ambiguity. The persisted receipt keeps the exact review scope but compresses each PASS review to its baseline plus empty findings/unverified/ambiguities.
+- `clean`: `feature-done 001-normalize-key` returns `READY`; transient L2/L3 evidence lists exact changed paths, every applicable rule/spec-item ID, no applicable-but-unverified items, and no blocking ambiguity. The persisted receipt keeps the exact review scope but compresses each PASS review to its baseline plus empty findings/unverified/ambiguities, with no full applicable-ID fields.
 - `known-bad`: L1 remains green, but the endpoint returns `NEEDS WORK`; L2 cites the matching-test-name and no-throw conventions, while L3 cites empty-string behavior and missing empty-input verification.
 - `light-clean` / `light-known-bad`: L1 and L2 remain green in both; only the explicit `tasks.md` verification distinguishes READY from NEEDS WORK, proving that light-lane validation is not silently skipped.
 - Run both Claude and Codex endpoint adapters when shared/canonical behavior changes. When only one adapter changes, run that adapter plus the deterministic fixture check.

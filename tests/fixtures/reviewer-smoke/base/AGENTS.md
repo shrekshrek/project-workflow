@@ -7,7 +7,7 @@
 ## Testing
 
 - Every exported file under `src/` has a matching `test/<source-basename>.test.js` file.
-- Public key helpers return a string and do not throw for string input.
+- Exported key-normalization helpers return a string and do not throw for string input.
 
 ## Project Structure
 

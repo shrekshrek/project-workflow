@@ -67,7 +67,7 @@ requireMarkers("adapters/codex/skills/feature-done/SKILL.md", ["agents-md-review
 requireMarkers("docs/actions/feature-done.md", ["Light-lane verification", "Reviewers must still return exact applicable identifiers", "receipt-only edits", "greenfield full-lane delivery", "area unresolved", "Validate the receipt structurally", "block verbatim", "review traceability, not a cache key"]);
 forbidMarkers("docs/actions/feature-done.md", ["reproducible diff identity", "content fingerprint"]);
 requireMarkers("docs/actions/feature-done.md", ["independently executable", "non-execution only", "Review execution", "dispatch capability", "fallback reason", "blocks `READY`"]);
-requireMarkers("docs/actions/feature-done.md", ["transient enumeration", "exact changed-file and applicable-item population", "never infer complete coverage from `findings=none` alone"]);
+requireMarkers("docs/actions/feature-done.md", ["transient reviewer evidence", "exact changed-file and applicable-item population", "never infer complete coverage from `findings=none` alone", "Never add `applicable-rule-ids`, `applicable-spec-ids`"]);
 
 requireMarkers("docs/actions/spec-quality-check.md", ["Reviewer execution", "dispatch capability", "fallback reason", "blocks `READY`"]);
 const runtimeActions = ["project-init", "project-personalize", "feature-init", "spec-quality-check", "spec-revise", "feature-done", "feature-archive", "spec-reconcile", "agents-md-revise"];
