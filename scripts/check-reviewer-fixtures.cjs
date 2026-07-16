@@ -10,11 +10,23 @@ const fixtureRoot = path.join(root, "tests/fixtures/reviewer-smoke");
 const expected = JSON.parse(fs.readFileSync(path.join(fixtureRoot, "expected.json"), "utf8"));
 const problems = [];
 
-function aggregateVerdict({ l1Passed, l2Blocking, l3Blocking, lightVerificationPassed, receiptReliable }) {
-  if (!receiptReliable) return "BLOCKED";
+function aggregateVerdict({ l1Passed, l2Blocking, l3Blocking, lightVerificationPassed, receiptReliable, reviewerExecutionReliable }) {
+  if (!receiptReliable || reviewerExecutionReliable !== true) return "BLOCKED";
   if (!l1Passed) return "NEEDS WORK";
   if (l2Blocking || l3Blocking || lightVerificationPassed === false) return "NEEDS WORK";
   return "READY";
+}
+
+const missingExecutionEvidenceVerdict = aggregateVerdict({
+  l1Passed: true,
+  l2Blocking: false,
+  l3Blocking: false,
+  lightVerificationPassed: true,
+  receiptReliable: true,
+  reviewerExecutionReliable: false,
+});
+if (missingExecutionEvidenceVerdict !== "BLOCKED") {
+  problems.push(`missing reviewer execution evidence must BLOCK, got ${missingExecutionEvidenceVerdict}`);
 }
 
 function materialize(name, config) {
@@ -74,6 +86,7 @@ for (const [name, config] of Object.entries(expected)) {
       l3Blocking: concepts.includes("empty string behavior") || concepts.includes("empty input verification"),
       lightVerificationPassed,
       receiptReliable: true,
+      reviewerExecutionReliable: true,
     });
     if (verdict !== config.endpointVerdict) problems.push(`${name}: deterministic aggregate expected ${config.endpointVerdict}, got ${verdict}`);
   } finally {

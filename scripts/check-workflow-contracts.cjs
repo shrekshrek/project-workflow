@@ -28,6 +28,18 @@ function requireRegex(relative, regex, label) {
   if (!regex.test(read(relative))) problems.push(`${relative}: missing ${label}`);
 }
 
+function forbidRegex(relative, regex, label) {
+  if (regex.test(read(relative))) problems.push(`${relative}: contains forbidden ${label}`);
+}
+
+function requireReviewerExecutionContract(relative, dispatchVerb) {
+  requireRegex(relative, new RegExp(`\\bMUST ${dispatchVerb}\\b`), `mandatory ${dispatchVerb} semantics`);
+  requireRegex(relative, /no extra workflow confirmation[\s\S]{0,120}host security approvals still apply/i, "workflow-vs-host authorization boundary");
+  requireRegex(relative, /fallback is allowed only when[\s\S]{0,220}(?:capacity|slot)[\s\S]{0,160}observed reason/i, "evidenced fallback conditions");
+  requireRegex(relative, /Review(?:er)? execution/i, "reviewer execution evidence");
+  forbidMarkers(relative, ["Attempt dispatch before fallback"]);
+}
+
 function verdictContract(relative) {
   const match = read(relative).match(/^-?[ \t]*Verdict contract:.*$/m);
   if (!match) {
@@ -50,7 +62,31 @@ requireMarkers("adapters/claude/skills/feature-done/SKILL.md", ["agents-md-revie
 requireMarkers("adapters/codex/skills/feature-done/SKILL.md", ["agents-md-reviewer.md", "spec-reviewer.md", "## Proof Bundle", "same-session"]);
 requireMarkers("docs/actions/feature-done.md", ["Light-lane verification", "every applicable rule", "receipt-only edits", "greenfield full-lane delivery", "area unresolved", "validate the receipt structurally", "block verbatim", "review traceability, not a cache key"]);
 forbidMarkers("docs/actions/feature-done.md", ["reproducible diff identity", "content fingerprint"]);
-requireMarkers("docs/actions/feature-done.md", ["independently executable", "non-execution only"]);
+requireMarkers("docs/actions/feature-done.md", ["independently executable", "non-execution only", "Review execution", "dispatch capability", "fallback reason", "blocks `READY`"]);
+
+requireMarkers("docs/actions/spec-quality-check.md", ["Reviewer execution", "dispatch capability", "fallback reason", "blocks `READY`"]);
+const runtimeActions = ["project-init", "project-personalize", "feature-init", "spec-quality-check", "spec-revise", "feature-done", "feature-archive", "spec-reconcile", "agents-md-revise"];
+for (const action of ["feature-done", "feature-init", "project-personalize", "spec-quality-check", "spec-revise", "agents-md-revise"]) {
+  requireReviewerExecutionContract(`adapters/claude/skills/${action}/SKILL.md`, "dispatch");
+  requireReviewerExecutionContract(`adapters/codex/skills/${action}/SKILL.md`, "spawn");
+}
+for (const action of runtimeActions) {
+  for (const host of ["claude", "codex"]) {
+    const relative = `adapters/${host}/skills/${action}/SKILL.md`;
+    forbidRegex(relative, /[\u3400-\u9fff]/u, "non-English runtime instruction prose");
+    requireRegex(relative, /Match the user's language/i, "user-language response contract");
+  }
+}
+for (const filename of fs.readdirSync(path.join(repoRoot, "adapters/claude/agents")).filter((name) => name.endsWith(".md"))) {
+  const relative = `adapters/claude/agents/${filename}`;
+  forbidRegex(relative, /[\u3400-\u9fff]/u, "non-English runtime instruction prose");
+  requireRegex(relative, /\*\*Response language\*\*:\s*Match the calling (?:skill's|user's) language/i, "caller-language response contract");
+}
+requireMarkers("docs/reviewers/README.md", ["Reviewer execution contract", "dispatch capability", "observed reason", "host security approvals still apply", "fail closed"]);
+requireRegex("docs/reviewers/README.md", /Codex plugin skills[\s\S]{0,160}must use[\s\S]{0,160}subagent/i, "mandatory Codex reviewer index wording");
+for (const action of ["feature-init", "project-personalize", "spec-revise", "agents-md-revise"]) {
+  requireMarkers(`docs/actions/${action}.md`, ["## Reviewer Execution", "../reviewers/README.md", "`Reviewer execution`", "blocking"]);
+}
 
 for (const relative of ["docs/reviewers/agents-md-reviewer.md", "docs/reviewers/spec-reviewer.md"]) {
   requireMarkers(relative, ["exact changed", "applicable but unverified", "UNRELIABLE"]);
@@ -75,6 +111,7 @@ for (const relative of [
   requireRegex(relative, /^- Verdict:/m, "receipt Verdict field");
   requireRegex(relative, /^- Change:.*review-scope=\[exact paths reviewed.*endpoint-outputs=/m, "exact review scope and endpoint outputs");
   requireRegex(relative, /^- Checks/m, "receipt Checks field");
+  requireRegex(relative, /^- Review execution:/m, "reviewer execution evidence field");
   requireRegex(relative, /^- L2:.*findings=\[.*applicable-rules=.*applicable-unverified=.*ambiguities=/m, "L2 evidence shape");
   requireRegex(relative, /^- L3:.*verification=\[|^- L3:.*applicable-items=.*applicable-unverified=.*ambiguities=/m, "receipt L3 field");
   requireRegex(relative, /^- Current truth:/m, "receipt Current truth field");
@@ -104,6 +141,7 @@ requireMarkers("docs/actions/project-personalize-reference.md", ["## Evidence or
 forbidMarkers("docs/actions/project-personalize-reference.md", ["默认 80", "default 80", "固定 GitHub", "默认 conventional", "default Playwright"]);
 requireMarkers("adapters/claude/skills/project-personalize/SKILL.md", ["partial/missing baseline", "materialize-project-baseline.cjs"]);
 requireRegex("adapters/claude/skills/project-personalize/SKILL.md", /missing baseline does not copy host-private rules, hooks, or tier examples/i, "missing-baseline host-private exclusion semantics");
+requireRegex("adapters/claude/skills/project-personalize/SKILL.md", /`codebase-explorer` applies only[\s\S]{0,180}`tech-researcher` applies only/i, "role-applicability prose");
 requireMarkers("adapters/codex/skills/project-personalize/SKILL.md", ["complete/partial/custom/missing baseline", "materialize-project-baseline.cjs", "Do not copy host-private rules/hooks/tier examples by default"]);
 for (const relative of ["docs/actions/project-personalize.md", "adapters/claude/skills/project-personalize/SKILL.md", "adapters/codex/skills/project-personalize/SKILL.md"]) {
   requireMarkers(relative, ["commands", "source/test paths", "project-specific rules", "tier ownership"]);
@@ -155,6 +193,12 @@ for (const relative of [
 
 requireMarkers("docs/examples/reviewer-mutation-smoke.md", ["Known-bad mutation smoke", "feature-done", "release blocker"]);
 requireMarkers("tests/fixtures/reviewer-smoke/expected.json", ["known-bad", "clean"]);
+requireMarkers("scripts/check-reviewer-fixtures.cjs", ["reviewerExecutionReliable !== true", "missing reviewer execution evidence must BLOCK"]);
+for (const relative of [
+  "docs/examples/full-feature-artifact.md",
+  "tests/fixtures/reviewer-smoke/base/docs/specs/changes/001-normalize-key/tasks.md",
+  "tests/fixtures/reviewer-smoke/light-base/docs/specs/changes/002-normalize-key-light/tasks.md",
+]) requireRegex(relative, /^- Review execution:/m, "reviewer execution evidence field");
 requireMarkers("docs/actions/feature-archive.md", ["legacy candidate", "no `Verdict:`", "Never infer READY", "current task", "ordinary filesystem rename", "move the directory back", "rerun `feature-done`"]);
 requireMarkers("adapters/claude/skills/feature-archive/SKILL.md", ["current-task READY", "ordinary filesystem rename", "move the directory back", "feature-done"]);
 requireMarkers("adapters/codex/skills/feature-archive/SKILL.md", ["current-task READY", "ordinary filesystem rename", "move the directory back", "$feature-done"]);

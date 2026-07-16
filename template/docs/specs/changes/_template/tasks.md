@@ -32,6 +32,7 @@
 - Verdict:
 - Change:`review-scope=[exact paths reviewed by L2/L3]; base/worktree=[Git context when available]; endpoint-outputs=[tasks.md receipt, READY spec status when written]`
 - Checks:`<command/assertion; exit/result; test totals>`
+- Review execution:`L2=<reviewer; mode=subagent|main-session fallback; status; fallback-reason=none|exact reason>; L3=<same shape>`
 - L2:`verdict; findings=[rule citation or none]; applicable-rules=[source#id]; applicable-unverified=[source#id or none]; ambiguities=[item or none]`
 - L3:`verdict; findings=[spec citation or none]; applicable-items=[section#item]; applicable-unverified=[section#item or none]; ambiguities=[item or none]`
 - Current truth:

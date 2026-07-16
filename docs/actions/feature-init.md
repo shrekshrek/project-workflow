@@ -71,6 +71,10 @@ Adapters materialize the selected template through the packaged `scripts/materia
 7. Use an inline value-to-source trace for simple single-source prefill; run the decision-completeness auditor only for new technical specifics, weak evidence, ownership decisions, or generated decisions spanning artifacts.
 8. Validate the created population and report lane, shape, ownership, unresolved placeholders, evidence, and next action.
 
+## Reviewer Execution
+
+When the auditor boundary applies, follow the canonical [reviewer execution contract](../reviewers/README.md#reviewer-execution-contract) and report `Reviewer execution` with role, mode, status, and observed reason. Missing required execution evidence is blocking: keep any safely materialized artifact intact, but do not claim the handoff is complete or recommend the next gate.
+
 ## Invariants
 
 - Resolve the target project root before creating files. Prefer cwd, then nearest parent, then a single matching child; if multiple candidates exist, ask and do not guess.

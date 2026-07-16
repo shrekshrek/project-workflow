@@ -36,6 +36,10 @@ Draft specs may be edited directly before implementation starts.
 8. Run an inline trace for a simple single-source correction or the decision-completeness auditor for an ADR, weak evidence, new technical specifics, or decisions spanning files.
 9. Show one consolidated diff, obtain one apply approval, then apply once. Rejection or a blocking audit leaves the worktree unchanged.
 
+## Reviewer Execution
+
+When the auditor boundary applies, follow the canonical [reviewer execution contract](../reviewers/README.md#reviewer-execution-contract) and report `Reviewer execution` with role, mode, status, and observed reason. Missing required execution evidence is blocking and leaves the worktree unchanged.
+
 ## Invariants
 
 - Do not silently rewrite a frozen spec.

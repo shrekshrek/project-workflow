@@ -39,6 +39,10 @@ Do not use for an empty greenfield project; use [`project-init`](project-init.md
 8. Preflight unchanged baselines and staged destinations, show one consolidated diff/new-file list, and apply once after approval. Normalize an existing target-root symlink to its real directory, but reject symlinked destination components and an absent target below a symlinked ancestor. Conflicts, rejection, or a blocking audit leave the target unchanged.
 9. Validate placeholders, commands, source/test paths, project-specific rules/boundaries, real tier ownership, aliases, selected rule scopes, hook status, and `AGENTS.md` concision.
 
+## Reviewer Execution
+
+Every applicable explorer, researcher, or auditor boundary follows the canonical [reviewer execution contract](../reviewers/README.md#reviewer-execution-contract). Report `Reviewer execution` with role, mode, status, and observed reason; missing required evidence is blocking and leaves the target unchanged.
+
 ## Invariants
 
 - Replace only scaffold/default values that are demonstrably stale or selected by the user.

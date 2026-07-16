@@ -11,9 +11,10 @@ Claude execution details:
 
 - Resolve `$ARGUMENTS` through the shared active-feature rules; exclude `archive/`. Use `spec.md` presence to distinguish full and light lanes.
 - Run project checks with Bash and capture executable evidence even when another independent layer fails.
-- Dispatch `agents-md-reviewer` for L2 and `spec-reviewer` for full-lane L3 with the exact review population. Include applicable `.claude/rules/` in L2. Main-session fallback must follow the same reviewer specs.
+- At each applicable L2/L3 boundary, when named-agent dispatch is available and the host has not reported exhausted capacity, you MUST dispatch `agents-md-reviewer` or `spec-reviewer` with the exact review population; L2 also includes applicable `.claude/rules/`. No extra workflow confirmation is required; host security approvals still apply. Fallback is allowed only when dispatch is unavailable, fails, or the host reports no capacity; follow the same contract and record the execution mode and observed reason.
 - Reuse same-session reviewer results only when scope and all reviewer inputs are provably unchanged; state reuse explicitly.
 - Reviewers are read-only. This skill may update only the canonical `## Proof Bundle` receipt and the allowed READY status marker; never auto-fix code or commit.
+- Persist L2/L3 `Review execution` evidence, including reviewer, mode, completion status, and fallback reason or `none`.
 - Re-read the receipt for structural validity and include the exact on-disk `## Proof Bundle` block verbatim in the response.
 
 Apply the canonical verdict contract. `READY` is delivery readiness; lifecycle closure remains `/project-workflow:feature-archive`.

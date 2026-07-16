@@ -347,7 +347,7 @@ docs/specs/changes/
 
 **跟 [workflow.md §3.5](workflow.md#35-开发中发现-specplan-错怎么办) 的关系**:本节是 **pre-implementation 自检**(便宜阶段),§3.5 是 **mid-implementation 修订**(贵阶段)。两者都不可省。
 
-**Action**:[`spec-quality-check`](actions/spec-quality-check.md) 自动化本 7 问 checklist——机械检查(M1-M5)+ 按 [`spec-quality-reviewer`](reviewers/spec-quality-reviewer.md) 做主观二审(Q4 Outcomes / Q5 Constraints / Q7 verifiable)。Claude 可用 named agent,Codex 可用 general subagent,不可用时由主会话按同一 reviewer spec 执行。**实施前 gate**——pass / borderline / fail 三档 verdict + 修法建议;failed 阻断实施,borderline 需要显式记录风险。
+**Action**:[`spec-quality-check`](actions/spec-quality-check.md) 自动化本 7 问 checklist——机械检查(M1-M5)+ 按 [`spec-quality-reviewer`](reviewers/spec-quality-reviewer.md) 做主观二审(Q4 Outcomes / Q5 Constraints / Q7 verifiable)。在 dispatch boundary,Claude 必须用 named agent、Codex 必须用 general subagent;只有调度不可用/失败或无容量时才由主会话按同一 reviewer spec fallback,并记录原因。缺执行证据 fail closed。**实施前 gate**——pass / borderline / fail 三档 verdict + 修法建议;failed 阻断实施,borderline 需要显式记录风险。
 
 ---
 

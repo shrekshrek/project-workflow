@@ -68,14 +68,14 @@ project-workflow 分两层:
 | Host-specific scoped rules | 可选 `.claude/rules/*.md`;由 Claude adapter 原生加载 | 使用 root/nested `AGENTS.md`;不读取或翻译 Claude-private rules | 在 `AGENTS.md` 放置 portable guidance |
 | Reusable workflows | Generated Claude package from `adapters/claude/`, with skills referencing `docs/actions/` | Generated Codex package from `adapters/codex/`; skills reference bundled copies of the same `docs/actions/` semantics | 按 `docs/actions/` 手工执行 |
 | Hooks | `.claude/settings.json` + `.claude/hooks/` | `.codex/hooks.json` or `.codex/config.toml` | 端点手动跑 check |
-| Sub-agent review | Claude Code sub-agent files in `adapters/claude/agents/`, each referencing `docs/reviewers/` | Prefer a Codex subagent running bundled `docs/reviewers/`; custom-agent name dispatch is optional and not part of the core package | 主会话按 `docs/reviewers/` 执行 |
+| Sub-agent review | Applicable boundary 必须 dispatch `adapters/claude/agents/` 的具名 agent;不可用/失败/无容量时有据 fallback | Applicable boundary 必须由 Codex general subagent 跑 bundled `docs/reviewers/`;不要求 custom-agent name | 无 dispatch capability 时主会话按 `docs/reviewers/` 执行并记录原因 |
 | Plugin distribution | Claude plugin marketplace | Codex plugin marketplace | Copy `template/` and docs |
 
 Codex supports additional instruction override filenames, but project-workflow does not generate or recommend them. Native persistent guidance remains the `AGENTS.md` hierarchy. Claude-private `.claude/rules/` and hooks remain optional project-owned adapter assets; Codex does not treat them as portable convention input. Codex `.codex/rules/*.rules` files remain command-approval policy and are not an A-class coding-convention carrier.
 
 Adapter 设计必须遵守一个约束:**不要复制 methodology core**。例如 Claude 和 Codex 可以各有 hook 配置,但 action 的触发/输入/输出/不变量只能在 `docs/actions/` 定义一次;reviewer 的任务方法只能在 `docs/reviewers/` 定义一次;L1/L2/L3 的含义只能在 core 文档定义一次。
 
-Runtime adapter 本身则应保持 **host-native 且薄**:`adapters/claude/skills/` 使用 Claude Code 的交互、具名 agent 和 slash-command 语义;`adapters/codex/skills/` 使用 Codex 的 `$skill`、通用 subagent/main-session fallback 和 Codex 工具语义。两端保持同一 action 集合并引用同名 canonical spec,但不得把一端 SKILL.md 原样复制给另一端。源仓库的 [`scripts/check-adapter-parity.js`](../scripts/check-adapter-parity.js) 机械校验 action parity、canonical 引用、行数和 runtime marker 隔离。
+Runtime adapter 本身则应保持 **host-native 且薄**:`adapters/claude/skills/` 使用 Claude Code 的交互、具名 agent 和 slash-command 语义;`adapters/codex/skills/` 使用 Codex 的 `$skill`、通用 subagent 和 Codex 工具语义。两端在 canonical dispatch boundary 都遵守“能力与容量存在则必须调度;否则有据 fallback;缺证据 fail closed”,同时保持同一 action 集合并引用同名 canonical spec,但不得把一端 SKILL.md 原样复制给另一端。源仓库的 [`scripts/check-adapter-parity.js`](../scripts/check-adapter-parity.js) 机械校验 action parity、canonical 引用、行数和 runtime marker 隔离。
 
 Adapter 不设 helper 命令层:`feature-done` 是端点的唯一入口,其内部层(L1/L2/L3/delivery receipt)的局部重跑通过重跑该 action(幂等 + 缓存复用)或在会话内直接 dispatch `docs/reviewers/` 定义的 reviewer 完成。历史上 Claude Code 曾有 `/l1-review` / `/l2-review` / `/l3-review` / `/proof-bundle` 四个 helper skill,已在 v3.0 合并进 `feature-done`。
 
@@ -113,7 +113,7 @@ Before adding or changing a skill, hook, or plugin feature, answer:
 2. Is the action already documented in `docs/actions/`?
 3. Is the invariant already documented in `workflow.md` / `spec-driven.md`?
 4. Is the adapter duplicating core logic that should be referenced instead?
-5. Does the adapter have a manual fallback?
+5. Does the adapter fail closed and record the exact reason when native reviewer dispatch cannot run?
 6. If Claude and Codex differ, is the difference isolated to adapter docs?
 
 If the answer to 1 or 2 is unclear, update the methodology docs before changing the adapter.
@@ -128,6 +128,6 @@ The maintained state is:
 2. Keep the Claude and Codex native sources under `adapters/`; generate both self-contained distributions only at build/release time.
 3. Do not commit generated package trees on `main`; release duplication belongs only in `plugin-dist` and installed caches.
 4. Keep both adapters on the same nine-action surface without copying runtime bodies between hosts.
-5. Do not make Codex custom-agent name dispatch required for correctness. Codex skills run the same reviewer spec through any available general subagent or the main session; Claude named-agent wrappers stay outside the Codex package.
+5. Do not make Codex custom-agent name dispatch required for correctness. Codex skills must run the same reviewer spec through a general subagent when dispatch and capacity exist; only unavailable/failed dispatch or exhausted capacity permits an evidenced main-session fallback. Claude named-agent wrappers stay outside the Codex package.
 
 This keeps the project from turning into two diverging tools that happen to share a name.

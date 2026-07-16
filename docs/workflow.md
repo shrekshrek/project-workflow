@@ -891,6 +891,7 @@ project-workflow 对模块**长什么样**有 opinionated 偏好(不强制):
 Verdict       —— 用户 / PR / archive
 Change        —— 一行 identity;完整 diff 留给 Git
 Checks        —— 命令、exit、test totals
+Review execution —— reviewer、subagent/fallback mode、状态与 fallback reason
 L2 / L3       —— verdict + exact applicable/unverified IDs + ambiguities + findings
 Current truth —— feature-archive 是否需要 merge
 Open questions / Drift —— 仅非空时保留

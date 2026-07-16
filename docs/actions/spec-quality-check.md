@@ -67,12 +67,19 @@ Brownfield shape (M1/M2 replaced by M1b/M2b; M4/M5 shared):
 
 `spec.md` status handling: this gate does not automatically mark `已确认`. That status means the user has accepted the spec and is starting implementation. After `READY`, or after accepted `BORDERLINE` risk is recorded, adapters should tell the user to mark `已确认` before implementation; update the status only when the user explicitly asks.
 
+## Reviewer Execution
+
+- When the active host exposes reviewer dispatch capability and capacity is available, the adapter must run the canonical subjective reviewer in a host-native subagent. No extra workflow confirmation is required; host security approvals still apply.
+- Main-session fallback is allowed only when dispatch is unavailable, fails, or the host reports no capacity. The adapter must still run the same reviewer contract and record the observed reason; preference or convenience is not a valid reason.
+- Report `Reviewer execution` with the reviewer identifier, execution mode (`subagent` or `main-session fallback`), completion status, and fallback reason or `none`.
+- If dispatch was required but skipped, or reviewer execution evidence is missing, the subjective result is unreliable and blocks `READY`; return `BLOCKED` rather than treating an empty findings list as success.
+
 ## Workflow
 
 1. Resolve an active feature and stop as N/A when it is light lane.
 2. Detect greenfield or brownfield shape from the canonical section markers.
 3. Run the applicable mechanical table above without maintaining an adapter-local copy.
-4. Run the canonical spec-quality reviewer against the exact spec/plan/tasks population.
+4. Run the canonical spec-quality reviewer against the exact spec/plan/tasks population under the reviewer-execution contract above.
 5. Deduplicate findings by root cause, cite exact evidence, and apply the verdict contract above.
 6. Keep the gate read-only unless the user separately asks to repair the artifacts.
 
@@ -81,3 +88,4 @@ Brownfield shape (M1/M2 replaced by M1b/M2b; M4/M5 shared):
 - This gate validates the artifact, not the implementation.
 - Failed checks block full-lane implementation.
 - Review findings cite the file/section they refer to.
+- Reviewer execution is fail-closed: an unexplained main-session run cannot satisfy this gate when host-native dispatch was available.

@@ -33,6 +33,10 @@ Do not use to rewrite historical feature specs, create backlog items, or make su
 6. Draft approved patches without editing the worktree. Use an inline value-to-source trace for simple synchronization and the decision-completeness auditor only for new technical specifics, weak evidence, or generated decisions spanning files.
 7. Show one consolidated diff, apply only approved patches, then validate the changed commands, paths, and placeholders.
 
+## Reviewer Execution
+
+When the auditor boundary applies, follow the canonical [reviewer execution contract](../reviewers/README.md#reviewer-execution-contract) and report `Reviewer execution` with role, mode, status, and observed reason. Missing required execution evidence is blocking and prevents convention edits from being applied.
+
 ## Invariants
 
 - Only A-class conventions are in scope.

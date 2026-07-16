@@ -28,7 +28,7 @@ adapters/
 │   └── skills/        Claude Code skills(9 个,与 Codex 同一 action surface,无 helper 层)
 └── codex/
     ├── .codex-plugin/plugin.json
-    └── skills/        Codex-native skills(9 个,通用 subagent/main-session fallback)
+    └── skills/        Codex-native skills(9 个,可调度时强制通用 subagent + 有据 fallback)
 
 adapters/claude/skills/
 ├── project-init/         /project-workflow:project-init        (P0 greenfield)
@@ -88,14 +88,10 @@ scripts/
 - **skill description 写好**:Claude 据此判断何时自动调用
 - **文档先于工具**:任何新 skill / 命令想法,先问 "这是 workflow SOP 的哪一步自动化?SOP 写过没?"。SOP 不清晰时做工具是把混乱固化(对应 workflow.md §7.2 反模式)
 - **Skill Step 编号约定**:Step 0 仅用于 **scope-changing pre-work**(cwd / 写入根解析、全局 setup,影响所有 Step 1+ 的运行环境)。普通输入解析(slug / identifier 等)从 **Step 1** 起。`project-init` / `project-personalize`(cwd 切换)与 `feature-init`(TARGET_ROOT 解析)用 Step 0;`spec-quality-check` 从 Step 1 起(parse 不改 cwd / 写入根)
-- **Skill vs Agent 文件语言原则**(避免误判 drift):
-  - **Claude-native skills**(`adapters/claude/skills/`,user 直接见 → bilingual mix):Title / Use when / Not for / User input 标签 = 英文;Step heading 中文动词;Step body 中文 prose;技术术语 / `Notes` / `Failure modes` 节标题 = 英文
-  - **Codex-native skills**(`adapters/codex/skills/`):instruction prose 保持英文,以维持现有 adapter prompt 一致性;user-facing 输出仍必须匹配用户语言
-  - **Agents**(LLM-only system prompts → 由内容性质决定):
-    - **结构化 methodology**(4-phase / Phase 1/2/3 / mandatory rules)= **英文**(LLM instruction following 在英文 prompt 上更稳)
-    - **User-facing 输出模板 / Q&A 措辞 / 推荐内容**(Agent 生成后直给用户看)= **可中文**(match user 语言)
-    - **引用项目内中文 anchor / 概念**(如 spec-driven §3.7 中文 7 问)= **中文**(原文保真)
-    - 现状的语言占比差异(agents-md-reviewer 95% 英文 vs tech-researcher 50/50)**是内容性质差异,不是 drift** —— 前者纯 methodology,后者大量 user-facing template
+- **Runtime prompt 语言**:`adapters/claude/skills/`、`adapters/claude/agents/` 和 `adapters/codex/skills/` 的 instruction prose 统一使用英文，但两端 runtime/subagent/command 写法仍分别维护，不得原样同步
+  - 每个 Skill 必须明确 `Match the user's language`；每个 Agent 必须明确匹配 calling skill/user 的语言
+  - user-facing 回复使用用户的语言；项目文件、引用内容、代码、命令、路径和 schema key 保留 source/canonical 语言
+  - `docs/`、`template/` 和用户内容不因 runtime prompt 英文化而批量翻译
 
 ## Boundaries
 

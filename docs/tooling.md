@@ -53,7 +53,7 @@
 
 **本项目正式维护 Claude Code 与 Codex 两个 adapter**:
 - `adapters/claude/` 保留 Claude-native skills、named agents、manifest 与可选 hooks/rules 机制
-- `adapters/codex/` 保留 Codex-native skills、manifest 与 general-subagent/main-session fallback,不复制 Claude runtime skill
+- `adapters/codex/` 保留 Codex-native skills、manifest 与“可调度时强制 general subagent、否则有据 main-session fallback”的执行语义,不复制 Claude runtime skill
 - 两端差异只留在配置、触发、plugin-root 和 subagent dispatch;methodology core 统一由 `docs/actions/` 与 `docs/reviewers/` 定义
 - 构建脚本生成两个独立安装包并发布到 `plugin-dist`;使用者只需选择自己正在使用的宿主
 

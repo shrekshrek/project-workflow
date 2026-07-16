@@ -151,6 +151,7 @@
 - Verdict:
 - Change:`review-scope=[exact paths]; base/worktree=[Git context]; endpoint-outputs=[tasks receipt, READY status]`
 - Checks:`<command; result; totals>`
+- Review execution:`L2=<reviewer; mode; status; fallback-reason>; L3=<reviewer; mode; status; fallback-reason>`
 - L2:`verdict; findings=[]; applicable-rules=[]; applicable-unverified=[]; ambiguities=[]`
 - L3:`verdict; findings=[]; applicable-items=[]; applicable-unverified=[]; ambiguities=[]`
 - Current truth:
