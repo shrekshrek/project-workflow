@@ -1,6 +1,6 @@
 ---
 name: feature-init
-description: "Create no artifact, a light tasks artifact, or a full spec/plan/tasks artifact through the canonical Codex workflow."
+description: "Use before implementing a new feature or durable behavior change to classify it as direct/no-artifact, light tasks-only, or full spec/plan/tasks, and initialize artifacts only when needed."
 ---
 
 # Feature Init (Codex)

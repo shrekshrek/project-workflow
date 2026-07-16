@@ -154,7 +154,21 @@ requireMarkers("adapters/claude/skills/project-personalize/SKILL.md", ["--stage"
 requireRegex("adapters/claude/skills/project-personalize/SKILL.md", /leaves the target unchanged/i, "rejected-apply unchanged-target semantics");
 requireMarkers("adapters/codex/skills/project-personalize/SKILL.md", ["one consolidated diff", "target unchanged", "symlink"]);
 
-requireMarkers("template/AGENTS.md", ["deferred until a scaffold defines it", "light tracked change", "full spec/plan/tasks"]);
+requireMarkers("template/AGENTS.md", [
+  "deferred until a scaffold defines it",
+  "host's `feature-init` action",
+  "no-artifact/direct work",
+  "light tracked change",
+  "full spec/plan/tasks",
+  "exclude `docs/specs/changes/archive/` unless tracing history",
+]);
+for (const relative of ["adapters/claude/skills/feature-init/SKILL.md", "adapters/codex/skills/feature-init/SKILL.md"]) {
+  requireMarkers(relative, [
+    "Use before implementing a new feature or durable behavior change",
+    "direct/no-artifact, light tasks-only, or full spec/plan/tasks",
+    "initialize artifacts only when needed",
+  ]);
+}
 forbidMarkers("template/AGENTS.md", ["{{HOOK_INDEX}}", ".claude/hooks/", ".codex/hooks.json", "High-Blast-Radius Paths", "None declared yet"]);
 requireMarkers("adapters/claude/skills/project-init/SKILL.md", ["materialize-project-baseline.cjs", "--apply-staged", "Recommend `/project-workflow:project-personalize`"]);
 requireMarkers("adapters/claude/skills/project-init/SKILL.md", ["explicit invocation already authorizes"]);

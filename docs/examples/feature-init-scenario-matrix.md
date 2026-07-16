@@ -11,6 +11,10 @@ Eight model scenarios cover lane classification (full / light / no-artifact), ta
 3. Grade file-level outcomes mechanically: `node scripts/check-feature-init-fixtures.cjs --grade <scenario> <temp-dir>`.
 4. `module-ownership-ask` is interaction-only: pass/fail is judged from the transcript against `expectedBehavior` (must ask, must not fabricate ownership, no files before the answer).
 
+## Implicit activation smoke
+
+In a fresh host task with the plugin installed, issue ordinary implementation requests without naming `feature-init`: one tiny local fix, one bounded user-visible behavior change, and one contract-shaped or cross-module feature. Confirm that the host keeps the tiny fix direct, invokes `feature-init` before the other two, selects light then full respectively, and does not search `docs/specs/changes/archive/` for current behavior. Record this manual smoke in the release task; it tests skill discovery and is intentionally not a second CI harness.
+
 ## Equivalence interpretation
 
 - Pre/post comparison is per scenario: same lane, same directory name, same shape, sentinels untouched, no planted specifics, TODO markers retained. Wording differences in reports are not deviations.
