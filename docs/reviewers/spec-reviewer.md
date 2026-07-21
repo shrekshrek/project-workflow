@@ -11,7 +11,7 @@ Review implementation against the **change spec** (B class), not domain docs (E 
 - `plan.md` and `tasks.md` as context
 - current changed files or implementation scope
 
-**Domain docs** (`docs/specs/<area>.md`): read only as context to interpret Delta items. Do **not** treat the domain doc as the L3 compliance baseline. Domain contradictions belong to the caller's domain check (feature-done Step 5.5), not L3 missing/deviation against domain full text.
+**Domain docs** (`docs/specs/<area>.md`): read only as context to interpret Delta items. Do **not** treat the domain doc as the L3 compliance baseline. Domain contradictions belong to `feature-done`'s separate domain check, not L3 missing/deviation against domain full text.
 
 Do not review project conventions, code style, architecture preferences, or spec quality.
 

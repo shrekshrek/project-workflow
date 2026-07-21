@@ -17,9 +17,9 @@
 ## Proof Bundle
 
 - Verdict:
-- Change:`review-scope=[exact paths reviewed by L2/light verification]; base/worktree=[Git context when available]; endpoint-outputs=[tasks.md receipt]`
+- Change:`git=[base=<commit SHA>; reviewed=<commit SHA>; dirty=no]` or `git=[base=<commit SHA>; reviewed=worktree; dirty=yes]`; `endpoint-outputs=[tasks.md receipt]`
 - Checks / 轻车道验证 / 不变量反核:
-- Review execution:`L2=<reviewer; mode=fresh-subagent|result-reuse|main-session fallback; status; fallback-reason>; L3=N/A(light lane)`
-- L2:`verdict; findings; applicable-rules; applicable-unverified; ambiguities`
+- Review execution:`L2=N/A(low-risk light lane; no L2 trigger after convention-scope triage); L3=N/A(light lane)`
+- L2:`N/A(low-risk light lane; no L2 trigger after convention-scope triage)`
 - L3:`N/A(light lane); verification=[item#id: PASS|FAIL]`
 - Current truth:

@@ -1,6 +1,6 @@
 ---
 name: feature-init
-description: "Use before implementing a new feature or durable behavior change to classify it as direct/no-artifact, light tasks-only, or full spec/plan/tasks, and initialize artifacts only when needed."
+description: "Use when a new feature or durable behavior change may need tracked acceptance, handoff, current-truth synchronization, or contract/risk protection; classify direct/no-artifact, light tasks-only, or full spec/plan/tasks. Do not invoke for local reversible work with no durable artifact consumer."
 ---
 
 # Feature Init (Codex)

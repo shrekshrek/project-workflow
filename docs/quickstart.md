@@ -4,18 +4,19 @@
 
 本文使用 Claude Code 命令示例;Codex 安装 plugin 后使用同名 `$skill`,手工模式按 [`docs/actions/`](actions/) 执行同一 action。
 
-个人和团队使用同一条流程。团队成员各自在自己的 change 内完成分流、实施、验证和归档后提交即可,不需要额外 team mode 或协作层。
+个人和团队使用同一条流程。团队成员各自在自己的 change 内完成分流、实施、验证,再按归档时机选择下述提交顺序即可,不需要额外 team mode 或协作层。
 
-日常主路径只有这一条:
+日常开发共用同一条主干;实施后按归档时机选择一种收尾顺序:
 
 ```text
 一次初始化
   → 小改直接做;需要追踪时 feature-init(no artifact / light / full)
   → full lane 与用户补完草稿后跑 spec-quality-check
   → 实施
-  → feature-done
-  → commit / PR / merge
-  → feature-archive 周期性批量收尾
+      ├─ 当前任务立即收尾:feature-done → feature-archive → commit / PR / merge
+      └─ 延后批量收尾:提交实现并记录稳定 commit SHA(可来自 PR head)
+                         → feature-done → 提交 endpoint outputs
+                         → feature-archive 周期性批量收尾
 ```
 
 四个低频入口不属于日常必经步骤:
@@ -45,7 +46,7 @@
 
 ## 2. 判断是否需要 feature artifact
 
-小 bugfix、文案、样式、局部测试修复、低风险文档编辑,以及已确认 spec 下的实施任务,不要启动新的 artifact;直接做,遵守适用的 `AGENTS.md` 和当前宿主提供的项目约定,最后说明改动和验证结果。
+小 bugfix、文案、样式、局部测试修复、低风险文档编辑、未被 current truth 声明且局部/可逆/无契约/可在当前任务完成的行为小改,以及已确认 spec 下的实施任务,不要启动新的 artifact;直接做,遵守适用的 `AGENTS.md` 和当前宿主提供的项目约定,最后说明改动和验证结果。
 
 需要持久追踪、验证记录或规约保护时,再运行:
 
@@ -59,7 +60,7 @@
 - `docs/specs/changes/<NNN>-<slug>/plan.md`:模块影响、Sibling Alignment、技术决策
 - `docs/specs/changes/<NNN>-<slug>/tasks.md`:可验证的实施步骤
 
-轻车道小改只有 `tasks.md`,补全目标/边界、验证、任务和 delivery receipt;不跑 `spec-quality-check`,但 `feature-done` 必须逐项兑现 `## 验证`。
+只有交接、多步验收、审计/发布或 current-truth 更新确实需要持久清单时,低风险小改才走轻车道并创建 `tasks.md`。补全目标/边界、验证、任务和 delivery receipt;不跑 `spec-quality-check`,但 `feature-done` 必须逐项兑现 `## 验证`。
 
 全道写代码前先跑:
 
@@ -67,7 +68,7 @@
 /project-workflow:spec-quality-check <feature-slug>
 ```
 
-如果还有 failed 项,先修 spec / plan / tasks,不要直接开始实施。borderline 项可以继续,但必须在 `plan.md` 风险 / open issues 或 `tasks.md` 实施说明里显式记录接受理由和后续处理。轻车道不跑 `spec-quality-check`。
+如果还有 failed 项,先修 spec / plan / tasks,不要直接开始实施。borderline 项可以继续,但必须显式接受具体风险并在 `plan.md` 风险 / open issues 或 `tasks.md` 实施说明里记录后续处理。用户原请求已明确“检查通过就继续实施”时,READY gate 可直接把 spec 状态改为 `已确认` 并继续;纯检查请求保持只读。轻车道不跑 `spec-quality-check`。
 
 ## 3. 按 spec 边界实施
 
@@ -90,14 +91,14 @@
 这是默认端点门禁,会组合执行:
 
 - L1 机械检查
-- L2 项目约定 review
+- L2 项目约定 review(全道必跑;轻车道按风险触发)
 - L3 code-vs-spec review
 - current-truth check(持久产品行为且领域明确但文档尚不存在时记录 `update pending`;只有领域归属未知时才记录 `area unresolved`)
 - delivery receipt 写入 `tasks.md` 的兼容标题 `## Proof Bundle`
 
-需要局部复查某一层时重跑 `feature-done`(幂等),或在主会话直接 dispatch reviewer sub-agent;没有独立的 helper 命令。
+需要局部复查时重跑 `feature-done`,或直接 dispatch reviewer sub-agent。同一任务内保留完整 review 证据时,可只复查 finding 与依赖闭包;跨任务或证据缺失时重跑完整 population。没有独立 helper 命令。
 
-把 `feature-done` 生成的 delivery receipt 随交付 commit / PR / merge 后,周期性跑一次生命周期清扫(不必每个 feature 都立刻跑,攒几个一起也行):
+周期性生命周期清扫只复用指向精确 commit SHA 的 READY receipt。dirty-worktree READY 可在同一任务内直接 archive;若先提交、以后再清扫,需在该提交上运行 `feature-done`(此前已 review dirty worktree 时则为重跑)后再 archive。稳定 receipt 证明该提交曾通过交付门禁;archive 仍单独依据当前实现和后继变更核对待合并的 current truth:
 
 ```text
 /project-workflow:feature-archive

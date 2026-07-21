@@ -149,7 +149,7 @@
 ## Proof Bundle
 
 - Verdict:
-- Change:`review-scope=[exact paths]; base/worktree=[Git context]; endpoint-outputs=[tasks receipt, READY status]`
+- Change:`git=[base=<commit SHA>; reviewed=<commit SHA>; dirty=no]` 或 `git=[base=<commit SHA>; reviewed=worktree; dirty=yes]`; `endpoint-outputs=[tasks receipt, READY status]`
 - Checks:`<command; result; totals>`
 - Review execution:`L2=<reviewer; mode=fresh-subagent|result-reuse|main-session fallback; status; fallback-reason>; L3=<same shape>`
 - L2:`verdict; baseline=[AGENTS.md + applicable convention paths]; add non-empty exceptions only`

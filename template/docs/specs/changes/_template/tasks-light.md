@@ -21,13 +21,13 @@
 
 ## Proof Bundle
 
-> 由 `/project-workflow:feature-done` 填。轻车道仍跑 L1 + L2 + 验证 + 不变量反核;L3 明确跳过。端点回复原样展示此 delivery receipt。
+> 由 `/project-workflow:feature-done` 填。轻车道跑 L1 + 验证 + 不变量反核;L2 按风险触发,L3 明确跳过。端点回复原样展示此 delivery receipt。
 
 - Verdict:
-- Change:`review-scope=[exact paths reviewed by L2/light verification]; base/worktree=[Git context when available]; endpoint-outputs=[tasks.md receipt]`
+- Change:`git=[base=<commit SHA>; reviewed=<commit SHA>; dirty=no]` 或 `git=[base=<commit SHA>; reviewed=worktree; dirty=yes]` (非 Git:`inputs=[explicit reviewed paths]`); `endpoint-outputs=[tasks.md receipt]`
 - Checks / 轻车道验证 / 不变量反核:`<每项 command/assertion + result>`
-- Review execution:`L2=<reviewer; mode=fresh-subagent|result-reuse|main-session fallback; status; fallback-reason=none|exact reason>; L3=N/A(light lane)`
-- L2:`verdict; findings=[rule citation or none]; applicable-rules=[source#id]; applicable-unverified=[source#id or none]; ambiguities=[item or none]`
+- Review execution:`L2=<reviewer; mode=fresh-subagent|result-reuse|main-session fallback; status; fallback-reason=none|exact reason>|N/A(low-risk light lane; no L2 trigger after convention-scope triage); L3=N/A(light lane)`
+- L2:`verdict + baseline; add findings/unverified/ambiguities only when non-empty` 或 `N/A(low-risk light lane; no L2 trigger after convention-scope triage)`
 - L3:`N/A(light lane); verification=[item#id: PASS|FAIL]`
 - Current truth:
 - Open questions:(仅非空时保留)

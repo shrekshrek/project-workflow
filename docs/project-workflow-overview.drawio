@@ -69,19 +69,19 @@
         <mxCell id="step_impl" value="&lt;b&gt;Implement&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;主会话写代码&lt;br/&gt;已启用 verified hook 时增量校验&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F8E9;strokeColor=#558B2F;dashed=1;fontSize=11;align=center;" vertex="1" parent="1">
           <mxGeometry x="650" y="382" width="180" height="60" as="geometry"/>
         </mxCell>
-        <mxCell id="skill_featdone" value="&lt;b&gt;/feature-done&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;唯一端点入口(幂等)&lt;br/&gt;L1 → L2 → L3 → &lt;b&gt;[E]&lt;/b&gt; check → delivery receipt&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2E7D32;strokeWidth=2;fontSize=11;align=center;fontStyle=1;" vertex="1" parent="1">
+        <mxCell id="skill_featdone" value="&lt;b&gt;/feature-done&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;唯一端点入口(幂等)&lt;br/&gt;L1 + 适用 L2/L3 → &lt;b&gt;[E]&lt;/b&gt; check → delivery receipt&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2E7D32;strokeWidth=2;fontSize=11;align=center;fontStyle=1;" vertex="1" parent="1">
           <mxGeometry x="870" y="382" width="220" height="60" as="geometry"/>
         </mxCell>
         <mxCell id="step_deliver" value="&lt;b&gt;READY / NEEDS WORK / BLOCKED&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;端点验证结果 → 交付 or 回 implement&lt;/span&gt;" style="text;html=1;strokeColor=#90A4AE;fillColor=#FAFAFA;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=11;rounded=0;dashed=1;" vertex="1" parent="1">
           <mxGeometry x="1120" y="386" width="235" height="56" as="geometry"/>
         </mxCell>
-        <mxCell id="skill_featarchive" value="&lt;b&gt;/feature-archive&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;交付后 lifecycle closure&lt;br/&gt;&lt;b&gt;[E]&lt;/b&gt; domain docs + &lt;b&gt;[B]&lt;/b&gt; archive&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2E7D32;fontSize=11;align=center;" vertex="1" parent="1">
+        <mxCell id="skill_featarchive" value="&lt;b&gt;/feature-archive&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;稳定 receipt 可周期清扫;dirty 仅同任务&lt;br/&gt;&lt;b&gt;[E]&lt;/b&gt; 当前事实 + &lt;b&gt;[B]&lt;/b&gt; archive&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2E7D32;fontSize=11;align=center;" vertex="1" parent="1">
           <mxGeometry x="1390" y="382" width="220" height="60" as="geometry"/>
         </mxCell>
-        <mxCell id="featdone_decompose" value="&lt;span style=&#39;font-size:10px;color:#558B2F;&#39;&gt;= L1 (lint/typecheck/test)  ·  L2 (AGENTS.md 合规)  ·  L3 (spec 合规)  ·  delivery receipt (决策证据) ── partial recheck 重跑同一 action 或直接 reviewer&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=10;fontColor=#558B2F;" vertex="1" parent="1">
+        <mxCell id="featdone_decompose" value="&lt;span style=&#39;font-size:10px;color:#558B2F;&#39;&gt;= L1 (lint/typecheck/test)  ·  L2 (AGENTS.md 合规)  ·  L3 (spec 合规)  ·  delivery receipt (决策证据) ── same-task partial recheck 或直接 reviewer&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=10;fontColor=#558B2F;" vertex="1" parent="1">
           <mxGeometry x="600" y="450" width="930" height="20" as="geometry"/>
         </mxCell>
-        <mxCell id="lightlane_note" value="🔀 &lt;b&gt;轻车道(小改 bugfix/polish/additive)&lt;/b&gt;:/feature-init Step 4.5 自动判 → 仅 tasks.md(免 frozen spec/plan)· 跳 /spec-quality-check + L3 · /feature-done 收尾(含不变量反核)。判据/安全闸见 spec-driven §3.2.5" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F8E9;strokeColor=#558B2F;dashed=1;fontSize=9;align=left;verticalAlign=middle;spacing=4;fontColor=#558B2F;" vertex="1" parent="1">
+        <mxCell id="lightlane_note" value="🔀 &lt;b&gt;轻车道(确有持久清单消费者的低风险小改)&lt;/b&gt;:/feature-init 分流 → 仅 tasks.md(免 frozen spec/plan)· 跳 /spec-quality-check · L2 按风险触发 · L3=N/A。判据/安全闸见 spec-driven §3.2.5" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F8E9;strokeColor=#558B2F;dashed=1;fontSize=9;align=left;verticalAlign=middle;spacing=4;fontColor=#558B2F;" vertex="1" parent="1">
           <mxGeometry x="200" y="446" width="395" height="28" as="geometry"/>
         </mxCell>
 
@@ -126,7 +126,7 @@
         <mxCell id="p4_trigger" value="&lt;b&gt;Trigger&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:11px;&#39;&gt;客观不一致 / 反复提醒 / 大依赖升级&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=11;" vertex="1" parent="1">
           <mxGeometry x="210" y="672" width="220" height="65" as="geometry"/>
         </mxCell>
-        <mxCell id="skill_amdrevise" value="&lt;b&gt;/agents-md-revise&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;扫 A 约定 全集 vs 项目实际状态&lt;br/&gt;客观 drift → 逐条 apply/skip/stop → patch + commit 草稿&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#6A1B9A;fontSize=11;align=center;" vertex="1" parent="1">
+        <mxCell id="skill_amdrevise" value="&lt;b&gt;/agents-md-revise&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;扫 A 约定 全集 vs 项目实际状态&lt;br/&gt;consolidated preview → 一次批准 → patch + commit 草稿&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#6A1B9A;fontSize=11;align=center;" vertex="1" parent="1">
           <mxGeometry x="450" y="672" width="320" height="65" as="geometry"/>
         </mxCell>
         <mxCell id="p4_out" value="&lt;b&gt;产出 (按文档类标记)&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:11px;&#39;&gt;&lt;b&gt;[A 修订]&lt;/b&gt; AGENTS.md / path-scoped rules 的 patch  ·  commit message 草稿 (`chore: refresh A 类约定`)&lt;/span&gt;" style="text;html=1;strokeColor=#90A4AE;fillColor=#FAFAFA;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=11;spacing=8;rounded=0;dashed=1;" vertex="1" parent="1">
@@ -269,7 +269,7 @@
         <mxCell id="s_proof" value="delivery receipt · 展示决策所需证据 (+ current-truth check)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;fontSize=11;align=left;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
           <mxGeometry x="60" y="530" width="380" height="40" as="geometry"/>
         </mxCell>
-        <mxCell id="s_featdone" value="&lt;b&gt;/feature-done&lt;/b&gt; · 端点 composite (= L1+L2+L3+proof)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;fontSize=11;align=left;verticalAlign=middle;spacing=8;fontStyle=1;" vertex="1" parent="1">
+        <mxCell id="s_featdone" value="&lt;b&gt;/feature-done&lt;/b&gt; · 端点 composite (= L1+适用 L2/L3+proof)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;fontSize=11;align=left;verticalAlign=middle;spacing=8;fontStyle=1;" vertex="1" parent="1">
           <mxGeometry x="60" y="580" width="380" height="40" as="geometry"/>
         </mxCell>
         <mxCell id="s_amdrevise" value="&lt;b&gt;/agents-md-revise&lt;/b&gt; · P4 drift refresh" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3E5F5;strokeColor=#6A1B9A;fontSize=11;align=left;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
@@ -326,7 +326,7 @@
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
 
-        <mxCell id="composite_note" value="&lt;b&gt;/feature-done&lt;/b&gt; = 唯一端点 gate:&lt;br/&gt;&lt;span style=&#39;font-size:10px;color:#546E7A;&#39;&gt;L1 → L2 → L3 → current-truth check → delivery receipt ── verdict 单点聚合,L2/L3 重叠 finding 装配时去重 (workflow §6.4);READY + current truth pending → /feature-archive 收尾&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F8E9;strokeColor=#558B2F;fontSize=11;align=left;verticalAlign=middle;spacing=8;dashed=1;" vertex="1" parent="1">
+        <mxCell id="composite_note" value="&lt;b&gt;/feature-done&lt;/b&gt; = 唯一端点 gate:&lt;br/&gt;&lt;span style=&#39;font-size:10px;color:#546E7A;&#39;&gt;L1 + 适用 L2/L3(L2/L3 容量允许时并行) → current-truth check → delivery receipt ── verdict 单点聚合,L2/L3 重叠 finding 装配时去重 (workflow §6.4);READY + current truth pending → /feature-archive 收尾&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F8E9;strokeColor=#558B2F;fontSize=11;align=left;verticalAlign=middle;spacing=8;dashed=1;" vertex="1" parent="1">
           <mxGeometry x="60" y="700" width="1280" height="60" as="geometry"/>
         </mxCell>
         <mxCell id="e_done_l1" style="endArrow=classic;html=1;dashed=1;rounded=0;strokeColor=#558B2F;strokeWidth=1;" edge="1" parent="1" source="s_featdone" target="s_l1">

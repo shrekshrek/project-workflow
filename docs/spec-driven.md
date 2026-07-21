@@ -131,7 +131,7 @@ docs/specs/changes/
 ### 3.2.5 入口分流:先判是否需要 project-workflow
 <a id="325-轻车道小改免-frozen-spec--plan"></a>
 
-不是所有任务都应该启动 project-workflow。无需新 artifact 的任务不是一条 lane,而是直接不调用 `/feature-init`:小 bugfix、文案、样式、局部测试修复、低风险文档编辑,以及已确认 spec 下的实施任务,直接做并说明验证结果。直接做仍必须遵守 `AGENTS.md` / path rules,并跑相关 lint / type / test / hook。
+不是所有任务都应该启动 project-workflow。无需新 artifact 的任务不是一条 lane,而是直接不调用 `/feature-init`:小 bugfix、文案、样式、局部测试修复、低风险文档编辑、未被 current truth 声明且局部/可逆/无契约/可在当前任务完成的行为小改,以及已确认 spec 下的实施任务,直接做并说明验证结果。直接做仍必须遵守 `AGENTS.md` / path rules,并跑相关 lint / type / test / hook。
 
 **行为变更下限**(上述"直接做"的例外):改变 `docs/specs/<area>.md` 已声明的用户可见行为或持久规则(默认值 / 校验上限 / 重试策略 / 状态流转)时,无论 diff 多小**至少走轻车道**——current truth(§5.2)的唯一写入口在管线上,多次"太小不值得走流程"的行为改动累积绕过,它就静默过时了。未被 domain doc 声明的局部行为小改不因此强制进 project-workflow;照常直接做,最后说明验证结果。
 
@@ -139,10 +139,10 @@ docs/specs/changes/
 
 | Lane | Artifact | 适用 |
 |---|---|---|
-| **Light lane** | `tasks.md` | 小而内聚、有验证/风险记录价值,但无 frozen spec / plan |
+| **Light lane** | `tasks.md` | 小而内聚,且跨会话交接、多步验收、审计/发布或 current-truth 更新确实需要持久记录;无 frozen spec / plan |
 | **Full lane** | `spec.md + plan.md + tasks.md` | API/DB/security/auth/permissions/multi-tenant/data migration/跨模块契约/架构/用户承诺变化、新模块、高爆破半径路径 |
 
-**Light lane 判据**(`/feature-init` Step 4.5 自动判,3 道 trip 全 yes 才 light):
+**Light lane 判据**(`/feature-init` 按 canonical classification 自动判,3 个轴全满足才 light):
 
 | 轴 | 全 yes 才轻车道 |
 |---|---|
@@ -156,7 +156,7 @@ docs/specs/changes/
 - 不确定 UI 文案 / 样式 / 组件拆分 / 局部 refactor 形状 / 测试写法 → 不因此升级 Full;可直接做或 Light lane
 - 不确定业务目标 / user-visible outcome → **先问用户**,不建 artifact
 
-**为什么这条边界**:三件套对小改是过度仪式(同 [workflow.md §7.4](workflow.md#74-不要为了用-ai-拒绝键盘改-5-行代码) 的精神);同一模块内即使碰到 2-4 个配套文件,只要可逆、无契约变化、无高爆破半径,也可以轻车道。**砍的是文档仪式,不是验证** —— 轻车道仍保留 `## 验证`(spec §4 等价)+ delivery receipt;`feature-done` 跑 L1 + L2并逐项兑现 `## 验证`(L3 因无 frozen spec 标 N/A)。
+**为什么这条边界**:三件套对小改是过度仪式(同 [workflow.md §7.4](workflow.md#74-不要为了用-ai-拒绝键盘改-5-行代码) 的精神);同一模块内即使碰到 2-4 个配套文件,只要可逆、无契约变化、无高爆破半径,也可以直接做或在确有持久记录消费者时走轻车道。**砍的是文档仪式,不是验证** —— 轻车道仍保留 `## 验证`(spec §4 等价)+ delivery receipt;`feature-done` 跑 L1、逐项兑现 `## 验证`,并仅在风险触发时跑 L2(L3 因无 frozen spec 标 N/A)。
 
 **组合规则**:多个相关小改应合成一个中等 feature,不要碎 spec。例如不要开 "按钮状态"、"表格列"、"详情抽屉" 三个 spec;应开一个 `workflow-run-history` feature。
 
@@ -274,7 +274,7 @@ docs/specs/changes/
 
 **本节是 conversational fill 的 primary mode SOP**:`/feature-init` 创建 spec/plan/tasks scaffold(+ chat context pre-fill + mission-critical reminders + decision-completeness audit;**零强制 Q&A**)后,**所有 TODOs 由 user 在主会话跟 AI 对话填**(spec.md §1 Outcomes / §2 Scope "不做" / §3 Constraints / §4 Verification / plan.md §1.1 Sibling Alignment / §2 架构决策 / §3 Prior decisions / tasks.md 任务清单 等)。AI 应**读本节后按规则引导** ── 保证 quality 标准 inline 内化,**不依赖事后 quality-check 才发现问题**。
 
-> **本节既适用 `/feature-init` Step 6.2 conversational fill 引导后用户走的对话路径,也适用主会话非-skill context 的纯人 + AI 协作填**。
+> **本节既适用 `/feature-init` 完成 materialization 后引导用户走的 conversational fill,也适用主会话非-skill context 的纯人 + AI 协作填**。
 > Plugin **不预设** Q&A 替用户填这些 ── feature 类型多样,固定 Q&A 不可能通用;conversational 模式让 AI 据 user 真实业务上下文自适应 fill。
 
 #### 顺序:按节依次填,不跳
@@ -316,7 +316,7 @@ docs/specs/changes/
 | ADR | 按 `ADR_REQUIRED` 条件创建 | 按 `ADR_REQUIRED` 条件创建 |
 | `## 修订记录` | ❌ 无需 | ✅ 必须 |
 | 跨文件同步 | 自然(初次写 plan/tasks 一并) | ✅ 必须 orchestrate |
-| Skill? | ❌ 主会话 AI 读本节直接做(/feature-init Step 6.2 引导 user 走本路径)| ✅ /spec-revise |
+| Skill? | ❌ 主会话 AI 读本节直接做(`/feature-init` materialization 后引导 user 走本路径)| ✅ /spec-revise |
 
 ---
 
@@ -339,7 +339,7 @@ docs/specs/changes/
 **Gate 语义**:
 - **Failed 项 > 0**:不要开始实施。先修 spec / plan / tasks,再重跑 quality check。
 - **Failed = 0,但有 borderline**:可以进入实施,但要在 plan.md `## 4. 风险与未决` 或 tasks.md 实施记录里写清楚风险、接受理由和后续修法。
-- **全部 pass**:进入实施。
+- **全部 pass**:进入实施。若当前请求已明确授权“检查通过就继续”,gate 同时把状态从 `草稿` 更新为 `已确认`;纯检查请求只报告结果。
 
 7 问之外还有一组条件式 current-truth 检查:已有 domain doc 时检查 Domain References/Delta;没有则 N/A,不为了通过 gate 造空文档。ADR 仍按上节的规划判断创建,不属于本质量 gate 的独立硬门禁。
 
@@ -441,7 +441,7 @@ Draft / Filled / Validated **本质同档**(自由编辑);Frozen / Revised **本
 | 状态 | 含义 | 能否指导新实施? | 谁来标 |
 |---|---|---|---|
 | `草稿` | 仍在迭代 | 否 | `/feature-init` 创建时默认 |
-| `已确认` | 用户接受,实施开始,契约冻结 | ✅ 本 feature | 用户(spec-quality-check 后) |
+| `已确认` | 用户接受,实施开始,契约冻结 | ✅ 本 feature | 用户明确授权;可由 READY gate 消费“通过就继续”的条件授权 |
 | `已实现` | 契约被代码兑现 | 仅作历史 | `feature-done` READY 时 |
 | `已取代`(superseded) | 方向被后续 spec / ADR / current truth 替代 | ❌ | `feature-archive` / `spec-reconcile` |
 | `已废弃`(abandoned) | 方向错误或不再需要,中途停止 | ❌ | `feature-archive` / `spec-reconcile` |
@@ -455,7 +455,7 @@ Draft / Filled / Validated **本质同档**(自由编辑);Frozen / Revised **本
 `docs/specs/<area>.md` 回答"这个产品域**现在**怎么工作";feature spec 回答"这**一次** tracked change 想做什么"。两者分工:
 
 - **何时创建**:P0 `project-init` 只创建 `docs/specs/index.md`;`feature-init` 只读取已有实质 area doc,不创建 E 类正文。首个 READY greenfield feature 由 `/feature-archive` 把持久结论沉淀成 `docs/specs/<area>.md`;retrofit 的历史冲突修复可由 `/spec-reconcile` 建立或修正 current truth。
-- **谁维护**:`feature-done` Step 5.5 发现持久行为变更 → proof pending → `feature-archive` **必须** merge 回 `docs/specs/<area>.md`。
+- **谁维护**:`feature-done` 的 current-truth check 发现持久行为变更 → receipt 标 `update pending` → `feature-archive` **必须**基于当前状态 merge 回 `docs/specs/<area>.md`。
 - **内容标准**:简洁、面向未来(现状是什么),不写演进史(那是 archive + ADR 的事)。**替换式维护**:合并 = 改写相关段落、删被推翻的旧句,不追加堆叠;单文件目标约 **150 行**左右,明显超过时检查是否该拆域或删过时细节;复杂 domain 只要内容仍是当前态、结构清晰、有用,可以超过。行为事实链接该域有效 ADR("为什么"一跳可达),不复述论证。
 - **新鲜度自声明**:标题下第一行固定为 `> 最后核对:YYYY-MM-DD`,每次合并更新。feature 编号 / 来源写进 archive note、proof bundle 或 commit message,不要写进 E 类文件头部。过时的核对日期是可见的怀疑信号——绕过 feature 管线的改动无法被机制抓住,但至少让读者知道该打折扣。
 - **change spec 引用 domain doc**:brownfield **必须** `## Domain References` + `## Delta`;greenfield 首次归档时由 `/feature-archive` 创建/更新 `docs/specs/<area>.md`,防重新定义整域。
@@ -538,7 +538,7 @@ docs/specs/changes/
 
 ## 7. 维护工具
 
-运行时入口和精确职责不在本文重复。按生命周期使用 [`feature-init`](actions/feature-init.md) → full lane 的 [`spec-quality-check`](actions/spec-quality-check.md) → [`feature-done`](actions/feature-done.md) → 周期性 [`feature-archive`](actions/feature-archive.md);只有契约实质变化、历史 spec 冲突或 A 类约定 drift 时,才分别使用 [`spec-revise`](actions/spec-revise.md)、[`spec-reconcile`](actions/spec-reconcile.md) 或 [`agents-md-revise`](actions/agents-md-revise.md)。完整入口表见 [`docs/actions/`](actions/README.md) 和 [`quickstart.md`](quickstart.md)。
+运行时入口和精确职责不在本文重复。按生命周期使用 [`feature-init`](actions/feature-init.md) → full lane 的 [`spec-quality-check`](actions/spec-quality-check.md) → [`feature-done`](actions/feature-done.md) → 同任务立即或凭稳定 receipt 周期性执行 [`feature-archive`](actions/feature-archive.md);只有契约实质变化、历史 spec 冲突或 A 类约定 drift 时,才分别使用 [`spec-revise`](actions/spec-revise.md)、[`spec-reconcile`](actions/spec-reconcile.md) 或 [`agents-md-revise`](actions/agents-md-revise.md)。完整入口表见 [`docs/actions/`](actions/README.md) 和 [`quickstart.md`](quickstart.md)。
 
 ---
 

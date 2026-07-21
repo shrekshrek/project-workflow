@@ -13,7 +13,7 @@ Eight model scenarios cover lane classification (full / light / no-artifact), ta
 
 ## Implicit activation smoke
 
-In a fresh host task with the plugin installed, issue ordinary implementation requests without naming `feature-init`: one tiny local fix, one bounded user-visible behavior change, and one contract-shaped or cross-module feature. Confirm that the host keeps the tiny fix direct, invokes `feature-init` before the other two, selects light then full respectively, and does not search `docs/specs/changes/archive/` for current behavior. Record this manual smoke in the release task; it tests skill discovery and is intentionally not a second CI harness.
+In a fresh host task with the plugin installed, issue ordinary implementation requests without naming `feature-init`: one tiny local fix, one bounded reversible user-visible behavior change not declared in current truth, one low-risk change that explicitly needs a cross-session acceptance checklist, and one contract-shaped or cross-module feature. Confirm that the host keeps the first two direct, invokes `feature-init` for the latter two, selects light then full respectively, and does not search `docs/specs/changes/archive/` for current behavior. Record this manual smoke in the release task; it tests skill discovery and is intentionally not a second CI harness.
 
 ## Equivalence interpretation
 

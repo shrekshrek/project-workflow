@@ -12,14 +12,15 @@ The active tree `docs/specs/changes/` holds **in-flight work only**. History lea
 
 Default invocation is **sweep mode**: with no argument, find all features whose delivery is complete (READY delivery receipt in `## Proof Bundle`) and propose closing them as a batch. Archiving may share the final commit with implementation, receipt, and current-truth changes; a prior commit is not required. Forgetting to archive immediately is fine — a later sweep can revalidate uncertain candidates.
 
-Upgrade migration: an older `## Proof Bundle` that has checked L1/L2/L3 rows but no `Verdict:` is a **legacy candidate**, not evidence of READY under the current contract. Sweep mode lists these separately instead of silently ignoring them and offers to rerun `feature-done` to normalize the receipt. Never infer READY or archive from legacy checkboxes alone.
+Upgrade migration: a `## Proof Bundle` without `Verdict:`, or a READY receipt without the current `git=[...]` / non-Git `inputs=[...]` identity (including the earlier `review-scope` / `base/worktree` schema), is a **receipt-schema migration candidate**. Sweep mode lists it separately and offers to rerun `feature-done`; never infer READY from legacy fields.
 
 ## Inputs
 
 - Feature directory/slug, or nothing (sweep mode).
-- Each candidate's delivery receipt must have `Verdict: READY` and an exact review population. When `spec.md` exists, its status must be `已实现`, or `已取代`/`已废弃` as set by `spec-reconcile`; light-lane candidates have no `spec.md` and rely on the READY receipt. A missing Verdict routes to the visible legacy-migration list.
+- Each candidate's delivery receipt must have `Verdict: READY` and one valid Git identity (or explicit non-Git inputs): exact reviewed commit SHA with `dirty=no`, or current worktree with `dirty=yes`. Other pairings are invalid. A dirty-worktree coordinate is eligible only as a current-task result while the reviewed state remains unchanged; an older receipt requires an immutable reviewed commit SHA. Committing a dirty-worktree receipt later does not re-anchor it. When `spec.md` exists, its status must be `已实现`, or `已取代`/`已废弃` as set by `spec-reconcile`; light-lane candidates have no `spec.md` and rely on the READY receipt. Invalid receipt schemas route to the visible migration list.
 - Related current-truth documents (`docs/specs/<area>.md`), if any.
 - Related earlier specs and ADRs in the same product area.
+- Present implementation evidence and later active/successor changes when current truth is pending or the reviewed delivery is no longer the latest change in that area.
 
 ## Outputs
 
@@ -32,9 +33,9 @@ Upgrade migration: an older `## Proof Bundle` that has checked L1/L2/L3 rows but
 
 ## Workflow
 
-1. Resolve one explicit feature or sweep active change directories. A READY result produced in the current task remains usable only while its review population is unchanged. For an older receipt, use available Git/task evidence to establish that the recorded population has not changed; when that cannot be established cheaply and confidently, rerun `feature-done`. Do not invent or persist a content fingerprint.
+1. Resolve one explicit feature or sweep active change directories. Treat delivery evidence and current truth as separate freshness questions. A current-task dirty-worktree READY result remains usable while its reviewed state and endpoint outputs are unchanged. An older receipt is valid delivery evidence only when it names an existing immutable reviewed commit SHA and its receipt/status outputs remain intact; later movement of the current branch or PR head does not by itself invalidate that historical delivery proof. Rerun `feature-done` when the receipt records a dirty worktree, uses an invalid identity pairing, or the reviewed commit cannot be resolved. A commit containing a dirty receipt is not proof that the reviewed worktree was unchanged before commit. Outside Git, compare the explicit reviewed inputs. Do not create a manual population list, fingerprint, or population hash.
 2. An explicit single-feature invocation authorizes an unambiguous READY archive. In sweep mode, present and confirm the candidate set. Ask separately only for uncertain current-truth ownership, supersession, or ADR decisions.
-3. For each candidate, draft the durable present-tense facts, lifecycle status changes, archive note, and optional index update without applying them. Stop on contradiction with an Accepted ADR until a superseding decision is resolved.
+3. For each candidate, draft the durable present-tense facts, lifecycle status changes, archive note, and optional index update without applying them. A stable READY receipt proves the historical delivery, not today's product behavior: validate every pending current-truth fact against present implementation evidence, current domain documents, and later active/successor changes. Do not merge a stale fact merely because the old receipt remains valid. Stop on unresolved supersession or contradiction with an Accepted ADR until the governing decision is resolved.
 4. Move the directory with an ordinary filesystem rename and run the link relocator. If relocation fails, move the directory back and stop before applying lifecycle or current-truth edits.
 5. Apply the prepared current-truth, final-status, archive-note, governing-ADR, and optional index updates.
 6. Validate current truth, final statuses, archived paths, and links; report all touched documents and follow-ups.
@@ -51,15 +52,16 @@ Upgrade migration: an older `## Proof Bundle` that has checked L1/L2/L3 rows but
 - A READY feature is not current truth until its durable conclusions are merged.
 - Archiving is a directory move, never deletion; archived directories are read-only history.
 - Never archive an in-flight feature (full-lane spec status `草稿`/`已确认`, or delivery receipt missing/non-READY in either lane).
-- Never archive when the READY review population is known to have changed or its freshness cannot be established; rerun `feature-done` instead.
+- Never archive when the reviewed Git/non-Git state is known to have changed or its freshness cannot be established; rerun `feature-done` instead.
+- A resolvable reviewed commit SHA is immutable delivery evidence even after the current branch or PR head advances; current-truth conclusions still require independent present-state validation.
 - Explicit single-feature invocation needs no duplicate confirmation. Sweep candidates and uncertain lifecycle decisions remain visible to the user.
 - There is no "historical foundation" status: if parts of an archived spec remain valid (data model, API, pipeline), those facts belong in `docs/specs/<area>.md` — extract them during the merge instead of keeping the old spec in the active tree as a reference.
 - Do not edit implementation code.
 
 ## Validation
 
-- Confirm the current-truth document no longer contradicts the delivered behavior and respects the size cap.
-- Confirm each archived feature used a current-task READY result or another confidently unchanged review population; otherwise rerun `feature-done` and stop that candidate.
+- Confirm the current-truth document reflects present behavior rather than merely repeating the historically delivered spec, and respects the size cap.
+- Confirm each archived feature used a current-task READY result or another confidently unchanged reviewed Git/non-Git state; otherwise rerun `feature-done` and stop that candidate.
 - Confirm every archived spec's status line reflects its final state and superseded ones link their successor.
 - Confirm every local Markdown link in each archived directory resolves after relocation; do not report the archive complete with broken ADR, domain-doc, sibling, or reference-style links.
 - Report which documents were touched, which features were archived, and any ADR follow-ups.

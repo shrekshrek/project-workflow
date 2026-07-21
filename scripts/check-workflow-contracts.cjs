@@ -58,14 +58,21 @@ forbidMarkers("adapters/claude/skills/feature-done/SKILL.md", [
   "L2 ✅/🟡",
   "git checkout HEAD",
 ]);
-requireMarkers("adapters/claude/skills/feature-done/SKILL.md", ["agents-md-reviewer", "spec-reviewer", "## Proof Bundle", "same-session"]);
-requireMarkers("adapters/codex/skills/feature-done/SKILL.md", ["agents-md-reviewer.md", "spec-reviewer.md", "## Proof Bundle", "same-session", "never reviewer instances", "result-reuse"]);
-requireMarkers("docs/actions/feature-done.md", ["Light-lane verification", "transient validation evidence", "receipt-only edits", "Resolved durable behavior with no existing area document is `update pending`", "area unresolved", "exact on-disk `## Proof Bundle`", "review traceability, not a cache key"]);
+requireMarkers("adapters/claude/skills/feature-done/SKILL.md", ["agents-md-reviewer", "spec-reviewer", "## Proof Bundle", "same-session", "in parallel when capacity permits", "single-slot capacity is not fallback", "exact commit SHA with `dirty=no`", "current worktree with `dirty=yes`", "only allowed endpoint-output difference"]);
+requireMarkers("adapters/codex/skills/feature-done/SKILL.md", ["agents-md-reviewer.md", "spec-reviewer.md", "## Proof Bundle", "same-session", "never reviewer instances", "result-reuse", "in parallel when capacity permits", "single-slot capacity is not fallback", "exact commit SHA with `dirty=no`", "current worktree with `dirty=yes`", "only allowed endpoint-output difference"]);
+requireMarkers("docs/actions/feature-done.md", ["Light-lane verification", "transient validation evidence", "receipt-only edits", "Resolved durable behavior with no existing area document is `update pending`", "area unresolved", "exact on-disk `## Proof Bundle`", "Persist only fields with a downstream consumer"]);
 forbidMarkers("docs/actions/feature-done.md", ["reproducible diff identity", "content fingerprint"]);
-requireMarkers("docs/actions/feature-done.md", ["independently executable", "non-execution only", "Reviewer Execution", "../reviewers/README.md#reviewer-execution-contract", "missing execution evidence blocks `READY`"]);
-requireMarkers("docs/actions/feature-done.md", ["exact changed-file/applicable-item validation", "never infer coverage from `findings=none`", "A PASS never persists applicable IDs or populations", "never persist applicable-rule/spec IDs or populations"]);
+requireMarkers("docs/actions/feature-done.md", ["independently executable", "non-execution only", "Reviewer Execution", "../reviewers/README.md#reviewer-execution-contract", "Missing execution evidence for an applicable reviewer blocks `READY`"]);
+requireMarkers("docs/actions/feature-done.md", ["exact changed-file/applicable-item validation", "never infer coverage from `findings=none`", "A PASS never persists applicable IDs or populations", "manual file populations", "population hashes", "dependency closure"]);
+requireMarkers("docs/actions/feature-done.md", ["same-task optimization", "original full-population evidence", "A later task", "base commit SHA", "before writing those endpoint-owned outputs", "reviewed=<commit SHA>; dirty=no", "reviewed=worktree; dirty=yes", "Other pairings are invalid", "target-branch merge base", "ambiguous base blocks", "Derive changed paths from Git", "For light lane, run it only when", "declared receipt/status write is the only permitted endpoint-output difference"]);
+forbidMarkers("docs/actions/feature-done.md", ["cached L2/L3 results"]);
+requireMarkers("docs/actions/feature-done.md", ["L2 convention-source paths", "L3 spec/artifact paths", "each reviewer independently enumerates", "dispatch L2 and L3 in parallel", "sequential fresh dispatch", "not a fallback condition", "aggregates only after both applicable results"]);
+requireMarkers("docs/actions/feature-archive.md", ["receipt-schema migration candidate", "review-scope", "eligible only as a current-task result", "does not re-anchor it", "not proof that the reviewed worktree was unchanged", "delivery evidence and current truth as separate freshness questions", "later movement of the current branch or PR head does not by itself invalidate", "validate every pending current-truth fact against present implementation evidence"]);
 
-requireMarkers("docs/actions/spec-quality-check.md", ["Reviewer Execution", "../reviewers/README.md#reviewer-execution-contract", "fallback reason", "`BLOCKED`"]);
+requireMarkers("docs/actions/spec-quality-check.md", ["Reviewer Execution", "../reviewers/README.md#reviewer-execution-contract", "fallback reason", "`BLOCKED`", "mechanical prerequisites failed", "stop before subjective review", "explicitly authorizes implementation", "`READY` consumes that authorization", "pure check/review request remains read-only", "`BORDERLINE` never consumes"]);
+for (const relative of ["adapters/claude/skills/spec-quality-check/SKILL.md", "adapters/codex/skills/spec-quality-check/SKILL.md"]) {
+  requireMarkers(relative, ["On `READY`", "continue implementation", "Pure checks remain read-only", "`BORDERLINE` requires explicit acceptance", "any status transition"]);
+}
 const runtimeActions = ["project-init", "project-personalize", "feature-init", "spec-quality-check", "spec-revise", "feature-done", "feature-archive", "spec-reconcile", "agents-md-revise"];
 for (const action of ["feature-done", "feature-init", "project-personalize", "spec-quality-check", "spec-revise", "agents-md-revise"]) {
   requireReviewerExecutionContract(`adapters/claude/skills/${action}/SKILL.md`, "dispatch");
@@ -83,7 +90,7 @@ for (const filename of fs.readdirSync(path.join(repoRoot, "adapters/claude/agent
   forbidRegex(relative, /[\u3400-\u9fff]/u, "non-English runtime instruction prose");
   requireRegex(relative, /\*\*Response language\*\*:\s*Match the calling (?:skill's|user's) language/i, "caller-language response contract");
 }
-requireMarkers("docs/reviewers/README.md", ["Reviewer execution contract", "dispatch capability", "fresh subagent invocation", "never an agent instance", "fresh-subagent", "result-reuse", "observed reason", "host security approvals still apply", "fail closed"]);
+requireMarkers("docs/reviewers/README.md", ["Reviewer execution contract", "dispatch capability", "fresh subagent invocation", "never an agent instance", "fresh-subagent", "result-reuse", "observed reason", "host security approvals still apply", "fail closed", "dependency closure", "same task", "original full-population evidence"]);
 requireRegex("docs/reviewers/README.md", /Codex plugin skills[\s\S]{0,160}must use[\s\S]{0,160}subagent/i, "mandatory Codex reviewer index wording");
 for (const action of ["feature-init", "project-personalize", "spec-revise", "agents-md-revise"]) {
   requireMarkers(`docs/actions/${action}.md`, ["## Reviewer Execution", "../reviewers/README.md", "`Reviewer execution`", "blocking"]);
@@ -111,23 +118,27 @@ requireMarkers("docs/reviewers/decision-completeness-auditor.md", ["Decision Mat
 for (const relative of [
   "template/docs/specs/changes/_template/tasks.md",
   "template/docs/specs/changes/_template/tasks-light.md",
+  "docs/examples/full-feature-artifact.md",
+  "tests/fixtures/reviewer-smoke/base/docs/specs/changes/001-normalize-key/tasks.md",
+  "tests/fixtures/reviewer-smoke/light-base/docs/specs/changes/002-normalize-key-light/tasks.md",
 ]) {
   requireRegex(relative, /^- Verdict:/m, "receipt Verdict field");
-  requireRegex(relative, /^- Change:.*review-scope=\[exact paths reviewed.*endpoint-outputs=/m, "exact review scope and endpoint outputs");
+  requireRegex(relative, /^- Change:.*git=\[base=<commit SHA>; reviewed=<commit SHA>; dirty=no\].*git=\[base=<commit SHA>; reviewed=worktree; dirty=yes\].*endpoint-outputs=/m, "valid stable/dirty Git review identities and endpoint outputs");
   requireRegex(relative, /^- Checks/m, "receipt Checks field");
   requireRegex(relative, /^- Review execution:/m, "reviewer execution evidence field");
   requireRegex(relative, /^- Current truth:/m, "receipt Current truth field");
-  forbidMarkers(relative, ["coverage=", "confidence=", "Rule sources:", "drift ledger"]);
+  forbidMarkers(relative, ["coverage=", "confidence=", "Rule sources:", "drift ledger", "review-scope=", "population-hash"]);
 }
 requireRegex("template/docs/specs/changes/_template/tasks.md", /^- L2:.*baseline=\[.*only when non-empty/m, "compact full-lane L2 receipt");
 requireRegex("template/docs/specs/changes/_template/tasks.md", /^- L3:.*baseline=\[.*only when non-empty/m, "compact full-lane L3 receipt");
 forbidMarkers("template/docs/specs/changes/_template/tasks.md", ["applicable-rules=", "applicable-items=", "applicable-unverified="]);
-requireRegex("template/docs/specs/changes/_template/tasks-light.md", /^- L2:.*findings=\[.*applicable-rules=.*applicable-unverified=.*ambiguities=/m, "light-lane L2 evidence shape");
+requireRegex("template/docs/specs/changes/_template/tasks-light.md", /^- L2:.*baseline.*only when non-empty.*N\/A\(low-risk light lane; no L2 trigger after convention-scope triage/m, "conditional light-lane L2 evidence shape");
 requireRegex("template/docs/specs/changes/_template/tasks-light.md", /^- L3:.*verification=\[/m, "light-lane L3 verification field");
 requireMarkers("template/docs/specs/changes/_template/tasks-light.md", ["verification=[item#id: PASS|FAIL]"]);
 
 requireMarkers("docs/actions/feature-init.md", ["do not create a pseudo-lane", "Use full lane for high-risk or contract-shaped work", "Use light lane only when all are true"]);
 requireMarkers("docs/actions/feature-init.md", ["when the project uses such an optional declaration"]);
+requireMarkers("docs/actions/feature-init.md", ["not declared in current truth", "cross-session or multi-person handoff", "Do not create `tasks.md` merely because code is user-visible"]);
 requireMarkers("docs/actions/feature-init.md", ["normalizes an existing target-root symlink", "rejects symlinked destinations beneath the resolved root"]);
 requireMarkers("docs/actions/feature-done.md", ["Projects without this optional declaration", "do not need an empty path list"]);
 for (const relative of ["docs/actions/feature-init.md", "adapters/claude/skills/feature-init/SKILL.md", "adapters/codex/skills/feature-init/SKILL.md"]) {
@@ -167,9 +178,9 @@ requireMarkers("template/AGENTS.md", [
 ]);
 for (const relative of ["adapters/claude/skills/feature-init/SKILL.md", "adapters/codex/skills/feature-init/SKILL.md"]) {
   requireMarkers(relative, [
-    "Use before implementing a new feature or durable behavior change",
+    "may need tracked acceptance",
+    "Do not invoke for local reversible work with no durable artifact consumer",
     "direct/no-artifact, light tasks-only, or full spec/plan/tasks",
-    "initialize artifacts only when needed",
   ]);
 }
 forbidMarkers("template/AGENTS.md", ["{{HOOK_INDEX}}", ".claude/hooks/", ".codex/hooks.json", "High-Blast-Radius Paths", "None declared yet"]);
@@ -197,6 +208,8 @@ requireMarkers("adapters/codex/skills/spec-revise/SKILL.md", ["bundled `template
 requireMarkers("docs/quickstart.md", ["领域明确但文档尚不存在", "update pending", "只有领域归属未知", "area unresolved"]);
 forbidMarkers("docs/quickstart.md", ["current-truth check(仅当", "使用 feature spec + ADR"]);
 for (const relative of ["docs/quickstart.md", "docs/workflow.md"]) forbidMarkers(relative, ["复用有效缓存"]);
+requireMarkers("README.md", ["For immediate closure", "For a deferred sweep", "historical delivery evidence", "validates pending current-truth facts against the present state"]);
+requireMarkers("docs/cross-tool-methodology.md", ["未被 current truth 声明且局部/可逆/无契约/可在当前任务完成的行为小改", "低风险小改才进入 light lane", "同一任务内有证据的 result reuse"]);
 requireMarkers("template/docs/adr/README.md", ["ADR_REQUIRED"]);
 forbidMarkers("template/docs/adr/README.md", ["/agents-md-revise` 周期性点名", "零引用 + 60 天以上"]);
 for (const relative of ["docs/actions/agents-md-revise.md", "adapters/claude/skills/agents-md-revise/SKILL.md", "adapters/codex/skills/agents-md-revise/SKILL.md"]) {
@@ -213,17 +226,17 @@ for (const relative of [
   "adapters/codex/skills/feature-init/SKILL.md", "adapters/codex/skills/project-personalize/SKILL.md", "adapters/codex/skills/spec-revise/SKILL.md", "adapters/codex/skills/agents-md-revise/SKILL.md",
 ]) requireRegex(relative, /decision-completeness[- ]auditor/, "decision-completeness auditor reference");
 
-requireMarkers("docs/examples/reviewer-mutation-smoke.md", ["Known-bad mutation smoke", "feature-done", "release blocker"]);
+requireMarkers("docs/examples/reviewer-mutation-smoke.md", ["Known-bad mutation smoke", "feature-done", "release blocker", "Runtime scheduling smoke", "sequential fresh dispatches", "Spec-quality authorization smoke", "Pure check request", "Explicit conditional request", "`BORDERLINE` result"]);
 requireMarkers("tests/fixtures/reviewer-smoke/expected.json", ["known-bad", "clean"]);
-requireMarkers("scripts/check-reviewer-fixtures.cjs", ["reviewerExecutionReliable !== true", "missing reviewer execution evidence must BLOCK"]);
+requireMarkers("scripts/check-reviewer-fixtures.cjs", ["reviewerExecutionReliable !== true", "missing reviewer execution evidence must BLOCK", "l2Applicable must be an explicit boolean"]);
+requireMarkers("docs/actions/feature-archive.md", ["receipt-schema migration candidate", "without `Verdict:`", "never infer READY", "current-task READY", "ordinary filesystem rename", "move the directory back", "rerun `feature-done`"]);
+requireMarkers("adapters/claude/skills/feature-archive/SKILL.md", ["migration candidates", "dirty-worktree READY", "immutable reviewed commit SHA", "does not re-anchor it", "present implementation and successor changes", "ordinary filesystem rename", "move the directory back", "feature-done"]);
+requireMarkers("adapters/codex/skills/feature-archive/SKILL.md", ["migration candidates", "dirty-worktree READY", "immutable reviewed commit SHA", "does not re-anchor it", "present implementation and successor changes", "ordinary filesystem rename", "move the directory back", "$feature-done"]);
 for (const relative of [
-  "docs/examples/full-feature-artifact.md",
-  "tests/fixtures/reviewer-smoke/base/docs/specs/changes/001-normalize-key/tasks.md",
+  "docs/actions/feature-done.md",
+  "template/docs/specs/changes/_template/tasks-light.md",
   "tests/fixtures/reviewer-smoke/light-base/docs/specs/changes/002-normalize-key-light/tasks.md",
-]) requireRegex(relative, /^- Review execution:/m, "reviewer execution evidence field");
-requireMarkers("docs/actions/feature-archive.md", ["legacy candidate", "no `Verdict:`", "Never infer READY", "current task", "ordinary filesystem rename", "move the directory back", "rerun `feature-done`"]);
-requireMarkers("adapters/claude/skills/feature-archive/SKILL.md", ["current-task READY", "ordinary filesystem rename", "move the directory back", "feature-done"]);
-requireMarkers("adapters/codex/skills/feature-archive/SKILL.md", ["current-task READY", "ordinary filesystem rename", "move the directory back", "$feature-done"]);
+]) forbidMarkers(relative, ["conventions covered by direct checks"]);
 for (const relative of [
   "docs/actions/feature-archive.md",
   "adapters/claude/skills/feature-archive/SKILL.md",

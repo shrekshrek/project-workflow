@@ -30,7 +30,7 @@
 > 由 `/project-workflow:feature-done` 填。本节保留历史兼容标题,内容是会在端点回复中原样展示并由 archive/PR 消费的 delivery receipt。
 
 - Verdict:
-- Change:`review-scope=[exact paths reviewed by L2/L3]; base/worktree=[Git context when available]; endpoint-outputs=[tasks.md receipt, READY spec status when written]`
+- Change:`git=[base=<commit SHA>; reviewed=<commit SHA>; dirty=no]` 或 `git=[base=<commit SHA>; reviewed=worktree; dirty=yes]` (非 Git:`inputs=[explicit reviewed paths]`); `endpoint-outputs=[tasks.md receipt, READY spec status when written]`
 - Checks:`<command/assertion; exit/result; test totals>`
 - Review execution:`L2=<reviewer; mode=fresh-subagent|result-reuse|main-session fallback; status; fallback-reason=none|exact reason>; L3=<same shape>`
 - L2:`verdict; baseline=[convention sources]; add findings/unverified/ambiguities only when non-empty`

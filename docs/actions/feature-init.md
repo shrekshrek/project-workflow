@@ -5,11 +5,11 @@ Canonical P2 action for starting a tracked feature artifact under `docs/specs/ch
 ## Use When
 
 - Beginning a feature, API/data model change, architecture change, or multi-file work that needs explicit requirements before implementation.
-- A small change still benefits from a numbered task/proof artifact.
+- A small change benefits from a durable acceptance checklist, cross-session handoff, or current-truth tracking.
 
 Do not use this action when the task does not need a new project-workflow artifact. Tiny bugfixes, wording/style tweaks, local test expectation fixes, low-risk documentation edits, and implementation under an accepted spec should continue directly and close with checks.
 
-**Behavior-change floor**: a change that alters user-visible behavior or a durable rule already declared in `docs/specs/<area>.md` takes **at least the light lane** — domain docs update only via `feature-done` → `feature-archive`.
+**Behavior-change floor**: a change to user-visible behavior or a durable rule **already declared** in `docs/specs/<area>.md` takes **at least the light lane** — domain docs update only via `feature-done` → `feature-archive`. A local, low-risk user-visible change that is not declared in current truth does not by itself require an artifact.
 
 Do not use for mid-implementation frozen-spec changes; use [`spec-revise`](spec-revise.md). Do not write implementation code during this action.
 
@@ -25,7 +25,9 @@ Read the active tree only: `docs/specs/changes/archive/` is closed history — e
 
 ## Lane Classification
 
-First decide whether the task needs a new project-workflow artifact at all. If no durable artifact is useful, or an accepted spec already covers the work, do not create a pseudo-lane; skip this action and implement directly under the applicable project conventions and checks.
+First decide whether the task needs a new project-workflow artifact at all. If no durable artifact is useful, or an accepted spec already covers the work, do not create a pseudo-lane; skip this action and implement directly under the applicable project conventions and checks. Direct work may include a bounded user-visible behavior change when it is local, reversible, not declared in current truth, contract-free, and finishable in the current task with proportionate checks.
+
+Create a light artifact only when its durable checklist has a consumer: cross-session or multi-person handoff, several acceptance steps worth retaining, an explicit audit/release need, or a pending current-truth update. Do not create `tasks.md` merely because code is user-visible or touches several closely related files.
 
 When an artifact is useful, choose between two lanes. Use full lane for high-risk or contract-shaped work. Use light lane only when all are true:
 

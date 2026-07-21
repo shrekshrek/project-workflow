@@ -818,7 +818,7 @@ project-workflow 对模块**长什么样**有 opinionated 偏好(不强制):
 
 ```
 [P0 完成]
-   ├─ tiny/local 或 accepted-spec implementation → 直接实施
+   ├─ tiny/local/可逆/无契约/当前任务可完成的低风险行为小改 或 accepted-spec implementation → 直接实施
    └─ 需要追踪 → feature-init(no artifact / light / full)
           ├─ light → tasks + 验证
           └─ full → 与用户补完 spec/plan/tasks → spec-quality-check
@@ -826,9 +826,9 @@ project-workflow 对模块**长什么样**有 opinionated 偏好(不强制):
                       实施
              (契约真错才 spec-revise)
                          ↓
-                    feature-done
-                         ↓
-              PR/merge → feature-archive sweep
+              ┌─ 同任务:feature-done → feature-archive → PR/merge
+              └─ 延后:提交实现并记录 commit SHA(可来自 PR head) → feature-done
+                       → 提交 endpoint outputs → feature-archive sweep
 
 例外:历史 active specs 冲突才 spec-reconcile;客观约定 drift 才 agents-md-revise。
 ```
@@ -840,7 +840,7 @@ project-workflow 对模块**长什么样**有 opinionated 偏好(不强制):
 | `/spec-quality-check` | **实施前** | **spec 本身**够不够好(7 问质量) |
 | `/feature-done` 的 L3 层 | **实施后端点** | **代码**做了 spec 说要做的事吗(code-vs-spec drift) |
 
-**局部复查怎么做**:`feature-done` 是 L1+L2+L3+proof-bundle 的唯一端点入口,不再拆分独立的 helper 命令。需要单独重跑某一层时:L1 直接跑项目 check 命令;L2 / L3 按 [`agents-md-reviewer`](reviewers/agents-md-reviewer.md) / [`spec-reviewer`](reviewers/spec-reviewer.md) 执行;proof bundle 修补则重跑 `feature-done`(幂等)。
+**局部复查怎么做**:`feature-done` 是 L1+适用的 L2/L3+proof-bundle 的唯一端点入口。同一任务内保留原始完整证据且未影响其余 population 时,修复 finding 后只复查 finding 与依赖闭包;跨任务、证据缺失或 scope/规约/规则输入实质变化时重跑完整 population。L1 直接跑项目 check 命令;L2 / L3 按 [`agents-md-reviewer`](reviewers/agents-md-reviewer.md) / [`spec-reviewer`](reviewers/spec-reviewer.md) 执行;proof bundle 修补则重跑 `feature-done`。
 
 **详细机制见**:[§3.1 规划阶段](#31-规划阶段)(决策清单)/ [§3.2 实现阶段](#32-实现阶段不要打断-ai-执行流)(不打断纪律)/ [§3.3 交付阶段 delivery receipt](#33-交付阶段delivery-receipt) / [§3.4 与平台流程协作](#34-与平台流程的协作) / [§3.5 中途修订](#35-开发中发现-specplan-错怎么办) / [§3.7 7 问 quality](spec-driven.md#37-specplan-写完后的质量自检7-问-checklist)。
 
@@ -850,9 +850,9 @@ project-workflow 对模块**长什么样**有 opinionated 偏好(不强制):
 
 | 情形 | 路径 |
 |---|---|
-| tiny/local 或已确认 spec 覆盖实施 | 不建 artifact,直接做并验证 |
+| tiny/local、未声明 current truth、可逆、无契约且可在当前任务完成的低风险行为小改,或已确认 spec 覆盖实施 | 不建 artifact,直接做并验证 |
 | 已声明 current-truth 行为发生变化 | 无论 diff 多小,至少轻车道 |
-| 同一职责内、低风险、无契约/新模块/高爆破路径 | 轻车道 `tasks.md` |
+| 同一职责内、低风险、无契约/新模块/高爆破路径,且交接/多步验收/审计/发布需要持久清单 | 轻车道 `tasks.md` |
 | API/schema、迁移、安全/权限、跨模块、新模块或高爆破路径 | 全道 `spec.md + plan.md + tasks.md` |
 
 不确定 UI 文案、样式、局部 refactor 或测试写法不强制升级全道;业务目标不确定时先问用户。多模块工作在 plan 做 Sibling Alignment,所有已定技术选择进入 Prior decisions。
@@ -889,9 +889,9 @@ project-workflow 对模块**长什么样**有 opinionated 偏好(不强制):
 
 ```
 Verdict       —— 用户 / PR / archive
-Change        —— 一行 identity;完整 diff 留给 Git
+Change        —— Git base/reviewed/dirty identity;完整路径与 diff 由 Git 推导
 Checks        —— 命令、exit、test totals
-Review execution —— reviewer、subagent/fallback mode、状态与 fallback reason
+Review execution —— 适用 reviewer、subagent/fallback/N/A mode、状态与 reason
 L2 / L3       —— verdict + baseline + findings/unverified/ambiguities;full PASS 不重复 reviewer 的 exact-ID 枚举
 Current truth —— feature-archive 是否需要 merge
 Open questions / Drift —— 仅非空时保留
@@ -899,7 +899,9 @@ Open questions / Drift —— 仅非空时保留
 
 同一 receipt 必须在端点回复中直接展示,不能只写文件路径。PR 可原样复制;feature-archive 消费 Verdict/Current truth;P4 消费 Drift。
 
-Full-lane reviewer 仍在运行时枚举 exact changed paths 与全部 applicable rule/spec IDs,`feature-done` 必须先验证该 population 完整,再把结果压缩为 baseline + exceptions 落盘;receipt 不另存完整 applicable-ID 字段。压缩的是永久记录,不是 review 深度。轻车道没有独立 spec 基线,继续在 receipt 保留 L2 applicable IDs 与逐项验证结果。
+Git identity 只允许两种组合:精确 commit SHA 对应 `dirty=no`,当前 worktree 对应 `dirty=yes`;identity 在 endpoint 自己写 receipt/status 之前冻结。PR head 只作为取得当时 commit SHA 的来源,不持久化可移动的分支引用。稳定 receipt 是对历史交付快照的证明,不会仅因分支继续前进而失效;它也不自动证明今天的产品现状。`feature-archive` 对 pending current truth 另行核对当前实现、领域文档与后继变更,dirty-worktree receipt 则只在原任务内有效。
+
+适用 reviewer 仍在运行时枚举 exact changed paths 与全部 applicable rule/spec IDs,`feature-done` 必须先验证该 transient population 完整,再把结果压缩为 Git identity + baseline + exceptions 落盘;receipt 不另存手工路径清单、population hash 或完整 applicable-ID 字段。压缩的是永久记录,不是 review 深度。轻车道没有独立 spec 基线,必须保留逐项验证结果;L2 仅在项目明确要求、跨约定 scope/共享表面或存在无法机械消解的约定风险时触发。
 
 **关键设计**:`feature-done` 是端点**组合点**,proof bundle 是证据**落点** —— reviewer 各管各,组合在端点 action 发生,结果写回 proof bundle。不要把 L1/L2/L3 的规则源混成一个泛泛的"统一检查"。
 
@@ -907,7 +909,7 @@ Full-lane reviewer 仍在运行时枚举 exact changed paths 与全部 applicabl
 
 Canonical verdict 由 [`feature-done` action](actions/feature-done.md) 定义:检查失败或仍有可修的 L2/L3/current-truth finding = `NEEDS WORK`;必要输入/环境缺失导致检查无法可靠运行 = `BLOCKED`;全部闭环 = `READY`。本文不复制判定表,避免与 action 漂移。
 
-轻车道 feature 无 frozen `spec.md`,因此 L3 = N/A;但 proof bundle 必须包含 `## 验证` 全过。项目若已选择声明不变量路径,再反核实际 diff;命中时 verdict 至少 🟡 NEEDS WORK,并应升级为全道补 spec。未采用该可选清单的项目不需要空章节。
+轻车道 feature 无 frozen `spec.md`,因此 L3 = N/A;L2 按风险触发,低风险时显式记 `N/A`;proof bundle 必须包含 `## 验证` 全过。项目若已选择声明不变量路径,再反核实际 diff;命中时 verdict 至少 🟡 NEEDS WORK,并应升级为全道补 spec。未采用该可选清单的项目不需要空章节。
 
 > 团队 / 外部协作场景:可自行加 `.github/PULL_REQUEST_TEMPLATE.md`,内容同 5 项 —— 见 [§1.9](#19-平台协作默认不铺模板)。project-workflow 默认不预置。
 
@@ -1058,14 +1060,14 @@ P4 范围声明说"只动 AGENTS.md",但 AGENTS.md 有 3 层(项目/tier/模块)
 
 | 模式 | 触发 | 工具 |
 |---|---|---|
-| **A. 主动 refresh** | 用户感知到 drift / 发现客观不一致 / 大依赖升级后 | [`agents-md-revise`](actions/agents-md-revise.md) —— 扫客观 drift,逐条 apply / skip / stop,生成已批准 patch + commit 草稿 |
+| **A. 主动 refresh** | 用户感知到 drift / 发现客观不一致 / 大依赖升级后 | [`agents-md-revise`](actions/agents-md-revise.md) —— 扫客观 drift,在 consolidated preview 中标记 apply / skip / stop,一次批准后应用并生成 commit 草稿 |
 | **B. 端点反思**(顺手) | feature 完成时 | `feature-done` 只把可行动但未沉淀的约定写入 receipt 的可选 `Drift`;要持久修订时由用户调用 `agents-md-revise` |
 
 > 历史上还有 "模式 C 信号触发 hook" —— **project-workflow 不实施**,理由见 §5.1 注。
 
 ### 5.3 工具流程概览
 
-精确流程见 canonical [`agents-md-revise` action](actions/agents-md-revise.md):比较 A 类约定与客观仓库状态,只提出有证据的窄 patch,逐条由用户决定后应用,并保留 commit 给用户。Runtime skill 只负责在具体宿主中执行该契约。
+精确流程见 canonical [`agents-md-revise` action](actions/agents-md-revise.md):比较 A 类约定与客观仓库状态,只提出有证据的窄 patch;物质歧义先澄清,其余改动集中预览并经一次批准后应用。Runtime skill 只负责宿主执行细节。
 
 ### 5.4 与平台流程的协作
 
@@ -1286,7 +1288,7 @@ LLM 的 attention 是 quadratic 或 sub-linear cost over context length。当 co
 | L2 | reviewer agent + AGENTS.md 作 context | 端点(P3 proof bundle) |
 | L3 | reviewer agent + spec.md 作 context + 测试 | 端点(P3 proof bundle) |
 
-**组合在端点 action**:`feature-done` 是唯一端点组合点,顺序聚合 L1 / L2 / L3 / proof bundle 并给出单一 verdict。所有 adapter 只暴露这一个端点入口;局部复查通过重跑 `feature-done`(幂等 + 缓存复用)或在主会话直接 dispatch reviewer sub-agent 完成,不设第二套 helper 命令。
+**组合在端点 action**:`feature-done` 是唯一端点组合点。L1、适用的 L2/L3 独立执行;full lane 的 L2/L3 在容量允许时并行 fresh dispatch,容量不足时顺序执行,最后统一聚合 proof bundle 与 verdict。局部复查通过重跑 `feature-done`、same-task result reuse 或直接 dispatch reviewer sub-agent 完成,不设第二套 helper 命令。
 
 #### L2 / L3 Reviewer 承诺
 

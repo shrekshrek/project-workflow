@@ -10,14 +10,14 @@
     "forbiddenPlantPatterns": ["/api/", "verify-token", "reset_token"],
     "sentinel": "docs/specs/changes/002-existing-thing/tasks.md"
   },
-  "light-lane-small": {
+  "no-artifact-local-behavior": {
     "base": "base-numbered",
     "prompt": "feature-init profile-avatar-fallback: 用户头像加载失败时显示 initials fallback。纯前端 additive 小改,不碰 API/schema,不碰 billing。",
     "prescribedAnswers": {},
-    "lane": "light",
-    "expectDir": "docs/specs/changes/004-profile-avatar-fallback",
+    "lane": "none",
+    "expectDir": null,
     "shape": null,
-    "mustRetainTodoMarker": true,
+    "mustRetainTodoMarker": false,
     "forbiddenPlantPatterns": [],
     "sentinel": "docs/specs/changes/002-existing-thing/tasks.md"
   },

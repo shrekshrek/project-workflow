@@ -18,8 +18,8 @@ This file is the cross-tool source of truth for working in this repository. Keep
 
 ## Change Workflow
 
-- Make tiny, local, low-risk fixes directly and report the checks run.
-- Before implementing any other new feature or durable behavior change, use the host's `feature-init` action to choose no-artifact/direct work, a light tracked change, or a full spec/plan/tasks change.
+- Make tiny, local, low-risk fixes directly, including reversible behavior work not declared in current truth, and report the checks run.
+- When a new feature or durable behavior change may need tracked acceptance, cross-session handoff, current-truth synchronization, or contract/risk protection, use the host's `feature-init` action to choose no-artifact/direct work, a light tracked change, or a full spec/plan/tasks change.
 - Resolve current behavior from `docs/specs/` and the selected active feature; exclude `docs/specs/changes/archive/` unless tracing history.
 - If direct or light work grows into contract-shaped, cross-module, architecture, data, security, or other high-risk scope, stop and upgrade the lane before continuing.
 

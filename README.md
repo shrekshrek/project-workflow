@@ -38,7 +38,7 @@ See [`docs/cross-tool-methodology.md`](docs/cross-tool-methodology.md).
 | Start a project without guessing the stack | P0 neutral six-file baseline; personalize from repository evidence after a scaffold exists |
 | Start a feature without losing requirements in chat | P2 `spec.md` / `plan.md` / `tasks.md` |
 | Keep implementation aligned while coding | spec revise SOP, module-boundary handling, environment-enforced rules |
-| Know whether a feature is ready | L1/L2/L3 review + delivery receipt |
+| Know whether a feature is ready | L1 + applicable L2/L3 review + delivery receipt |
 | Keep the codebase from drifting over months | P4 `agents-md-revise` refresh of project conventions |
 
 The intended outcome is practical: fewer repeated reminders, fewer unreviewed AI changes, clearer handoff artifacts, and project rules that stay close to the codebase as it evolves.
@@ -114,7 +114,7 @@ codex plugin add project-workflow@project-workflow
 
 Start a new Codex task after installing or updating so the refreshed skills are loaded.
 
-If an older delivered feature still has a checkbox-style `## Proof Bundle` without `Verdict:`, rerun `feature-done` before archiving it. `feature-archive` sweep reports these as legacy migration candidates and never guesses READY from old checkboxes.
+Before archiving, rerun `feature-done` for an older `## Proof Bundle` that either lacks `Verdict:` or has READY but lacks the current `git=[...]` / non-Git `inputs=[...]` identity, including the earlier `review-scope` / `base/worktree` schema. `feature-archive` sweep lists these as receipt-schema migration candidates and never infers READY from legacy fields.
 
 <details>
 <summary>Local development install (repo contributors only)</summary>
@@ -194,10 +194,12 @@ Most work does **not** use all nine actions. Initialize once, then use the daily
 | Frequency | Action | Purpose |
 |---|---|---|
 | Once, greenfield | `project-init` | Create the neutral six-file project baseline. |
-| Per tracked change | `feature-init` | Choose no artifact, light tasks-only, or full spec/plan/tasks. Tiny/local work can proceed directly. |
+| Per tracked change | `feature-init` | Choose no artifact, light tasks-only, or full spec/plan/tasks. Local, reversible, contract-free behavior work can proceed directly when current truth does not declare it, it fits the current task, and no durable artifact has a consumer. |
 | Full lane only | `spec-quality-check` | Check the collaboratively completed draft before implementation. |
-| End of tracked change | `feature-done` | Run L1/L2/L3, current-truth check, and write one compact delivery receipt. |
+| End of tracked change | `feature-done` | Run L1, applicable L2/L3, current-truth check, and write one Git-native compact delivery receipt. |
 | Periodic sweep | `feature-archive` | Merge pending current truth and move delivered changes out of the active tree. |
+
+Choose lifecycle ordering by archive timing. For immediate closure, run `feature-done` on the current worktree, then `feature-archive` in the same task before committing. For a deferred sweep, first create the implementation commit (or capture the exact commit SHA at the PR head), run `feature-done` against that immutable SHA, and commit its receipt/status outputs. The stable receipt remains historical delivery evidence when the branch later advances; `feature-archive` separately validates pending current-truth facts against the present state. A dirty-worktree receipt is never made reusable merely by committing it later.
 
 Exception and maintenance actions appear only when their condition exists:
 
@@ -214,7 +216,7 @@ Exception and maintenance actions appear only when their condition exists:
 
 ## Reviewer methodology
 
-[`docs/reviewers/`](docs/reviewers/) is the canonical layer for the six reviewer, auditor, and research roles. Claude exposes thin named-agent adapters in [`adapters/claude/agents/`](adapters/claude/agents/); Codex skills read the same bundled reviewer specs. At an applicable dispatch boundary, both adapters must use a fresh native subagent invocation whenever dispatch and capacity are available; they may reuse an explicitly allowed, unchanged completed result, but never retask an existing reviewer instance. Main-session fallback is limited to unavailable/failed dispatch or exhausted capacity and must carry explicit execution evidence. See the [reviewer index](docs/reviewers/README.md) for the role map and fail-closed contract.
+[`docs/reviewers/`](docs/reviewers/) is canonical for the six reviewer, auditor, and research roles. The owning action decides applicability. Independent applicable reviewers run in parallel when capacity permits; otherwise they use sequential fresh dispatch. Same-task focused re-review requires retained full-population evidence. Result reuse never reuses an agent instance, and fallback requires explicit execution evidence. See the [reviewer index](docs/reviewers/README.md).
 
 ## Maintaining generated plugin packages
 

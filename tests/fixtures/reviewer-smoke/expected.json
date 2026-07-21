@@ -3,7 +3,8 @@
     "base": "base",
     "case": "clean",
     "endpointVerdict": "READY",
-    "requiredFindingConcepts": []
+    "requiredFindingConcepts": [],
+    "l2Applicable": true
   },
   "known-bad": {
     "base": "base",
@@ -13,13 +14,15 @@
       "matching test filename",
       "empty string behavior",
       "empty input verification"
-    ]
+    ],
+    "l2Applicable": true
   },
   "light-clean": {
     "base": "light-base",
     "case": "light-clean",
     "endpointVerdict": "READY",
-    "requiredFindingConcepts": []
+    "requiredFindingConcepts": [],
+    "l2Applicable": false
   },
   "light-known-bad": {
     "base": "light-base",
@@ -27,6 +30,7 @@
     "endpointVerdict": "NEEDS WORK",
     "requiredFindingConcepts": [
       "light-lane verification"
-    ]
+    ],
+    "l2Applicable": false
   }
 }

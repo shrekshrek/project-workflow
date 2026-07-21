@@ -10,8 +10,8 @@ const fixtureRoot = path.join(root, "tests/fixtures/reviewer-smoke");
 const expected = JSON.parse(fs.readFileSync(path.join(fixtureRoot, "expected.json"), "utf8"));
 const problems = [];
 
-function aggregateVerdict({ l1Passed, l2Blocking, l3Blocking, lightVerificationPassed, receiptReliable, reviewerExecutionReliable }) {
-  if (!receiptReliable || reviewerExecutionReliable !== true) return "BLOCKED";
+function aggregateVerdict({ l1Passed, l2Blocking, l3Blocking, lightVerificationPassed, receiptReliable, reviewerExecutionApplicable = true, reviewerExecutionReliable }) {
+  if (!receiptReliable || (reviewerExecutionApplicable && reviewerExecutionReliable !== true)) return "BLOCKED";
   if (!l1Passed) return "NEEDS WORK";
   if (l2Blocking || l3Blocking || lightVerificationPassed === false) return "NEEDS WORK";
   return "READY";
@@ -23,10 +23,24 @@ const missingExecutionEvidenceVerdict = aggregateVerdict({
   l3Blocking: false,
   lightVerificationPassed: true,
   receiptReliable: true,
+  reviewerExecutionApplicable: true,
   reviewerExecutionReliable: false,
 });
 if (missingExecutionEvidenceVerdict !== "BLOCKED") {
   problems.push(`missing reviewer execution evidence must BLOCK, got ${missingExecutionEvidenceVerdict}`);
+}
+
+const allowedLightNATestVerdict = aggregateVerdict({
+  l1Passed: true,
+  l2Blocking: false,
+  l3Blocking: false,
+  lightVerificationPassed: true,
+  receiptReliable: true,
+  reviewerExecutionApplicable: false,
+  reviewerExecutionReliable: false,
+});
+if (allowedLightNATestVerdict !== "READY") {
+  problems.push(`an inapplicable light-lane reviewer must not block READY, got ${allowedLightNATestVerdict}`);
 }
 
 function materialize(name, config) {
@@ -37,6 +51,10 @@ function materialize(name, config) {
 }
 
 for (const [name, config] of Object.entries(expected)) {
+  if (typeof config.l2Applicable !== "boolean") {
+    problems.push(`${name}: l2Applicable must be an explicit boolean`);
+    continue;
+  }
   const target = materialize(name, config);
   try {
     const test = spawnSync(process.execPath, ["--test"], { cwd: target, encoding: "utf8" });
@@ -86,6 +104,7 @@ for (const [name, config] of Object.entries(expected)) {
       l3Blocking: concepts.includes("empty string behavior") || concepts.includes("empty input verification"),
       lightVerificationPassed,
       receiptReliable: true,
+      reviewerExecutionApplicable: config.l2Applicable,
       reviewerExecutionReliable: true,
     });
     if (verdict !== config.endpointVerdict) problems.push(`${name}: deterministic aggregate expected ${config.endpointVerdict}, got ${verdict}`);
