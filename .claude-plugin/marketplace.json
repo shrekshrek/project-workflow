@@ -1,0 +1,15 @@
+{
+  "name": "project-workflow",
+  "owner": {
+    "name": "shrek.wang"
+  },
+  "metadata": {
+    "description": "project-workflow v3 — spec-driven feature development blueprint for AI-assisted coding"
+  },
+  "plugins": [
+    {
+      "name": "project-workflow",
+      "source": "./claude/project-workflow"
+    }
+  ]
+}
