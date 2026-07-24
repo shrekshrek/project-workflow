@@ -29,8 +29,10 @@ This file is the cross-tool source of truth for working in this repository. Keep
 - Preserve unrelated user changes.
 - Prefer existing project commands and conventions over invented defaults.
 - Keep generated files and historical artifacts unchanged unless the task explicitly targets them.
-- Follow KISS: make the smallest change that correctly completes the current task; avoid speculative abstraction, unrelated refactors, or scope beyond what was asked.
-- Run the narrowest relevant mechanical checks before claiming completion.
+- Follow KISS: make the smallest sufficient, coherent change that solves the task and preserves relevant contracts; avoid speculative abstraction, unrelated refactors, and scope expansion.
+- For domain-rich code, prefer domain-oriented modules and consistent language across specs, code, APIs, and tests.
+- Respect established module boundaries: keep behavior and invariants with their owner, and use public interfaces instead of another module's internals.
+- Update necessary tests and documentation, then run the narrowest relevant checks before claiming completion.
 - Cite concrete evidence when a required check cannot run.
 
 ## Boundaries
