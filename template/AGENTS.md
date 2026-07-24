@@ -29,6 +29,7 @@ This file is the cross-tool source of truth for working in this repository. Keep
 - Preserve unrelated user changes.
 - Prefer existing project commands and conventions over invented defaults.
 - Keep generated files and historical artifacts unchanged unless the task explicitly targets them.
+- Follow KISS: make the smallest change that correctly completes the current task; avoid speculative abstraction, unrelated refactors, or scope beyond what was asked.
 - Run the narrowest relevant mechanical checks before claiming completion.
 - Cite concrete evidence when a required check cannot run.
 
