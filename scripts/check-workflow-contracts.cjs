@@ -61,6 +61,10 @@ forbidMarkers("adapters/claude/skills/feature-done/SKILL.md", [
 requireMarkers("adapters/claude/skills/feature-done/SKILL.md", ["agents-md-reviewer", "spec-reviewer", "## Proof Bundle", "same-session", "in parallel when capacity permits", "single-slot capacity is not fallback", "exact commit SHA with `dirty=no`", "current worktree with `dirty=yes`", "only allowed endpoint-output difference"]);
 requireMarkers("adapters/codex/skills/feature-done/SKILL.md", ["agents-md-reviewer.md", "spec-reviewer.md", "## Proof Bundle", "same-session", "never reviewer instances", "result-reuse", "in parallel when capacity permits", "single-slot capacity is not fallback", "exact commit SHA with `dirty=no`", "current worktree with `dirty=yes`", "only allowed endpoint-output difference"]);
 requireMarkers("docs/actions/feature-done.md", ["Light-lane verification", "transient validation evidence", "receipt-only edits", "Resolved durable behavior with no existing area document is `update pending`", "area unresolved", "exact on-disk `## Proof Bundle`", "Persist only fields with a downstream consumer"]);
+requireMarkers("docs/actions/feature-done.md", ["explicit Verification checks", "standard mechanical", "changed project scope", "repository-wide or release suites", "Do not treat every command listed"]);
+for (const relative of ["adapters/claude/skills/feature-done/SKILL.md", "adapters/codex/skills/feature-done/SKILL.md"]) {
+  requireMarkers(relative, ["explicit Verification checks", "changed project scopes", "repository-wide/release suites", "never treat every root command as mandatory"]);
+}
 forbidMarkers("docs/actions/feature-done.md", ["reproducible diff identity", "content fingerprint"]);
 requireMarkers("docs/actions/feature-done.md", ["independently executable", "non-execution only", "Reviewer Execution", "../reviewers/README.md#reviewer-execution-contract", "Missing execution evidence for an applicable reviewer blocks `READY`"]);
 requireMarkers("docs/actions/feature-done.md", ["exact changed-file/applicable-item validation", "never infer coverage from `findings=none`", "A PASS never persists applicable IDs or populations", "manual file populations", "population hashes", "dependency closure"]);
@@ -131,12 +135,20 @@ for (const relative of [
 }
 requireRegex("template/docs/specs/changes/_template/tasks.md", /^- L2:.*baseline=\[.*only when non-empty/m, "compact full-lane L2 receipt");
 requireRegex("template/docs/specs/changes/_template/tasks.md", /^- L3:.*baseline=\[.*only when non-empty/m, "compact full-lane L3 receipt");
+requireMarkers("template/docs/specs/changes/_template/tasks.md", ["不记录逐轮命令输出", "已被后续结果取代", "最终 checks 只进"]);
+requireMarkers("docs/spec-driven.md", ["不记录逐轮命令输出", "已被后续结果取代", "最终检查"]);
 forbidMarkers("template/docs/specs/changes/_template/tasks.md", ["applicable-rules=", "applicable-items=", "applicable-unverified="]);
 requireRegex("template/docs/specs/changes/_template/tasks-light.md", /^- L2:.*baseline.*only when non-empty.*N\/A\(low-risk light lane; no L2 trigger after convention-scope triage/m, "conditional light-lane L2 evidence shape");
 requireRegex("template/docs/specs/changes/_template/tasks-light.md", /^- L3:.*verification=\[/m, "light-lane L3 verification field");
 requireMarkers("template/docs/specs/changes/_template/tasks-light.md", ["verification=[item#id: PASS|FAIL]"]);
 
 requireMarkers("docs/actions/feature-init.md", ["do not create a pseudo-lane", "Use full lane for high-risk or contract-shaped work", "Use light lane only when all are true"]);
+requireMarkers("tests/fixtures/feature-init-scenarios/expected.json", [
+  "no-artifact-accepted-spec-implementation",
+  "no-artifact-multifile-refactor",
+  "light-existing-contract-ui-handoff",
+  "full-docs-only-cross-module-contract",
+]);
 requireMarkers("docs/actions/feature-init.md", ["when the project uses such an optional declaration"]);
 requireMarkers("docs/actions/feature-init.md", ["not declared in current truth", "cross-session or multi-person handoff", "Do not create `tasks.md` merely because code is user-visible"]);
 requireMarkers("docs/actions/feature-init.md", ["normalizes an existing target-root symlink", "rejects symlinked destinations beneath the resolved root"]);

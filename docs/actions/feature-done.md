@@ -20,7 +20,11 @@ This action owns the endpoint gate: L1, applicable L2, full-lane L3, current-tru
 
 ## Review Layers
 
-- L1 Mechanical: run the project's check/lint/type/test commands.
+- L1 Mechanical: run the feature artifact's explicit Verification checks plus the standard mechanical
+  commands for each changed project scope. Expand to repository-wide or release suites only when the
+  feature spec requires them, applicable project conventions explicitly require them for this change,
+  or a changed shared surface has a project-defined shared check. Do not treat every command listed in a
+  root convention file as mandatory for every feature.
 - L2 Project conventions: always required for full lane. For light lane, run it only when the user/project explicitly requires it, the diff spans more than one applicable convention scope or a shared project-wide surface, or a plausible qualitative convention conflict cannot be resolved mechanically. Otherwise record `N/A(low-risk light lane; no L2 trigger after convention-scope triage)`.
 - L3 Change-spec compliance: compare implementation to `docs/specs/changes/.../spec.md` via `spec-reviewer`; **brownfield** = Delta + Constraints + Verification; **greenfield** = §1–§4; domain docs are context only, not the L3 baseline.
 - Light-lane verification: when no `spec.md` exists, execute or mechanically check every item under `tasks.md` `## 验证`; L3 remains N/A, but an unverified or failed item blocks READY.

@@ -514,7 +514,7 @@ paths:
 
 ### 1.7 Hooks 初始配置
 
-P0 只有在确认存在 <5 秒、支持单文件参数且不会扩大写范围的命令时才 materialize hook adapter;否则项目内不生成 hook script/mapping,端点 L1 由 `feature-done` 跑全量 command。Plugin template 保留 hook source,不是目标项目里的 no-op scaffold。
+P0 只有在确认存在 <5 秒、支持单文件参数且不会扩大写范围的命令时才 materialize hook adapter;否则项目内不生成 hook script/mapping,端点 L1 由 `feature-done` 跑 feature 明确 Verification 和变更项目的标准命令;全仓/发布套件只由 spec、适用项目约定或共享面变更触发。Plugin template 保留 hook source,不是目标项目里的 no-op scaffold。
 
 > [docs/gotchas.md](gotchas.md) 是 plugin 自身从一个 fullstack 实例沉淀的证据库,只按当前栈需要查阅。`project-init` 生成的项目使用短的 project-local gotchas ledger,初始为空;只有真实复现并验证过的故障才写入,避免把 FastAPI/pnpm 等经验复制进无关项目。
 
@@ -954,7 +954,7 @@ Canonical [`spec-revise` action](actions/spec-revise.md) 定义修订 SOP:先停
 
 | 层 | 规则来源 | 检查什么 | 检查机制 | 时机 |
 |---|---|---|---|---|
-| **L1 机械层** | tool config(lint/type/test)+ 语言/团队通用卫生规则 | 代码机械合规吗?(lint/type/test/format) | hook(保存时单文件 lint+format,**自动改**)+ `feature-done` 端点全量 check(单独重跑 = 直接跑项目 check 命令) | 保存后 + 端点 |
+| **L1 机械层** | tool config(lint/type/test)+ 语言/团队通用卫生规则 | 代码机械合规吗?(lint/type/test/format) | hook(保存时单文件 lint+format,**自动改**)+ `feature-done` 端点跑 feature Verification 与变更项目标准 check;全仓/发布套件按风险触发(单独重跑 = 直接跑适用 check 命令) | 保存后 + 端点 |
 | **L2 项目约定** | root/nested `AGENTS.md`;active adapter 可补 host-specific convention files | 代码长得像这个项目吗? | linter + agent review | hook + 端点 |
 | **L3 功能规约** | `docs/specs/changes/<NNN>/spec.md` | 代码做了说要做的事吗? | 测试 + agent review + 人审 | 交付时 |
 
@@ -1284,7 +1284,7 @@ LLM 的 attention 是 quadratic 或 sub-linear cost over context length。当 co
 
 | 层 | 工具 | 时机 |
 |---|---|---|
-| L1 | hook(eslint/ruff/gofmt,保存时单文件 lint+format,**自动改文件**)+ endpoint check(默认由 `feature-done` 跑;单独重跑 = 直接跑项目 check 命令)| 保存后 + 端点 |
+| L1 | hook(eslint/ruff/gofmt,保存时单文件 lint+format,**自动改文件**)+ endpoint check(默认由 `feature-done` 跑 feature Verification + 变更项目标准命令;全仓/发布套件按风险触发;单独重跑 = 直接跑适用 check 命令)| 保存后 + 端点 |
 | L2 | reviewer agent + AGENTS.md 作 context | 端点(P3 proof bundle) |
 | L3 | reviewer agent + spec.md 作 context + 测试 | 端点(P3 proof bundle) |
 

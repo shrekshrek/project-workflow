@@ -10,7 +10,10 @@ Match the user's language. Read `${CLAUDE_PLUGIN_ROOT}/docs/actions/feature-done
 Claude execution details:
 
 - Resolve `$ARGUMENTS` through the shared active-feature rules; exclude `archive/`. Use `spec.md` presence to distinguish full and light lanes.
-- Run project checks with Bash and capture executable evidence even when another independent layer fails.
+- Run the artifact's explicit Verification checks and standard mechanical commands for changed project scopes
+  with Bash. Expand to repository-wide/release suites only for canonical spec, convention, or
+  changed-shared-surface triggers; never treat every root command as mandatory. Capture executable evidence
+  even when another independent layer fails.
 - Dispatch fresh `agents-md-reviewer` / `spec-reviewer` agents for applicable boundaries under the canonical execution contract. Full lane requires both: dispatch them in parallel when capacity permits, otherwise sequentially; single-slot capacity is not fallback. Light lane uses conditional L2 and always records L3 as N/A. L2 may include only project-root `.claude/rules/`, never user-level `~/.claude/rules/` unless the user explicitly selects them.
 - Use focused re-review only in the same task while the original full-population evidence remains available and unaffected inputs are unchanged. Otherwise rerun the full population. Reuse same-session results only when scope, all reviewer inputs, and the applicable population are provably unchanged; the declared receipt/status write is the only allowed endpoint-output difference. State reuse explicitly.
 - Reviewers are read-only. This skill may update only the canonical `## Proof Bundle` receipt and the allowed READY status marker; never auto-fix code or commit.

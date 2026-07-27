@@ -8,7 +8,10 @@ description: "Run the Codex-native end-of-feature gate and write the canonical d
 Match the user's language. Read [`../../../../docs/actions/feature-done.md`](../../../../docs/actions/feature-done.md) completely before acting. Do not read reviewer specs in the main session before dispatch; each fresh subagent reads its linked spec. Main-session reading is fallback-only.
 
 - Resolve the active feature through shared runtime rules and exclude `archive/`.
-- Run project checks and capture evidence even when another independently executable layer fails.
+- Run the artifact's explicit Verification checks and standard mechanical commands for changed project scopes.
+  Expand to repository-wide/release suites only for canonical spec, convention, or changed-shared-surface
+  triggers; never treat every root command as mandatory. Capture evidence even when another independently
+  executable layer fails.
 - Dispatch fresh general subagents for applicable [`agents-md-reviewer`](../../../../docs/reviewers/agents-md-reviewer.md) and [`spec-reviewer`](../../../../docs/reviewers/spec-reviewer.md) boundaries under the canonical execution contract. Full lane requires both: dispatch them in parallel when capacity permits, otherwise sequentially; single-slot capacity is not fallback. Light lane uses conditional L2 and always records L3 as N/A.
 - Use focused re-review only in the same task while the original full-population evidence remains available and unaffected inputs are unchanged. Otherwise rerun the full population. Reuse completed same-session results, never reviewer instances, only when the canonical reviewer spec, scope, inputs, and applicable population are provably unchanged; the declared receipt/status write is the only allowed endpoint-output difference. Record `result-reuse` and retain or reference the original execution evidence.
 - Reviewers are read-only. This skill may update only the canonical receipt and allowed READY status marker; never auto-fix code or commit.

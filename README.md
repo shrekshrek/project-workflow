@@ -212,7 +212,7 @@ Exception and maintenance actions appear only when their condition exists:
 
 > Reusable templates (feature/domain/ADR) are plugin-canonical and are not retained in generated projects. Actions instantiate only concrete artifacts when needed. To customize, fork the plugin and edit `template/`.
 >
-> Ad-hoc single-layer review (formerly `/l1-review` / `/l2-review` / `/l3-review` / `/proof-bundle`, merged into `feature-done` in v3.0): run the project check command directly for L1, or dispatch the `agents-md-reviewer` / `spec-reviewer` sub-agent from the main session for L2/L3.
+> Ad-hoc single-layer review (formerly `/l1-review` / `/l2-review` / `/l3-review` / `/proof-bundle`, merged into `feature-done` in v3.0): run the applicable feature Verification and changed-scope project check commands directly for L1, or dispatch the `agents-md-reviewer` / `spec-reviewer` sub-agent from the main session for L2/L3.
 
 ## Reviewer methodology
 

@@ -2,7 +2,14 @@
 
 Behavior-equivalence harness for the generative `feature-init` action. Adapter thinning (or any material `feature-init` skill/action edit) must show equivalent outcomes on this matrix before and after the change. Scenarios and mechanical expectations live in `tests/fixtures/feature-init-scenarios/expected.json`.
 
-Eight model scenarios cover lane classification (full / light / no-artifact), target-root resolution from a subdirectory, NNN numbering over the shared active+archive sequence, brownfield/greenfield shape detection, exact lane file sets, no-artifact whole-tree preservation, `{{TODO}}` retention, plant refusal, and module-ownership non-guessing. The deterministic check separately covers no-clobber, failed-copy rollback, and symlink safety; it does not claim model behavior.
+Twelve model scenarios cover lane classification (full / light / no-artifact), including ambiguous
+real-work boundaries that do not name the expected lane: implementation already covered by an accepted
+spec, a multi-file behavior-preserving refactor, an existing-contract UI change with a durable handoff
+consumer, and a docs-only cross-module contract change. They also cover target-root resolution from a
+subdirectory, NNN numbering over the shared active+archive sequence, brownfield/greenfield shape detection,
+exact lane file sets, no-artifact whole-tree preservation, `{{TODO}}` retention, plant refusal, and
+module-ownership non-guessing. The deterministic check separately covers no-clobber, failed-copy rollback,
+and symlink safety; it does not claim model behavior.
 
 ## Run protocol
 

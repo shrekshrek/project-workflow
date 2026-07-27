@@ -135,10 +135,28 @@ function gradeScenario(name, config, runDir) {
 }
 
 function validateFixtures() {
+  const checkedNumberingBases = new Set();
   for (const [name, config] of Object.entries(expected)) {
     const baseDir = path.join(fixtureRoot, config.base);
     if (!fs.existsSync(path.join(baseDir, "AGENTS.md"))) problems.push(`${name}: base ${config.base} missing AGENTS.md`);
     if (!fs.existsSync(path.join(baseDir, "docs/specs"))) problems.push(`${name}: base ${config.base} missing docs/specs`);
+    if (!checkedNumberingBases.has(config.base)) {
+      const numberOwners = new Map();
+      for (const rel of ["docs/specs/changes", "docs/specs/changes/archive"]) {
+        const dir = path.join(baseDir, rel);
+        if (!fs.existsSync(dir)) continue;
+        for (const entry of fs.readdirSync(dir).filter((candidate) => /^\d{3}-/.test(candidate))) {
+          const number = entry.slice(0, 3);
+          const owner = path.join(rel, entry);
+          if (numberOwners.has(number)) {
+            problems.push(`${config.base}: duplicate feature number ${number} in ${numberOwners.get(number)} and ${owner}`);
+          } else {
+            numberOwners.set(number, owner);
+          }
+        }
+      }
+      checkedNumberingBases.add(config.base);
+    }
     if (config.sentinel && !fs.existsSync(path.join(baseDir, config.sentinel))) {
       problems.push(`${name}: declared sentinel ${config.sentinel} absent in base`);
     }

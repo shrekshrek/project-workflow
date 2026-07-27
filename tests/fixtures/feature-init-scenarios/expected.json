@@ -32,6 +32,50 @@
     "forbiddenPlantPatterns": [],
     "sentinel": "docs/specs/changes/002-existing-thing/tasks.md"
   },
+  "no-artifact-accepted-spec-implementation": {
+    "base": "base-numbered",
+    "prompt": "feature-init continue-approved: 继续实现已确认的 001-approved-feature 下一条任务,保持它已经冻结的契约不变。",
+    "prescribedAnswers": {},
+    "lane": "none",
+    "expectDir": null,
+    "shape": null,
+    "mustRetainTodoMarker": false,
+    "forbiddenPlantPatterns": [],
+    "sentinel": "docs/specs/changes/001-approved-feature/spec.md"
+  },
+  "no-artifact-multifile-refactor": {
+    "base": "base-numbered",
+    "prompt": "feature-init avatar-refactor: 整理 src/user 头像 fallback 的内部函数拆分,保持行为和公开接口不变,在当前任务补现有单测并完成。",
+    "prescribedAnswers": {},
+    "lane": "none",
+    "expectDir": null,
+    "shape": null,
+    "mustRetainTodoMarker": false,
+    "forbiddenPlantPatterns": [],
+    "sentinel": "docs/specs/changes/002-existing-thing/tasks.md"
+  },
+  "light-existing-contract-ui-handoff": {
+    "base": "base-numbered",
+    "prompt": "feature-init session-expiry-ui: 为现有登录页增加会话过期提示和重新登录按钮,复用现有登录/登出 API,不改 API、schema 或授权规则;工作需要跨两个 session 交接并保留验收清单。",
+    "prescribedAnswers": {},
+    "lane": "light",
+    "expectDir": "docs/specs/changes/004-session-expiry-ui",
+    "shape": null,
+    "mustRetainTodoMarker": true,
+    "forbiddenPlantPatterns": ["/api/session/refresh"],
+    "sentinel": "docs/specs/changes/001-approved-feature/spec.md"
+  },
+  "full-docs-only-cross-module-contract": {
+    "base": "base-numbered",
+    "prompt": "feature-init align-actor-contract: auth 是 actor_id 契约 owner;统一 auth 与 billing 文档中的跨模块字段语义,本轮只修 canonical/reference docs,不改 runtime,需要冻结双方字段含义和兼容约束。",
+    "prescribedAnswers": {},
+    "lane": "full",
+    "expectDir": "docs/specs/changes/004-align-actor-contract",
+    "shape": "brownfield",
+    "mustRetainTodoMarker": true,
+    "forbiddenPlantPatterns": ["principal_id", "/api/"],
+    "sentinel": "docs/specs/changes/001-approved-feature/spec.md"
+  },
   "nnn-empty-start": {
     "base": "base-empty",
     "prompt": "feature-init first-feature: 项目第一个追踪 feature,新建一个数据导入模块(全新领域,需要新模块)。",

@@ -90,7 +90,7 @@
 
 这是默认端点门禁,会组合执行:
 
-- L1 机械检查
+- L1 机械检查:feature 明确 Verification + 变更项目的标准命令;全仓/发布套件只由 spec、适用项目约定或共享面变更触发
 - L2 项目约定 review(全道必跑;轻车道按风险触发)
 - L3 code-vs-spec review
 - current-truth check(持久产品行为且领域明确但文档尚不存在时记录 `update pending`;只有领域归属未知时才记录 `area unresolved`)
