@@ -810,15 +810,13 @@ project-workflow 对模块**长什么样**有 opinionated 偏好(不强制):
 
 ## 3. P2:Feature Development(每个功能)
 
-每个 feature 走这个循环。**不是流程框架,是默认走法,可以随时偏离**。
+本节解释 feature 生命周期的目的与边界。精确触发、输入、输出、verdict 和例外只在 [`docs/actions/`](actions/) 维护;这里不再复制可执行 SOP。
 
 ### 3.0 P2 流程全景(skill 视角)
 
-本节只给导航。每个 action 的触发、输入、输出、不变量和验证以 [`docs/actions/`](actions/) 为唯一权威;artifact 写法见 [`spec-driven.md`](spec-driven.md)。
-
 ```
-[P0 完成]
-   ├─ tiny/local/可逆/无契约/当前任务可完成的低风险行为小改 或 accepted-spec implementation → 直接实施
+[项目约定已建立]
+   ├─ 无需持久 artifact → 直接实施并验证
    └─ 需要追踪 → feature-init(no artifact / light / full)
           ├─ light → tasks + 验证
           └─ full → 与用户补完 spec/plan/tasks → spec-quality-check
@@ -840,26 +838,13 @@ project-workflow 对模块**长什么样**有 opinionated 偏好(不强制):
 | `/spec-quality-check` | **实施前** | **spec 本身**够不够好(7 问质量) |
 | `/feature-done` 的 L3 层 | **实施后端点** | **代码**做了 spec 说要做的事吗(code-vs-spec drift) |
 
-**局部复查怎么做**:`feature-done` 是 L1+适用的 L2/L3+proof-bundle 的唯一端点入口。同一任务内保留原始完整证据且未影响其余 population 时,修复 finding 后只复查 finding 与依赖闭包;跨任务、证据缺失或 scope/规约/规则输入实质变化时重跑完整 population。L1 直接跑项目 check 命令;L2 / L3 按 [`agents-md-reviewer`](reviewers/agents-md-reviewer.md) / [`spec-reviewer`](reviewers/spec-reviewer.md) 执行;proof bundle 修补则重跑 `feature-done`。
-
-**详细机制见**:[§3.1 规划阶段](#31-规划阶段)(决策清单)/ [§3.2 实现阶段](#32-实现阶段不要打断-ai-执行流)(不打断纪律)/ [§3.3 交付阶段 delivery receipt](#33-交付阶段delivery-receipt) / [§3.4 与平台流程协作](#34-与平台流程的协作) / [§3.5 中途修订](#35-开发中发现-specplan-错怎么办) / [§3.7 7 问 quality](spec-driven.md#37-specplan-写完后的质量自检7-问-checklist)。
+Artifact 写法和 7 问自检见 [`spec-driven.md`](spec-driven.md);运行时局部复查、证据复用和 fallback 规则见 [`feature-done`](actions/feature-done.md) 与 [`reviewer execution contract`](reviewers/README.md#reviewer-execution-contract)。
 
 ### 3.1 规划阶段
 
-精确分类规则见 canonical [`feature-init` action](actions/feature-init.md)。规划阶段只坚持四个判断:
+规划阶段只做三件事:按 [`feature-init`](actions/feature-init.md) 判断是否需要 artifact 和 lane;确认整个 feature 是一个可独立验收、上线和回滚的交付结果;把 WHAT、HOW、STEPS 分别放进 spec、plan、tasks。多模块工作在 plan 做 Sibling Alignment,已定技术选择进入 Prior decisions。
 
-| 情形 | 路径 |
-|---|---|
-| tiny/local、未声明 current truth、可逆、无契约且可在当前任务完成的低风险行为小改,或已确认 spec 覆盖实施 | 不建 artifact,直接做并验证 |
-| 已声明 current-truth 行为发生变化 | 无论 diff 多小,至少轻车道 |
-| 同一职责内、低风险、无契约/新模块/高爆破路径,且交接/多步验收/审计/发布需要持久清单 | 轻车道 `tasks.md` |
-| API/schema、迁移、安全/权限、跨模块、新模块或高爆破路径 | 全道 `spec.md + plan.md + tasks.md` |
-
-不确定 UI 文案、样式、局部 refactor 或测试写法不强制升级全道;业务目标不确定时先问用户。多模块工作在 plan 做 Sibling Alignment,所有已定技术选择进入 Prior decisions。
-
-**反模式**:用 plan.md 代替 spec.md。spec.md 写"做什么、为什么"(冻结),plan.md 写"怎么做、影响哪些模块"(实施中可补)。两个不能互替。
-
-> 上面是**行动决策**(要不要启动 project-workflow / 要不要起 spec / 要不要 Sibling Alignment)。全车道 spec/plan/tasks 协作填完后,实施前按 [`spec-driven.md §3.7`](spec-driven.md#37-specplan-写完后的质量自检7-问-checklist)运行 `/spec-quality-check`;精确 gate 语义以 canonical [`spec-quality-check` action](actions/spec-quality-check.md)为准。
+不要用 plan.md 代替 spec.md。spec.md 写“做什么、为什么”,plan.md 写“怎么做、影响哪些模块”。Full lane 填完后运行 [`spec-quality-check`](actions/spec-quality-check.md);本文不复制其判定表。
 
 ### 3.2 实现阶段:不要打断 AI 执行流
 
@@ -885,31 +870,11 @@ project-workflow 对模块**长什么样**有 opinionated 偏好(不强制):
 
 ### 3.3 交付阶段:delivery receipt
 
-`feature-done` 把交付证据写入历史兼容的 `## Proof Bundle` 节,但内容是一份紧凑 delivery receipt。每个字段必须有消费者:
+`feature-done` 是端点组合点:L1、适用的 L2/L3、current-truth 判断和交付证据在这里汇合。结果写入 `tasks.md` 末尾兼容旧 artifact 的 `## Proof Bundle`,但内容是一份紧凑 delivery receipt。
 
-```
-Verdict       —— 用户 / PR / archive
-Change        —— Git base/reviewed/dirty identity;完整路径与 diff 由 Git 推导
-Checks        —— 命令、exit、test totals
-Review execution —— 适用 reviewer、subagent/fallback/N/A mode、状态与 reason
-L2 / L3       —— verdict + baseline + findings/unverified/ambiguities;full PASS 不重复 reviewer 的 exact-ID 枚举
-Current truth —— feature-archive 是否需要 merge
-Open questions / Drift —— 仅非空时保留
-```
+Reviewer 的 exact paths、适用规则/spec IDs 和未验证项属于瞬时校验证据;永久 receipt 只保留 Git/non-Git identity、checks、执行方式、各层 verdict/baseline、非空 exceptions 与 current-truth 结论。压缩的是历史记录,不是 review 深度。
 
-同一 receipt 必须在端点回复中直接展示,不能只写文件路径。PR 可原样复制;feature-archive 消费 Verdict/Current truth;P4 消费 Drift。
-
-Git identity 只允许两种组合:精确 commit SHA 对应 `dirty=no`,当前 worktree 对应 `dirty=yes`;identity 在 endpoint 自己写 receipt/status 之前冻结。PR head 只作为取得当时 commit SHA 的来源,不持久化可移动的分支引用。稳定 receipt 是对历史交付快照的证明,不会仅因分支继续前进而失效;它也不自动证明今天的产品现状。`feature-archive` 对 pending current truth 另行核对当前实现、领域文档与后继变更,dirty-worktree receipt 则只在原任务内有效。
-
-适用 reviewer 仍在运行时枚举 exact changed paths 与全部 applicable rule/spec IDs,`feature-done` 必须先验证该 transient population 完整,再把结果压缩为 Git identity + baseline + exceptions 落盘;receipt 不另存手工路径清单、population hash 或完整 applicable-ID 字段。压缩的是永久记录,不是 review 深度。轻车道没有独立 spec 基线,必须保留逐项验证结果;L2 仅在项目明确要求、跨约定 scope/共享表面或存在无法机械消解的约定风险时触发。
-
-**关键设计**:`feature-done` 是端点**组合点**,proof bundle 是证据**落点** —— reviewer 各管各,组合在端点 action 发生,结果写回 proof bundle。不要把 L1/L2/L3 的规则源混成一个泛泛的"统一检查"。
-
-**载体**:`tasks.md` 末尾 `## Proof Bundle`(兼容旧 artifact)。详细 schema 只由 [`feature-done` action](actions/feature-done.md) 定义。
-
-Canonical verdict 由 [`feature-done` action](actions/feature-done.md) 定义:检查失败或仍有可修的 L2/L3/current-truth finding = `NEEDS WORK`;必要输入/环境缺失导致检查无法可靠运行 = `BLOCKED`;全部闭环 = `READY`。本文不复制判定表,避免与 action 漂移。
-
-轻车道 feature 无 frozen `spec.md`,因此 L3 = N/A;L2 按风险触发,低风险时显式记 `N/A`;proof bundle 必须包含 `## 验证` 全过。项目若已选择声明不变量路径,再反核实际 diff;命中时 verdict 至少 🟡 NEEDS WORK,并应升级为全道补 spec。未采用该可选清单的项目不需要空章节。
+稳定 commit receipt 证明历史交付快照曾通过 gate,不自动证明今天的产品现状;dirty-worktree receipt 只在原任务内有效。详细 schema、复查资格和 verdict 只由 [`feature-done`](actions/feature-done.md) 定义。
 
 > 团队 / 外部协作场景:可自行加 `.github/PULL_REQUEST_TEMPLATE.md`,内容同 5 项 —— 见 [§1.9](#19-平台协作默认不铺模板)。project-workflow 默认不预置。
 
@@ -925,22 +890,9 @@ Canonical verdict 由 [`feature-done` action](actions/feature-done.md) 定义:�
 
 ### 3.5 开发中发现 spec/plan 错怎么办
 
-**前提**(再次强调 [§6.1](#61-规约先于代码spec-driven)):`spec.md` 默认**冻结**,中途修订是**例外**,要走流程不是随便改。
+实施已经依据 spec 开始后,发现 scope、outcome、constraint、verification、契约或模块边界本身错误时,先停实现并运行 [`spec-revise`](actions/spec-revise.md)。它负责 revision record、跨文件同步、范围可交付性复核和条件式 ADR。
 
-**触发**:implementation 阶段意识到 spec 假设错 / verification 不可测 / Scope 漏写 / Outcomes 跟实际需求不符。
-
-**判断要不要修订**(每条独立评估):
-
-| 发现 | 是不是真错 | 怎么处理 |
-|---|---|---|
-| Scope 漏写"不做" → AI 多做了 | ✅ 真错 | 必修 spec.md §2 |
-| Outcomes 措辞模糊 | ⚠️ 看影响 | 已写错方向 → 必修;只是措辞模糊但实施方向对 → plan.md prior decisions 加澄清,spec 不动 |
-| Verification 不可机械化("人眼判断") | ✅ 真错 | 必修 spec.md §4 改成可测断言 |
-| 数据模型 / API 契约跟实际写时冲突 | ⚠️ 检查 | 模型错改 spec.md;代码错改代码;先写 revision record;只有形成持久架构/跨功能技术决策时才起 ADR |
-| 发现需要拆 / 合 / 改 module(可能含 module-level AGENTS.md 调整)| ✅ 真错 | 走 [§2.6 Module 中途变更 SOP](#26-module-中途变更feature-实施中发现边界要调整) |
-| Constraints 太死(实施才发现不必要)| ⚠️ 看 | 真不必要 → 改 spec.md §3 + revision record;满足 `ADR_REQUIRED` 时再用 ADR 记决定;只是难做 → 别动 spec |
-
-Canonical [`spec-revise` action](actions/spec-revise.md) 定义修订 SOP:先停实施,始终写 spec revision record 并同步 plan/tasks;只有涉及架构/模块边界、持久跨功能技术决策或取代既有 ADR 时才创建 ADR。流程只保留两个批准点:先确认修订决定,再确认合并后的最终 diff。不得偷偷改冻结 spec、边改契约边改代码,或把全部修订拖到交付时一次性补写。只是措辞澄清且不改变契约时,写 plan prior decision 即可。
+不改变契约的措辞澄清写入 plan prior decision;实现困难但契约仍正确时改代码,不要为了降低难度改 spec。不要偷偷修改冻结 spec、边改契约边改代码,或在交付时补写一份事后合理化记录。
 
 预防比修订便宜:全道实施前先跑 [`spec-driven.md §3.7`](spec-driven.md#37-specplan-写完后的质量自检7-问-checklist)。
 

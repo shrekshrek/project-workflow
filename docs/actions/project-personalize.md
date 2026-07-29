@@ -1,6 +1,6 @@
 # project-personalize
 
-Canonical P0 action for adapting a copied scaffold or retrofitting an existing non-empty codebase to the user's actual project. The target may have a complete, partial, unrelated, or missing project-workflow baseline.
+Canonical action for adapting a copied scaffold or retrofitting an existing non-empty codebase to the user's actual project. The target may have a complete, partial, unrelated, or missing project-workflow baseline.
 
 ## Use When
 

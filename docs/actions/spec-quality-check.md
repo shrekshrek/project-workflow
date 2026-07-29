@@ -14,6 +14,7 @@ Do not use as the main gate for light-lane features; `feature-done` checks their
 - `spec.md`
 - `plan.md`
 - `tasks.md`
+- The existing `plan.md` prior-decisions or risks entry when a bundled-delivery decision exists.
 - Whether the current user request explicitly authorizes implementation after this gate passes.
 
 ## Checks
@@ -26,7 +27,9 @@ Required checks: seven core quality questions, plus conditional current-truth ch
 4. Outcomes describe concrete user/system behavior, not generic intent.
 5. Constraints are concrete enough to constrain implementation.
 6. Multi-module work has sibling alignment: align, deviate with reason, or codify.
-7. Tasks are implementation-sized and include validation/proof work.
+7. Delivery shape is viable:
+   - Q7a: tasks are implementation-sized and include validation/proof work.
+   - Q7b: the artifact represents one independently demonstrable, acceptable, and revertible outcome. Size alone never changes the verdict. Separable outcomes are split unless concrete coupling requires one delivery or the plan records an explicit bundled-risk decision and source.
 8. Only when the touched area has a `docs/specs/<area>.md`: the spec cites it and does not contradict it, or explicitly records why it deviates. Projects without current-truth documents skip this check.
 9. When check 8 applies: the spec includes a `## Delta` section with `Added`, `Modified`, and `Removed` subsections; at least one subsection has concrete content (not placeholders or bare N/A).
 
@@ -46,7 +49,7 @@ Greenfield shape:
 | M2 | Scope has explicit `做` and `不做` lists, each with ≥1 non-TODO item |
 | M3 | Verification is non-empty, contains no unresolved TODO, and identifies executable checks; outcome/risk coverage is judged by Q3 |
 | M4 | plan §1.1 Sibling Alignment filled (multi-module work only) |
-| M5 | tasks.md has a non-empty implementation/validation checklist with no unresolved TODO; task completeness and verifiability are judged by Q7 |
+| M5 | tasks.md has a non-empty implementation/validation checklist with no unresolved TODO; individual task quality and aggregate delivery coherence are judged by Q7a/Q7b |
 | M6 / M7 | N/A (first archive creates/updates the domain doc) |
 
 Brownfield shape (M1/M2 replaced by M1b/M2b; M4/M5 shared):
@@ -61,15 +64,18 @@ Brownfield shape (M1/M2 replaced by M1b/M2b; M4/M5 shared):
 
 ## Verdict
 
-- `READY`: no failed checks.
-- `BORDERLINE`: implementation may proceed only with explicitly recorded risk and follow-up.
+- `READY`: no failed checks; delivery is one coherent outcome, regardless of size, with material rollout/rollback risks resolved.
+- `BORDERLINE`: implementation may proceed only with explicitly recorded and accepted risk and any required follow-up: either an intentional bundle of separable outcomes, or a coherent delivery with a material unresolved coordination/rollback risk.
 - `BLOCKED`: at least one failed check that must be fixed before implementation.
 
 `spec.md` status handling:
 
 - If the current request explicitly authorizes implementation contingent on this gate passing (for example, "if the check passes, continue implementation"), `READY` consumes that authorization: change only the top status marker from `草稿` to `已确认`, preserve the rest of the artifact, and continue the requested implementation.
 - A pure check/review request remains read-only and reports that `已确认` is still required before implementation.
-- `BORDERLINE` never consumes a pass-only authorization. Record the concrete risk/follow-up and require explicit acceptance of that risk before changing status or implementing.
+- `BORDERLINE` never consumes a pass-only authorization.
+  - Reuse a traceable acceptance from the plan when its outcomes and risk are unchanged; do not ask twice.
+  - Otherwise require explicit risk acceptance before changing status or implementing.
+  - Risk acceptance is not implementation authorization. A separate current request to implement permits the draft-to-confirmed transition and implementation while the verdict remains `BORDERLINE`.
 - An already `已确认` spec needs no status edit. A missing, malformed, or ambiguous status marker blocks an automatic transition.
 
 ## Reviewer Execution
@@ -81,7 +87,7 @@ Run the canonical subjective reviewer under the shared [reviewer execution contr
 1. Resolve an active feature and stop as N/A when it is light lane.
 2. Detect greenfield or brownfield shape from the canonical section markers.
 3. Run the applicable mechanical table above without maintaining an adapter-local copy. If any required mechanical check fails, report `BLOCKED` and stop before subjective review.
-4. Only when mechanical prerequisites pass, run the canonical spec-quality reviewer against the exact spec/plan/tasks population under the reviewer-execution contract above.
+4. Only when mechanical prerequisites pass, run the canonical spec-quality reviewer against the exact spec/plan/tasks population under the reviewer-execution contract above, including Q7b aggregate delivery coherence.
 5. Deduplicate findings by root cause, cite exact evidence, and apply the verdict contract above.
 6. Apply the status-only transition above when its authorization and verdict conditions hold. Otherwise keep the gate read-only unless the user separately asks to repair the artifacts.
 

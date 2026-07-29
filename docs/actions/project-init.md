@@ -1,6 +1,6 @@
 # project-init
 
-Canonical P0 action for creating a neutral project-workflow baseline in an empty or genuinely new target.
+Canonical action for creating a neutral project-workflow baseline in an empty or genuinely new target.
 
 ## Use When
 

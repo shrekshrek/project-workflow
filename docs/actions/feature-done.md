@@ -51,7 +51,7 @@ Persist only fields with a downstream consumer:
 - `L2` / `L3` for light lane: record the L2 verdict and baseline when applicable, adding only non-empty exceptions; otherwise record the allowed `N/A` reason. Record `L3=N/A(light lane)` plus every verification item and result because `tasks.md` is the feature-local acceptance baseline.
 - `Current truth`: no relevant domain doc / aligned / update pending / area unresolved. Use `area unresolved` only for durable behavior whose ownership is genuinely unknown.
 - `Open questions`: only unresolved items that affect handoff or release; omit when empty.
-- `Drift`: only actionable A-class convention changes or suggestions; omit when empty. Persist it elsewhere only when the user explicitly asks to revise conventions.
+- `Drift`: only actionable project-convention changes or suggestions; omit when empty. Persist it elsewhere only when the user explicitly asks to revise conventions.
 
 Validate each applicable reviewer result against its transient exact-population contract before compacting it. The receipt must contain Git/non-Git review identity, endpoint outputs, reviewer execution, verdict, checks, applicable baselines, relevant exceptions, and current truth. Return one verdict line plus the exact on-disk `## Proof Bundle`; do not restate its layer details outside the block.
 

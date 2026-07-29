@@ -1,6 +1,6 @@
 # agents-md-revise
 
-Canonical P4 action for refreshing A-class project conventions.
+Canonical action for refreshing project conventions.
 
 ## Use When
 
@@ -20,7 +20,7 @@ Do not use to rewrite historical feature specs, create backlog items, or make su
 ## Outputs
 
 - Drift report with objective evidence.
-- User-approved edits to A-class conventions.
+- User-approved edits to project conventions.
 - Summary of applied changes and follow-up manual review.
 
 ## Workflow
@@ -39,7 +39,7 @@ When the auditor boundary applies, follow the canonical [reviewer execution cont
 
 ## Invariants
 
-- Only A-class conventions are in scope.
+- Only project conventions are in scope.
 - Critical objective drift is prioritized over nice-to-have style opinions.
 - Show one consolidated diff and apply only its approved convention changes.
 - Specific new convention text must be traceable to observed project state or user approval.

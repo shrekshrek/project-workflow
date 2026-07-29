@@ -2,7 +2,7 @@
 
 > 最后核对:{{TODAY}}
 
-> **E 类 domain doc**:回答该域**现在**怎么工作。变更意图写 `docs/specs/changes/<NNN>-<slug>/` 的 Delta,不要在本文件堆演进史。
+> **产品域现状文档**:回答该域**现在**怎么工作。变更意图写 `docs/specs/changes/<NNN>-<slug>/` 的 Delta,不要在本文件堆演进史。
 
 ## 当前行为
 

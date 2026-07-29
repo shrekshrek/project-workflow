@@ -35,11 +35,11 @@ See [`docs/cross-tool-methodology.md`](docs/cross-tool-methodology.md).
 
 | Need | project-workflow answer |
 |---|---|
-| Start a project without guessing the stack | P0 neutral six-file baseline; personalize from repository evidence after a scaffold exists |
-| Start a feature without losing requirements in chat | P2 `spec.md` / `plan.md` / `tasks.md` |
+| Start a project without guessing the stack | Neutral six-file baseline; personalize from repository evidence after a scaffold exists |
+| Start a feature without losing requirements in chat | Tracked `spec.md` / `plan.md` / `tasks.md` |
 | Keep implementation aligned while coding | spec revise SOP, module-boundary handling, environment-enforced rules |
 | Know whether a feature is ready | L1 + applicable L2/L3 review + delivery receipt |
-| Keep the codebase from drifting over months | P4 `agents-md-revise` refresh of project conventions |
+| Keep the codebase from drifting over months | `agents-md-revise` refresh of project conventions |
 
 The intended outcome is practical: fewer repeated reminders, fewer unreviewed AI changes, clearer handoff artifacts, and project rules that stay close to the codebase as it evolves.
 
@@ -59,7 +59,7 @@ Deep reference, not required reading: [`workflow.md`](docs/workflow.md), [`spec-
 
 | Layer | What | Where |
 |---|---|---|
-| 📘 **Methodology core** | 5-phase blueprint (P0 Project Setup / P2 Feature + Module Setup sub-flow / P3 Maintenance / P4 Drift Refresh; no P1 by design — see workflow.md §0.2) + canonical action specs + 4 pillars + cross-tool boundaries + spec-driven 3-file template + demonstrative gotchas ledger | [`docs/`](docs/) |
+| 📘 **Methodology core** | Project setup, tracked feature delivery, continuous maintenance, and convention refresh principles + canonical action specs + 4 pillars + cross-tool boundaries + spec-driven templates + demonstrative gotchas ledger | [`docs/`](docs/) |
 | 🧰 **Starter template** | Six-file generated baseline plus optional rules, hooks, tier examples, feature/domain/ADR templates, and safety scripts retained in the plugin library. | [`template/`](template/) |
 | 🤖 **Claude Code adapter** | 9 Claude-native slash-command skills + 6 named sub-agents | [`adapters/claude/`](adapters/claude/) + [`.claude-plugin/`](.claude-plugin/) marketplace |
 | 🧩 **Codex adapter** | 9 Codex-native skills using bundled canonical reviewer specs | [`adapters/codex/`](adapters/codex/) + [`.agents/plugins/`](.agents/plugins/) marketplace |

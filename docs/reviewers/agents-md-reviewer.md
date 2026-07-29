@@ -4,7 +4,7 @@ Canonical L2 reviewer for checking changed code against project conventions.
 
 ## Scope
 
-Review only against explicit A-class conventions:
+Review only against explicit project conventions:
 
 - root `AGENTS.md`
 - nested tier/module `AGENTS.md`

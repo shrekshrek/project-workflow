@@ -1,4 +1,4 @@
-# 产品域索引 (E 类)
+# 产品域现状索引
 
 > `docs/specs/<area>.md` 是该域**当前态**的唯一权威;进行中变更在 `docs/specs/changes/`;已交付在 `docs/specs/changes/archive/`(检索现状时排除)。
 

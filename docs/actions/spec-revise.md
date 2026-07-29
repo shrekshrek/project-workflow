@@ -31,10 +31,11 @@ Draft specs may be edited directly before implementation starts.
 3. Resolve affected modules/files and fresh-read applicable conventions.
 4. Classify `ADR_REQUIRED`: yes only for architecture/module boundaries, durable cross-feature technical decisions, or superseding an ADR. When yes, search ADR filenames, titles, status fields, and existing references first, then open only candidates relevant to the affected area or decision.
 5. Ask only when the revision direction, affected scope, ADR decision, or supersede action remains ambiguous. An explicit user instruction already settles the stated decision.
-6. Draft final spec/plan/tasks contents without changing the worktree. Add the dated revision record; synchronize plan decisions, risks, current-truth follow-up, tasks, and validation. Draft the conditional ADR from the packaged template when required.
-7. Update sibling alignment and propose nested `AGENTS.md` guidance only when a changed module is genuinely exceptional.
-8. Run an inline trace for repository- or user-sourced corrections; use the decision-completeness auditor only for an ADR, unconfirmed high-impact choices, or conflicting/weak evidence.
-9. Show one consolidated diff, obtain one apply approval, then apply once. Rejection or a blocking audit leaves the worktree unchanged.
+6. When the revision materially expands scope, rerun the `feature-init` scope-viability check before drafting. If it introduces another independently acceptable, shippable, and revertible outcome without mandatory coupling, ask the user to create a child feature or explicitly accept the bundled-delivery risk. Do not draft the expansion before that decision; record an accepted bundle in the existing plan prior-decisions or risks section.
+7. Draft final spec/plan/tasks contents without changing the worktree. Add the dated revision record; synchronize plan decisions, risks, current-truth follow-up, tasks, and validation. Draft the conditional ADR from the packaged template when required.
+8. Update sibling alignment and propose nested `AGENTS.md` guidance only when a changed module is genuinely exceptional.
+9. Run an inline trace for repository- or user-sourced corrections; use the decision-completeness auditor only for an ADR, unconfirmed high-impact choices, or conflicting/weak evidence.
+10. Show one consolidated diff, obtain one apply approval, then apply once. Rejection or a blocking audit leaves the worktree unchanged.
 
 ## Reviewer Execution
 
@@ -45,6 +46,7 @@ When the auditor boundary applies, follow the canonical [reviewer execution cont
 - Do not silently rewrite a frozen spec.
 - Every material spec change has a dated revision record with reason and decision source. ADRs are conditional, not a generic change log.
 - `spec.md`, `plan.md`, and `tasks.md` stay consistent after the revision.
+- A material scope expansion rechecks delivery coherence. `spec-quality-check` must rerun when the revision changes scope viability.
 - Module-boundary changes update affected module notes and future validation expectations.
 - Specific decisions must be traceable to user input, existing project convention, revision record, or an applicable ADR.
 - If the revision changes durable behavior recorded in `docs/specs/<area>.md`, keep the domain document read-only during this in-flight revision and record `current truth update pending` for [`feature-done`](feature-done.md) → [`feature-archive`](feature-archive.md). If it supersedes earlier specs, record a follow-up for [`feature-archive`](feature-archive.md) or [`spec-reconcile`](spec-reconcile.md) to mark and archive them.
@@ -53,4 +55,4 @@ When the auditor boundary applies, follow the canonical [reviewer execution cont
 ## Validation
 
 - Ask decision questions only for unresolved ambiguity, then use one consolidated proposed-diff approval. Draft and audit final contents without changing the worktree; apply once after approval.
-- Confirm the next implementation step and whether [`spec-quality-check`](spec-quality-check.md) should be rerun.
+- Confirm the next implementation step. Rerun [`spec-quality-check`](spec-quality-check.md) whenever scope viability changed; otherwise state why it is unnecessary.

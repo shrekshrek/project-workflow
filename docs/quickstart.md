@@ -26,7 +26,7 @@
 | 复制脚手架或任意非空既有代码库 retrofit | [`project-personalize`](actions/project-personalize.md) |
 | 已确认契约在实施中发生实质变化 | [`spec-revise`](actions/spec-revise.md) |
 | 存量 active specs 已经互相冲突 | [`spec-reconcile`](actions/spec-reconcile.md) |
-| 客观项目状态与 A 类约定发生 drift | [`agents-md-revise`](actions/agents-md-revise.md) |
+| 客观项目状态与项目约定发生 drift | [`agents-md-revise`](actions/agents-md-revise.md) |
 
 ## 1. 初始化项目约定
 

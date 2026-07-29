@@ -73,7 +73,7 @@ forbidMarkers("docs/actions/feature-done.md", ["cached L2/L3 results"]);
 requireMarkers("docs/actions/feature-done.md", ["L2 convention-source paths", "L3 spec/artifact paths", "each reviewer independently enumerates", "dispatch L2 and L3 in parallel", "sequential fresh dispatch", "not a fallback condition", "aggregates only after both applicable results"]);
 requireMarkers("docs/actions/feature-archive.md", ["receipt-schema migration candidate", "review-scope", "eligible only as a current-task result", "does not re-anchor it", "not proof that the reviewed worktree was unchanged", "delivery evidence and current truth as separate freshness questions", "later movement of the current branch or PR head does not by itself invalidate", "validate every pending current-truth fact against present implementation evidence"]);
 
-requireMarkers("docs/actions/spec-quality-check.md", ["Reviewer Execution", "../reviewers/README.md#reviewer-execution-contract", "fallback reason", "`BLOCKED`", "mechanical prerequisites failed", "stop before subjective review", "explicitly authorizes implementation", "`READY` consumes that authorization", "pure check/review request remains read-only", "`BORDERLINE` never consumes"]);
+requireMarkers("docs/actions/spec-quality-check.md", ["Reviewer Execution", "../reviewers/README.md#reviewer-execution-contract", "fallback reason", "`BLOCKED`", "mechanical prerequisites failed", "stop before subjective review", "explicitly authorizes implementation", "`READY` consumes that authorization", "pure check/review request remains read-only", "`BORDERLINE` never consumes", "Q7a", "Q7b", "Size alone never changes the verdict", "do not ask twice"]);
 for (const relative of ["adapters/claude/skills/spec-quality-check/SKILL.md", "adapters/codex/skills/spec-quality-check/SKILL.md"]) {
   requireMarkers(relative, ["On `READY`", "continue implementation", "Pure checks remain read-only", "`BORDERLINE` requires explicit acceptance", "any status transition"]);
 }
@@ -115,7 +115,7 @@ for (const relative of [
 ]) {
   forbidMarkers(relative, ["coverage percentage", "coverage score", "confidence score", "confidence=<"]);
 }
-requireMarkers("docs/reviewers/spec-quality-reviewer.md", ["Q3", "Q4", "Q5", "Q7", "reviewed items", "blocking ambiguity"]);
+requireMarkers("docs/reviewers/spec-quality-reviewer.md", ["Q3", "Q4", "Q5", "Q7a", "Q7b", "delivery-shape feasibility", "reviewed items", "blocking ambiguity"]);
 requireMarkers("docs/actions/spec-quality-check.md", ["1. The spec/plan minimum set", "3. Verification is executable", "4. Outcomes describe", "5. Constraints are concrete"]);
 requireMarkers("docs/reviewers/decision-completeness-auditor.md", ["Decision Matrix", "Must-fix", "Warnings", "Cross-file Consistency", "Completeness"]);
 
@@ -136,18 +136,20 @@ for (const relative of [
 requireRegex("template/docs/specs/changes/_template/tasks.md", /^- L2:.*baseline=\[.*only when non-empty/m, "compact full-lane L2 receipt");
 requireRegex("template/docs/specs/changes/_template/tasks.md", /^- L3:.*baseline=\[.*only when non-empty/m, "compact full-lane L3 receipt");
 requireMarkers("template/docs/specs/changes/_template/tasks.md", ["不记录逐轮命令输出", "已被后续结果取代", "最终 checks 只进"]);
-requireMarkers("docs/spec-driven.md", ["不记录逐轮命令输出", "已被后续结果取代", "最终检查"]);
 forbidMarkers("template/docs/specs/changes/_template/tasks.md", ["applicable-rules=", "applicable-items=", "applicable-unverified="]);
 requireRegex("template/docs/specs/changes/_template/tasks-light.md", /^- L2:.*baseline.*only when non-empty.*N\/A\(low-risk light lane; no L2 trigger after convention-scope triage/m, "conditional light-lane L2 evidence shape");
 requireRegex("template/docs/specs/changes/_template/tasks-light.md", /^- L3:.*verification=\[/m, "light-lane L3 verification field");
 requireMarkers("template/docs/specs/changes/_template/tasks-light.md", ["verification=[item#id: PASS|FAIL]"]);
 
 requireMarkers("docs/actions/feature-init.md", ["do not create a pseudo-lane", "Use full lane for high-risk or contract-shaped work", "Use light lane only when all are true"]);
+requireMarkers("docs/actions/feature-init.md", ["scope-viability check", "size alone never requires a split", "Do not introduce an epic lane or epic artifact", "Recheck it at `spec-quality-check`"]);
+requireRegex("docs/actions/feature-init.md", /Decide whether a new artifact[\s\S]{0,500}Run the scope-viability check/, "no-artifact decision before scope viability");
 requireMarkers("tests/fixtures/feature-init-scenarios/expected.json", [
   "no-artifact-accepted-spec-implementation",
   "no-artifact-multifile-refactor",
   "light-existing-contract-ui-handoff",
   "full-docs-only-cross-module-contract",
+  "scope-viability-ask",
 ]);
 requireMarkers("docs/actions/feature-init.md", ["when the project uses such an optional declaration"]);
 requireMarkers("docs/actions/feature-init.md", ["not declared in current truth", "cross-session or multi-person handoff", "Do not create `tasks.md` merely because code is user-visible"]);
@@ -164,8 +166,6 @@ forbidMarkers("docs/actions/README.md", ["~/.claude/plugins/cache", "~/.codex/pl
 requireMarkers("adapters/claude/skills/feature-init/SKILL.md", ["`CLAUDE_PLUGIN_ROOT` is required", "scripts/materialize-feature-artifact.cjs"]);
 requireRegex("adapters/claude/skills/feature-init/SKILL.md", /occupied directory.*leave it untouched.*rerun feature-init/i, "occupied-directory no-clobber rerun semantics");
 requireMarkers("adapters/claude/skills/project-init/SKILL.md", ["scripts/materialize-project-baseline.cjs", "six target-mapped files", "Do not ask stack questions"]);
-requireMarkers("docs/workflow.md", ["未改变已声明 current truth", "契约/流程语义变更仍按风险选 light/full"]);
-
 requireMarkers("docs/actions/project-personalize.md", ["complete, partial, unrelated, or missing project-workflow baseline", "A non-empty codebase without `AGENTS.md` is retrofit, not greenfield"]);
 requireMarkers("docs/actions/project-personalize-reference.md", ["## Evidence order", "Never use an example below as a default", "## Legacy default cleanup", "## Optional high-impact path declarations", "not part of the generated baseline or default personalization flow"]);
 forbidMarkers("docs/actions/project-personalize-reference.md", ["默认 80", "default 80", "固定 GitHub", "默认 conventional", "default Playwright"]);
@@ -200,12 +200,12 @@ requireMarkers("adapters/claude/skills/project-init/SKILL.md", ["materialize-pro
 requireMarkers("adapters/claude/skills/project-init/SKILL.md", ["explicit invocation already authorizes"]);
 forbidMarkers("adapters/claude/skills/project-init/SKILL.md", ["rm -f ./.claude/settings.json", "-exec cp -r"]);
 requireMarkers("adapters/codex/skills/project-init/SKILL.md", ["materialize-project-baseline.cjs", "six target-mapped files", "--stage", "leaving the target unchanged"]);
-requireMarkers("README.md", ["docs/specs/changes/", "six-file", "optional"]);
 for (const relative of ["docs/actions/project-init.md", "docs/actions/project-personalize.md", "adapters/claude/skills/project-init/SKILL.md", "adapters/claude/skills/project-personalize/SKILL.md"]) {
   forbidMarkers(relative, ["scaffold/inactive", "inactive scaffold"]);
 }
 
 requireMarkers("docs/actions/spec-revise.md", ["ADRs are conditional", "one consolidated proposed-diff approval", "without changing the worktree"]);
+requireMarkers("docs/actions/spec-revise.md", ["rerun the `feature-init` scope-viability check", "child feature", "bundled-delivery risk", "scope viability changed"]);
 forbidMarkers("docs/actions/spec-revise.md", ["two approval points", "second approval"]);
 requireMarkers("template/docs/adr/README.md", ["ADR_REQUIRED", "项目目录不保留空模板"]);
 for (const relative of ["adapters/claude/skills/spec-revise/SKILL.md", "adapters/codex/skills/spec-revise/SKILL.md"]) {
@@ -217,11 +217,6 @@ requireMarkers("adapters/claude/skills/spec-revise/SKILL.md", ["${CLAUDE_PLUGIN_
 requireRegex("adapters/claude/skills/spec-revise/SKILL.md", /worktree remains unchanged/i, "pre-approval unchanged-worktree semantics");
 requireMarkers("adapters/codex/skills/spec-revise/SKILL.md", ["bundled `template/docs/adr/0000-template.md`", "approved consolidated diff"]);
 
-requireMarkers("docs/quickstart.md", ["领域明确但文档尚不存在", "update pending", "只有领域归属未知", "area unresolved"]);
-forbidMarkers("docs/quickstart.md", ["current-truth check(仅当", "使用 feature spec + ADR"]);
-for (const relative of ["docs/quickstart.md", "docs/workflow.md"]) forbidMarkers(relative, ["复用有效缓存"]);
-requireMarkers("README.md", ["For immediate closure", "For a deferred sweep", "historical delivery evidence", "validates pending current-truth facts against the present state"]);
-requireMarkers("docs/cross-tool-methodology.md", ["未被 current truth 声明且局部/可逆/无契约/可在当前任务完成的行为小改", "低风险小改才进入 light lane", "同一任务内有证据的 result reuse"]);
 requireMarkers("template/docs/adr/README.md", ["ADR_REQUIRED"]);
 forbidMarkers("template/docs/adr/README.md", ["/agents-md-revise` 周期性点名", "零引用 + 60 天以上"]);
 for (const relative of ["docs/actions/agents-md-revise.md", "adapters/claude/skills/agents-md-revise/SKILL.md", "adapters/codex/skills/agents-md-revise/SKILL.md"]) {
@@ -229,9 +224,7 @@ for (const relative of ["docs/actions/agents-md-revise.md", "adapters/claude/ski
 }
 forbidMarkers("adapters/claude/skills/agents-md-revise/SKILL.md", ["every 2-4 weeks", "每 2-4 周", "每 2 周"]);
 
-for (const relative of ["docs/workflow.md", "adapters/claude/skills/agents-md-revise/SKILL.md"]) {
-  forbidMarkers(relative, ["Item 5a", "Item 5b", "proof bundle 5 项"]);
-}
+forbidMarkers("adapters/claude/skills/agents-md-revise/SKILL.md", ["Item 5a", "Item 5b", "proof bundle 5 项"]);
 requireMarkers("docs/reviewers/decision-completeness-auditor.md", ["## Dispatch Boundary", "directly traceable", "unconfirmed high-impact"]);
 for (const relative of [
   "adapters/claude/skills/feature-init/SKILL.md", "adapters/claude/skills/project-personalize/SKILL.md", "adapters/claude/skills/spec-revise/SKILL.md", "adapters/claude/skills/agents-md-revise/SKILL.md",
@@ -239,6 +232,18 @@ for (const relative of [
 ]) requireRegex(relative, /decision-completeness[- ]auditor/, "decision-completeness auditor reference");
 
 requireMarkers("docs/examples/reviewer-mutation-smoke.md", ["Known-bad mutation smoke", "feature-done", "release blocker", "Runtime scheduling smoke", "sequential fresh dispatches", "Spec-quality authorization smoke", "Pure check request", "Explicit conditional request", "`BORDERLINE` result"]);
+requireMarkers("docs/examples/reviewer-mutation-smoke.md", ["Delivery-shape smoke", "independently", "size and breadth signals alone never change the verdict"]);
+forbidRegex("docs/spec-driven.md", /超过 4 个责任域|30 个预期任务|3 个 migration|2 个外部契约/, "numeric scope thresholds");
+for (const relative of [
+  "docs/actions/feature-init.md",
+  "docs/actions/spec-quality-check.md",
+  "docs/actions/spec-revise.md",
+  "docs/reviewers/spec-quality-reviewer.md",
+  "docs/spec-driven.md",
+  "docs/examples/reviewer-mutation-smoke.md",
+]) {
+  forbidMarkers(relative, ["plan.md §1.2", "plan §1.2"]);
+}
 requireMarkers("tests/fixtures/reviewer-smoke/expected.json", ["known-bad", "clean"]);
 requireMarkers("scripts/check-reviewer-fixtures.cjs", ["reviewerExecutionReliable !== true", "missing reviewer execution evidence must BLOCK", "l2Applicable must be an explicit boolean"]);
 requireMarkers("docs/actions/feature-archive.md", ["receipt-schema migration candidate", "without `Verdict:`", "never infer READY", "current-task READY", "ordinary filesystem rename", "move the directory back", "rerun `feature-done`"]);

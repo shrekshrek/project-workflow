@@ -2,13 +2,14 @@
 
 Behavior-equivalence harness for the generative `feature-init` action. Adapter thinning (or any material `feature-init` skill/action edit) must show equivalent outcomes on this matrix before and after the change. Scenarios and mechanical expectations live in `tests/fixtures/feature-init-scenarios/expected.json`.
 
-Twelve model scenarios cover lane classification (full / light / no-artifact), including ambiguous
+Thirteen model scenarios cover lane classification (full / light / no-artifact), including ambiguous
 real-work boundaries that do not name the expected lane: implementation already covered by an accepted
 spec, a multi-file behavior-preserving refactor, an existing-contract UI change with a durable handoff
 consumer, and a docs-only cross-module contract change. They also cover target-root resolution from a
 subdirectory, NNN numbering over the shared active+archive sequence, brownfield/greenfield shape detection,
 exact lane file sets, no-artifact whole-tree preservation, `{{TODO}}` retention, plant refusal, and
-module-ownership non-guessing. The deterministic check separately covers no-clobber, failed-copy rollback,
+module-ownership non-guessing, and pre-materialization decomposition of several independently shippable
+outcomes. The deterministic check separately covers no-clobber, failed-copy rollback,
 and symlink safety; it does not claim model behavior.
 
 ## Run protocol
@@ -16,7 +17,7 @@ and symlink safety; it does not claim model behavior.
 1. `node scripts/check-feature-init-fixtures.cjs` — deterministic coherence check (CI-safe, no model).
 2. Per scenario: copy the scenario's base into a temp directory, `git init && git add -A && git commit`, then run the `feature-init` runtime adapter there with the scenario `prompt` (from the scenario `cwd` when set). When the adapter asks a question covered by `prescribedAnswers`, answer exactly that; any other business question stays unanswered (the run must not need it).
 3. Grade file-level outcomes mechanically: `node scripts/check-feature-init-fixtures.cjs --grade <scenario> <temp-dir>`.
-4. `module-ownership-ask` is interaction-only: pass/fail is judged from the transcript against `expectedBehavior` (must ask, must not fabricate ownership, no files before the answer).
+4. `module-ownership-ask` and `scope-viability-ask` are interaction-only: pass/fail is judged from the transcript against `expectedBehavior` (must ask, must not fabricate ownership or an epic artifact, no files before the answer).
 
 ## Implicit activation smoke
 

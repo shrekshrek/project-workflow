@@ -128,5 +128,12 @@
     "interactionOnly": true,
     "expectedBehavior": "Step 4 必须停下问用户哪个模块承担/怎么拆;不得自行指定 owner 或编造新模块。回答前不生成文件。",
     "sentinel": "docs/specs/changes/002-existing-thing/tasks.md"
+  },
+  "scope-viability-ask": {
+    "base": "base-numbered",
+    "prompt": "feature-init people-operations: 同时做人员全量导入核对、手工增改、组织投影、外部 PMO 授权、数据问题处理;这些能力可以分别验收、上线和回滚,但没有要求必须同批发布。",
+    "interactionOnly": true,
+    "expectedBehavior": "必须识别多个可独立交付结果并在创建产物前询问先做哪个子 feature,或让用户明确接受合并交付风险;不得创建 epic lane、epic 文件或未经决定直接生成一个总 feature。",
+    "sentinel": "docs/specs/changes/002-existing-thing/tasks.md"
   }
 }

@@ -1,6 +1,6 @@
 # feature-init
 
-Canonical P2 action for starting a tracked feature artifact under `docs/specs/changes/<NNN>-<slug>/`.
+Canonical action for starting a tracked feature artifact under `docs/specs/changes/<NNN>-<slug>/`.
 
 ## Use When
 
@@ -18,7 +18,7 @@ Do not use for mid-implementation frozen-spec changes; use [`spec-revise`](spec-
 - Feature slug, optionally with a short description.
 - Target project root containing `AGENTS.md` and `docs/specs/`; all created files must be written under this root, not under an incidental cwd.
 - Existing project conventions from root and applicable nested `AGENTS.md`. A host adapter may also supply its own project-local convention files.
-- Existing substantive E-class domain docs (`docs/specs/<area>.md`) when present; prefer over `docs/specs/changes/archive/` when pre-filling. Do not create an empty domain doc just to make a feature brownfield.
+- Existing substantive current-truth domain docs (`docs/specs/<area>.md`) when present; prefer over `docs/specs/changes/archive/` when pre-filling. Do not create an empty domain doc just to make a feature brownfield.
 - Explicit feature facts already provided in the current conversation.
 
 Read the active tree only: `docs/specs/changes/archive/` is closed history — exclude it when searching for context (its durable conclusions live in `docs/specs/`). If the active tree still has several related historical specs that look contradictory, recommend running [`spec-reconcile`](spec-reconcile.md) before implementation.
@@ -42,7 +42,17 @@ Uncertainty is graded:
 - uncertain about UI wording, styling, component splitting, local refactor shape, or how to write tests → do not force full lane for that reason alone
 - uncertain about business goal or user-visible outcome → ask the user before creating artifacts
 
-Bundle related small changes into one tracked feature when they share a user goal or delivery surface; do not create fragmentary specs for button state, table columns, and details drawer separately. Classification happens once at feature creation.
+Bundle related small changes into one tracked feature when they share a user goal and must ship together; do not create fragmentary specs for button state, table columns, and details drawer separately. Before materializing an artifact, run a **scope-viability check**:
+
+- identify the independently demonstrable outcomes
+- ask whether each outcome can be accepted, enabled, and reverted on its own
+- record the concrete transaction, contract, or release coupling when several outcomes truly must ship together
+
+Broad responsibility, migration, or external-contract surfaces prompt closer scope review, but size alone never requires a split. A large indivisible vertical slice may stay together when its coupling is explicit.
+
+Two or more independently shippable outcomes without such coupling require a decomposition decision before materialization. Default to ordinary light/full child features and keep any parent initiative in the team's issue/PM system. If the user accepts one bundled delivery instead, use the full lane and record its coordination/rollback risk and decision source in the existing `plan.md` prior-decisions or risks section. Do not introduce an epic lane or epic artifact.
+
+Lane classification happens once per artifact; scope viability does not freeze. Recheck it at `spec-quality-check` and after a material `spec-revise`.
 
 If direct implementation or light-lane work later touches API/schema, DB/data migration, security, auth/permissions, multi-tenant behavior, evidence/data invariants, cross-module contracts, or high-blast-radius paths, stop and upgrade to the appropriate light/full artifact flow before continuing.
 
@@ -66,12 +76,14 @@ Adapters materialize the selected template through the packaged `scripts/materia
 
 1. Resolve the target root and parse the requested slug/optional description.
 2. Read active conventions, search current-truth indexes/headings, and open only domain documents relevant to the feature; exclude archived and unrelated artifacts.
-3. Decide no artifact, light lane, or full lane using the classification above; ask only when the business goal or ownership is unclear.
-4. For full lane, choose brownfield only when a substantive domain document exists; otherwise use greenfield.
-5. Compute the next number across active and archived directories and invoke the packaged materializer with atomic no-clobber behavior.
-6. Replace structural placeholders and prefill only traceable facts. Preserve unresolved TODOs.
-7. Use an inline value-to-source trace for repository- or user-sourced prefill; run the decision-completeness auditor only for unconfirmed high-impact choices, ADRs, or conflicting/weak evidence.
-8. Validate the created population and report lane, shape, ownership, unresolved placeholders, evidence, and next action.
+3. Decide whether a new artifact has a durable consumer. If not, report no-artifact/direct work and stop this action.
+4. Run the scope-viability check. If separable outcomes would be bundled, ask the user to choose a child or accept the bundled-delivery risk; create nothing before that decision.
+5. Choose light or full lane for the selected outcome. Ask only when the business goal, ownership, or decomposition is unclear.
+6. For full lane, choose brownfield only when a substantive domain document exists; otherwise use greenfield.
+7. Compute the next number across active and archived directories and invoke the packaged materializer with atomic no-clobber behavior.
+8. Replace structural placeholders and prefill only traceable facts. Record an applicable bundled-delivery decision in the existing plan prior-decisions or risks section. Preserve unresolved TODOs elsewhere.
+9. Use an inline value-to-source trace for repository- or user-sourced prefill; run the decision-completeness auditor only for unconfirmed high-impact choices, ADRs, or conflicting/weak evidence.
+10. Validate the created population and report lane, shape, ownership, unresolved placeholders, evidence, and next action.
 
 ## Reviewer Execution
 
@@ -84,6 +96,7 @@ When the auditor boundary applies, follow the canonical [reviewer execution cont
 - Do not plant endpoints, entities, field names, error codes, module paths, or technology choices without traceable support.
 - If pre-filling from conversation, mark the source briefly.
 - New module decisions must be explicit in plan/tasks; unclear ownership is a question, not a guess.
+- Scope-review breadth signals are prompts for judgment, never automatic verdict thresholds. Unreasoned bundling of independently shippable outcomes is the blocking condition.
 - The full-lane handoff tells the main session to create an ADR during conversational fill only when `ADR_REQUIRED` is satisfied; feature-init does not create speculative ADRs before the decision exists.
 - Full-lane features must pass [`spec-quality-check`](spec-quality-check.md) before implementation.
 

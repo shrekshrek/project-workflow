@@ -131,40 +131,17 @@ docs/specs/changes/
 ### 3.2.5 入口分流:先判是否需要 project-workflow
 <a id="325-轻车道小改免-frozen-spec--plan"></a>
 
-不是所有任务都应该启动 project-workflow。无需新 artifact 的任务不是一条 lane,而是直接不调用 `/feature-init`:小 bugfix、文案、样式、局部测试修复、低风险文档编辑、未被 current truth 声明且局部/可逆/无契约/可在当前任务完成的行为小改,以及已确认 spec 下的实施任务,直接做并说明验证结果。直接做仍必须遵守 `AGENTS.md` / path rules,并跑相关 lint / type / test / hook。
+本指南负责 artifact 的写法,不重复运行时分流规则;精确判定以 [`feature-init`](actions/feature-init.md) 为准。最短心智模型:
 
-**行为变更下限**(上述"直接做"的例外):改变 `docs/specs/<area>.md` 已声明的用户可见行为或持久规则(默认值 / 校验上限 / 重试策略 / 状态流转)时,无论 diff 多小**至少走轻车道**——current truth(§5.2)的唯一写入口在管线上,多次"太小不值得走流程"的行为改动累积绕过,它就静默过时了。未被 domain doc 声明的局部行为小改不因此强制进 project-workflow;照常直接做,最后说明验证结果。
-
-一旦决定需要 artifact,才进入 `docs/specs/changes/<NNN>-<slug>/`,正式 artifact lane 只有两条:
-
-| Lane | Artifact | 适用 |
+| 路径 | 何时使用 | Artifact |
 |---|---|---|
-| **Light lane** | `tasks.md` | 小而内聚,且跨会话交接、多步验收、审计/发布或 current-truth 更新确实需要持久记录;无 frozen spec / plan |
-| **Full lane** | `spec.md + plan.md + tasks.md` | API/DB/security/auth/permissions/multi-tenant/data migration/跨模块契约/架构/用户承诺变化、新模块、高爆破半径路径 |
+| **直接做** | 局部、可逆、无契约且没有持久记录消费者;或已有 accepted spec 覆盖实施 | 无新 artifact |
+| **Light lane** | 低风险小改,但交接、多步验收、审计/发布或 current-truth 更新需要持久清单 | `tasks.md` |
+| **Full lane** | API/数据/安全/权限/架构/跨模块契约、新模块或其他高风险变更 | `spec.md + plan.md + tasks.md` |
 
-**Light lane 判据**(`/feature-init` 按 canonical classification 自动判,3 个轴全满足才 light):
+改变已有 `docs/specs/<area>.md` 声明的持久行为时至少进入 Light lane。实施中发现原分类不再成立时停止并升级,不把 Light lane 当成逃生舱。
 
-| 轴 | 全 yes 才轻车道 |
-|---|---|
-| 规模 | ≤ ~1 个内聚模块 / 单一职责范围,无新模块;文件数只作辅助信号,不是硬阈值 |
-| 可逆性 | additive / bugfix / polish,非数据迁移 / API 或 schema 契约变更 |
-| 爆破半径 | 若项目选择在根 AGENTS.md 声明灾难性不变量路径,则本次不触达;未采用该可选清单时按变更语义判断 |
-
-**不确定时分级**,不要一律 full:
-
-- 不确定是否影响 API / DB / security / auth / permissions / multi-tenant / data migration / 跨模块契约 / 高爆破半径 → **Full lane**
-- 不确定 UI 文案 / 样式 / 组件拆分 / 局部 refactor 形状 / 测试写法 → 不因此升级 Full;可直接做或 Light lane
-- 不确定业务目标 / user-visible outcome → **先问用户**,不建 artifact
-
-**为什么这条边界**:三件套对小改是过度仪式(同 [workflow.md §7.4](workflow.md#74-不要为了用-ai-拒绝键盘改-5-行代码) 的精神);同一模块内即使碰到 2-4 个配套文件,只要可逆、无契约变化、无高爆破半径,也可以直接做或在确有持久记录消费者时走轻车道。**砍的是文档仪式,不是验证** —— 轻车道仍保留 `## 验证`(spec §4 等价)+ delivery receipt;`feature-done` 跑 L1、逐项兑现 `## 验证`,并仅在风险触发时跑 L2(L3 因无 frozen spec 标 N/A)。
-
-**组合规则**:多个相关小改应合成一个中等 feature,不要碎 spec。例如不要开 "按钮状态"、"表格列"、"详情抽屉" 三个 spec;应开一个 `workflow-run-history` feature。
-
-**两道安全闸**(防轻车道变逃生舱):
-1. **高风险保守**:3 道 trip 任一 no,或不确定是否触达高风险项 → 全道;分类只在 feature-init 发生,**开工后不重判**。
-2. **事后反核**:项目已经选择声明不变量路径时,`feature-done` 对轻车道实际 diff 反核该清单;命中 → 报"误分类,应走全道"。未采用该可选清单的项目不创建空章节,仍按 API / 数据 / 安全 / 跨模块等变更语义判断。
-
-**升级**:直接实施或轻车道中发现触达 API / DB / security / multi-tenant / evidence/data invariants / 跨模块契约 / 高爆破半径 → 停,补 light/full artifact;若需 frozen spec,重跑 `/feature-init` 选全道补 spec.md。
+多个小改只有共享用户目标且必须同批交付时才合成一个 feature。能独立验收、上线和回滚且没有事务、契约或发布耦合的结果默认拆分;用户接受合并交付时,在 plan 现有 Prior decisions 或风险小节记录决定来源与协调/回滚风险。责任面、migration 或外部契约宽度只是复核信号,不是硬阈值。
 
 ### 3.3 `spec.md` 写法(WHAT,冻结)
 
@@ -336,7 +313,8 @@ docs/specs/changes/
 | 4 | spec.md §1 Outcomes 是不是**具体场景**而不是模糊愿望?| "提升用户体验"→模糊;"用户邀请流 < 3 次点击完成"→具体 |
 | 5 | spec.md §3 Constraints 是**真约束**还是 wish list?| "必须 Vue 3"→真约束;"希望响应快"→wish(扔掉或具体化:"P95 < 200ms")|
 | 6 | plan.md §1.1 Sibling Alignment 是否填(涉及多模块时)?| 必填 Align/Deviate/Codify 三选一;空着是 [§0.1 命题 3 Drift](workflow.md#01-这本手册解决什么) 空间维度漂移的源头 |
-| 7 | tasks.md 是否拆到 **verifiable step**(每个 task 完成时有明确产物 / test 通过 / API 能调)?| 笼统的"实施 X 模块"→拆成"建 X/router.py + 写 happy-path test + 跑 curl 通"等可断言步骤 |
+| 7a | tasks.md 是否拆到 **verifiable step**(每个 task 完成时有明确产物 / test 通过 / API 能调)?| 笼统的"实施 X 模块"→拆成"建 X/router.py + 写 happy-path test + 跑 curl 通"等可断言步骤 |
+| 7b | 整个 artifact 是否仍是一个可独立演示、验收和回滚的交付结果?| 多个可独立交付结果且没有事务 / 契约 / 发布耦合 → 拆子 feature;接受合并交付时在 plan 既有的 Prior decisions 或风险小节写明结果、耦合/风险和决定来源。规模本身不改变 verdict |
 
 **Gate 语义**:
 - **Failed 项 > 0**:不要开始实施。先修 spec / plan / tasks,再重跑 quality check。
@@ -349,7 +327,7 @@ docs/specs/changes/
 
 **跟 [workflow.md §3.5](workflow.md#35-开发中发现-specplan-错怎么办) 的关系**:本节是 **pre-implementation 自检**(便宜阶段),§3.5 是 **mid-implementation 修订**(贵阶段)。两者都不可省。
 
-**Action**:[`spec-quality-check`](actions/spec-quality-check.md) 自动化本 7 问 checklist——机械检查(M1-M5)+ 按 [`spec-quality-reviewer`](reviewers/spec-quality-reviewer.md) 做主观二审(Q3/Q4/Q5/Q7)。在 dispatch boundary,Claude 必须用 named agent、Codex 必须用 general subagent;只有调度不可用/失败或无容量时才由主会话按同一 reviewer spec fallback,并记录原因。缺执行证据 fail closed。**实施前 gate**——pass / borderline / fail 三档 verdict + 修法建议;failed 阻断实施,borderline 需要显式记录风险。
+**Action**:[`spec-quality-check`](actions/spec-quality-check.md) 自动化本 7 问 checklist(Q7 含单项粒度与整体交付形态)——机械检查(M1-M5)+ 按 [`spec-quality-reviewer`](reviewers/spec-quality-reviewer.md) 做主观二审(Q3/Q4/Q5/Q7a/Q7b)。在 dispatch boundary,Claude 必须用 named agent、Codex 必须用 general subagent;只有调度不可用/失败或无容量时才由主会话按同一 reviewer spec fallback,并记录原因。缺执行证据 fail closed。**实施前 gate**——pass / borderline / fail 三档 verdict + 修法建议;failed 阻断实施,borderline 需要显式记录风险。
 
 ---
 

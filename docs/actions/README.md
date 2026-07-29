@@ -24,4 +24,4 @@ Single authoritative home for rules that several actions need. Action specs and 
 | [`feature-done`](feature-done.md) | Run endpoint review and write the compact delivery receipt |
 | [`feature-archive`](feature-archive.md) | Close delivered features: merge durable conclusions into current truth, move directories to `docs/specs/changes/archive/` (default sweep mode) |
 | [`spec-reconcile`](spec-reconcile.md) | Repair conflicts across accumulated specs in one area (retrofit tool): pick source of truth, mark and archive losing specs |
-| [`agents-md-revise`](agents-md-revise.md) | Refresh A-class project conventions |
+| [`agents-md-revise`](agents-md-revise.md) | Refresh project conventions |

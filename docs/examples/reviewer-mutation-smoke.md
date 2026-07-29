@@ -37,6 +37,14 @@ Materialize a mechanically complete, subjectively clean full-lane draft with sta
 - `BORDERLINE` result under a pass-only conditional request: status remains `草稿`; the adapter reports the concrete risk/follow-up and asks for explicit acceptance.
 - `BLOCKED` result: status and implementation remain unchanged; subjective review is N/A when mechanical prerequisites failed.
 
+## Delivery-shape smoke
+
+Run `spec-quality-check` against two full-lane artifacts whose individual tasks are concrete:
+
+- A large artifact with several outcomes that can be accepted, shipped, and reverted independently and no mandatory coupling returns `BLOCKED` with a decomposition finding.
+- A similarly large but atomic migration returns `READY` when coupling, verification, and material rollback risk are resolved. It is `BORDERLINE` only while a material coordination/rollback risk still requires acceptance; size and breadth signals alone never change the verdict.
+- A bundled-delivery risk already accepted and sourced in the plan remains `BORDERLINE`, but satisfies its risk-acceptance prerequisite while the outcomes and risk remain unchanged; the adapter does not ask twice.
+
 ## Release interpretation
 
 - Record case, adapter, endpoint verdict, transient exact applicable/unverified IDs and ambiguities, actual cited findings, scheduling/status-transition evidence, and the Git-native compact persisted receipt in the release PR/task. A static CI pass is not endpoint evidence.
