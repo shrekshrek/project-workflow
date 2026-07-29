@@ -142,7 +142,7 @@ requireRegex("template/docs/specs/changes/_template/tasks-light.md", /^- L3:.*ve
 requireMarkers("template/docs/specs/changes/_template/tasks-light.md", ["verification=[item#id: PASS|FAIL]"]);
 
 requireMarkers("docs/actions/feature-init.md", ["do not create a pseudo-lane", "Use full lane for high-risk or contract-shaped work", "Use light lane only when all are true"]);
-requireMarkers("docs/actions/feature-init.md", ["scope-viability check", "size alone never requires a split", "Do not introduce an epic lane or epic artifact", "Recheck it at `spec-quality-check`"]);
+requireMarkers("docs/actions/feature-init.md", ["scope-viability check", "size alone never requires a split", "Do not introduce an epic lane or epic artifact", "Recheck it at `spec-quality-check`", "durable decomposition handoff", "do not create a repository backlog", "separate external write that requires the user's explicit authorization", "never mutate an active feature automatically"]);
 requireRegex("docs/actions/feature-init.md", /Decide whether a new artifact[\s\S]{0,500}Run the scope-viability check/, "no-artifact decision before scope viability");
 requireMarkers("tests/fixtures/feature-init-scenarios/expected.json", [
   "no-artifact-accepted-spec-implementation",
@@ -150,6 +150,8 @@ requireMarkers("tests/fixtures/feature-init-scenarios/expected.json", [
   "light-existing-contract-ui-handoff",
   "full-docs-only-cross-module-contract",
   "scope-viability-ask",
+  "split-handoff-ask",
+  "light-split-with-durable-handoff",
 ]);
 requireMarkers("docs/actions/feature-init.md", ["when the project uses such an optional declaration"]);
 requireMarkers("docs/actions/feature-init.md", ["not declared in current truth", "cross-session or multi-person handoff", "Do not create `tasks.md` merely because code is user-visible"]);
@@ -205,7 +207,7 @@ for (const relative of ["docs/actions/project-init.md", "docs/actions/project-pe
 }
 
 requireMarkers("docs/actions/spec-revise.md", ["ADRs are conditional", "one consolidated proposed-diff approval", "without changing the worktree"]);
-requireMarkers("docs/actions/spec-revise.md", ["rerun the `feature-init` scope-viability check", "child feature", "bundled-delivery risk", "scope viability changed"]);
+requireMarkers("docs/actions/spec-revise.md", ["rerun the `feature-init` scope-viability check", "child feature", "bundled-delivery risk", "scope viability changed", "stable issue/PM reference", "External tracker edits do not revise this feature implicitly"]);
 forbidMarkers("docs/actions/spec-revise.md", ["two approval points", "second approval"]);
 requireMarkers("template/docs/adr/README.md", ["ADR_REQUIRED", "项目目录不保留空模板"]);
 for (const relative of ["adapters/claude/skills/spec-revise/SKILL.md", "adapters/codex/skills/spec-revise/SKILL.md"]) {

@@ -52,6 +52,10 @@ Broad responsibility, migration, or external-contract surfaces prompt closer sco
 
 Two or more independently shippable outcomes without such coupling require a decomposition decision before materialization. Default to ordinary light/full child features and keep any parent initiative in the team's issue/PM system. If the user accepts one bundled delivery instead, use the full lane and record its coordination/rollback risk and decision source in the existing `plan.md` prior-decisions or risks section. Do not introduce an epic lane or epic artifact.
 
+When the user chooses decomposition, create only the selected child in this invocation. Before materializing it, require a **durable decomposition handoff**: every deferred outcome has a stable reference in an existing issue/PM system, either as its own item or as an addressable child entry under one parent. The external tracker remains backlog source of truth. If any deferred outcome lacks a durable reference, stop and ask for one; create no artifact, do not create a repository backlog, and do not rely on chat memory. Creating or updating external items is a separate external write that requires the user's explicit authorization and an available integration.
+
+Record the handoff without adding a new artifact schema: full-lane work uses `plan.md` Prior decisions; light-lane work adds a `Tracking:` entry under `目标 / 边界`. Include the parent/current references when available and every deferred reference. These are stable pointers plus the selected-scope snapshot, not a live requirements feed: later tracker edits never mutate an active feature automatically. Use `spec-revise` only when an explicit tracker change is accepted as a change to the active feature contract.
+
 Lane classification happens once per artifact; scope viability does not freeze. Recheck it at `spec-quality-check` and after a material `spec-revise`.
 
 If direct implementation or light-lane work later touches API/schema, DB/data migration, security, auth/permissions, multi-tenant behavior, evidence/data invariants, cross-module contracts, or high-blast-radius paths, stop and upgrade to the appropriate light/full artifact flow before continuing.
@@ -77,11 +81,11 @@ Adapters materialize the selected template through the packaged `scripts/materia
 1. Resolve the target root and parse the requested slug/optional description.
 2. Read active conventions, search current-truth indexes/headings, and open only domain documents relevant to the feature; exclude archived and unrelated artifacts.
 3. Decide whether a new artifact has a durable consumer. If not, report no-artifact/direct work and stop this action.
-4. Run the scope-viability check. If separable outcomes would be bundled, ask the user to choose a child or accept the bundled-delivery risk; create nothing before that decision.
+4. Run the scope-viability check. If separable outcomes would be bundled, ask the user to choose a child or accept the bundled-delivery risk. When the user chooses a child, verify the durable decomposition handoff for every deferred outcome. Create nothing before the decision and handoff are complete.
 5. Choose light or full lane for the selected outcome. Ask only when the business goal, ownership, or decomposition is unclear.
 6. For full lane, choose brownfield only when a substantive domain document exists; otherwise use greenfield.
 7. Compute the next number across active and archived directories and invoke the packaged materializer with atomic no-clobber behavior.
-8. Replace structural placeholders and prefill only traceable facts. Record an applicable bundled-delivery decision in the existing plan prior-decisions or risks section. Preserve unresolved TODOs elsewhere.
+8. Replace structural placeholders and prefill only traceable facts. Record an applicable bundled-delivery decision or durable decomposition handoff in the existing plan/tasks location defined above. Preserve unresolved TODOs elsewhere.
 9. Use an inline value-to-source trace for repository- or user-sourced prefill; run the decision-completeness auditor only for unconfirmed high-impact choices, ADRs, or conflicting/weak evidence.
 10. Validate the created population and report lane, shape, ownership, unresolved placeholders, evidence, and next action.
 
@@ -103,4 +107,4 @@ When the auditor boundary applies, follow the canonical [reviewer execution cont
 ## Validation
 
 - Confirm created files match the selected lane.
-- Report lane, module decision, unresolved placeholders, and next action.
+- Report lane, module decision, decomposition handoff or bundled-risk decision when applicable, unresolved placeholders, and next action.

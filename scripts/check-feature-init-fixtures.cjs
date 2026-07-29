@@ -118,6 +118,11 @@ function gradeScenario(name, config, runDir) {
         problems.push(`${name}: planted specific ${JSON.stringify(pattern)} without user-provided source`);
       }
     }
+    for (const pattern of config.requiredArtifactPatterns || []) {
+      if (!artifactText.includes(pattern)) {
+        problems.push(`${name}: artifact missing required trace ${JSON.stringify(pattern)}`);
+      }
+    }
   }
 
   if (config.sentinel) {
@@ -183,6 +188,10 @@ function validateFixtures() {
     }
     if (config.lane === "full" && !["brownfield", "greenfield"].includes(config.shape)) {
       problems.push(`${name}: full lane needs shape brownfield|greenfield`);
+    }
+    const required = config.requiredArtifactPatterns;
+    if (required && (!Array.isArray(required) || required.length === 0 || required.some((pattern) => typeof pattern !== "string" || !pattern))) {
+      problems.push(`${name}: requiredArtifactPatterns must be a non-empty string array`);
     }
   }
 }
@@ -326,7 +335,7 @@ async function main() {
       for (const problem of problems) console.error(`- ${problem}`);
       process.exit(1);
     }
-    console.log(`Scenario ${scenario} OK: lane/numbering/shape/no-clobber/TODO-retention/plant/sentinel assertions hold.`);
+    console.log(`Scenario ${scenario} OK: lane/numbering/shape/no-clobber/TODO-retention/plant/trace/sentinel assertions hold.`);
   } else {
     validateFixtures();
     await validateMaterializer();
