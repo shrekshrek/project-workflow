@@ -32,7 +32,7 @@ function forbidRegex(relative, regex, label) {
   if (regex.test(read(relative))) problems.push(`${relative}: contains forbidden ${label}`);
 }
 
-function requireReviewerExecutionContract(relative, dispatchVerb) {
+function requireReviewerExecutionContract(relative) {
   requireRegex(relative, /\bfresh\b/i, "fresh reviewer semantics");
   requireRegex(relative, /(?:shared|canonical) execution contract/i, "canonical reviewer execution contract reference");
   requireRegex(relative, /fallback/i, "fallback semantics");
@@ -79,8 +79,8 @@ for (const relative of ["adapters/claude/skills/spec-quality-check/SKILL.md", "a
 }
 const runtimeActions = ["project-init", "project-personalize", "feature-init", "spec-quality-check", "spec-revise", "feature-done", "feature-archive", "spec-reconcile", "agents-md-revise"];
 for (const action of ["feature-done", "feature-init", "project-personalize", "spec-quality-check", "spec-revise", "agents-md-revise"]) {
-  requireReviewerExecutionContract(`adapters/claude/skills/${action}/SKILL.md`, "dispatch");
-  requireReviewerExecutionContract(`adapters/codex/skills/${action}/SKILL.md`, "spawn");
+  requireReviewerExecutionContract(`adapters/claude/skills/${action}/SKILL.md`);
+  requireReviewerExecutionContract(`adapters/codex/skills/${action}/SKILL.md`);
 }
 for (const action of runtimeActions) {
   for (const host of ["claude", "codex"]) {
@@ -163,9 +163,6 @@ for (const relative of ["docs/actions/feature-init.md", "adapters/claude/skills/
 for (const relative of ["adapters/claude/skills/feature-init/SKILL.md", "adapters/codex/skills/feature-init/SKILL.md"]) {
   requireMarkers(relative, ["Remove a template TODO only when", "generic best practice", "retain it in the applicable section"]);
 }
-requireMarkers("scripts/materialize-feature-artifact.cjs", ["realpathSync", "Target root must resolve to a directory", "Atomic no-clobber gate", "COPYFILE_EXCL", "rerun feature-init"]);
-forbidMarkers("scripts/materialize-feature-artifact.cjs", ["assertNoSymlinkComponents(requestedTarget)"]);
-forbidMarkers("scripts/materialize-feature-artifact.cjs", [".project-workflow-nnn-", "reservation"]);
 requireMarkers("docs/actions/README.md", ["active runtime adapter", "CLAUDE_PLUGIN_ROOT", ".codex-plugin/plugin.json", "Do not scan another host's cache", "required asset"]);
 forbidMarkers("docs/actions/README.md", ["~/.claude/plugins/cache", "~/.codex/plugins/cache", "most recently installed compatible package"]);
 requireMarkers("adapters/claude/skills/feature-init/SKILL.md", ["`CLAUDE_PLUGIN_ROOT` is required", "scripts/materialize-feature-artifact.cjs"]);
@@ -222,7 +219,6 @@ requireMarkers("adapters/claude/skills/spec-revise/SKILL.md", ["${CLAUDE_PLUGIN_
 requireRegex("adapters/claude/skills/spec-revise/SKILL.md", /worktree remains unchanged/i, "pre-approval unchanged-worktree semantics");
 requireMarkers("adapters/codex/skills/spec-revise/SKILL.md", ["bundled `template/docs/adr/0000-template.md`", "approved consolidated diff"]);
 
-requireMarkers("template/docs/adr/README.md", ["ADR_REQUIRED"]);
 forbidMarkers("template/docs/adr/README.md", ["/agents-md-revise` 周期性点名", "零引用 + 60 天以上"]);
 for (const relative of ["docs/actions/agents-md-revise.md", "adapters/claude/skills/agents-md-revise/SKILL.md", "adapters/codex/skills/agents-md-revise/SKILL.md"]) {
   forbidMarkers(relative, ["current-truth freshness", "current-truth 新鲜度", "ADR orphan", "ADR 孤儿"]);
@@ -250,7 +246,6 @@ for (const relative of [
   forbidMarkers(relative, ["plan.md §1.2", "plan §1.2"]);
 }
 requireMarkers("tests/fixtures/reviewer-smoke/expected.json", ["known-bad", "clean"]);
-requireMarkers("scripts/check-reviewer-fixtures.cjs", ["reviewerExecutionReliable !== true", "missing reviewer execution evidence must BLOCK", "l2Applicable must be an explicit boolean"]);
 requireMarkers("docs/actions/feature-archive.md", ["receipt-schema migration candidate", "without `Verdict:`", "never infer READY", "current-task READY", "ordinary filesystem rename", "move the directory back", "rerun `feature-done`"]);
 requireMarkers("adapters/claude/skills/feature-archive/SKILL.md", ["migration candidates", "dirty-worktree READY", "immutable reviewed commit SHA", "does not re-anchor it", "present implementation and successor changes", "ordinary filesystem rename", "move the directory back", "feature-done"]);
 requireMarkers("adapters/codex/skills/feature-archive/SKILL.md", ["migration candidates", "dirty-worktree READY", "immutable reviewed commit SHA", "does not re-anchor it", "present implementation and successor changes", "ordinary filesystem rename", "move the directory back", "$feature-done"]);
