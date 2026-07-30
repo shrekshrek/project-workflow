@@ -142,7 +142,7 @@ requireRegex("template/docs/specs/changes/_template/tasks-light.md", /^- L3:.*ve
 requireMarkers("template/docs/specs/changes/_template/tasks-light.md", ["verification=[item#id: PASS|FAIL]"]);
 
 requireMarkers("docs/actions/feature-init.md", ["do not create a pseudo-lane", "Use full lane for high-risk or contract-shaped work", "Use light lane only when all are true"]);
-requireMarkers("docs/actions/feature-init.md", ["scope-viability check", "size alone never requires a split", "Do not introduce an epic lane or epic artifact", "Recheck it at `spec-quality-check`", "durable decomposition handoff", "do not create a repository backlog", "separate external write that requires the user's explicit authorization", "never mutate an active feature automatically"]);
+requireMarkers("docs/actions/feature-init.md", ["scope-viability check", "size alone never requires a split", "Do not introduce an epic lane or epic artifact", "Recheck it at `spec-quality-check`", "durable decomposition handoff", "do not create a repository backlog", "separate external write that requires the user's explicit authorization", "never mutate an active feature automatically", "Removing a template TODO closes that decision", "generic best practices"]);
 requireRegex("docs/actions/feature-init.md", /Decide whether a new artifact[\s\S]{0,500}Run the scope-viability check/, "no-artifact decision before scope viability");
 requireMarkers("tests/fixtures/feature-init-scenarios/expected.json", [
   "no-artifact-accepted-spec-implementation",
@@ -159,6 +159,9 @@ requireMarkers("docs/actions/feature-init.md", ["normalizes an existing target-r
 requireMarkers("docs/actions/feature-done.md", ["Projects without this optional declaration", "do not need an empty path list"]);
 for (const relative of ["docs/actions/feature-init.md", "adapters/claude/skills/feature-init/SKILL.md", "adapters/codex/skills/feature-init/SKILL.md"]) {
   requireMarkers(relative, ["materialize-feature-artifact.cjs", "no-clobber"]);
+}
+for (const relative of ["adapters/claude/skills/feature-init/SKILL.md", "adapters/codex/skills/feature-init/SKILL.md"]) {
+  requireMarkers(relative, ["Remove a template TODO only when", "generic best practice", "retain it in the applicable section"]);
 }
 requireMarkers("scripts/materialize-feature-artifact.cjs", ["realpathSync", "Target root must resolve to a directory", "Atomic no-clobber gate", "COPYFILE_EXCL", "rerun feature-init"]);
 forbidMarkers("scripts/materialize-feature-artifact.cjs", ["assertNoSymlinkComponents(requestedTarget)"]);

@@ -85,7 +85,7 @@ Adapters materialize the selected template through the packaged `scripts/materia
 5. Choose light or full lane for the selected outcome. Ask only when the business goal, ownership, or decomposition is unclear.
 6. For full lane, choose brownfield only when a substantive domain document exists; otherwise use greenfield.
 7. Compute the next number across active and archived directories and invoke the packaged materializer with atomic no-clobber behavior.
-8. Replace structural placeholders and prefill only traceable facts. Record an applicable bundled-delivery decision or durable decomposition handoff in the existing plan/tasks location defined above. Preserve unresolved TODOs elsewhere.
+8. Replace structural placeholders and prefill only traceable facts. Removing a template TODO closes that decision, so do it only when user input or repository evidence determines the value; reasonable defaults, generic best practices, and implementation-stage discovery are not evidence. Record an applicable bundled-delivery decision or durable decomposition handoff in the existing plan/tasks location defined above. Preserve unresolved TODOs elsewhere.
 9. Use an inline value-to-source trace for repository- or user-sourced prefill; run the decision-completeness auditor only for unconfirmed high-impact choices, ADRs, or conflicting/weak evidence.
 10. Validate the created population and report lane, shape, ownership, unresolved placeholders, evidence, and next action.
 

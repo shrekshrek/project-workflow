@@ -11,5 +11,6 @@ Match the user's language. Read [`../../../../docs/actions/feature-init.md`](../
 - Resolve the plugin root as the nearest ancestor of this skill containing `.codex-plugin/plugin.json`; invoke its `scripts/materialize-feature-artifact.cjs` and never bypass the no-clobber gate.
 - Use inline trace for sourced prefill; at the narrowed canonical boundary dispatch a fresh subagent for [`decision-completeness-auditor`](../../../../docs/reviewers/decision-completeness-auditor.md), with fallback under the shared execution contract.
 - Preserve unresolved TODOs, create no implementation code, and never commit.
+- Remove a template TODO only when user or repository evidence determines its value; generic best practice or implementation-stage discovery is not evidence. Otherwise retain it in the applicable section and report it.
 
 Report the no-artifact/light/full decision, shape, created files, ownership, unresolved placeholders, `Reviewer execution` for every applicable audit, audit result, and next action.

@@ -14,6 +14,7 @@ Claude execution details:
 - `CLAUDE_PLUGIN_ROOT` is required; invoke `${CLAUDE_PLUGIN_ROOT}/scripts/materialize-feature-artifact.cjs` and never search another runtime cache or bypass its no-clobber gate.
 - Use inline trace for sourced prefill; dispatch a fresh `decision-completeness-auditor` only at its narrowed canonical boundary, with fallback under the shared execution contract.
 - Preserve unresolved TODOs, create no implementation code, and never commit.
+- Remove a template TODO only when user or repository evidence determines its value; generic best practice or implementation-stage discovery is not evidence. Otherwise retain it in the applicable section and report it.
 - If materialization reports an occupied directory, leave it untouched and rerun feature-init to recompute the number.
 
 Report the canonical no-artifact/light-lane/full-lane decision, shape, created files, ownership, unresolved placeholders, `Reviewer execution` for every applicable audit, trace/audit result, and next action.
