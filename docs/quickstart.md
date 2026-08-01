@@ -55,7 +55,7 @@
 /project-workflow:feature-init <feature-slug>
 ```
 
-全道 feature 然后补全:
+full lane feature 然后补全:
 
 - `docs/specs/changes/<NNN>-<slug>/spec.md`:结果、范围、约束、验证方式
 - `docs/specs/changes/<NNN>-<slug>/plan.md`:模块影响、Sibling Alignment、技术决策
@@ -63,7 +63,7 @@
 
 只有交接、多步验收、审计/发布或 current-truth 更新确实需要持久清单时,低风险小改才走轻车道并创建 `tasks.md`。补全目标/边界、验证、任务和 delivery receipt;不跑 `spec-quality-check`,但 `feature-done` 必须逐项兑现 `## 验证`。
 
-全道写代码前先跑:
+full lane 写代码前先跑:
 
 ```text
 /project-workflow:spec-quality-check <feature-slug>
@@ -73,7 +73,7 @@
 
 ## 3. 按 spec 边界实施
 
-全道让 AI 基于 `spec.md` + `plan.md` + `tasks.md` 写代码。轻车道基于 `tasks.md` 写代码。未启动 project-workflow 的小任务直接按当前上下文实施。
+full lane 让 AI 基于 `spec.md` + `plan.md` + `tasks.md` 写代码。轻车道基于 `tasks.md` 写代码。未启动 project-workflow 的小任务直接按当前上下文实施。
 
 如果实施中发现 spec 或 plan 本身错了,先停下,不要边改代码边改规格。运行:
 
@@ -92,7 +92,7 @@
 这是默认端点门禁,会组合执行:
 
 - L1 机械检查:feature 明确 Verification + 变更项目的标准命令;全仓/发布套件只由 spec、适用项目约定或共享面变更触发
-- L2 项目约定 review(全道必跑;轻车道按风险触发)
+- L2 项目约定 review(full lane 必跑;轻车道按风险触发)
 - L3 code-vs-spec review
 - current-truth check(持久产品行为且领域明确但文档尚不存在时记录 `update pending`;只有领域归属未知时才记录 `area unresolved`)
 - delivery receipt 写入 `tasks.md` 的兼容标题 `## Proof Bundle`

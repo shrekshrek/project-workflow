@@ -169,7 +169,7 @@ requireMarkers("adapters/claude/skills/feature-init/SKILL.md", ["`CLAUDE_PLUGIN_
 requireRegex("adapters/claude/skills/feature-init/SKILL.md", /occupied directory.*leave it untouched.*rerun feature-init/i, "occupied-directory no-clobber rerun semantics");
 requireMarkers("adapters/claude/skills/project-init/SKILL.md", ["scripts/materialize-project-baseline.cjs", "six target-mapped files", "Do not ask stack questions"]);
 requireMarkers("docs/actions/project-init.md", ["exactly the neutral baseline", "complete target population including dotfiles", "every file matches the bundled template", "stop before staging", "application structure may still be undecided", "inside the first feature", "govern several later features"]);
-requireMarkers("docs/actions/project-personalize.md", ["complete, partial, unrelated, or missing project-workflow baseline", "A target with other project content but no `AGENTS.md` remains a `project-personalize` case", "not an architecture-quality verdict"]);
+requireMarkers("docs/actions/project-personalize.md", ["complete, partial, unrelated, or missing project-workflow baseline", "excluding version-control metadata from content classification", "A target with other project content but no `AGENTS.md` remains a `project-personalize` case", "not an architecture-quality verdict"]);
 requireMarkers("docs/actions/project-personalize.md", ["_multi_tier_examples", "Do not claim that an architecture is suitable", "ordinary full lane", "Architecture-design conversational fill is out of scope", "do not load the architecture guide"]);
 requireMarkers("docs/actions/feature-init.md", ["no reserved `project-foundation` action, lane, or slug", "Keep minimal structure inside the first feature", "do not create a new artifact schema", "Multiple components alone do not establish multiple tiers", "Single-tier or tier-undecided work skips tier files and examples"]);
 requireMarkers("docs/architecture-design.md", ["not a workflow action, lane, gate, reviewer, artifact type, or reserved slug", "Ordinary features skip this guide", "smallest sufficient", "Do not infer call direction or sync/async relationships", "Multiple named components do not prove separate tiers or paths", "Do not load tier examples or choose a Sibling Alignment result", "create no additional architecture document or schema", "continue the question → user decision → artifact update loop across user turns", "when ownership changes design or operation", "do not recommend `spec-quality-check`"]);
@@ -220,6 +220,9 @@ for (const relative of ["docs/actions/project-init.md", "docs/actions/project-pe
 }
 forbidMarkers("AGENTS.md", ["Path C"]);
 forbidMarkers("docs/workflow.md", ["project-personalize Path C"]);
+for (const relative of ["docs/quickstart.md", "docs/workflow.md", "docs/cross-tool-methodology.md", "docs/spec-driven.md", "template/docs/specs/changes/_template/tasks-light.md"]) {
+  forbidMarkers(relative, ["全道"]);
+}
 
 requireMarkers("docs/actions/spec-revise.md", ["ADRs are conditional", "one consolidated proposed-diff approval", "without changing the worktree"]);
 requireMarkers("docs/actions/spec-revise.md", ["rerun the `feature-init` scope-viability check", "child feature", "bundled-delivery risk", "scope viability changed", "stable issue/PM reference", "External tracker edits do not revise this feature implicitly"]);

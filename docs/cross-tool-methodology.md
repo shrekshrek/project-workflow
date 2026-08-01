@@ -32,10 +32,10 @@ project-workflow 分两层:
    小 bugfix、文案、样式、局部测试修复、低风险文档编辑、未被 current truth 声明且局部/可逆/无契约/可在当前任务完成的行为小改,以及已确认 spec 下的实施任务,不新建 feature artifact;直接做时仍遵守适用的 `AGENTS.md` 和相关检查。只有持久清单存在交接、多步验收、审计/发布或 current-truth 消费者时,低风险小改才进入 light lane。
 
 3. **Feature artifact 只有 Full / Light 两类**
-   全道 feature 使用 `docs/specs/changes/<NNN>-<slug>/{spec,plan,tasks}.md`;轻车道使用同目录下的 `tasks.md`。
+   full lane feature 使用 `docs/specs/changes/<NNN>-<slug>/{spec,plan,tasks}.md`;轻车道使用同目录下的 `tasks.md`。
 
 4. **Spec quality gate 在实施前发生**
-   全道 feature 开始实现前必须通过 7 问质量检查。Failed 项阻断实施;borderline 项允许继续,但要显式记录风险和修法。
+   full lane feature 开始实现前必须通过 7 问质量检查。Failed 项阻断实施;borderline 项允许继续,但要显式记录风险和修法。
 
 5. **中途改 frozen spec 走修订 SOP**
    已确认并开始实施后,修改 `spec.md` 必须有修订记录和 plan/tasks 同步;只有架构/模块边界、持久跨功能技术决定或取代既有 ADR 时才创建 ADR。Draft 阶段自由编辑。

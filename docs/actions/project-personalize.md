@@ -29,7 +29,7 @@ Do not use for an empty target; use [`project-init`](project-init.md). When only
 
 ## Workflow
 
-1. Resolve the target and inspect its complete population including dotfiles. Empty targets use `project-init`; a six-file population whose contents match the bundled neutral template is N/A; a target with any other project content continues here as complete, partial/custom, or missing baseline.
+1. Resolve the target and inspect its complete population including dotfiles, excluding version-control metadata from content classification. Empty targets use `project-init`; a six-file population whose contents match the bundled neutral template is N/A; a target with any other project content continues here as complete, partial/custom, or missing baseline.
 2. Inspect root/nested `AGENTS.md`, aliases, manifests, shallow structure, commands, source/test paths, project-specific boundaries, and existing host-private assets. Preserve useful custom guidance.
 3. Present only applicable scopes: create/complete the minimum working agreement, replace demonstrably stale scaffold values, repair real tier guidance, survey structure, or explicitly selected host-private rules/hooks.
 4. For a missing baseline, stage the neutral six-file template with `scripts/materialize-project-baseline.cjs`; do not write the target yet.

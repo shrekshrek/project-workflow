@@ -53,7 +53,7 @@
 ### 本项目采用混合
 
 - **项目级约定**(A 类):agents.md 风格 → 根 `AGENTS.md`(workflow §1.3)
-- **变更级 artifact**(B 类):Spec Kit 简化版 → `docs/specs/changes/<NNN>-<slug>/`(全道三件套;轻车道仅 `tasks.md`)
+- **变更级 artifact**(B 类):Spec Kit 简化版 → `docs/specs/changes/<NNN>-<slug>/`(full lane 三件套;轻车道仅 `tasks.md`)
 - **架构决策**(C 类):具体 ADR → `docs/adr/`;空模板保留在 plugin,需要时实例化(详见 workflow.md §1.8)
 - **哲学**:学术 SDD 的"spec-as-contract"精神,**不上** Spec Kit 的工具链负担
 
@@ -86,7 +86,7 @@
 
 > **写 spec 前先看**:[§3.8 Spec 编辑边界](#38-spec-编辑边界只有-1-条线) —— 是否已经开始依据它实施,决定 spec.md 能否直接改 vs 必走 SOP。Git commit 不参与这个边界。
 
-需要追踪的 feature 一个**目录**。全道使用 spec / plan / tasks 三件套;轻车道只使用 tasks.md。模板由 [`feature-init`](actions/feature-init.md) 实例化,项目本地默认不持有。
+需要追踪的 feature 一个**目录**。full lane 使用 spec / plan / tasks 三件套;轻车道只使用 tasks.md。模板由 [`feature-init`](actions/feature-init.md) 实例化,项目本地默认不持有。
 
 ### 3.1 三文件分工
 
@@ -426,7 +426,7 @@ Draft / Filled / Validated **本质同档**(自由编辑);Frozen / Revised **本
 | `已取代`(superseded) | 方向被后续 spec / ADR / current truth 替代 | ❌ | `feature-archive` / `spec-reconcile` |
 | `已废弃`(abandoned) | 方向错误或不再需要,中途停止 | ❌ | `feature-archive` / `spec-reconcile` |
 
-**物理归档是主机制,状态标记是辅助**:`docs/specs/changes/` 只放**进行中**的变更;交付收尾时用普通目录移动将整目录放进 `docs/specs/changes/archive/`(`/feature-archive` 默认清扫模式批量处理,全道轻车道一视同仁)。普通移动同时兼容 tracked/untracked artifact,Git 在提交时仍可识别 rename。理由:检索工具(grep / glob)尊重目录边界,不读文件顶部的状态行——只靠就地标记,agent 搜关键词照样命中旧 change 正文。目录隔离 + AGENTS.md 一行"检索现状排除 changes/archive/",才是机械可靠的注意力防线。
+**物理归档是主机制,状态标记是辅助**:`docs/specs/changes/` 只放**进行中**的变更;交付收尾时用普通目录移动将整目录放进 `docs/specs/changes/archive/`(`/feature-archive` 默认清扫模式批量处理,full lane / light lane 一视同仁)。普通移动同时兼容 tracked/untracked artifact,Git 在提交时仍可识别 rename。理由:检索工具(grep / glob)尊重目录边界,不读文件顶部的状态行——只靠就地标记,agent 搜关键词照样命中旧 change 正文。目录隔离 + AGENTS.md 一行"检索现状排除 changes/archive/",才是机械可靠的注意力防线。
 
 **标记规则**:改状态标记 + 在文件顶部加一行指向替代物(新 spec / ADR / `docs/specs/<area>.md`)的链接,**不改正文、不删目录**。没有"历史基础"这类中间状态——若旧 spec 里的数据模型 / API / 基础设施仍有效,把这些**事实提炼进 `docs/specs/<area>.md`**,spec 本身照常归档;把旧 spec 留在活动区当参考,正是历史污染的入口。
 

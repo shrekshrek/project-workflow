@@ -896,7 +896,7 @@ Reviewer 的 exact paths、适用规则/spec IDs 和未验证项属于瞬时校�
 
 不改变契约的措辞澄清写入 plan prior decision;实现困难但契约仍正确时改代码,不要为了降低难度改 spec。不要偷偷修改冻结 spec、边改契约边改代码,或在交付时补写一份事后合理化记录。
 
-预防比修订便宜:全道实施前先跑 [`spec-driven.md §3.7`](spec-driven.md#37-specplan-写完后的质量自检7-问-checklist)。
+预防比修订便宜:full lane 实施前先跑 [`spec-driven.md §3.7`](spec-driven.md#37-specplan-写完后的质量自检7-问-checklist)。
 
 ---
 
@@ -1082,7 +1082,7 @@ P4 范围声明说"只动 AGENTS.md",但 AGENTS.md 有 3 层(项目/tier/模块)
 
 #### 主张
 
-规约(spec)是 source of truth / 行为契约,代码是 AI 根据契约生成和修改的实现产物。任何有 blast radius 的 AI 协作改动,**必须有可追踪 feature artifact 兜底**:全道用 `spec.md` / `plan.md` / `tasks.md`;轻车道小改用 `tasks.md` 的目标 / 边界 / 验证 / proof;小 bugfix / 文案 / 样式 / 局部测试修复等无 artifact 价值的任务不启动 project-workflow,直接做并说明验证。
+规约(spec)是 source of truth / 行为契约,代码是 AI 根据契约生成和修改的实现产物。任何有 blast radius 的 AI 协作改动,**必须有可追踪 feature artifact 兜底**:full lane 用 `spec.md` / `plan.md` / `tasks.md`;轻车道小改用 `tasks.md` 的目标 / 边界 / 验证 / proof;小 bugfix / 文案 / 样式 / 局部测试修复等无 artifact 价值的任务不启动 project-workflow,直接做并说明验证。
 
 #### 底层逻辑
 
