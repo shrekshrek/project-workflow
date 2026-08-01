@@ -1,17 +1,17 @@
 # Project Working Agreement
 
-This file is the cross-tool source of truth for working in this repository. Keep it short and replace deferred entries from repository evidence after the code scaffold exists.
+This file is the cross-tool source of truth for working in this repository. Keep it short and replace deferred entries when repository evidence exists.
 
 ## Commands
 
-- Build: deferred until a scaffold defines it.
-- Test: deferred until a scaffold defines it.
-- Lint/type checks: deferred until a scaffold defines them.
+- Build: deferred until repository evidence defines it.
+- Test: deferred until repository evidence defines it.
+- Lint/type checks: deferred until repository evidence defines them.
 
 ## Project Structure
 
-- Source paths: deferred until the scaffold exists.
-- Test paths: deferred until the scaffold exists.
+- Source paths: deferred until repository evidence exists.
+- Test paths: deferred until repository evidence exists.
 - Persistent product truth: `docs/specs/`.
 - Active tracked changes: `docs/specs/changes/`.
 - Durable architecture decisions: `docs/adr/`.

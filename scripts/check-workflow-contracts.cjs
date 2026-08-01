@@ -142,7 +142,7 @@ requireRegex("template/docs/specs/changes/_template/tasks-light.md", /^- L3:.*ve
 requireMarkers("template/docs/specs/changes/_template/tasks-light.md", ["verification=[item#id: PASS|FAIL]"]);
 
 requireMarkers("docs/actions/feature-init.md", ["do not create a pseudo-lane", "Use full lane for high-risk or contract-shaped work", "Use light lane only when all are true"]);
-requireMarkers("docs/actions/feature-init.md", ["scope-viability check", "size alone never requires a split", "Do not introduce an epic lane or epic artifact", "Recheck it at `spec-quality-check`", "durable decomposition handoff", "do not create a repository backlog", "separate external write that requires the user's explicit authorization", "never mutate an active feature automatically", "Removing a template TODO closes that decision", "generic best practices"]);
+requireMarkers("docs/actions/feature-init.md", ["scope-viability check", "size alone never requires a split", "Do not introduce an epic lane or epic artifact", "Recheck it at `spec-quality-check`", "durable decomposition handoff", "do not create a repository backlog", "separate external write that requires the user's explicit authorization", "never mutate an active feature automatically", "Removing a template TODO closes that decision", "generic best practices", "does not determine its responsibilities, ownership, call direction, sync/async relationship, or coupling", "architecture-design", "ordinary features skip it", "Continue conversational fill across user turns", "Do not stop merely by reporting that conversational fill is still needed"]);
 requireRegex("docs/actions/feature-init.md", /Decide whether a new artifact[\s\S]{0,500}Run the scope-viability check/, "no-artifact decision before scope viability");
 requireMarkers("tests/fixtures/feature-init-scenarios/expected.json", [
   "no-artifact-accepted-spec-implementation",
@@ -161,29 +161,39 @@ for (const relative of ["docs/actions/feature-init.md", "adapters/claude/skills/
   requireMarkers(relative, ["materialize-feature-artifact.cjs", "no-clobber"]);
 }
 for (const relative of ["adapters/claude/skills/feature-init/SKILL.md", "adapters/codex/skills/feature-init/SKILL.md"]) {
-  requireMarkers(relative, ["Remove a template TODO only when", "generic best practice", "retain it in the applicable section"]);
+  requireMarkers(relative, ["Remove a template TODO only when", "generic best practice", "retain it in the applicable section", "proves only its existence", "sync/async relationship", "docs/architecture-design.md", "ordinary features skip it", "continue conversational fill across user turns", "user explicitly pauses or defers", "not handoff-ready"]);
 }
 requireMarkers("docs/actions/README.md", ["active runtime adapter", "CLAUDE_PLUGIN_ROOT", ".codex-plugin/plugin.json", "Do not scan another host's cache", "required asset"]);
 forbidMarkers("docs/actions/README.md", ["~/.claude/plugins/cache", "~/.codex/plugins/cache", "most recently installed compatible package"]);
 requireMarkers("adapters/claude/skills/feature-init/SKILL.md", ["`CLAUDE_PLUGIN_ROOT` is required", "scripts/materialize-feature-artifact.cjs"]);
 requireRegex("adapters/claude/skills/feature-init/SKILL.md", /occupied directory.*leave it untouched.*rerun feature-init/i, "occupied-directory no-clobber rerun semantics");
 requireMarkers("adapters/claude/skills/project-init/SKILL.md", ["scripts/materialize-project-baseline.cjs", "six target-mapped files", "Do not ask stack questions"]);
-requireMarkers("docs/actions/project-personalize.md", ["complete, partial, unrelated, or missing project-workflow baseline", "A non-empty codebase without `AGENTS.md` is retrofit, not greenfield"]);
+requireMarkers("docs/actions/project-init.md", ["exactly the neutral baseline", "complete target population including dotfiles", "every file matches the bundled template", "stop before staging", "application structure may still be undecided", "inside the first feature", "govern several later features"]);
+requireMarkers("docs/actions/project-personalize.md", ["complete, partial, unrelated, or missing project-workflow baseline", "A target with other project content but no `AGENTS.md` remains a `project-personalize` case", "not an architecture-quality verdict"]);
+requireMarkers("docs/actions/project-personalize.md", ["_multi_tier_examples", "Do not claim that an architecture is suitable", "ordinary full lane", "Architecture-design conversational fill is out of scope", "do not load the architecture guide"]);
+requireMarkers("docs/actions/feature-init.md", ["no reserved `project-foundation` action, lane, or slug", "Keep minimal structure inside the first feature", "do not create a new artifact schema", "Multiple components alone do not establish multiple tiers", "Single-tier or tier-undecided work skips tier files and examples"]);
+requireMarkers("docs/architecture-design.md", ["not a workflow action, lane, gate, reviewer, artifact type, or reserved slug", "Ordinary features skip this guide", "smallest sufficient", "Do not infer call direction or sync/async relationships", "Multiple named components do not prove separate tiers or paths", "Do not load tier examples or choose a Sibling Alignment result", "create no additional architecture document or schema", "continue the question → user decision → artifact update loop across user turns", "when ownership changes design or operation", "do not recommend `spec-quality-check`"]);
 requireMarkers("docs/actions/project-personalize-reference.md", ["## Evidence order", "Never use an example below as a default", "## Legacy default cleanup", "## Optional high-impact path declarations", "not part of the generated baseline or default personalization flow"]);
 forbidMarkers("docs/actions/project-personalize-reference.md", ["默认 80", "default 80", "固定 GitHub", "默认 conventional", "default Playwright"]);
 requireMarkers("adapters/claude/skills/project-personalize/SKILL.md", ["partial/missing baseline", "materialize-project-baseline.cjs"]);
 requireRegex("adapters/claude/skills/project-personalize/SKILL.md", /missing baseline does not copy host-private rules, hooks, or tier examples/i, "missing-baseline host-private exclusion semantics");
 requireRegex("adapters/claude/skills/project-personalize/SKILL.md", /`codebase-explorer` applies only[\s\S]{0,180}`tech-researcher` applies only/i, "role-applicability prose");
-requireMarkers("adapters/codex/skills/project-personalize/SKILL.md", ["complete/partial/custom/missing baseline", "materialize-project-baseline.cjs", "Do not copy host-private rules/hooks/tier examples by default"]);
+requireMarkers("adapters/codex/skills/project-personalize/SKILL.md", ["Include dotfiles", "six-file population matching the neutral template is N/A", "materialize-project-baseline.cjs", "Do not copy host-private rules/hooks/tier examples by default"]);
+for (const relative of ["adapters/claude/skills/project-personalize/SKILL.md", "adapters/codex/skills/project-personalize/SKILL.md"]) {
+  requireMarkers(relative, ["excluding version-control metadata from content classification"]);
+}
 for (const relative of ["docs/actions/project-personalize.md", "adapters/claude/skills/project-personalize/SKILL.md", "adapters/codex/skills/project-personalize/SKILL.md"]) {
   requireMarkers(relative, ["commands", "source/test paths", "project-specific rules", "tier ownership"]);
 }
-requireMarkers("adapters/claude/skills/project-personalize/SKILL.md", ["--stage", "Consolidated Preview + Apply Gate", "symlink"]);
+requireMarkers("adapters/claude/skills/project-personalize/SKILL.md", ["--stage", "Consolidated Preview + Apply Gate", "symlink", "working agreement is aligned", "without claiming an architecture-quality verdict"]);
 requireRegex("adapters/claude/skills/project-personalize/SKILL.md", /leaves the target unchanged/i, "rejected-apply unchanged-target semantics");
-requireMarkers("adapters/codex/skills/project-personalize/SKILL.md", ["one consolidated diff", "target unchanged", "symlink"]);
+requireMarkers("adapters/codex/skills/project-personalize/SKILL.md", ["one consolidated diff", "target unchanged", "symlink", "working agreement is aligned", "without claiming an architecture-quality verdict"]);
+for (const relative of ["adapters/claude/skills/project-personalize/SKILL.md", "adapters/codex/skills/project-personalize/SKILL.md"]) {
+  requireMarkers(relative, ["Do not run architecture-design conversational fill here", "accepted-decision evidence", "feature-init"]);
+}
 
 requireMarkers("template/AGENTS.md", [
-  "deferred until a scaffold defines it",
+  "deferred until repository evidence defines it",
   "host's `feature-init` action",
   "no-artifact/direct work",
   "light tracked change",
@@ -198,13 +208,18 @@ for (const relative of ["adapters/claude/skills/feature-init/SKILL.md", "adapter
   ]);
 }
 forbidMarkers("template/AGENTS.md", ["{{HOOK_INDEX}}", ".claude/hooks/", ".codex/hooks.json", "High-Blast-Radius Paths", "None declared yet"]);
-requireMarkers("adapters/claude/skills/project-init/SKILL.md", ["materialize-project-baseline.cjs", "--apply-staged", "Recommend `/project-workflow:project-personalize`"]);
+requireMarkers("adapters/claude/skills/project-init/SKILL.md", ["materialize-project-baseline.cjs", "--apply-staged", "complete target population including dotfiles", "byte-matching template contents", "stop before staging", "neutral workflow baseline is ready"]);
 requireMarkers("adapters/claude/skills/project-init/SKILL.md", ["explicit invocation already authorizes"]);
 forbidMarkers("adapters/claude/skills/project-init/SKILL.md", ["rm -f ./.claude/settings.json", "-exec cp -r"]);
-requireMarkers("adapters/codex/skills/project-init/SKILL.md", ["materialize-project-baseline.cjs", "six target-mapped files", "--stage", "leaving the target unchanged"]);
+requireMarkers("adapters/codex/skills/project-init/SKILL.md", ["materialize-project-baseline.cjs", "six target-mapped files", "--stage", "leaving the target unchanged", "complete target population including dotfiles", "byte-matching template contents", "stop before staging", "neutral workflow baseline is ready"]);
+for (const relative of ["adapters/claude/skills/project-init/SKILL.md", "adapters/codex/skills/project-init/SKILL.md"]) {
+  requireMarkers(relative, ["excluding version-control metadata from content classification", "do not invoke two next paths", "inside the first feature", "governs several later features"]);
+}
 for (const relative of ["docs/actions/project-init.md", "docs/actions/project-personalize.md", "adapters/claude/skills/project-init/SKILL.md", "adapters/claude/skills/project-personalize/SKILL.md"]) {
   forbidMarkers(relative, ["scaffold/inactive", "inactive scaffold"]);
 }
+forbidMarkers("AGENTS.md", ["Path C"]);
+forbidMarkers("docs/workflow.md", ["project-personalize Path C"]);
 
 requireMarkers("docs/actions/spec-revise.md", ["ADRs are conditional", "one consolidated proposed-diff approval", "without changing the worktree"]);
 requireMarkers("docs/actions/spec-revise.md", ["rerun the `feature-init` scope-viability check", "child feature", "bundled-delivery risk", "scope viability changed", "stable issue/PM reference", "External tracker edits do not revise this feature implicitly"]);

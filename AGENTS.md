@@ -31,8 +31,8 @@ adapters/
     └── skills/        Codex-native skills(9 个,可调度时强制通用 subagent + 有据 fallback)
 
 adapters/claude/skills/
-├── project-init/         /project-workflow:project-init        (P0 greenfield)
-├── project-personalize/  /project-workflow:project-personalize (P0 scaffold-cloned/retrofit)
+├── project-init/         /project-workflow:project-init        (P0 empty / exact-baseline target)
+├── project-personalize/  /project-workflow:project-personalize (P0 target with other project content)
 ├── feature-init/         /project-workflow:feature-init        (P2 起 feature spec/plan/tasks)
 ├── spec-quality-check/   /project-workflow:spec-quality-check  (P2 pre-impl gate,§3.7 7 问 + M6 current-truth)
 ├── spec-revise/          /project-workflow:spec-revise         (P2 mid-impl 修订,§3.5/§2.6)
@@ -46,11 +46,12 @@ adapters/claude/agents/ Claude Code sub-agent adapters(thin wrappers over docs/r
 ├── spec-reviewer.md                 L3 spec.md 合规 review(by /feature-done L3 层)
 ├── spec-quality-reviewer.md         spec 自身质量主观二审(by /spec-quality-check)
 ├── tech-researcher.md               技术选型调研(by /project-personalize;spec 填写时仅作可选研究,不为覆盖率强制调用)
-├── codebase-explorer.md             既有 codebase 结构扫描(by /project-personalize Path C)
+├── codebase-explorer.md             非平凡 codebase 结构扫描(by /project-personalize 按需调用)
 └── decision-completeness-auditor.md plant 决策追溯审计(by /project-personalize / /feature-init / /spec-revise / /agents-md-revise,Preview Gate 之前)— 实施 workflow.md §1.12
 docs/                  方法论文档
 ├── actions/           workflow action canonical specs
 ├── reviewers/         reviewer/auditor/researcher canonical specs
+├── architecture-design.md  architecture-shaped full change 的按需设计指南
 ├── workflow.md        ⭐ 5 阶段 + 4 支柱(核心)
 ├── cross-tool-methodology.md  core vs runtime adapter 边界
 ├── gotchas.md         example-of-one gotchas 证据库(示范短版)

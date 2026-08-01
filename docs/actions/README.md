@@ -16,8 +16,8 @@ Single authoritative home for rules that several actions need. Action specs and 
 
 | Action | Purpose |
 |---|---|
-| [`project-init`](project-init.md) | Create a greenfield project-workflow baseline |
-| [`project-personalize`](project-personalize.md) | Adapt a copied scaffold or retrofit a non-empty existing codebase |
+| [`project-init`](project-init.md) | Create the neutral project-workflow baseline in an empty target; an exact baseline is already initialized |
+| [`project-personalize`](project-personalize.md) | Establish or adapt project-workflow when other project content exists |
 | [`feature-init`](feature-init.md) | Create a feature artifact only when needed |
 | [`spec-quality-check`](spec-quality-check.md) | Gate full-lane feature specs before implementation |
 | [`spec-revise`](spec-revise.md) | Revise frozen spec/plan/tasks during implementation |
@@ -25,3 +25,5 @@ Single authoritative home for rules that several actions need. Action specs and 
 | [`feature-archive`](feature-archive.md) | Close delivered features: merge durable conclusions into current truth, move directories to `docs/specs/changes/archive/` (default sweep mode) |
 | [`spec-reconcile`](spec-reconcile.md) | Repair conflicts across accumulated specs in one area (retrofit tool): pick source of truth, mark and archive losing specs |
 | [`agents-md-revise`](agents-md-revise.md) | Refresh project conventions |
+
+Architecture-shaped full-lane work remains part of `feature-init`. It conditionally reads the shared [`architecture-design` guidance](../architecture-design.md); this reference is not another action, lane, gate, reviewer, or artifact type.

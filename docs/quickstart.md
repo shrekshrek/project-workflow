@@ -9,7 +9,7 @@
 日常开发共用同一条主干;实施后按归档时机选择一种收尾顺序:
 
 ```text
-一次初始化
+一次项目接入(project-init / project-personalize 二选一)
   → 小改直接做;需要追踪时 feature-init(no artifact / light / full)
   → full lane 与用户补完草稿后跑 spec-quality-check
   → 实施
@@ -19,30 +19,31 @@
                          → feature-archive 周期性批量收尾
 ```
 
-四个低频入口不属于日常必经步骤:
+三个低频入口不属于日常必经步骤:
 
 | 仅在这种情况出现 | Action |
 |---|---|
-| 复制脚手架或任意非空既有代码库 retrofit | [`project-personalize`](actions/project-personalize.md) |
 | 已确认契约在实施中发生实质变化 | [`spec-revise`](actions/spec-revise.md) |
 | 存量 active specs 已经互相冲突 | [`spec-reconcile`](actions/spec-reconcile.md) |
 | 客观项目状态与项目约定发生 drift | [`agents-md-revise`](actions/agents-md-revise.md) |
 
 ## 1. 初始化项目约定
 
-空目录或真正的新项目:
+空目录:
 
 ```text
 /project-workflow:project-init
 ```
 
-已有脚手架、复制来的项目或任意非空既有代码库:
+存在中立 baseline 之外的项目内容,包括刚生成的 scaffold、复制来的 scaffold、已有代码库、项目配置或项目专属 README:
 
 ```text
 /project-workflow:project-personalize
 ```
 
-`project-init` 的预期结果只有六个中立文件:`AGENTS.md`、一行 alias `CLAUDE.md`、`.gitignore`、`docs/specs/index.md`、`docs/adr/README.md`、`docs/gotchas.md`。它不猜语言、命令、tier、rules 或 hooks。代码 scaffold 存在后运行 `project-personalize`,再从真实仓库证据补这些内容。可选 rules/hooks/tier examples 与 feature/domain/ADR templates 始终保留在 plugin library,不是被删除。
+`project-init` 的预期结果只有六个中立文件:`AGENTS.md`、一行 alias `CLAUDE.md`、`.gitignore`、`docs/specs/index.md`、`docs/adr/README.md`、`docs/gotchas.md`;它不猜语言、命令、tier、rules 或 hooks。只有这六个文件时视为已初始化,不重复写入,也没有可供 `project-personalize` 使用的项目证据。存在其他项目内容后,`project-personalize` 从真实证据建立或调整约定。若代码 scaffold 工具要求目标目录为空,先运行该工具。`project-init` 完成表示 workflow baseline ready,应用结构仍可待定,并提示两条可选后续:在第一个 feature 内完成最小架构,或仅当架构治理多个后续 feature 时单独追踪。`project-personalize` 完成表示 working agreement 已与当前结构对齐,不是架构优劣判定。
+
+应用基础或架构设计仍走普通 `feature-init` 分流:会建立或实质改变项目级 runtime tier、模块边界、数据/API 契约等结构,且确有持久 artifact 消费者时使用现有 full lane。没有 `project-foundation` 专用 action、lane 或保留 slug;最小结构与第一个功能不可分时放在同一个 feature 中,只有架构决定本身会约束多个后续功能时才单独追踪。只有命中的 architecture-shaped change 按需读取 [`architecture-design.md`](architecture-design.md);普通 feature 与 `project-personalize` 不读取。
 
 ## 2. 判断是否需要 feature artifact
 

@@ -34,6 +34,7 @@ const sharedDirectories = [
 ];
 
 const sharedFiles = [
+  ["docs/architecture-design.md", "docs/architecture-design.md"],
   ["docs/workflow.md", "docs/workflow.md"],
   ["docs/spec-driven.md", "docs/spec-driven.md"],
   ["docs/cross-tool-methodology.md", "docs/cross-tool-methodology.md"],
@@ -144,6 +145,7 @@ function validatePackage(packageRoot, host) {
   for (const name of expectedActions) requirePath(packageRoot, `docs/actions/${name}.md`);
   for (const name of expectedReviewers) requirePath(packageRoot, `docs/reviewers/${name}.md`);
   for (const relative of [
+    "docs/architecture-design.md",
     "template/AGENTS.md",
     "scripts/materialize-feature-artifact.cjs",
     "scripts/materialize-project-baseline.cjs",

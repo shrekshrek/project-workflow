@@ -9,6 +9,8 @@ Canonical action for starting a tracked feature artifact under `docs/specs/chang
 
 Do not use this action when the task does not need a new project-workflow artifact. Tiny bugfixes, wording/style tweaks, local test expectation fixes, low-risk documentation edits, and implementation under an accepted spec should continue directly and close with checks.
 
+An application-foundation or architecture request uses this same classification; there is no reserved `project-foundation` action, lane, or slug. Use the ordinary full lane when the work establishes or materially changes project-wide runtime tiers, module boundaries, data/API contracts, or other architecture. Keep minimal structure inside the first feature when it is inseparable from that outcome; create a separate architecture-shaped change only when it has its own durable consumer or governs several later features.
+
 **Behavior-change floor**: a change to user-visible behavior or a durable rule **already declared** in `docs/specs/<area>.md` takes **at least the light lane** — domain docs update only via `feature-done` → `feature-archive`. A local, low-risk user-visible change that is not declared in current truth does not by itself require an artifact.
 
 Do not use for mid-implementation frozen-spec changes; use [`spec-revise`](spec-revise.md). Do not write implementation code during this action.
@@ -86,8 +88,9 @@ Adapters materialize the selected template through the packaged `scripts/materia
 6. For full lane, choose brownfield only when a substantive domain document exists; otherwise use greenfield.
 7. Compute the next number across active and archived directories and invoke the packaged materializer with atomic no-clobber behavior.
 8. Replace structural placeholders and prefill only traceable facts. Removing a template TODO closes that decision, so do it only when user input or repository evidence determines the value; reasonable defaults, generic best practices, and implementation-stage discovery are not evidence. Record an applicable bundled-delivery decision or durable decomposition handoff in the existing plan/tasks location defined above. Preserve unresolved TODOs elsewhere.
-9. Use an inline value-to-source trace for repository- or user-sourced prefill; run the decision-completeness auditor only for unconfirmed high-impact choices, ADRs, or conflicting/weak evidence.
-10. Validate the created population and report lane, shape, ownership, unresolved placeholders, evidence, and next action.
+9. When the selected full-lane change establishes or materially changes project-wide application architecture, read the conditional [`architecture-design` guidance](../architecture-design.md) and use only its applicable conversational-fill topics; ordinary features skip it. Use the existing spec outcomes/scope/constraints/verification and plan module-impact/architecture/prior-decisions/risk sections; do not create a new artifact schema. Continue conversational fill across user turns in a one-material-question → user-decision → artifact-update loop. Do not stop merely by reporting that conversational fill is still needed when the next material question can be asked. End the loop only when no high-impact TODO remains or the user explicitly pauses or defers; a paused flow reports its blockers and is not handoff-ready. Multiple components alone do not establish multiple tiers. Only when explicit user or repository evidence establishes durable separate runtime tiers, read the tier concepts in [`workflow.md §0.3`](../workflow.md#03-概念区分钉死再读后续), the nested-guidance rules in [`§1.4`](../workflow.md#14-agentsmd--claudemd-嵌套层次子级覆盖父级), and the conditional [`_multi_tier_examples`](../../template/_multi_tier_examples/README.md). Single-tier or tier-undecided work skips tier files and examples. This action still creates no implementation code.
+10. Use an inline value-to-source trace for repository- or user-sourced prefill; run the decision-completeness auditor only for unconfirmed high-impact choices, ADRs, or conflicting/weak evidence.
+11. Validate the created population and report lane, shape, ownership, unresolved placeholders, evidence, and next action.
 
 ## Reviewer Execution
 
@@ -97,11 +100,12 @@ When the auditor boundary applies, follow the canonical [reviewer execution cont
 
 - Resolve the target project root before creating files. Prefer cwd, then nearest parent, then a single matching child; if multiple candidates exist, ask and do not guess.
 - Preserve unresolved `{{TODO ...}}` markers for unknown details.
-- Do not plant endpoints, entities, field names, error codes, module paths, or technology choices without traceable support.
+- Do not plant endpoints, entities, field names, error codes, module paths, or technology choices without traceable support. Knowing that a component or tier exists does not determine its responsibilities, ownership, call direction, sync/async relationship, or coupling; preserve those as TODOs unless the user or repository evidence determines them.
 - If pre-filling from conversation, mark the source briefly.
 - New module decisions must be explicit in plan/tasks; unclear ownership is a question, not a guess.
 - Scope-review breadth signals are prompts for judgment, never automatic verdict thresholds. Unreasoned bundling of independently shippable outcomes is the blocking condition.
 - The full-lane handoff tells the main session to create an ADR during conversational fill only when `ADR_REQUIRED` is satisfied; feature-init does not create speculative ADRs before the decision exists.
+- Architecture-shaped work remains an ordinary full-lane change. Do not force a separate foundation artifact, a multi-tier layout, nested guidance, or a project-local architecture document when the selected outcome does not need one.
 - Full-lane features must pass [`spec-quality-check`](spec-quality-check.md) before implementation.
 
 ## Validation

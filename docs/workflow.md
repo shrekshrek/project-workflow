@@ -61,7 +61,7 @@ AI 协作开发有**三个 Tier 1 工程痛点**,本手册的 5 阶段、4 支�
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │ P0: Project Setup(项目第一天)                                   │
-│ ─ 六文件中立 baseline;有 scaffold 后再 personalize          │
+│ ─ 空目标建六文件中立 baseline;有其他项目内容才 personalize │
 │ ─ 工具:project-init action(Claude / Codex / manual adapters) │
 ├─────────────────────────────────────────────────────────────┤
 │ P2: Tracked Feature Development                             │
@@ -164,7 +164,7 @@ AI 协作开发有**三个 Tier 1 工程痛点**,本手册的 5 阶段、4 支�
 
 | 类别 | 创建 | 正常演化 | 关闭 / 修复 |
 |---|---|---|---|
-| **A 约定** | `project-init` / retrofit 的 `project-personalize` | feature 内发现的新约定随该 change 更新;客观 drift 才用 `agents-md-revise` | 不归档,始终维护当前态;L2/Drift 提供反馈 |
+| **A 约定** | 空目标的 `project-init` / 有中立 baseline 之外项目内容的 `project-personalize` | feature 内发现的新约定随该 change 更新;客观 drift 才用 `agents-md-revise` | 不归档,始终维护当前态;L2/Drift 提供反馈 |
 | **B 变更** | `feature-init` 先判 no artifact / light / full;仅 light/full 创建 | draft 自由填;冻结契约真错才 `spec-revise`;`feature-done` 判兑现 | `feature-archive` 物理归档;历史混乱才 `spec-reconcile` |
 | **C 决策** | 规划或 `spec-revise` 中仅 `ADR_REQUIRED=yes` 时创建 | Accepted 后正文不改;新决定用新 ADR,旧 ADR 只改为 `Superseded by NNNN` | `feature-archive` 做一致性检查;`spec-reconcile` 经用户确认修冲突,不做按年龄清扫 |
 | **D 基础设施** | `project-init` 不创建;`project-personalize` 只在命令 active + verified 且用户选择时创建 | 当普通 repo 基础设施变更处理:按风险直接改、走 light 或 full lane,并验证真实执行 | 不设专用周期 action;失效 hook 修复或删除,不能留 no-op mapping |
@@ -258,11 +258,11 @@ Core docs 只定义"应该发生什么";adapter docs 定义"在某个工具里�
 
 | 你的状态 | 该做什么 |
 |---|---|
-| **完全模糊**("想做个 X,具体形态没想清")| 主会话跟 AI 自由 brainstorm(核心用户 / 最痛问题 / MVP 边界 / 2-3 个 reference 项目)→ 1-2 小时通常够 → 完了再跑 `/project-init` |
-| **已有 idea + 不确定栈** | 跳过 brainstorm,直接 `/project-init` 建中立 baseline;代码 scaffold 前不替用户选栈 |
+| **完全模糊**("想做个 X,具体形态没想清")| 主会话跟 AI 自由 brainstorm(核心用户 / 最痛问题 / MVP 边界 / 2-3 个 reference 项目)→ 1-2 小时通常够 → 完成后按目录状态选择项目接入 action |
+| **已有 idea + 空目录** | 跳过 brainstorm,直接 `/project-init` 建中立 baseline;不替用户选栈 |
 | **Retrofit 既有项目** | 跳过 —— 跑 [`project-personalize`](actions/project-personalize.md)(已有 codebase 已经是 brainstorm 产物)|
 
-**project-workflow 不工具化这个阶段**——brainstorm 本质发散,SOP / mandatory skill(Superpowers 风格)反而磕碰。**主会话自由对话最合适**;产物不必落盘。空目录仍先用 `project-init` 建中立 baseline;代码 scaffold 存在后再由 `project-personalize` 从仓库事实补约定。若要保存产品讨论,走 GitHub Discussions / Issues(per [§4.4](#44-backlog-与讨论走平台不进-repo-文件) "AI 读 → 文件,人类协作 → 平台")。
+**project-workflow 不工具化这个阶段**——brainstorm 本质发散,SOP / mandatory skill(Superpowers 风格)反而磕碰。**主会话自由对话最合适**;产物不必落盘。项目接入按当时目录状态二选一:空目录用 `project-init`;存在中立 baseline 之外的项目内容时用 `project-personalize`。只有中立 baseline 表示已经初始化但尚无可个性化的项目证据。若代码 scaffold 工具要求目标目录为空,先运行该工具,再对生成后的项目运行 `project-personalize`。若要保存产品讨论,走 GitHub Discussions / Issues(per [§4.4](#44-backlog-与讨论走平台不进-repo-文件) "AI 读 → 文件,人类协作 → 平台")。
 
 **外部工具**(可选):Anthropic 内置 / ECC / Superpowers 各有 brainstorming skill,选你顺手的或直接用 AI 主会话 —— project-workflow 不强制。
 
@@ -272,13 +272,13 @@ Core docs 只定义"应该发生什么";adapter docs 定义"在某个工具里�
 - 新项目第一天
 - 老项目首次引入 AI 协作
 
-**目标**:几分钟内生成中立、无栈猜测的六文件 baseline,让后续开发有统一入口。代码 scaffold 存在后,再用 `project-personalize` 从真实仓库证据补命令、路径、tier、可选 rules/hooks。
+**目标**:按目录状态完成正确的 P0 交接。`project-init` 为环境为空的项目生成中立、无栈猜测的六文件 baseline;`project-personalize` 为存在其他项目内容的目标建立或调整有仓库证据的约定。前者表示 workflow baseline ready,应用结构可仍待定,并把用户路由到“首个 feature 内的最小架构”或“确有跨 feature 消费者时的独立 architecture-shaped change”;后者表示 working agreement 与当前可观察结构对齐,可提供架构设计证据但不负责设计或判定优劣。
 
 ### 1.2 产出物(中立 baseline + 保留的可选能力)
 
 P0 产出物分**两层**(职责严格不重叠):
 
-**默认写入目标项目的六个文件**:
+**`project-init` 默认写入空目标的六个文件**:
 
 ```
 项目根/
@@ -293,7 +293,7 @@ P0 产出物分**两层**(职责严格不重叠):
 └── .gitignore                      # 预防性含 CLAUDE.local.md、.env*
 ```
 
-**代码 scaffold 后按证据补充的工程化层**(栈相关,由项目自身形成):
+**`project-personalize` 在存在其他项目内容的目标中按证据处理的工程化层**(栈相关,由项目自身形成):
 
 ```
 项目根/
@@ -606,7 +606,7 @@ docs/adr/
 
 ### 1.10 初始化与个性化的提问边界
 
-> **形态说明**:Project Setup 是 skill / adapter action,不是独立 CLI。空目录的 `project-init` 只确认目标路径并预览六文件 baseline,不做栈问卷;非空目录一律交给 `project-personalize`。
+> **形态说明**:Project Setup 是 skill / adapter action,不是独立 CLI。空目录的 `project-init` 只确认目标路径并预览六文件 baseline,不做栈问卷;只有该 baseline 时报告已初始化且不写入;存在其他项目内容时交给 `project-personalize`。两者不是前后必经步骤。
 
 #### 实际问什么(对齐 `project-init` / `project-personalize` action)
 
@@ -638,7 +638,7 @@ docs/adr/
 ### 1.11 校验
 
 - `/memory`(Claude Code)或对应工具命令:确认 AGENTS.md / CLAUDE.md 加载
-- `project-init` 只验证六文件、alias、无 placeholder、命令/路径仍为 deferred;`project-personalize` 才运行仓库声明的真实命令
+- `project-init` 验证六文件、alias、无 placeholder、命令/路径可保持 deferred;`project-personalize` 验证仓库声明的真实命令与约定。前者完成 baseline,后者完成 evidence alignment;两者都可把下一步交给直接开发或 `feature-init`
 - hook active 时改一个匹配文件验证真执行;未安装时确认项目内无 hook mapping/script并报告原因
 - 把 AGENTS.md 给 AI 读一遍,问它"基于本文件总结这个项目",看理解是否准确
 
@@ -689,7 +689,7 @@ P0 生成(`/project-init` / `/project-personalize`)Preview Gate 落盘**之前**
 
 #### 失效情形
 
-- **既有项目 retrofit**(/project-personalize Path C):代码可读,plant 决策能从代码扫出,本节弱化为"agent 标注哪些是扫出来的、哪些是真 plant",不强 block
+- **既有项目 retrofit**(`/project-personalize`):代码可读,plant 决策能从代码扫出,本节弱化为"agent 标注哪些是扫出来的、哪些是真 plant",不强 block
 - **P0 前 brainstorm**:用户也没决策,brainstorm 阶段所有"决策"都是探索,本节不适用
 - **真正的 deferred**:标了 `(待定,见 ADR)` 就是合法非 plant(部署命令 / Celery broker 等 B 层未起场景)
 - **生成 ≤ 1 处的决策**:单点决策无跨文件一致性问题,Trace-or-defer 适用但 Cross-file consistency 不适用
@@ -843,6 +843,8 @@ Artifact 写法和 7 问自检见 [`spec-driven.md`](spec-driven.md);运行时�
 ### 3.1 规划阶段
 
 规划阶段只做三件事:按 [`feature-init`](actions/feature-init.md) 判断是否需要 artifact 和 lane;确认整个 feature 是一个可独立验收、上线和回滚的交付结果;把 WHAT、HOW、STEPS 分别放进 spec、plan、tasks。多模块工作在 plan 做 Sibling Alignment,已定技术选择进入 Prior decisions。
+
+应用基础或架构设计不另起 action / lane / 保留 slug:它按普通 change 分类。建立或实质改变项目级 runtime tier、模块边界、数据/API 契约等架构,且确有持久 artifact 消费者时走 full lane;最小结构与第一个功能不可分时留在同一个 feature,只有架构决定本身会约束多个后续功能时才单独追踪。只有命中的 architecture-shaped change 条件读取 [`architecture-design.md`](architecture-design.md),把适用结论写回既有 spec/plan/tasks;普通 feature 与 `project-personalize` 跳过。多 tier 真正适用时才读取 §0.3 / §1.4 与 plugin 的 tier examples;单 tier 不生成 tier 文件。
 
 不要用 plan.md 代替 spec.md。spec.md 写“做什么、为什么”,plan.md 写“怎么做、影响哪些模块”。Full lane 填完后运行 [`spec-quality-check`](actions/spec-quality-check.md);本文不复制其判定表。
 

@@ -35,7 +35,7 @@ See [`docs/cross-tool-methodology.md`](docs/cross-tool-methodology.md).
 
 | Need | project-workflow answer |
 |---|---|
-| Start a project without guessing the stack | Neutral six-file baseline; personalize from repository evidence after a scaffold exists |
+| Set up a project without guessing | Use `project-init` for an empty target or `project-personalize` when project content beyond the neutral baseline exists; either provides the appropriate P0 handoff |
 | Start a feature without losing requirements in chat | Tracked `spec.md` / `plan.md` / `tasks.md` |
 | Keep implementation aligned while coding | spec revise SOP, module-boundary handling, environment-enforced rules |
 | Know whether a feature is ready | L1 + applicable L2/L3 review + delivery receipt |
@@ -160,7 +160,9 @@ $spec-reconcile <area>
 $agents-md-revise
 ```
 
-For an empty greenfield target, run `$project-init` once to materialize the neutral six-file baseline: `AGENTS.md`, the one-line `CLAUDE.md` alias, `.gitignore`, `docs/specs/index.md`, `docs/adr/README.md`, and `docs/gotchas.md`. For any non-empty existing codebase or copied scaffold, use `$project-personalize`; that is where real commands, paths, tiers, and optional host-specific rules/hooks are derived from repository evidence.
+For an empty target, run `$project-init` once to materialize the neutral six-file baseline: `AGENTS.md`, the one-line `CLAUDE.md` alias, `.gitignore`, `docs/specs/index.md`, `docs/adr/README.md`, and `docs/gotchas.md`. An exact baseline is already initialized and is not evidence for personalization. When any other project content exists—including a newly generated scaffold, copied scaffold, existing codebase, project configuration, or project-specific README—use `$project-personalize` to derive real commands, paths, tiers, and optional host-specific rules/hooks from repository evidence. If a scaffold generator requires an empty target, run it first. `project-init` leaves the workflow baseline ready even when application structure is undecided; `project-personalize` leaves the evidence-backed working agreement aligned without claiming the architecture is suitable.
+
+Application-foundation and architecture work uses the ordinary `$feature-init` classification. Project-wide runtime tiers, module boundaries, data/API contracts, or other architecture changes use the existing full lane when a durable artifact is useful; there is no reserved `project-foundation` action, lane, or slug. Keep minimal setup inside the first feature when the two are inseparable, and create a separate architecture-shaped change only when it governs several later features or otherwise has its own durable consumer. Only that selected architecture-shaped change loads the shared [`architecture-design` guidance](docs/architecture-design.md); ordinary features and `project-personalize` skip it.
 
 ### Manual fallback
 
@@ -193,7 +195,8 @@ Most work does **not** use all nine actions. Initialize once, then use the daily
 
 | Frequency | Action | Purpose |
 |---|---|---|
-| Once, greenfield | `project-init` | Create the neutral six-file project baseline. |
+| Once, empty target | `project-init` | Create the neutral six-file project baseline. |
+| Once, target with project content beyond the neutral baseline | `project-personalize` | Establish or adapt the evidence-backed project agreement. |
 | Per tracked change | `feature-init` | Choose no artifact, light tasks-only, or full spec/plan/tasks. Local, reversible, contract-free behavior work can proceed directly when current truth does not declare it, it fits the current task, and no durable artifact has a consumer. |
 | Full lane only | `spec-quality-check` | Check the collaboratively completed draft before implementation. |
 | End of tracked change | `feature-done` | Run L1, applicable L2/L3, current-truth check, and write one Git-native compact delivery receipt. |
@@ -205,7 +208,6 @@ Exception and maintenance actions appear only when their condition exists:
 
 | Condition | Action |
 |---|---|
-| Copied scaffold or any non-empty existing codebase retrofit | `project-personalize` |
 | A confirmed contract becomes materially wrong during implementation | `spec-revise` |
 | Historical active specs contradict each other | `spec-reconcile` |
 | Objective project state drifts from `AGENTS.md` or explicitly selected host-specific convention files | `agents-md-revise` |
