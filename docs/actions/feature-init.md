@@ -50,6 +50,20 @@ Bundle related small changes into one tracked feature when they share a user goa
 - ask whether each outcome can be accepted, enabled, and reverted on its own
 - record the concrete transaction, contract, or release coupling when several outcomes truly must ship together
 
+Infer candidate outcomes from the requested actors, observable results, release boundaries, migrations, and responsibility areas even when the user does not say "independently shippable." Do not split merely because work spans several modules, contains many tasks, or is large. When separability is materially unclear, ask one question that distinguishes one coupled outcome from several independent outcomes; do not turn the check into a decomposition interview.
+
+Before any materializer call, emit a concise **Scope Viability** result in the conversation:
+
+```text
+Primary outcome: <requested umbrella outcome or one selected observable delivery result>
+Candidate independent outcomes: <none, or results that may be separable>
+Mandatory coupling: <concrete transaction/contract/release reason, or none>
+Decision: single | clarification-required | split-required | bundled-risk-accepted
+Tracking: <selected/deferred stable references when established; pending-selection or pending-handoff while a required split is blocked; otherwise N/A>
+```
+
+This is an observable gate result, not a new repository artifact or schema. `Primary outcome` may preserve the user's umbrella request while viability is unresolved; it names one selected observable delivery result only after selection is supported by evidence or a user decision. `single` means one independently acceptable delivery, including a large or cross-module vertical slice. `clarification-required` means candidate outcomes exist but available evidence does not establish whether they can ship or roll back independently; ask one coupling question, report `Tracking: N/A` because no split has been established, and block materialization. `split-required` means separability is established and blocks materialization until the user selects a child and every deferred outcome has durable tracking. While that decision is blocked, report `Tracking: pending-selection` before a child is chosen and `Tracking: pending-handoff` after selection until every deferred outcome has a stable reference; never use `N/A` for those unresolved split states. `bundled-risk-accepted` requires the explicit risk decision described below.
+
 Broad responsibility, migration, or external-contract surfaces prompt closer scope review, but size alone never requires a split. A large indivisible vertical slice may stay together when its coupling is explicit.
 
 Two or more independently shippable outcomes without such coupling require a decomposition decision before materialization. Default to ordinary light/full child features and keep any parent initiative in the team's issue/PM system. If the user accepts one bundled delivery instead, use the full lane and record its coordination/rollback risk and decision source in the existing `plan.md` prior-decisions or risks section. Do not introduce an epic lane or epic artifact.
@@ -82,8 +96,9 @@ Adapters materialize the selected template through the packaged `scripts/materia
 
 1. Resolve the target root and parse the requested slug/optional description.
 2. Read active conventions, search current-truth indexes/headings, and open only domain documents relevant to the feature; exclude archived and unrelated artifacts.
-3. Decide whether a new artifact has a durable consumer. If not, report no-artifact/direct work and stop this action.
-4. Run the scope-viability check. If separable outcomes would be bundled, ask the user to choose a child or accept the bundled-delivery risk. When the user chooses a child, verify the durable decomposition handoff for every deferred outcome. Create nothing before the decision and handoff are complete.
+3. Decide whether a new artifact has a durable consumer. If not, report no-artifact/direct work plus `Scope Viability: N/A (no artifact candidate)` and stop this action.
+4. Run the scope-viability check and emit the canonical Scope Viability result. If separable outcomes would be bundled, ask the user to choose a child or accept the bundled-delivery risk. When the user chooses a child, verify the durable decomposition handoff for every deferred outcome. Create nothing before the result, decision, and handoff are complete.
+   While the result is `clarification-required` or `split-required` without a completed selection and handoff, stop after the canonical result and the one allowed blocking question. Do not pre-read lane-specific templates, the materializer, conditional architecture guidance, or reviewer contracts before an outcome is selected and their owning boundary applies.
 5. Choose light or full lane for the selected outcome. Ask only when the business goal, ownership, or decomposition is unclear.
 6. For full lane, choose brownfield only when a substantive domain document exists; otherwise use greenfield.
 7. Compute the next number across active and archived directories and invoke the packaged materializer with atomic no-clobber behavior.
@@ -104,6 +119,7 @@ When the auditor boundary applies, follow the canonical [reviewer execution cont
 - If pre-filling from conversation, mark the source briefly.
 - New module decisions must be explicit in plan/tasks; unclear ownership is a question, not a guess.
 - Scope-review breadth signals are prompts for judgment, never automatic verdict thresholds. Unreasoned bundling of independently shippable outcomes is the blocking condition.
+- A Scope Viability result is required before materialization even when the decision is `single`; module count, task count, and estimated effort are not substitutes for outcome/coupling analysis.
 - The full-lane handoff tells the main session to create an ADR during conversational fill only when `ADR_REQUIRED` is satisfied; feature-init does not create speculative ADRs before the decision exists.
 - Architecture-shaped work remains an ordinary full-lane change. Do not force a separate foundation artifact, a multi-tier layout, nested guidance, or a project-local architecture document when the selected outcome does not need one.
 - Full-lane features must pass [`spec-quality-check`](spec-quality-check.md) before implementation.
@@ -111,4 +127,4 @@ When the auditor boundary applies, follow the canonical [reviewer execution cont
 ## Validation
 
 - Confirm created files match the selected lane.
-- Report lane, module decision, decomposition handoff or bundled-risk decision when applicable, unresolved placeholders, and next action.
+- Report the Scope Viability result, or N/A for no-artifact/direct work, plus lane, module decision, decomposition handoff or bundled-risk decision when applicable, unresolved placeholders, and next action.

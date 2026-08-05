@@ -59,6 +59,7 @@ docs/                  方法论文档
 └── tooling.md         工具链对比
 template/              starter scaffold(core files + Claude compatibility assets)
 scripts/
+├── check-all.cjs  run the complete local validation suite and summarize failures
 ├── build-plugin-packages.cjs  generate/check Claude + Codex self-contained packages
 ├── check-adapter-parity.js  check 9+9 action parity + runtime isolation
 ├── check-template-contracts.js  check Claude rule frontmatter + shared hook input handling

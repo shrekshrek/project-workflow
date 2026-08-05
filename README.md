@@ -222,7 +222,13 @@ Exception and maintenance actions appear only when their condition exists:
 
 ## Maintaining generated plugin packages
 
-The main branch keeps one canonical core plus separate Claude- and Codex-native adapters. `scripts/build-plugin-packages.cjs` assembles two self-contained packages in a temporary output tree; no generated package is committed on `main`. A versioned release commit on `main` publishes the validated output to the generated `plugin-dist` branch after all checks pass. Maintainer-only feature-init fixtures, grading scripts, and scenario instructions remain source-only. After changing shared core assets or either adapter, run:
+The main branch keeps one canonical core plus separate Claude- and Codex-native adapters. `scripts/build-plugin-packages.cjs` assembles two self-contained packages in a temporary output tree; no generated package is committed on `main`. A versioned release commit on `main` publishes the validated output to the generated `plugin-dist` branch after all checks pass. Maintainer-only feature-init fixtures, grading scripts, and scenario instructions remain source-only. After changing shared core assets or either adapter, run the complete local suite:
+
+```bash
+node scripts/check-all.cjs
+```
+
+The suite runs the same checks that remain separate in CI for precise failure reporting:
 
 ```bash
 node scripts/build-plugin-packages.cjs --check
