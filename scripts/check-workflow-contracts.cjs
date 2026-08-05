@@ -49,6 +49,18 @@ function verdictContract(relative) {
   return match[0].replace(/^-\s*/, "");
 }
 
+const ciWorkflow = read(".github/workflows/version-sync-check.yml");
+for (const marker of [
+  "needs: validate",
+  "needs.validate.outputs.release",
+  "needs.validate.outputs.commit_ver",
+]) {
+  if (!ciWorkflow.includes(marker)) problems.push(`CI workflow: missing ${JSON.stringify(marker)}`);
+}
+if (ciWorkflow.includes("needs.version-sync")) {
+  problems.push("CI workflow: stale version-sync job reference");
+}
+
 const verdict = verdictContract("docs/actions/feature-done.md");
 if (!verdict?.includes("only explicit nonblocking advisories")) {
   problems.push("feature-done verdict contract must distinguish blocking findings from nonblocking advisories");
@@ -142,7 +154,7 @@ requireRegex("template/docs/specs/changes/_template/tasks-light.md", /^- L3:.*ve
 requireMarkers("template/docs/specs/changes/_template/tasks-light.md", ["verification=[item#id: PASS|FAIL]"]);
 
 requireMarkers("docs/actions/feature-init.md", ["do not create a pseudo-lane", "Use full lane for high-risk or contract-shaped work", "Use light lane only when all are true"]);
-requireMarkers("docs/actions/feature-init.md", ["scope-viability check", "size alone never requires a split", "Do not introduce an epic lane or epic artifact", "Recheck it at `spec-quality-check`", "durable decomposition handoff", "do not create a repository backlog", "separate external write that requires the user's explicit authorization", "never mutate an active feature automatically", "Removing a template TODO closes that decision", "generic best practices", "does not determine its responsibilities, ownership, call direction, sync/async relationship, or coupling", "architecture-design", "ordinary features skip it", "Continue conversational fill across user turns", "Do not stop merely by reporting that conversational fill is still needed"]);
+requireMarkers("docs/actions/feature-init.md", ["scope-viability check", "Scope Viability: single —", "Primary outcome:", "Candidate independent outcomes:", "Mandatory coupling:", "Decision: clarification-required | split-required | bundled-risk-accepted", "Tracking:", "pending-selection", "pending-handoff", "Scope Viability: N/A (no artifact candidate)", "size alone never requires a split", "Do not introduce an epic lane or epic artifact", "Recheck it at `spec-quality-check`", "durable decomposition handoff", "do not create a repository backlog", "separate external write that requires the user's explicit authorization", "never mutate an active feature automatically", "Removing a template TODO closes that decision", "generic best practices", "does not determine its responsibilities, ownership, call direction, sync/async relationship, or coupling", "architecture-design", "ordinary features skip it", "Continue conversational fill across user turns", "Do not stop merely by reporting that conversational fill is still needed"]);
 requireRegex("docs/actions/feature-init.md", /Decide whether a new artifact[\s\S]{0,500}Run the scope-viability check/, "no-artifact decision before scope viability");
 requireMarkers("tests/fixtures/feature-init-scenarios/expected.json", [
   "no-artifact-accepted-spec-implementation",
@@ -195,6 +207,7 @@ for (const relative of ["adapters/claude/skills/project-personalize/SKILL.md", "
 requireMarkers("template/AGENTS.md", [
   "deferred until repository evidence defines it",
   "host's `feature-init` action",
+  "one independently deliverable outcome or needs decomposition",
   "no-artifact/direct work",
   "light tracked change",
   "full spec/plan/tasks",

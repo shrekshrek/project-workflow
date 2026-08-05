@@ -152,7 +152,7 @@
     "shape": "brownfield",
     "mustRetainTodoMarker": true,
     "forbiddenPlantPatterns": ["/api/", "Kafka", "8080"],
-    "expectedBehavior": "必须输出 decision=single 和具体兼容窗口/身份契约耦合理由；不得因为迁移步骤多或涉及多个调用方而要求拆 feature。",
+    "expectedBehavior": "必须用一行 Scope Viability: single 输出结果和具体兼容窗口/身份契约耦合理由；不得因为迁移步骤多或涉及多个调用方而要求拆 feature。",
     "sentinel": "docs/specs/changes/002-existing-thing/tasks.md"
   },
   "scope-viability-cross-module-vertical": {
@@ -164,7 +164,7 @@
     "shape": "brownfield",
     "mustRetainTodoMarker": true,
     "forbiddenPlantPatterns": ["/api/", "event-bus", "403"],
-    "expectedBehavior": "必须输出 decision=single 和端到端安全结果耦合理由；不得按 auth/billing/audit 模块机械拆分。",
+    "expectedBehavior": "必须用一行 Scope Viability: single 输出结果和端到端安全结果耦合理由；不得按 auth/billing/audit 模块机械拆分。",
     "sentinel": "docs/specs/changes/002-existing-thing/tasks.md"
   },
   "split-handoff-ask": {

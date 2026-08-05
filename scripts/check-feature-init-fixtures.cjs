@@ -140,28 +140,6 @@ function gradeScenario(name, config, runDir) {
 }
 
 function validateFixtures() {
-  const canonicalAction = read(path.join(root, "docs/actions/feature-init.md"));
-  for (const marker of [
-    "Primary outcome: <requested umbrella outcome or one selected observable delivery result>",
-    "Candidate independent outcomes:",
-    "Decision: single | clarification-required | split-required | bundled-risk-accepted",
-    "Tracking: pending-selection",
-    "Tracking: pending-handoff",
-    "report `Tracking: N/A` because no split has been established",
-    "Scope Viability: N/A (no artifact candidate)",
-  ]) {
-    if (!canonicalAction.includes(marker)) problems.push(`canonical feature-init action missing Scope Viability contract marker ${JSON.stringify(marker)}`);
-  }
-  for (const adapter of ["adapters/claude/skills/feature-init/SKILL.md", "adapters/codex/skills/feature-init/SKILL.md"]) {
-    const skill = read(path.join(root, adapter));
-    if (!skill.includes("before materialization") || !skill.includes("Scope Viability") || !skill.includes("do not pre-read lane-specific")) {
-      problems.push(`${adapter}: missing pre-materialization Scope Viability instruction`);
-    }
-  }
-  const workingAgreement = read(path.join(root, "template/AGENTS.md"));
-  if (!workingAgreement.includes("one independently deliverable outcome or needs decomposition")) {
-    problems.push("template/AGENTS.md: missing feature-init decomposition boundary");
-  }
   for (const scenario of [
     "scope-viability-implicit-ask",
     "scope-viability-coupled-migration",

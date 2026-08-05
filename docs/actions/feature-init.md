@@ -52,17 +52,23 @@ Bundle related small changes into one tracked feature when they share a user goa
 
 Infer candidate outcomes from the requested actors, observable results, release boundaries, migrations, and responsibility areas even when the user does not say "independently shippable." Do not split merely because work spans several modules, contains many tasks, or is large. When separability is materially unclear, ask one question that distinguishes one coupled outcome from several independent outcomes; do not turn the check into a decomposition interview.
 
-Before any materializer call, emit a concise **Scope Viability** result in the conversation:
+Before any materializer call, emit a concise **Scope Viability** result in the conversation. For an evident single outcome, keep the normal path to one line:
+
+```text
+Scope Viability: single — <one observable delivery result; include concrete coupling only when it explains why the result stays together>
+```
+
+For a decision that needs clarification, decomposition, or explicit bundled-risk acceptance, use the expanded form:
 
 ```text
 Primary outcome: <requested umbrella outcome or one selected observable delivery result>
 Candidate independent outcomes: <none, or results that may be separable>
 Mandatory coupling: <concrete transaction/contract/release reason, or none>
-Decision: single | clarification-required | split-required | bundled-risk-accepted
+Decision: clarification-required | split-required | bundled-risk-accepted
 Tracking: <selected/deferred stable references when established; pending-selection or pending-handoff while a required split is blocked; otherwise N/A>
 ```
 
-This is an observable gate result, not a new repository artifact or schema. `Primary outcome` may preserve the user's umbrella request while viability is unresolved; it names one selected observable delivery result only after selection is supported by evidence or a user decision. `single` means one independently acceptable delivery, including a large or cross-module vertical slice. `clarification-required` means candidate outcomes exist but available evidence does not establish whether they can ship or roll back independently; ask one coupling question, report `Tracking: N/A` because no split has been established, and block materialization. `split-required` means separability is established and blocks materialization until the user selects a child and every deferred outcome has durable tracking. While that decision is blocked, report `Tracking: pending-selection` before a child is chosen and `Tracking: pending-handoff` after selection until every deferred outcome has a stable reference; never use `N/A` for those unresolved split states. `bundled-risk-accepted` requires the explicit risk decision described below.
+This is an observable gate result, not a new repository artifact or schema. `single` means one independently acceptable delivery, including a large or cross-module vertical slice. In the expanded form, `Primary outcome` may preserve the user's umbrella request while viability is unresolved and names one selected result only after selection is supported. `clarification-required` asks one coupling question, reports `Tracking: N/A` because no split is established, and blocks materialization. `split-required` blocks until the user selects a child and every deferred outcome has durable tracking: use `pending-selection` before selection and `pending-handoff` until stable references exist. `bundled-risk-accepted` requires the explicit risk decision described below.
 
 Broad responsibility, migration, or external-contract surfaces prompt closer scope review, but size alone never requires a split. A large indivisible vertical slice may stay together when its coupling is explicit.
 

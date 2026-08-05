@@ -56,6 +56,11 @@ const requiredReviewerRefs = {
 };
 
 const reachableReviewers = [...new Set(Object.values(requiredReviewerRefs).flat())].sort();
+const featureInitAdapterMarkers = [
+  "before materialization",
+  "Scope Viability",
+  "do not pre-read lane-specific",
+];
 
 const canonicalOwnership = {
   "agents-md-revise": ["## Workflow", "## Invariants", "## Validation"],
@@ -155,6 +160,11 @@ for (const name of expected) {
     }
     if (!content.includes(`docs/actions/${name}.md`)) {
       problems.push(`${adapter} ${name}: canonical action reference missing`);
+    }
+    if (name === "feature-init") {
+      for (const marker of featureInitAdapterMarkers) {
+        if (!content.includes(marker)) problems.push(`${adapter} feature-init: missing Scope Viability adapter marker ${JSON.stringify(marker)}`);
+      }
     }
     const lines = lineCount(content);
     if (lines >= 200) {

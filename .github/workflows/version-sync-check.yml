@@ -15,15 +15,20 @@ permissions:
 # 见 workflow.md §1.12 末尾 "给 plugin 实施者的提示"。
 
 jobs:
-  version-sync:
+  validate:
     runs-on: ubuntu-latest
     outputs:
       release: ${{ steps.commit_version.outputs.release }}
       commit_ver: ${{ steps.commit_version.outputs.commit_ver }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 2
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          package-manager-cache: false
 
       - name: Extract version from latest commit message
         id: commit_version
@@ -127,13 +132,18 @@ jobs:
           node scripts/check-markdown-links.cjs
 
   publish:
-    needs: version-sync
-    if: github.event_name == 'push' && needs.version-sync.outputs.release == 'true'
+    needs: validate
+    if: github.event_name == 'push' && needs.validate.outputs.release == 'true'
     permissions:
       contents: write
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          package-manager-cache: false
 
       - name: Build release packages
         run: node scripts/build-plugin-packages.cjs --out "$RUNNER_TEMP/plugin-dist"
@@ -141,7 +151,7 @@ jobs:
       - name: Publish generated plugin branch
         env:
           GH_TOKEN: ${{ github.token }}
-          RELEASE_VERSION: ${{ needs.version-sync.outputs.commit_ver }}
+          RELEASE_VERSION: ${{ needs.validate.outputs.commit_ver }}
         run: |
           cd "$RUNNER_TEMP/plugin-dist"
           git init -b plugin-dist
