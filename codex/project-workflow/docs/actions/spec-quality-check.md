@@ -1,0 +1,101 @@
+# spec-quality-check
+
+Canonical pre-implementation gate for full-lane feature artifacts.
+
+## Use When
+
+- `docs/specs/changes/<NNN>-<slug>/{spec,plan,tasks}.md` exists.
+- The user believes the spec is ready for implementation.
+
+Do not use as the main gate for light-lane features; `feature-done` checks their `tasks.md` goal/boundary, executes each verification item, and writes the delivery receipt directly.
+
+## Inputs
+
+- `spec.md`
+- `plan.md`
+- `tasks.md`
+- The existing `plan.md` prior-decisions or risks entry when a bundled-delivery decision exists.
+- Whether the current user request explicitly authorizes implementation after this gate passes.
+
+## Checks
+
+Required checks: seven core quality questions, plus conditional current-truth checks:
+
+1. The spec/plan minimum set exists: Outcomes, Scope, Constraints, Verification, prior decisions, and module impact.
+2. Scope includes explicit "do" and "do not" items.
+3. Verification contains the smallest non-redundant proof obligations that trace stated behavior and material risks to executable evidence. Generic derived edge/error cases and unspecified inputs are removed unless a contract, project convention, or concrete risk requires them. One evidence source may cover several related obligations; a matrix needs an explicit interaction, regression, release, or compliance reason.
+4. Outcomes describe concrete user/system behavior, not generic intent.
+5. Constraints are concrete enough to constrain implementation.
+6. Multi-module work has sibling alignment: align, deviate with reason, or codify.
+7. Delivery shape is viable:
+   - Q7a: tasks are independently actionable or reviewable where splitting helps, without time-box or one-test-case-per-task quotas, and include the necessary validation/proof work.
+   - Q7b: the artifact represents one independently demonstrable, acceptable, and revertible outcome. Size alone never changes the verdict. Separable outcomes are split unless concrete coupling requires one delivery or the plan records an explicit bundled-risk decision and source.
+8. Only when the touched area has a `docs/specs/<area>.md`: the spec cites it and does not contradict it, or explicitly records why it deviates. Projects without current-truth documents skip this check.
+9. When check 8 applies: the spec includes a `## Delta` section with `Added`, `Modified`, and `Removed` subsections; at least one subsection has concrete content (not placeholders or bare N/A).
+
+Mechanical checks may detect missing sections and placeholders; subjective checks judge clarity, traceability, and risk.
+
+### Mechanical check table
+
+Canonical mechanical materialization of the checks above. Adapters run this table verbatim and report a compact passing range plus every failed item and reason; do not maintain adapter-local variants or narrate each ordinary pass.
+
+Shape detection (spec.md section headers): `## Delta` or `## Motivation` → brownfield; `## 1. Outcomes` → greenfield; otherwise brownfield only if `## Domain References` exists.
+
+Greenfield shape:
+
+| # | Check |
+|---|---|
+| M1 | Six required elements present (spec §1–§4 + plan Prior decisions + plan module impact) |
+| M2 | Scope has explicit `做` and `不做` lists, each with ≥1 non-TODO item |
+| M3 | Verification is non-empty, contains no unresolved TODO, and identifies proof obligations plus executable evidence; coverage, redundancy, and any matrix justification are judged by Q3 |
+| M4 | plan §1.1 Sibling Alignment filled (multi-module work only) |
+| M5 | tasks.md has a non-empty implementation/validation checklist with no unresolved TODO; independently useful task boundaries and aggregate delivery coherence are judged by Q7a/Q7b |
+| M6 / M7 | N/A (first archive creates/updates the domain doc) |
+
+Brownfield shape (M1/M2 replaced by M1b/M2b; M4/M5 shared):
+
+| # | Check |
+|---|---|
+| M1b | Motivation + Domain References + Delta + Constraints + Verification + both plan elements present |
+| M2b | Delta has Added/Modified/Removed subsections, ≥1 non-TODO |
+| M3b | Verification is non-empty, contains no unresolved TODO, and identifies proof obligations plus executable evidence; Delta/risk coverage, redundancy, and any matrix justification are judged by Q3 |
+| M6 | Spec cites `docs/specs/<area>.md` without contradiction, or records an explicit deviation |
+| M7 | Delta non-empty (may be judged together with M2b) |
+
+## Verdict
+
+- `READY`: no failed checks; delivery is one coherent outcome, regardless of size, with material rollout/rollback risks resolved.
+- `BORDERLINE`: implementation may proceed only with explicitly recorded and accepted risk and any required follow-up: either an intentional bundle of separable outcomes, or a coherent delivery with a material unresolved coordination/rollback risk.
+- `BLOCKED`: at least one failed check that must be fixed before implementation.
+
+`spec.md` status handling:
+
+- If the current request explicitly authorizes implementation contingent on this gate passing (for example, "if the check passes, continue implementation"), `READY` consumes that authorization: change only the top status marker from `草稿` to `已确认`, preserve the rest of the artifact, and continue the requested implementation.
+- A pure check/review request remains read-only and reports that `已确认` is still required before implementation.
+- `BORDERLINE` never consumes a pass-only authorization.
+  - Reuse a traceable acceptance from the plan when its outcomes and risk are unchanged; do not ask twice.
+  - Otherwise require explicit risk acceptance before changing status or implementing.
+  - Risk acceptance is not implementation authorization. A separate current request to implement permits the draft-to-confirmed transition and implementation while the verdict remains `BORDERLINE`.
+- An already `已确认` spec needs no status edit. A missing, malformed, or ambiguous status marker blocks an automatic transition.
+
+## Reviewer Execution
+
+Run the canonical subjective reviewer under the shared [reviewer execution contract](../reviewers/README.md#reviewer-execution-contract) only after every applicable mechanical prerequisite passes. If one fails, return `BLOCKED` and record `Reviewer execution: N/A(mechanical prerequisites failed)`; no reviewer-dispatch evidence is required. Once dispatch is applicable, record reviewer, mode, status, and fallback reason; missing required execution evidence returns `BLOCKED`.
+
+## Workflow
+
+1. Resolve an active feature and stop as N/A when it is light lane.
+2. Detect greenfield or brownfield shape from the canonical section markers.
+3. Run the applicable mechanical table above without maintaining an adapter-local copy. If any required mechanical check fails, report `BLOCKED` and stop before subjective review.
+4. Only when mechanical prerequisites pass, run the canonical spec-quality reviewer against the exact spec/plan/tasks population under the reviewer-execution contract above, including Q7b aggregate delivery coherence.
+5. Deduplicate findings by root cause, cite exact evidence, identify proof obligations that the same evidence can consolidate, and apply the verdict contract above. Unnecessary duplicate layers or matrix cells are nonblocking simplification advisories unless they make delivery materially impractical or conceal missing risk coverage.
+6. Apply the status-only transition above when its authorization and verdict conditions hold. Otherwise keep the gate read-only unless the user separately asks to repair the artifacts.
+
+## Invariants
+
+- This gate validates the artifact, not the implementation.
+- Conditional implementation authorization permits only the status transition owned by this gate; it does not authorize spec/plan/tasks content repair.
+- Failed checks block full-lane implementation.
+- Review findings cite the file/section they refer to.
+- More test layers, cases, or matrix cells never improve the verdict by themselves; distinct risk coverage does.
+- Reviewer execution is fail-closed: an unexplained main-session run cannot satisfy this gate when host-native dispatch was available.
