@@ -19,4 +19,4 @@ Claude execution details:
 - Show one `Consolidated Preview + Apply Gate`; use native approval, then preflight and apply once. Rejection, an unsafe destination symlink/conflict, or a blocking audit leaves the target unchanged.
 - Do not rewrite feature history or commit.
 
-Report evidence-backed commands, source/test paths, project-specific rules/boundaries, real tier ownership, changed files, hook status, `Reviewer execution` for every applicable role, audit result, unresolved decisions, and that the working agreement is aligned for direct work or `/project-workflow:feature-init` without claiming an architecture-quality verdict.
+Report only changed or newly confirmed commands/scopes, source/test paths, project-specific rules/boundaries, tier ownership, changed files, hook status, unresolved decisions, and exceptions. Compress each successful applicable `Reviewer execution` to one line; do not restate unchanged evidence. Conclude that the working agreement is aligned for direct work or `/project-workflow:feature-init` without claiming an architecture-quality verdict.

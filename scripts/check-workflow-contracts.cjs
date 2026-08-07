@@ -131,7 +131,7 @@ for (const relative of [
   forbidMarkers(relative, ["coverage percentage", "coverage score", "confidence score", "confidence=<"]);
 }
 requireMarkers("docs/reviewers/spec-quality-reviewer.md", ["Q3", "Q4", "Q5", "Q7a", "Q7b", "delivery-shape feasibility", "reviewed items", "blocking ambiguity"]);
-requireMarkers("docs/actions/spec-quality-check.md", ["1. The spec/plan minimum set", "3. Verification is executable", "4. Outcomes describe", "5. Constraints are concrete"]);
+requireMarkers("docs/actions/spec-quality-check.md", ["1. The spec/plan minimum set", "3. Verification contains the smallest non-redundant proof obligations", "4. Outcomes describe", "5. Constraints are concrete"]);
 requireMarkers("docs/reviewers/decision-completeness-auditor.md", ["Decision Matrix", "Must-fix", "Warnings", "Cross-file Consistency", "Completeness"]);
 
 for (const relative of [
@@ -159,7 +159,7 @@ for (const relative of [
   requireRegex(relative, /^- L3:.*not-run\(L1 prerequisite\)/m, "full-lane L3 prerequisite-skip receipt");
 }
 requireMarkers("template/docs/specs/changes/_template/tasks.md", ["不记录逐轮命令输出", "已被后续结果取代", "最终 checks 只进"]);
-requireMarkers("template/docs/specs/changes/_template/tasks.md", ["主要风险 → 最小 command / assertion"]);
+requireMarkers("template/docs/specs/changes/_template/tasks.md", ["证据义务 → 最小 command / assertion"]);
 forbidMarkers("template/docs/specs/changes/_template/tasks.md", ["applicable-rules=", "applicable-items=", "applicable-unverified="]);
 for (const relative of [
   "template/docs/specs/changes/_template/spec-greenfield.md",
@@ -181,7 +181,14 @@ requireRegex("template/docs/specs/changes/_template/tasks-light.md", /^- L3:.*ve
 requireMarkers("template/docs/specs/changes/_template/tasks-light.md", ["verification=[item#id: PASS|FAIL]"]);
 
 requireMarkers("docs/actions/feature-init.md", ["do not create a pseudo-lane", "Use full lane for high-risk or contract-shaped work", "Use light lane only when all are true"]);
-requireMarkers("docs/actions/feature-init.md", ["smallest executable checks", "distinct evidence", "do not create a test-type or status-code matrix by default"]);
+requireMarkers("docs/actions/feature-init.md", ["proof obligations", "do not derive generic edge, error, status-code, or unspecified-input cases", "one command or assertion may satisfy several related obligations", "interacting dimensions can change the result", "Do not create a test-layer, endpoint, status-code, or happy/boundary/error matrix for symmetry"]);
+requireMarkers("docs/actions/spec-quality-check.md", ["smallest non-redundant proof obligations", "Generic derived edge/error cases and unspecified inputs are removed", "One evidence source may cover several related obligations", "compact passing range", "More test layers, cases, or matrix cells never improve the verdict"]);
+requireMarkers("docs/reviewers/spec-quality-reviewer.md", ["One command may prove several related obligations", "Do not require time estimates or split one task per test case", "nonblocking simplification advisories"]);
+requireMarkers("docs/actions/project-personalize.md", ["A command being available does not make it mandatory for every feature", "Do not introduce a missing test layer, matrix, coverage gate, or release suite for completeness", "does not manufacture layer or matrix symmetry"]);
+for (const relative of ["template/docs/specs/changes/_template/tasks.md", "template/docs/specs/changes/_template/tasks-light.md"]) {
+  requireMarkers(relative, ["不要按预计时长或测试 case 机械拆分"]);
+  forbidMarkers(relative, ["30min-2h", "30 分钟 - 2 小时"]);
+}
 requireMarkers("docs/actions/feature-done.md", ["merely for symmetry", "each layer proves a distinct risk"]);
 requireMarkers("docs/actions/feature-init.md", ["scope-viability check", "Never report a nonblocking Scope Viability result", "clarification-required", "split-required", "bundled-risk-accepted", "pending-selection", "pending-handoff", "size alone never requires a split", "durable decomposition handoff", "untracked out-of-scope outcomes", "Do not create a repository backlog", "separate external write that requires the user's explicit authorization", "Recheck it at `spec-quality-check`"]);
 forbidMarkers("docs/actions/feature-init.md", ["Scope Viability: single", "Scope Viability: N/A"]);
@@ -250,6 +257,8 @@ for (const relative of ["adapters/claude/skills/feature-init/SKILL.md", "adapter
     "may need tracked acceptance",
     "Do not invoke for local reversible work with no durable artifact consumer",
     "direct/no-artifact, light tasks-only, or full spec/plan/tasks",
+    "on the normal path do not mention that check, its field name, or its omission",
+    "Light lane proceeds directly to implementation and skips `spec-quality-check`",
   ]);
 }
 forbidMarkers("template/AGENTS.md", ["{{HOOK_INDEX}}", ".claude/hooks/", ".codex/hooks.json", "High-Blast-Radius Paths", "None declared yet"]);

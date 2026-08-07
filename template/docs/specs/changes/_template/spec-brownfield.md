@@ -39,6 +39,6 @@
 
 ## Verification
 
-> 上线前怎么验证。按主要风险选择最小验证集;测试层级按需,不为凑矩阵重复覆盖同一行为。**本节 + Delta = L3 review 基线**(domain doc 只作 context,不作 L3 全文对照)。
+> 写“已声明 Delta/风险 + 最小可执行证据”,不是预排测试用例。不要从通用测试习惯派生未声明输入、边界或错误 case。一个证据可覆盖多个相关风险;只有交互维度、已有回归要求或发布/合规契约确实改变结果时才使用矩阵。**本节 + Delta = L3 review 基线**(domain doc 只作 context,不作 L3 全文对照)。
 
-- {{TODO 主要风险 → 最小 command / assertion;仅在提供不同证据时增加其他测试层级}}
+- {{TODO Delta/主要风险 → 最小 command / assertion;具体测试文件和 case 可在实施时决定}}

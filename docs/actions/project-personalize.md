@@ -21,20 +21,20 @@ Use [`project-init`](project-init.md) when all six baseline destinations are abs
 ## Outputs
 
 - Created or updated root `AGENTS.md`, preserving useful existing guidance.
-- A minimum evidence-backed working agreement: real build/test/lint commands, observed source/test paths, project-specific rules or boundaries that an agent cannot safely infer, and durable tier ownership when the repository actually has tiers. Unknown items remain explicitly deferred.
+- A minimum evidence-backed working agreement: real build/test/lint commands with their observed scope or trigger when known, observed source/test paths, project-specific rules or boundaries that an agent cannot safely infer, and durable tier ownership when the repository actually has tiers. Record only test layers, matrices, coverage gates, and release suites that the repository already uses or the user explicitly selects; unknown items remain deferred.
 - Updated host-specific convention files when they already exist or the user explicitly chooses them; for example, Claude may use `.claude/rules/`.
 - Existing hook adapter preserved unless the user approves a repair; a new hook adapter is generated only for an `active + verified` command, otherwise report `not installed + reason`.
 - Added or repaired tier-level `AGENTS.md` and one-line `CLAUDE.md` aliases when relevant.
 - Removed stale scaffold placeholders/defaults.
-- Summary of values changed and items requiring human review.
+- Compact summary of values changed, deferred items, and exceptions requiring human review. Do not restate unchanged evidence or expand an ordinary successful role execution beyond its required one-line evidence.
 
 ## Workflow
 
 1. Resolve the target and inspect its complete population including dotfiles, excluding version-control metadata from content classification. Classify the six baseline destinations and inspect other content only far enough to identify project evidence. All destinations absent plus only incidental material uses `project-init`; all six matching plus only incidental material is N/A; project evidence or any partial/custom/occupied baseline destination continues here. Ask one focused routing question only when the distinction is genuinely ambiguous.
-2. Inspect root/nested `AGENTS.md`, aliases, manifests, shallow structure, commands, source/test paths, project-specific boundaries, and existing host-private assets. Preserve useful custom guidance.
+2. Inspect root/nested `AGENTS.md`, aliases, manifests, shallow structure, commands, source/test paths, project-specific boundaries, existing test/CI configuration, and existing host-private assets. Preserve useful custom guidance.
 3. Present only applicable scopes: create/complete the minimum working agreement, replace demonstrably stale scaffold values, repair real tier guidance, survey structure, or explicitly selected host-private rules/hooks.
 4. For a missing baseline, stage the neutral six-file template with `scripts/materialize-project-baseline.cjs`; do not write the target yet.
-5. Use the codebase-explorer methodology only for a nontrivial or unclear structure survey. When observed project content shows multiple durable runtime tiers and the user selects tier-level guidance, read the conditional [`_multi_tier_examples`](../../template/_multi_tier_examples/README.md) reference before drafting it. When a material stack, library, or tool choice remains unresolved and current external evidence would change the result, run the tech-researcher methodology, present 2-3 suitable candidates and one recommendation, and let the user make the final choice. Derive commands, source/test paths, project-specific rules, and tier ownership from repository evidence; ask only for material gaps.
+5. Use the codebase-explorer methodology only for a nontrivial or unclear structure survey. When observed project content shows multiple durable runtime tiers and the user selects tier-level guidance, read the conditional [`_multi_tier_examples`](../../template/_multi_tier_examples/README.md) reference before drafting it. When a material stack, library, or tool choice remains unresolved and current external evidence would change the result, run the tech-researcher methodology, present 2-3 suitable candidates and one recommendation, and let the user make the final choice. Derive commands, their actual scope/trigger, source/test paths, project-specific rules, and tier ownership from repository evidence; ask only for material gaps. A command being available does not make it mandatory for every feature.
 6. Validate selected host-private rules and hooks only when they already exist or the user chose them. Never copy optional assets by default.
 7. Run an inline trace for repository- or user-sourced synchronization and the decision-completeness auditor only for unconfirmed high-impact choices, ADRs, or conflicting/weak evidence.
 8. Preflight unchanged baselines and staged destinations, show one consolidated diff/new-file list, and apply once after approval. Normalize an existing target-root symlink to its real directory, but reject symlinked destination components and an absent target below a symlinked ancestor. Conflicts, rejection, or a blocking audit leave the target unchanged.
@@ -56,6 +56,7 @@ Every applicable explorer, researcher, or auditor boundary follows the canonical
 - Architecture-design conversational fill is out of scope. Report the relevant repository and accepted-decision evidence for a material architecture change so `feature-init` can consume it; do not load the architecture guide or make foundation decisions here.
 - `AGENTS.md` remains concise; put tier-specific guidance in tier files.
 - Do not leave an existing scaffold's commands and source/test paths deferred when objective repository evidence resolves them. Do not invent style, Git, coverage, deployment, or tier policies that the repository and user do not establish.
+- Do not introduce a missing test layer, matrix, coverage gate, or release suite for completeness. Preserve an existing matrix only with its observed command and purpose; add a new one only after the user explicitly selects it for concrete interacting risks or a release/compliance contract.
 - When the selected host uses path-scoped convention files, their path patterns must match existing or intentionally planned paths. Do not translate one host's private files into another host's runtime format unless the user explicitly requests a migration.
 - Historical feature specs are not rewritten.
 - Successful completion means the evidence-backed working agreement is aligned with the currently observable project. The target is ready for direct work or [`feature-init`](feature-init.md); this is not an architecture-quality verdict.
@@ -66,4 +67,5 @@ Every applicable explorer, researcher, or auditor boundary follows the canonical
 - Search for unresolved placeholders and old scaffold names.
 - Check path-scoped rule frontmatter / path matching against the actual directory layout.
 - Verify a newly activated hook against a matching file; otherwise report `hook: not installed` and its reason without claiming runtime enforcement.
+- Confirm testing guidance distinguishes available commands from per-change requirements and does not manufacture layer or matrix symmetry.
 - Confirm no example-only assets became active project files.

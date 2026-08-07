@@ -61,7 +61,7 @@ full lane feature 然后补全:
 - `docs/specs/changes/<NNN>-<slug>/plan.md`:模块影响、Sibling Alignment、技术决策
 - `docs/specs/changes/<NNN>-<slug>/tasks.md`:可验证的实施步骤
 
-只有交接、多步验收、审计/发布或 current-truth 更新确实需要持久清单时,低风险小改才走轻车道并创建 `tasks.md`。补全目标/边界、验证、任务和 delivery receipt;不跑 `spec-quality-check`,但 `feature-done` 必须逐项兑现 `## 验证`。
+只有交接、多步验收、审计/发布或 current-truth 更新确实需要持久清单时,低风险小改才走轻车道并创建 `tasks.md`。补全目标/边界、最小证据义务、任务和 delivery receipt;不跑 `spec-quality-check`,但 `feature-done` 必须兑现 `## 验证`。同一 command 可覆盖多个相关义务且只运行一次。
 
 full lane 写代码前先跑:
 

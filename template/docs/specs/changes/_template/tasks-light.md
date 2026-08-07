@@ -11,13 +11,13 @@
 
 ## 验证(spec §4 等价 —— 不可省)
 
-> 轻车道砍文档仪式,**不砍验证**。列可机械验证的验收项。
+> 轻车道只保留可追溯到目标/边界/项目约定的最小交付证据,不从通用习惯派生未声明输入、边界或错误 case。合并能由同一 command / assertion 证明的相关行为;只有交互风险、已有回归要求或发布/合规契约需要时才列矩阵。
 
 - {{TODO 可执行/可机验的验收项}}
 
 ## Tasks
 
-- [ ] {{TODO 30min-2h 颗粒度}}
+- [ ] {{TODO 仅在工作可独立实施、验证或 review 时拆分;不要按预计时长或测试 case 机械拆分}}
 
 ## Proof Bundle
 
@@ -25,7 +25,7 @@
 
 - Verdict:
 - Change:`git=[base=<commit SHA>; reviewed=<commit SHA>; dirty=no]` 或 `git=[base=<commit SHA>; reviewed=worktree; dirty=yes]` (非 Git:`inputs=[explicit reviewed paths]`); `endpoint-outputs=[tasks.md receipt]`
-- Checks / 轻车道验证 / 不变量反核:`<每项 command/assertion + mode=run|same-task reuse + result + reused evidence reference when applicable>`
+- Checks / 轻车道验证 / 不变量反核:`<去重后的 command/assertion + 覆盖的验证项 + mode=run|same-task reuse + result + reused evidence reference when applicable>`
 - Review execution:`L2=<reviewer; mode=fresh-subagent|result-reuse|main-session fallback; status; fallback-reason=none|exact reason>|N/A(low-risk light lane; no L2 trigger after convention-scope triage)|not-run(L1 prerequisite when otherwise applicable); L3=N/A(light lane)`
 - L2:`verdict + baseline; add findings/unverified/ambiguities only when non-empty` 或 `N/A(low-risk light lane; no L2 trigger after convention-scope triage)` 或 `not-run(L1 prerequisite)`
 - L3:`N/A(light lane); verification=[item#id: PASS|FAIL]`

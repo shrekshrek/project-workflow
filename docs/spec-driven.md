@@ -171,13 +171,13 @@ docs/specs/changes/
 
 **为什么**:模糊约束 AI 怎么实现都"满足",最后跟你预期不一致。
 
-#### Verification:具体、可执行
+#### Verification:最小证据义务,具体、可执行
 
 | 好 ✅ | 坏 ❌ |
 |---|---|
-| token 生命周期风险 → service test 覆盖过期/重复使用/伪造<br>API 与邮件契约风险 → 一条 integration test 验 payload 和 token 解码<br>只有 provider/config 变化时 → staging delivery smoke | 固定要求单测、集成、e2e 各一套,或只写覆盖率 80% |
+| token 生命周期与滥用风险 → service test 覆盖相关不变量<br>API 与邮件契约风险 → 一条 integration test 验 payload 和 token 解码<br>只有 provider/config 变化时 → staging delivery smoke | 固定要求单测、集成、e2e 各一套,按 endpoint/状态码凑矩阵,或只写覆盖率 80% |
 
-**为什么**:覆盖率不等于覆盖**关键场景**。
+**为什么**:覆盖率、测试层数和 case 数都不等于覆盖**关键风险**。一个证据可以覆盖多个相关义务;只有交互维度会改变结果、已有回归要求或发布/合规契约存在时才展开矩阵。
 
 按主要风险选择能证明它们的**最小可执行验证集**。测试层级按需;除非各层证明不同风险,不要求在单测、集成和 e2e 中重复覆盖同一行为,也不按固定状态码凑错误路径矩阵。文档、配置或迁移型变更可使用相应的静态检查、CLI 或数据断言。
 
@@ -224,13 +224,13 @@ docs/specs/changes/
 
 **包含 2 节**:任务清单 + 实施记录。
 
-#### 任务清单:30 分钟到 2 小时颗粒度,按依赖排序
+#### 任务清单:按独立实施 / 验证 / review 边界拆分,按依赖排序
 
 | 好 ✅ | 坏 ❌ |
 |---|---|
-| - [ ] migration: invitations 表(2h)<br>- [ ] backend: POST /invitations(2h)<br>- [ ] backend: GET 校验(1.5h)<br>- [ ] frontend: 邀请管理页(2h)<br>- [ ] e2e: 完整流(1h) | - [ ] 实现邀请功能(8h) |
+| - [ ] 建 invitations migration 并验证升级/回滚<br>- [ ] 实现 invitation service 与 token 不变量<br>- [ ] 接入 API 与邮件契约<br>- [ ] 接入管理页和邀请落地页 | - [ ] 实现邀请功能 |
 
-**为什么**:粗颗粒让 AI "整体规划",容易把多个决策打包,错难定位。30 分钟到 2 小时是 **单 session 能完成 + 你能 review** 的甜区。
+**为什么**:过粗会隐藏独立决策和失败点,过细则制造清单维护与重复验证。按可独立实施、验证或 review 的边界拆分;不要按预计时长或每个测试 case 机械切任务。
 
 **跨 tier 契约先行**:先确定共同 API/schema/event/fixture,再按依赖或可独立验证的阶段排序;见 [workflow §8.6](workflow.md#86-全栈项目的契约先行contract-first-tactic)。
 
@@ -311,11 +311,11 @@ docs/specs/changes/
 |---|---|---|
 | 1 | spec.md 六要素是否齐?(Outcomes / Scope / Constraints / Verification + plan.md 的 Prior decisions / 模块影响)| 缺的回去补 —— 这 6 节是 spec 契约的最小集 |
 | 2 | spec.md §2 Scope 是否显式写了 **`做 / Include` 清单 + `不做 / Exclude` 清单两份**?| **必写"不做"** —— 不写 AI 会自动加,scope creep 最大单一来源(见 [workflow.md §7.5](workflow.md#75-不要让-specmd-和-planmd-内容混淆)) |
-| 3 | spec.md §4 Verification 是否能**机械化**(写出 test 能覆盖 / API 能 curl 测 / 数据可断言)?| 不可测的改成可测;留"人眼判断"等于没 verification |
+| 3 | spec.md §4 Verification 是否用最小、非重复的证据义务覆盖主要行为/风险?矩阵是否有交互、回归、发布或合规依据?| 不可测的改成可测;同一证据能覆盖的义务合并;无依据矩阵删掉或收敛 |
 | 4 | spec.md §1 Outcomes 是不是**具体场景**而不是模糊愿望?| "提升用户体验"→模糊;"用户邀请流 < 3 次点击完成"→具体 |
 | 5 | spec.md §3 Constraints 是**真约束**还是 wish list?| "必须 Vue 3"→真约束;"希望响应快"→wish(扔掉或具体化:"P95 < 200ms")|
 | 6 | plan.md §1.1 Sibling Alignment 是否填(涉及多模块时)?| 必填 Align/Deviate/Codify 三选一;空着是 [§0.1 命题 3 Drift](workflow.md#01-这本手册解决什么) 空间维度漂移的源头 |
-| 7a | tasks.md 是否拆到 **verifiable step**(每个 task 完成时有明确产物 / test 通过 / API 能调)?| 笼统的"实施 X 模块"→拆成"建 X/router.py + 写 happy-path test + 跑 curl 通"等可断言步骤 |
+| 7a | tasks.md 是否按真正可独立实施、验证或 review 的边界拆分?| 笼统到隐藏多个决定时拆开;只是预计时长不同或每个 test case 不同则不要机械拆分 |
 | 7b | 整个 artifact 是否仍是一个可独立演示、验收和回滚的交付结果?| 多个可独立交付结果且没有事务 / 契约 / 发布耦合 → 拆子 feature;接受合并交付时在 plan 既有的 Prior decisions 或风险小节写明结果、耦合/风险和决定来源。规模本身不改变 verdict |
 
 **Gate 语义**:

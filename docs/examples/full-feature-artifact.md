@@ -122,15 +122,15 @@
 
 ### Backend
 
-- [ ] POST `/invitations` + Resend(2h)
-- [ ] GET `/invitations/<token>` + 注册时校验(1.5h)
-- [ ] DELETE `/invitations/<id>` 撤销(0.5h)
+- [ ] 接入 POST `/invitations` 与 Resend 契约
+- [ ] 接入 GET `/invitations/<token>` 与注册校验
+- [ ] 接入 DELETE `/invitations/<id>` 撤销行为
 
 ### Frontend
 
-- [ ] 团队设置页:发邀请 form(1h)
-- [ ] 邀请管理页:列表 + 撤销(1.5h)
-- [ ] 邀请落地页:接受 → 注册流(1h)
+- [ ] 接入团队设置页邀请表单
+- [ ] 接入邀请管理页的列表与撤销行为
+- [ ] 接入邀请落地页的接受与注册流
 
 ### Verification
 

@@ -1,6 +1,6 @@
 # <NNN> <slug> — Tasks
 
-> 基于 plan.md。颗粒度 30 分钟 - 2 小时,实施时勾选 + 加注。
+> 基于 plan.md。只在工作可独立实施、验证或 review 时拆分,实施时勾选 + 加注。
 
 ## 1. 任务清单
 
@@ -10,13 +10,13 @@
 - [ ] 若 plan 明确包含持久化结构变化,添加并验证对应 migration
 
 ### `<component-or-tier>`
-- [ ] {{TODO 按实际受影响 component 分组,拆 30min-2h 颗粒度;复制本节可增加分组}}
+- [ ] {{TODO 按实际受影响 component 分组;避免大而含糊的 bucket,也不要按预计时长或测试 case 机械拆分}}
 
 ### Verification
 
-> 以 spec §4 的主要风险为边界,选择能证明它们的最小可执行验证。测试层级按需;除非覆盖不同风险,不在单测 / 集成 / e2e 中重复证明同一行为。
+> 兑现 spec §4 的最小证据义务。一个 command / assertion 可映射多个相关风险且只运行一次;测试层级按需。矩阵仅用于会改变结果的交互维度、项目已有回归要求或明确发布/合规契约。
 
-- [ ] {{TODO 主要风险 → 最小 command / assertion;文档、配置或迁移可用相应静态检查、CLI 或数据断言}}
+- [ ] {{TODO 一个或多个证据义务 → 最小 command / assertion;具体测试文件和 case 可在实施时决定}}
 
 ### Acceptance
 - [ ] spec §4 Verification 全部 pass

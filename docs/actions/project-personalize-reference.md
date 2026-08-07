@@ -9,7 +9,7 @@ This file is an on-demand aid for `project-personalize`, not a policy or questio
 3. Explicit user decisions in the current session.
 4. Ecosystem convention only as a labeled proposal requiring confirmation.
 
-If the first three sources do not establish a value, leave it deferred or ask one material question. Do not invent branch naming, Git platform, commit format, coverage targets, E2E tools, deployment commands, module organization, ports, databases, or framework versions.
+If the first three sources do not establish a value, leave it deferred or ask one material question. Do not invent branch naming, Git platform, commit format, coverage targets, test layers, test matrices, E2E tools, deployment commands, module organization, ports, databases, or framework versions. A discovered test command is an available capability, not an every-feature mandate unless project evidence says so.
 
 ## Path-scope examples
 
