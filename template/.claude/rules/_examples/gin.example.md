@@ -69,6 +69,6 @@ paths:
 ## 测试
 
 - 用 `httptest.NewRecorder()` + Gin engine in-process,**不**起真 server
-- 每个 endpoint 至少 1 happy + 1 边界 + 1 错误路径(400 / 401 / 404 / 500)
+- 按本次主要风险选择最小场景集;只有不同场景能证明不同风险时才增加用例,不按 endpoint 固定凑 happy / 边界 / 状态码矩阵
 - 用 table-driven tests(`tests := []struct{ name, ... }{ ... }`),不一个测试函数一个 case
 - DB 测试:transactional rollback / testcontainers-go / sqlmock 各有取舍,见项目 ADR

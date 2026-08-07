@@ -50,25 +50,9 @@ Bundle related small changes into one tracked feature when they share a user goa
 - ask whether each outcome can be accepted, enabled, and reverted on its own
 - record the concrete transaction, contract, or release coupling when several outcomes truly must ship together
 
-Infer candidate outcomes from the requested actors, observable results, release boundaries, migrations, and responsibility areas even when the user does not say "independently shippable." Do not split merely because work spans several modules, contains many tasks, or is large. When separability is materially unclear, ask one question that distinguishes one coupled outcome from several independent outcomes; do not turn the check into a decomposition interview.
+Infer candidate outcomes from the requested actors, observable results, release boundaries, migrations, and responsibility areas even when the user does not say "independently shippable." Do not split merely because work spans several modules, contains many tasks, or is large. Keep an evident single-outcome decision internal and continue without extra gate narration, even when supplied coupling evidence explains why it stays together. Never report a nonblocking Scope Viability result.
 
-Before any materializer call, emit a concise **Scope Viability** result in the conversation. For an evident single outcome, keep the normal path to one line:
-
-```text
-Scope Viability: single — <one observable delivery result; include concrete coupling only when it explains why the result stays together>
-```
-
-For a decision that needs clarification, decomposition, or explicit bundled-risk acceptance, use the expanded form:
-
-```text
-Primary outcome: <requested umbrella outcome or one selected observable delivery result>
-Candidate independent outcomes: <none, or results that may be separable>
-Mandatory coupling: <concrete transaction/contract/release reason, or none>
-Decision: clarification-required | split-required | bundled-risk-accepted
-Tracking: <selected/deferred stable references when preservation is required; pending-selection or pending-handoff while a required split is blocked; N/A when the user explicitly accepts untracked out-of-scope outcomes>
-```
-
-This is an observable gate result, not a new repository artifact or schema. `single` means one independently acceptable delivery, including a large or cross-module vertical slice. In the expanded form, `Primary outcome` may preserve the user's umbrella request while viability is unresolved and names one selected result only after selection is supported. `clarification-required` asks one coupling question, reports `Tracking: N/A` because no split is established, and blocks materialization. `split-required` blocks until the user selects a child. After selection, use `pending-handoff` only for deferred outcomes the user expects the workflow to preserve across sessions or people; explicitly accepted untracked outcomes remain outside the workflow and do not block the selected child. `bundled-risk-accepted` requires the explicit risk decision described below.
+When separability is materially unclear, several independent outcomes need a selection, or the user must accept bundled-delivery risk, surface a compact Scope Viability result with the current outcome, candidate outcomes, coupling evidence or uncertainty, and `clarification-required`, `split-required`, or `bundled-risk-accepted`. Ask at most one question that resolves the decision. Use `pending-selection` or `pending-handoff` only when that state applies; do not emit empty fields or an N/A result for the normal single-outcome or no-artifact path. Block materialization until the required decision, selection, and handoff are complete.
 
 Broad responsibility, migration, or external-contract surfaces prompt closer scope review, but size alone never requires a split. A large indivisible vertical slice may stay together when its coupling is explicit.
 
@@ -94,6 +78,8 @@ Light lane:
 
 - `docs/specs/changes/<NNN>-<slug>/tasks.md`
 
+For either lane, keep Verification proportionate: select the smallest executable checks that cover the material behavior and risks. Choose unit, integration, e2e, CLI, or data assertions only when that layer adds distinct evidence; do not create a test-type or status-code matrix by default.
+
 The directory number is the next available three-digit number (shared active+archive sequence, see [Shared runtime conventions](README.md#shared-runtime-conventions)) unless the user supplied a non-conflicting number. When the user supplies a number: equal to the computed next number → use it silently; greater than the computed number → ask which to use; less than or equal to an existing number → report the collision and switch to the computed number or another unused number (the slug may also change, but changing it alone never frees an occupied number). Never overwrite an existing `docs/specs/changes/<NNN>-<slug>/` directory.
 
 Adapters materialize the selected template through the packaged `scripts/materialize-feature-artifact.cjs`. The script validates the target root and requested number, normalizes an existing target-root symlink to its real directory, creates the final feature directory with an atomic no-clobber gate, copies only the selected lane files with exclusive creation, rejects symlinked destinations beneath the resolved root, and rolls back files created by a failed copy. A refusal leaves every pre-existing file untouched. If another process or earlier action occupied the number first, report the conflict and rerun feature-init to recompute the next number.
@@ -102,9 +88,9 @@ Adapters materialize the selected template through the packaged `scripts/materia
 
 1. Resolve the target root and parse the requested slug/optional description.
 2. Read active conventions, search current-truth indexes/headings, and open only domain documents relevant to the feature; exclude archived and unrelated artifacts.
-3. Decide whether a new artifact has a durable consumer. If not, report no-artifact/direct work plus `Scope Viability: N/A (no artifact candidate)` and stop this action.
-4. Run the scope-viability check and emit the canonical Scope Viability result. If separable outcomes would be bundled, ask the user to choose a child or accept the bundled-delivery risk. When the user chooses a child, require a durable decomposition handoff only for deferred outcomes they expect preserved; an explicit untracked/out-of-scope decision may proceed without one. Create nothing before the result, selection, and any required handoff are complete.
-   While the result is `clarification-required`, or `split-required` without a selection or required handoff, stop after the canonical result and the one allowed blocking question. Do not pre-read lane-specific templates, the materializer, conditional architecture guidance, or reviewer contracts before an outcome is selected and the owning boundary applies.
+3. Decide whether a new artifact has a durable consumer. If not, report no-artifact/direct work and stop this action.
+4. Run the scope-viability check. Continue silently for an evident single outcome. If separable outcomes would be bundled, report the compact decision and ask the user to choose a child or accept the bundled-delivery risk. When the user chooses a child, require a durable decomposition handoff only for deferred outcomes they expect preserved; an explicit untracked/out-of-scope decision may proceed without one. Create nothing before the required decision, selection, and handoff are complete.
+   While clarification, selection, or a required handoff is pending, stop after the compact result and the one allowed blocking question. Do not pre-read lane-specific templates, the materializer, conditional architecture guidance, or reviewer contracts before an outcome is selected and the owning boundary applies.
 5. Choose light or full lane for the selected outcome. Ask only when the business goal, ownership, or decomposition is unclear.
 6. For full lane, choose brownfield only when a substantive domain document exists; otherwise use greenfield.
 7. Compute the next number across active and archived directories and invoke the packaged materializer with atomic no-clobber behavior.
@@ -126,7 +112,7 @@ When the auditor boundary applies, follow the canonical [reviewer execution cont
 - New module decisions must be explicit in plan/tasks; unclear ownership is a question, not a guess.
 - Scope-review breadth signals are prompts for judgment, never automatic verdict thresholds. Unreasoned bundling of independently shippable outcomes is the blocking condition.
 - Require durable references only for deferred outcomes the user expects preserved. Explicitly accepted untracked out-of-scope outcomes do not block the selected child and do not enter its artifact; never infer permission to drop tracking when preservation intent is unclear.
-- A Scope Viability result is required before materialization even when the decision is `single`; module count, task count, and estimated effort are not substitutes for outcome/coupling analysis.
+- Scope viability is always checked before materialization, but only decisions that need clarification, decomposition, handoff, or bundled-risk acceptance require a user-facing gate result. Module count, task count, and estimated effort are not substitutes for outcome/coupling analysis.
 - The full-lane handoff tells the main session to create an ADR during conversational fill only when `ADR_REQUIRED` is satisfied; feature-init does not create speculative ADRs before the decision exists.
 - Architecture-shaped work remains an ordinary full-lane change. Do not force a separate foundation artifact, a multi-tier layout, nested guidance, or a project-local architecture document when the selected outcome does not need one.
 - Full-lane features must pass [`spec-quality-check`](spec-quality-check.md) before implementation.
@@ -134,4 +120,4 @@ When the auditor boundary applies, follow the canonical [reviewer execution cont
 ## Validation
 
 - Confirm created files match the selected lane.
-- Report the Scope Viability result, or N/A for no-artifact/direct work, plus lane, module decision, required decomposition handoff or explicit untracked-outcome decision when applicable, bundled-risk decision, unresolved placeholders, and next action.
+- Report lane, module decision, unresolved placeholders, and next action. Add the Scope Viability decision, required decomposition handoff, explicit untracked-outcome decision, or bundled-risk decision only when one affected the flow.

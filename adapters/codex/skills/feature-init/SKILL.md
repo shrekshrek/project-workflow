@@ -1,6 +1,6 @@
 ---
 name: feature-init
-description: "Use when a new feature or durable behavior change may need tracked acceptance, handoff, current-truth synchronization, or contract/risk protection; before materialization, expose whether the request is one independently deliverable outcome or needs decomposition, then classify direct/no-artifact, light tasks-only, or full spec/plan/tasks. Do not invoke for local reversible work with no durable artifact consumer."
+description: "Use when a new feature or durable behavior change may need tracked acceptance, handoff, current-truth synchronization, or contract/risk protection; check whether the request is one independently deliverable outcome or needs decomposition, then classify direct/no-artifact, light tasks-only, or full spec/plan/tasks. Do not invoke for local reversible work with no durable artifact consumer."
 ---
 
 # Feature Init (Codex)
@@ -9,15 +9,9 @@ Match the user's language. Read [`../../../../docs/actions/feature-init.md`](../
 
 - Resolve the target root explicitly and read applicable `AGENTS.md` plus active current truth; never write under an incidental cwd.
 - Resolve the plugin root as the nearest ancestor of this skill containing `.codex-plugin/plugin.json`; invoke its `scripts/materialize-feature-artifact.cjs` and never bypass the no-clobber gate.
-- Before materialization, emit the canonical Scope Viability result from the action spec. Infer implicit candidate outcomes, but never split by module count, task count, file count, or size alone.
-- When Scope Viability is blocked, stop after its canonical result and one allowed question; do not pre-read lane-specific, materializer, architecture, or reviewer assets before an outcome is selected and the owning boundary applies.
-- After a child is selected, require durable references only for deferred outcomes the user expects preserved across sessions or people. Explicitly accepted untracked out-of-scope outcomes do not block; report the decision, but never name or summarize those outcomes anywhere in the selected artifact, including out-of-scope sections. Ask one question when preservation intent is unclear.
+- Apply the action's scope-viability, deferred-outcome, and progressive-read boundaries exactly; normal single-outcome and no-artifact paths need no extra gate narration.
 - When the selected change establishes or materially changes project-wide application architecture, read [`../../../../docs/architecture-design.md`](../../../../docs/architecture-design.md) completely and use only its applicable conversational-fill topics; ordinary features skip it.
-- For applicable architecture work, continue conversational fill across user turns as one material question → user decision → artifact update until high-impact TODOs are resolved or the user explicitly pauses or defers; a paused flow is not handoff-ready.
 - Use inline trace for sourced prefill. Under the shared execution contract, dispatch a fresh subagent for [`decision-completeness-auditor`](../../../../docs/reviewers/decision-completeness-auditor.md) only for newly generated unconfirmed high-impact architecture, ownership, infrastructure, port, package/API, or ADR choices, or conflicting/weak evidence; ordinary full-lane work with directly traceable values is `N/A`. Use main-session fallback only when canonical dispatch is unavailable or fails, and record the observed reason.
-- Preserve unresolved TODOs, create no implementation code, and never commit.
-- Remove a template TODO only when user or repository evidence determines its value; generic best practice or implementation-stage discovery is not evidence. Otherwise retain it in the applicable section and report it.
-- Before reporting, check the selected artifact for every name or description the user assigned only to untracked outcomes, remove any occurrence, and validate again. Use those terms only for this transient check, never as artifact content.
-- A named component or tier proves only its existence. Do not infer its responsibilities, ownership, call direction, sync/async relationship, or coupling; retain those decisions as TODOs without user or repository evidence.
+- Preserve unresolved TODOs; do not replace an unknown implementation detail with discovery-task prose merely to remove its marker. Create no implementation code and never commit.
 
-Report Scope Viability (or N/A for no-artifact/direct work), the no-artifact/light/full decision, shape, created files, ownership, unresolved placeholders, `Reviewer execution` for every applicable audit, audit result, and next action.
+Report the no-artifact/light/full decision and the canonical applicable outputs, including any blocking Scope Viability decision and `Reviewer execution` for an applicable audit. Never report a nonblocking Scope Viability result.

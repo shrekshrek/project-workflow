@@ -34,9 +34,9 @@
 
 ## 4. Verification
 
-- 单测:invitation service 的过期/重复使用/token 伪造/速率限制四场景
-- 集成:POST + 邮件 mock 验 payload + GET 验 token 解码
-- 手测:真实邮箱发,完整 happy path
+- token 生命周期与滥用风险:`invitation service` test 覆盖过期、重复使用、伪造和速率限制
+- API / 邮件契约风险:一条 integration test 覆盖 POST、邮件 payload 和 GET token 解码
+- provider/config 发生变化时:staging delivery smoke 验证真实邮件链路
 - 上线指标:发送成功率 ≥ 99%
 ```
 
@@ -101,8 +101,8 @@
 ## 5. 实施顺序
 
 1. 建数据模型和 invitation service,先验证 token 生命周期。
-2. 接 API 与邮件发送,完成 backend 集成测试。
-3. 接管理页和邀请落地页,最后跑端到端流程。
+2. 接 API 与邮件发送,验证 API / 邮件契约。
+3. 接管理页和邀请落地页,按剩余发布风险完成验证。
 ```
 
 ## `docs/specs/changes/002-invitation/tasks.md`
@@ -134,9 +134,9 @@
 
 ### Verification
 
-- [ ] 单测覆盖 spec.md §4 的四个核心场景
-- [ ] 集成测试覆盖 API、邮件 payload 和 token 解码
-- [ ] e2e:发→收邮件→点链接→注册→入队
+- [ ] token 生命周期与滥用风险 → 运行 invitation service tests
+- [ ] API / 邮件契约风险 → 运行对应 integration test
+- [ ] 若 provider/config 有变化 → 运行 staging delivery smoke
 
 ### Acceptance
 

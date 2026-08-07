@@ -39,8 +39,6 @@
 
 ## Verification
 
-> 上线前怎么验证。**本节 + Delta = L3 review 基线**(domain doc 只作 context,不作 L3 全文对照)。
+> 上线前怎么验证。按主要风险选择最小验证集;测试层级按需,不为凑矩阵重复覆盖同一行为。**本节 + Delta = L3 review 基线**(domain doc 只作 context,不作 L3 全文对照)。
 
-- 单测:{{TODO}}
-- 集成:{{TODO}}
-- 手测:{{TODO}}
+- {{TODO 主要风险 → 最小 command / assertion;仅在提供不同证据时增加其他测试层级}}

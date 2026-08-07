@@ -40,12 +40,16 @@ const optionalAssetContracts = {
     forbidden: ["P0 时根据栈", ".claude/rules/code-style.md(继承根)"],
   },
   "template/_multi_tier_examples/ui-tier.AGENTS.md.example": {
-    required: ["project-personalize", "根/上级 `AGENTS.md`", "当前宿主已采用的 path-scoped convention file"],
-    forbidden: ["P0 时根据栈", ".claude/rules/code-style.md(继承根)"],
+    required: ["project-personalize", "根/上级 `AGENTS.md`", "当前宿主已采用的 path-scoped convention file", "不为填模板新增层级"],
+    forbidden: ["P0 时根据栈", ".claude/rules/code-style.md(继承根)", "- 单元 / 组件:", "- E2E:", "TIER_COMPONENT_TEST_COMMAND"],
   },
   "template/.claude/rules/_examples/fastapi.example.md": {
-    required: ["pattern=", "pydantic-settings"],
-    forbidden: ["regex=", "- `BaseSettings` 子类"],
+    required: ["pattern=", "pydantic-settings", "按本次主要风险选择最小场景集"],
+    forbidden: ["regex=", "- `BaseSettings` 子类", "每个 endpoint 至少"],
+  },
+  "template/.claude/rules/_examples/gin.example.md": {
+    required: ["按本次主要风险选择最小场景集"],
+    forbidden: ["每个 endpoint 至少"],
   },
   "template/.claude/rules/_examples/react.example.md": {
     required: ["React 18+ 类型不再隐式加入 `children`"],

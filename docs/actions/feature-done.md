@@ -24,7 +24,8 @@ This action owns the endpoint gate: L1, applicable L2, full-lane L3, current-tru
   commands for each changed project scope. Expand to repository-wide or release suites only when the
   feature spec requires them, applicable project conventions explicitly require them for this change,
   or a changed shared surface has a project-defined shared check. Do not treat every command listed in a
-  root convention file as mandatory for every feature.
+  root convention file as mandatory for every feature. Do not add unit/integration/e2e layers beyond
+  those inputs merely for symmetry; repeat a behavior across layers only when each layer proves a distinct risk.
 - L1 execution: within the same task, reuse a passing check only while its command, relevant inputs, and
   changed-scope classification are provably unchanged; uncertainty requires a rerun. After a fix, rerun the failed or affected checks and their
   dependency closure; rerun the full changed-scope L1 population only when the fix invalidates it, such as a

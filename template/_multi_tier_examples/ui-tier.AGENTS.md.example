@@ -14,14 +14,12 @@
 - 跑测试:`{{TIER_TEST_COMMAND}}`
 - Lint:`{{TIER_LINT_COMMAND}}`
 - Build:`{{TIER_BUILD_COMMAND}}`
-- 组件测试(可选):`{{TIER_COMPONENT_TEST_COMMAND}}`
 
 ## Testing(本 tier 特有)
 
-- 单元 / 组件:`{{TIER_TEST_FRAMEWORK}}`(如 Vitest + @vue/test-utils 或 Jest + React Testing Library)
-- E2E:`{{TIER_E2E_FRAMEWORK}}`(如 Playwright / Cypress)
+- {{TIER_TEST_LAYER}}:`{{TIER_TEST_FRAMEWORK}}`(只列仓库已采用且对本 tier 适用的层级;按需复制,不为填模板新增层级)
 - 测试文件位置:`{{TIER_TEST_LOCATION}}`
-- 覆盖率:仅当根约定或 CI 已声明门槛时继承
+- 覆盖率 / E2E:仅当根约定、feature spec 或发布风险要求时使用项目已有命令
 
 ## Module Structure
 

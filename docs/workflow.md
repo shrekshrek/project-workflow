@@ -367,7 +367,7 @@ A 类约定的 portable core 载体是 **AGENTS.md**(根 / tier / module 嵌套)
 
 **典型 topic 拆分**(Claude-local 可选能力,按需由 `project-personalize` 创建):
 - `code-style.md` —— 命名 / 缩进 / 行宽 / 注释纪律 / 函数大小
-- `testing.md` —— 框架 / 文件组织 / TDD 纪律 / 覆盖率
+- `testing.md` —— 已采用的测试层级 / 文件组织 / 风险驱动验证 / 适用命令
 - `security.md` —— 🚫 Never / ⚠️ Ask first / ✅ Always
 
 **何时加新 topic file**:

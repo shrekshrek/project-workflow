@@ -13,8 +13,10 @@
 - [ ] {{TODO 按实际受影响 component 分组,拆 30min-2h 颗粒度;复制本节可增加分组}}
 
 ### Verification
-- [ ] {{TODO 单测}}
-- [ ] {{TODO 适用时添加集成 / e2e / CLI / 数据断言}}
+
+> 以 spec §4 的主要风险为边界,选择能证明它们的最小可执行验证。测试层级按需;除非覆盖不同风险,不在单测 / 集成 / e2e 中重复证明同一行为。
+
+- [ ] {{TODO 主要风险 → 最小 command / assertion;文档、配置或迁移可用相应静态检查、CLI 或数据断言}}
 
 ### Acceptance
 - [ ] spec §4 Verification 全部 pass

@@ -67,5 +67,5 @@ paths:
 ## 测试
 
 - 用 `httpx.AsyncClient` 打 ASGI in-process,**不**起真服务器
-- 每个 endpoint 至少 1 happy + 1 边界 + 1 错误路径(401 / 404 / 422)
+- 按本次主要风险选择最小场景集;只有不同场景能证明不同风险时才增加用例,不按 endpoint 固定凑 happy / 边界 / 状态码矩阵
 - DB 测试用独立 schema 或 transactional rollback,**不**共享 prod schema

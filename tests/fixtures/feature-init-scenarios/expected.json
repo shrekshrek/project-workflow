@@ -133,14 +133,14 @@
     "base": "base-numbered",
     "prompt": "feature-init people-operations: 同时做人员全量导入核对、手工增改、组织投影、外部 PMO 授权、数据问题处理;这些能力可以分别验收、上线和回滚,但没有要求必须同批发布。",
     "interactionOnly": true,
-    "expectedBehavior": "必须识别多个可独立交付结果并在创建产物前输出 decision=split-required；选择 child 前必须报告 Tracking: pending-selection，并询问先做哪个子 feature，或让用户明确接受合并交付风险；不得创建 epic lane、epic 文件或未经决定直接生成一个总 feature。",
+    "expectedBehavior": "必须识别多个可独立交付结果并在创建产物前报告 split-required 和 pending-selection，询问先做哪个子 feature，或让用户明确接受合并交付风险；不得创建 epic lane、epic 文件或未经决定直接生成一个总 feature。",
     "sentinel": "docs/specs/changes/002-existing-thing/tasks.md"
   },
   "scope-viability-implicit-ask": {
     "base": "base-numbered",
     "prompt": "feature-init people-operations-platform: 开始建设人员运营平台，包括批量导入与核对、员工手工增改、组织结构投影、外部合作方授权和数据问题处理。先把这个项目整体开起来。",
     "interactionOnly": true,
-    "expectedBehavior": "即使 prompt 没有说可独立交付，也必须从多个可观察结果中识别候选拆分，把 Primary outcome 保留为用户请求的 umbrella outcome，在创建产物前输出 decision=clarification-required 和 Tracking: N/A，并用一个问题确认它们能否独立发布/回滚；阻塞期间不得预读 lane-specific、materializer、architecture 或 reviewer 资料，不得直接断言可拆、生成总 feature 或进入车道分类。",
+    "expectedBehavior": "即使 prompt 没有说可独立交付，也必须从多个可观察结果中识别候选拆分，在创建产物前报告 clarification-required，并用一个问题确认它们能否独立发布/回滚；阻塞期间不得预读 lane-specific、materializer、architecture 或 reviewer 资料，不得直接断言可拆、生成总 feature 或进入车道分类。",
     "sentinel": "docs/specs/changes/002-existing-thing/tasks.md"
   },
   "scope-viability-coupled-migration": {
@@ -152,7 +152,7 @@
     "shape": "brownfield",
     "mustRetainTodoMarker": true,
     "forbiddenPlantPatterns": ["/api/", "Kafka", "8080"],
-    "expectedBehavior": "必须用一行 Scope Viability: single 输出结果和具体兼容窗口/身份契约耦合理由；不得因为迁移步骤多或涉及多个调用方而要求拆 feature。",
+    "expectedBehavior": "必须把兼容窗口内的身份契约切换视为一个耦合结果并继续创建 feature；不得因为迁移步骤多或涉及多个调用方而要求拆分或输出额外 gate。",
     "sentinel": "docs/specs/changes/002-existing-thing/tasks.md"
   },
   "scope-viability-cross-module-vertical": {
@@ -164,14 +164,14 @@
     "shape": "brownfield",
     "mustRetainTodoMarker": true,
     "forbiddenPlantPatterns": ["/api/", "event-bus", "403"],
-    "expectedBehavior": "必须用一行 Scope Viability: single 输出结果和端到端安全结果耦合理由；不得按 auth/billing/audit 模块机械拆分。",
+    "expectedBehavior": "必须把端到端访问撤销视为一个耦合结果并继续创建 feature；不得按 auth/billing/audit 模块机械拆分或输出额外 gate。",
     "sentinel": "docs/specs/changes/002-existing-thing/tasks.md"
   },
   "split-handoff-ask": {
     "base": "base-numbered",
     "prompt": "feature-init people-import: 已确认把人员运营拆开,本次先做全量导入核对;手工增改和组织投影以后再做,但它们尚未记录到 PMO、Issue 或其他持久化位置。",
     "interactionOnly": true,
-    "expectedBehavior": "必须在创建产物前输出 decision=split-required 和 Tracking: pending-handoff，并要求为每个暂缓结果提供稳定的 Issue/PM 引用；不得依赖聊天记忆、创建 repo backlog 或先生成当前 feature。",
+    "expectedBehavior": "必须在创建产物前报告 split-required 和 pending-handoff，并要求为每个暂缓结果提供稳定的 Issue/PM 引用；不得依赖聊天记忆、创建 repo backlog 或先生成当前 feature。",
     "sentinel": "docs/specs/changes/002-existing-thing/tasks.md"
   },
   "light-split-with-explicit-untracked-deferred": {
@@ -183,7 +183,7 @@
     "shape": null,
     "mustRetainTodoMarker": false,
     "forbiddenPlantPatterns": ["/api/", "批量导出", "组织投影"],
-    "expectedBehavior": "必须创建且只创建当前选定的 light feature；报告 deferred outcomes untracked/out-of-scope 和 Tracking: N/A，不要求 Issue/PM 引用，也不得把未跟踪结果写入当前 artifact。",
+    "expectedBehavior": "必须创建且只创建当前选定的 light feature；报告 deferred outcomes untracked/out-of-scope，不要求 Issue/PM 引用或额外 N/A 字段，也不得把未跟踪结果写入当前 artifact。",
     "sentinel": "docs/specs/changes/002-existing-thing/tasks.md"
   },
   "light-split-with-durable-handoff": {
