@@ -10,9 +10,10 @@ const fixtureRoot = path.join(root, "tests/fixtures/reviewer-smoke");
 const expected = JSON.parse(fs.readFileSync(path.join(fixtureRoot, "expected.json"), "utf8"));
 const problems = [];
 
-function aggregateVerdict({ l1Passed, l2Blocking, l3Blocking, lightVerificationPassed, receiptReliable, reviewerExecutionApplicable = true, reviewerExecutionReliable }) {
-  if (!receiptReliable || (reviewerExecutionApplicable && reviewerExecutionReliable !== true)) return "BLOCKED";
+function aggregateVerdict({ l1Available = true, l1Passed, l2Blocking, l3Blocking, lightVerificationPassed, receiptReliable, reviewerExecutionApplicable = true, reviewerExecutionReliable }) {
+  if (!receiptReliable || !l1Available) return "BLOCKED";
   if (!l1Passed) return "NEEDS WORK";
+  if (reviewerExecutionApplicable && reviewerExecutionReliable !== true) return "BLOCKED";
   if (l2Blocking || l3Blocking || lightVerificationPassed === false) return "NEEDS WORK";
   return "READY";
 }
@@ -28,6 +29,33 @@ const missingExecutionEvidenceVerdict = aggregateVerdict({
 });
 if (missingExecutionEvidenceVerdict !== "BLOCKED") {
   problems.push(`missing reviewer execution evidence must BLOCK, got ${missingExecutionEvidenceVerdict}`);
+}
+
+const failedL1WithoutReviewerVerdict = aggregateVerdict({
+  l1Passed: false,
+  l2Blocking: false,
+  l3Blocking: false,
+  lightVerificationPassed: true,
+  receiptReliable: true,
+  reviewerExecutionApplicable: true,
+  reviewerExecutionReliable: false,
+});
+if (failedL1WithoutReviewerVerdict !== "NEEDS WORK") {
+  problems.push(`failed L1 must yield NEEDS WORK without reviewer dispatch, got ${failedL1WithoutReviewerVerdict}`);
+}
+
+const unavailableL1WithoutReviewerVerdict = aggregateVerdict({
+  l1Available: false,
+  l1Passed: false,
+  l2Blocking: false,
+  l3Blocking: false,
+  lightVerificationPassed: true,
+  receiptReliable: true,
+  reviewerExecutionApplicable: true,
+  reviewerExecutionReliable: false,
+});
+if (unavailableL1WithoutReviewerVerdict !== "BLOCKED") {
+  problems.push(`unavailable L1 must yield BLOCKED without reviewer dispatch, got ${unavailableL1WithoutReviewerVerdict}`);
 }
 
 const allowedLightNATestVerdict = aggregateVerdict({

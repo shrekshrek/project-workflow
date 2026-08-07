@@ -1,15 +1,16 @@
 # project-personalize
 
-Canonical action for adapting a target with project content beyond version-control metadata and the neutral project-workflow baseline, including a newly generated scaffold, a copied scaffold, or an existing codebase. The target may have a complete, partial, unrelated, or missing project-workflow baseline.
+Canonical action for adapting a target whose project evidence must shape the working agreement, including a generated or copied scaffold, an existing codebase, or project-specific documentation. The target may have a complete, partial, unrelated, or missing project-workflow baseline.
 
 ## Use When
 
-- The target contains project content beyond version-control metadata and the neutral baseline: for example, a newly generated scaffold, copied scaffold, existing codebase, project configuration, or project-specific README.
+- The target contains project evidence that should shape the working agreement: for example, a generated or copied scaffold, existing codebase, project configuration, or project-specific documentation that establishes commands, source/test paths, conventions, architecture, product truth, or current truth.
+- Any of the six neutral baseline destinations is partial, custom, or otherwise occupied and requires preservation or reconciliation.
 - `AGENTS.md` may be complete, partial, unrelated to project-workflow, or absent.
 - Default names, commands, ports, database names, tier paths, or rule path patterns still reflect the scaffold.
 - An existing codebase needs its project conventions aligned with actual structure.
 
-Do not use for an empty target; use [`project-init`](project-init.md). When only the exact neutral baseline exists, report N/A because there is no project evidence to personalize; keep deferred values and recommend a scaffold, direct work, or an architecture-shaped full-lane change as applicable. A target with other project content but no `AGENTS.md` remains a `project-personalize` case.
+Use [`project-init`](project-init.md) when all six baseline destinations are absent and the target is empty or contains only incidental material that does not establish project facts. When the exact neutral baseline plus only incidental material exists, report N/A because there is no project evidence to personalize; keep deferred values and recommend a scaffold, direct work, or an architecture-shaped full-lane change as applicable. A target with project evidence but no `AGENTS.md` remains a `project-personalize` case. If shallow inspection cannot distinguish incidental material from project evidence, ask one focused routing question instead of guessing.
 
 ## Inputs
 
@@ -29,7 +30,7 @@ Do not use for an empty target; use [`project-init`](project-init.md). When only
 
 ## Workflow
 
-1. Resolve the target and inspect its complete population including dotfiles, excluding version-control metadata from content classification. Empty targets use `project-init`; a six-file population whose contents match the bundled neutral template is N/A; a target with any other project content continues here as complete, partial/custom, or missing baseline.
+1. Resolve the target and inspect its complete population including dotfiles, excluding version-control metadata from content classification. Classify the six baseline destinations and inspect other content only far enough to identify project evidence. All destinations absent plus only incidental material uses `project-init`; all six matching plus only incidental material is N/A; project evidence or any partial/custom/occupied baseline destination continues here. Ask one focused routing question only when the distinction is genuinely ambiguous.
 2. Inspect root/nested `AGENTS.md`, aliases, manifests, shallow structure, commands, source/test paths, project-specific boundaries, and existing host-private assets. Preserve useful custom guidance.
 3. Present only applicable scopes: create/complete the minimum working agreement, replace demonstrably stale scaffold values, repair real tier guidance, survey structure, or explicitly selected host-private rules/hooks.
 4. For a missing baseline, stage the neutral six-file template with `scripts/materialize-project-baseline.cjs`; do not write the target yet.
@@ -47,7 +48,7 @@ Every applicable explorer, researcher, or auditor boundary follows the canonical
 
 - Replace only scaffold/default values that are demonstrably stale or selected by the user.
 - Missing baseline sections are added in place; existing custom headings or guidance are not grounds for redirecting to `project-init`.
-- When `AGENTS.md` is absent in a target with other project content, render the minimum baseline from objective repository evidence and user answers, with a preview before writing.
+- When `AGENTS.md` is absent in a target with project evidence, render the minimum baseline from objective repository evidence and user answers, with a preview before writing.
 - Missing-baseline bootstrap keeps all reusable templates in the plugin and renders `AGENTS.md` indexes from files that will actually exist; absent hooks/templates are not advertised as project-local assets.
 - Activate a new edit-time lint hook only for a user-confirmed, safe, sub-five-second per-file command; otherwise do not add hook files/config. Existing project hooks are reported as active/verified, existing/unverified, or user-approved for repair.
 - Do not invent product semantics from directory names.

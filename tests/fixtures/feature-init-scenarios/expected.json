@@ -174,6 +174,18 @@
     "expectedBehavior": "必须在创建产物前输出 decision=split-required 和 Tracking: pending-handoff，并要求为每个暂缓结果提供稳定的 Issue/PM 引用；不得依赖聊天记忆、创建 repo backlog 或先生成当前 feature。",
     "sentinel": "docs/specs/changes/002-existing-thing/tasks.md"
   },
+  "light-split-with-explicit-untracked-deferred": {
+    "base": "base-numbered",
+    "prompt": "feature-init people-status-filter: 本次只做现有人员页面的状态筛选提示,复用现有 API,不改 API、schema 或权限,需要跨 session 交接。之前提过批量导出和组织投影,但明确不要求 workflow 保存或跟踪,它们不属于本次范围。",
+    "prescribedAnswers": {},
+    "lane": "light",
+    "expectDir": "docs/specs/changes/004-people-status-filter",
+    "shape": null,
+    "mustRetainTodoMarker": false,
+    "forbiddenPlantPatterns": ["/api/", "批量导出", "组织投影"],
+    "expectedBehavior": "必须创建且只创建当前选定的 light feature；报告 deferred outcomes untracked/out-of-scope 和 Tracking: N/A，不要求 Issue/PM 引用，也不得把未跟踪结果写入当前 artifact。",
+    "sentinel": "docs/specs/changes/002-existing-thing/tasks.md"
+  },
   "light-split-with-durable-handoff": {
     "base": "base-numbered",
     "prompt": "feature-init people-status-filter: 人员运营 initiative 已拆分并持久化:parent PMO-300;本次人员列表状态筛选提示 PMO-301;暂缓批量导出 PMO-302。本次只做现有页面的 additive UI 提示,复用现有 API,不改 API、schema 或权限;需要跨 session 交接。",

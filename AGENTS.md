@@ -31,8 +31,8 @@ adapters/
     └── skills/        Codex-native skills(9 个,可调度时强制通用 subagent + 有据 fallback)
 
 adapters/claude/skills/
-├── project-init/         /project-workflow:project-init        (P0 empty / exact-baseline target)
-├── project-personalize/  /project-workflow:project-personalize (P0 target with other project content)
+├── project-init/         /project-workflow:project-init        (P0 baseline-compatible / already-initialized target)
+├── project-personalize/  /project-workflow:project-personalize (P0 project evidence / partial-custom baseline)
 ├── feature-init/         /project-workflow:feature-init        (P2 起 feature spec/plan/tasks)
 ├── spec-quality-check/   /project-workflow:spec-quality-check  (P2 pre-impl gate,§3.7 7 问 + M6 current-truth)
 ├── spec-revise/          /project-workflow:spec-revise         (P2 mid-impl 修订,§3.5/§2.6)

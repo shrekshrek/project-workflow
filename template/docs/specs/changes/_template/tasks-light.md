@@ -25,9 +25,9 @@
 
 - Verdict:
 - Change:`git=[base=<commit SHA>; reviewed=<commit SHA>; dirty=no]` 或 `git=[base=<commit SHA>; reviewed=worktree; dirty=yes]` (非 Git:`inputs=[explicit reviewed paths]`); `endpoint-outputs=[tasks.md receipt]`
-- Checks / 轻车道验证 / 不变量反核:`<每项 command/assertion + result>`
-- Review execution:`L2=<reviewer; mode=fresh-subagent|result-reuse|main-session fallback; status; fallback-reason=none|exact reason>|N/A(low-risk light lane; no L2 trigger after convention-scope triage); L3=N/A(light lane)`
-- L2:`verdict + baseline; add findings/unverified/ambiguities only when non-empty` 或 `N/A(low-risk light lane; no L2 trigger after convention-scope triage)`
+- Checks / 轻车道验证 / 不变量反核:`<每项 command/assertion + mode=run|same-task reuse + result + reused evidence reference when applicable>`
+- Review execution:`L2=<reviewer; mode=fresh-subagent|result-reuse|main-session fallback; status; fallback-reason=none|exact reason>|N/A(low-risk light lane; no L2 trigger after convention-scope triage)|not-run(L1 prerequisite when otherwise applicable); L3=N/A(light lane)`
+- L2:`verdict + baseline; add findings/unverified/ambiguities only when non-empty` 或 `N/A(low-risk light lane; no L2 trigger after convention-scope triage)` 或 `not-run(L1 prerequisite)`
 - L3:`N/A(light lane); verification=[item#id: PASS|FAIL]`
 - Current truth:
 - Open questions:(仅非空时保留)

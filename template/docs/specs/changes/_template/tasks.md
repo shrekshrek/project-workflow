@@ -33,10 +33,10 @@
 
 - Verdict:
 - Change:`git=[base=<commit SHA>; reviewed=<commit SHA>; dirty=no]` 或 `git=[base=<commit SHA>; reviewed=worktree; dirty=yes]` (非 Git:`inputs=[explicit reviewed paths]`); `endpoint-outputs=[tasks.md receipt, READY spec status when written]`
-- Checks:`<command/assertion; exit/result; test totals>`
-- Review execution:`L2=<reviewer; mode=fresh-subagent|result-reuse|main-session fallback; status; fallback-reason=none|exact reason>; L3=<same shape>`
-- L2:`verdict; baseline=[convention sources]; add findings/unverified/ambiguities only when non-empty`
-- L3:`verdict; baseline=[spec path + applicable sections]; add findings/unverified/ambiguities only when non-empty`
+- Checks:`<command/assertion; mode=run|same-task reuse; exit/result; test totals; reused evidence reference when applicable>`
+- Review execution:`L2=<reviewer; mode=fresh-subagent|result-reuse|main-session fallback; status; fallback-reason=none|exact reason>|not-run(L1 prerequisite); L3=<same shape>`
+- L2:`verdict; baseline=[convention sources]; add findings/unverified/ambiguities only when non-empty` 或 `not-run(L1 prerequisite)`
+- L3:`verdict; baseline=[spec path + applicable sections]; add findings/unverified/ambiguities only when non-empty` 或 `not-run(L1 prerequisite)`
 - Current truth:
 - Open questions:(仅非空时保留)
 - Drift:(仅非空时保留;不会自动写入其他 ledger)

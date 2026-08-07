@@ -74,15 +74,23 @@ requireMarkers("adapters/claude/skills/feature-done/SKILL.md", ["agents-md-revie
 requireMarkers("adapters/codex/skills/feature-done/SKILL.md", ["agents-md-reviewer.md", "spec-reviewer.md", "## Proof Bundle", "same-session", "never reviewer instances", "result-reuse", "in parallel when capacity permits", "single-slot capacity is not fallback", "exact commit SHA with `dirty=no`", "current worktree with `dirty=yes`", "only allowed endpoint-output difference"]);
 requireMarkers("docs/actions/feature-done.md", ["Light-lane verification", "transient validation evidence", "receipt-only edits", "Resolved durable behavior with no existing area document is `update pending`", "area unresolved", "exact on-disk `## Proof Bundle`", "Persist only fields with a downstream consumer"]);
 requireMarkers("docs/actions/feature-done.md", ["explicit Verification checks", "standard mechanical", "changed project scope", "repository-wide or release suites", "Do not treat every command listed"]);
+requireMarkers("docs/actions/feature-done.md", ["reuse a passing check", "relevant inputs", "changed-scope classification", "provably unchanged", "uncertainty requires a rerun", "failed or affected checks", "dependency closure", "full changed-scope L1 population", "workspace or build cache sequentially", "same-task reuse", "must not be presented as newly executed", "Before the first full L2/L3 dispatch", "non-receipt spec/plan/tasks edits", "never repairs implementation or non-receipt artifacts"]);
 for (const relative of ["adapters/claude/skills/feature-done/SKILL.md", "adapters/codex/skills/feature-done/SKILL.md"]) {
-  requireMarkers(relative, ["explicit Verification checks", "changed project scopes", "repository-wide/release suites", "never treat every root command as mandatory"]);
+  requireMarkers(relative, ["explicit Verification checks", "changed project scopes", "repository-wide/release suites", "never treat every root command as mandatory", "reuse a passing L1 check", "changed-scope classification", "provably unchanged", "uncertainty requires a rerun", "dependency closure", "workspace or build cache sequentially", "same-task reuse", "original evidence", "non-receipt spec/plan/tasks edits"]);
 }
+for (const relative of ["template/docs/specs/changes/_template/tasks.md", "template/docs/specs/changes/_template/tasks-light.md", "docs/examples/full-feature-artifact.md"]) {
+  requireMarkers(relative, ["mode=run|same-task reuse", "reused evidence reference"]);
+}
+requireMarkers("docs/examples/reviewer-mutation-smoke.md", ["## L1 reuse smoke", "same-task reuse", "original evidence reference", "workspace or build cache run sequentially", "relevant-input boundary uncertain"]);
 forbidMarkers("docs/actions/feature-done.md", ["reproducible diff identity", "content fingerprint"]);
-requireMarkers("docs/actions/feature-done.md", ["independently executable", "non-execution only", "Reviewer Execution", "../reviewers/README.md#reviewer-execution-contract", "Missing execution evidence for an applicable reviewer blocks `READY`"]);
+requireMarkers("docs/actions/feature-done.md", ["independently executable required L1 checks", "do not dispatch new reviewers", "still-valid same-task reviewer results", "not-run(L1 prerequisite)", "current-truth check", "receipt", "After L1 passes, missing execution evidence", "../reviewers/README.md#reviewer-execution-contract"]);
 requireMarkers("docs/actions/feature-done.md", ["exact changed-file/applicable-item validation", "never infer coverage from `findings=none`", "A PASS never persists applicable IDs or populations", "manual file populations", "population hashes", "dependency closure"]);
 requireMarkers("docs/actions/feature-done.md", ["same-task optimization", "original full-population evidence", "A later task", "base commit SHA", "before writing those endpoint-owned outputs", "reviewed=<commit SHA>; dirty=no", "reviewed=worktree; dirty=yes", "Other pairings are invalid", "target-branch merge base", "ambiguous base blocks", "Derive changed paths from Git", "For light lane, run it only when", "declared receipt/status write is the only permitted endpoint-output difference"]);
 forbidMarkers("docs/actions/feature-done.md", ["cached L2/L3 results"]);
 requireMarkers("docs/actions/feature-done.md", ["L2 convention-source paths", "L3 spec/artifact paths", "each reviewer independently enumerates", "dispatch L2 and L3 in parallel", "sequential fresh dispatch", "not a fallback condition", "aggregates only after both applicable results"]);
+for (const relative of ["adapters/claude/skills/feature-done/SKILL.md", "adapters/codex/skills/feature-done/SKILL.md"]) {
+  requireMarkers(relative, ["Complete all independently", "executable required L1", "do not dispatch new L2/L3 reviewers or repair the failure", "still-valid same-task reviewer results", "not-run(L1 prerequisite)", "After required L1 passes"]);
+}
 requireMarkers("docs/actions/feature-archive.md", ["receipt-schema migration candidate", "review-scope", "eligible only as a current-task result", "does not re-anchor it", "not proof that the reviewed worktree was unchanged", "delivery evidence and current truth as separate freshness questions", "later movement of the current branch or PR head does not by itself invalidate", "validate every pending current-truth fact against present implementation evidence"]);
 
 requireMarkers("docs/actions/spec-quality-check.md", ["Reviewer Execution", "../reviewers/README.md#reviewer-execution-contract", "fallback reason", "`BLOCKED`", "mechanical prerequisites failed", "stop before subjective review", "explicitly authorizes implementation", "`READY` consumes that authorization", "pure check/review request remains read-only", "`BORDERLINE` never consumes", "Q7a", "Q7b", "Size alone never changes the verdict", "do not ask twice"]);
@@ -147,14 +155,28 @@ for (const relative of [
 }
 requireRegex("template/docs/specs/changes/_template/tasks.md", /^- L2:.*baseline=\[.*only when non-empty/m, "compact full-lane L2 receipt");
 requireRegex("template/docs/specs/changes/_template/tasks.md", /^- L3:.*baseline=\[.*only when non-empty/m, "compact full-lane L3 receipt");
+for (const relative of [
+  "template/docs/specs/changes/_template/tasks.md",
+  "docs/examples/full-feature-artifact.md",
+  "tests/fixtures/reviewer-smoke/base/docs/specs/changes/001-normalize-key/tasks.md",
+]) {
+  requireRegex(relative, /^- L2:.*not-run\(L1 prerequisite\)/m, "full-lane L2 prerequisite-skip receipt");
+  requireRegex(relative, /^- L3:.*not-run\(L1 prerequisite\)/m, "full-lane L3 prerequisite-skip receipt");
+}
 requireMarkers("template/docs/specs/changes/_template/tasks.md", ["不记录逐轮命令输出", "已被后续结果取代", "最终 checks 只进"]);
 forbidMarkers("template/docs/specs/changes/_template/tasks.md", ["applicable-rules=", "applicable-items=", "applicable-unverified="]);
 requireRegex("template/docs/specs/changes/_template/tasks-light.md", /^- L2:.*baseline.*only when non-empty.*N\/A\(low-risk light lane; no L2 trigger after convention-scope triage/m, "conditional light-lane L2 evidence shape");
+for (const relative of [
+  "template/docs/specs/changes/_template/tasks-light.md",
+  "tests/fixtures/reviewer-smoke/light-base/docs/specs/changes/002-normalize-key-light/tasks.md",
+]) {
+  requireRegex(relative, /^- L2:.*not-run\(L1 prerequisite\)/m, "light-lane L2 prerequisite-skip receipt");
+}
 requireRegex("template/docs/specs/changes/_template/tasks-light.md", /^- L3:.*verification=\[/m, "light-lane L3 verification field");
 requireMarkers("template/docs/specs/changes/_template/tasks-light.md", ["verification=[item#id: PASS|FAIL]"]);
 
 requireMarkers("docs/actions/feature-init.md", ["do not create a pseudo-lane", "Use full lane for high-risk or contract-shaped work", "Use light lane only when all are true"]);
-requireMarkers("docs/actions/feature-init.md", ["scope-viability check", "Scope Viability: single —", "Primary outcome:", "Candidate independent outcomes:", "Mandatory coupling:", "Decision: clarification-required | split-required | bundled-risk-accepted", "Tracking:", "pending-selection", "pending-handoff", "Scope Viability: N/A (no artifact candidate)", "size alone never requires a split", "Do not introduce an epic lane or epic artifact", "Recheck it at `spec-quality-check`", "durable decomposition handoff", "do not create a repository backlog", "separate external write that requires the user's explicit authorization", "never mutate an active feature automatically", "Removing a template TODO closes that decision", "generic best practices", "does not determine its responsibilities, ownership, call direction, sync/async relationship, or coupling", "architecture-design", "ordinary features skip it", "Continue conversational fill across user turns", "Do not stop merely by reporting that conversational fill is still needed"]);
+requireMarkers("docs/actions/feature-init.md", ["scope-viability check", "Scope Viability: single —", "Primary outcome:", "Candidate independent outcomes:", "Mandatory coupling:", "Decision: clarification-required | split-required | bundled-risk-accepted", "Tracking:", "pending-selection", "pending-handoff", "Scope Viability: N/A (no artifact candidate)", "size alone never requires a split", "Do not introduce an epic lane or epic artifact", "Recheck it at `spec-quality-check`", "durable decomposition handoff", "expects the workflow to preserve", "explicitly accepted untracked", "Do not create a repository backlog", "separate external write that requires the user's explicit authorization", "never mutate an active feature automatically", "Removing a template TODO closes that decision", "generic best practices", "does not determine its responsibilities, ownership, call direction, sync/async relationship, or coupling", "architecture-design", "ordinary features skip it", "Continue conversational fill across user turns", "Do not stop merely by reporting that conversational fill is still needed", "do not dispatch merely because the lane is full"]);
 requireRegex("docs/actions/feature-init.md", /Decide whether a new artifact[\s\S]{0,500}Run the scope-viability check/, "no-artifact decision before scope viability");
 requireMarkers("tests/fixtures/feature-init-scenarios/expected.json", [
   "no-artifact-accepted-spec-implementation",
@@ -163,6 +185,7 @@ requireMarkers("tests/fixtures/feature-init-scenarios/expected.json", [
   "full-docs-only-cross-module-contract",
   "scope-viability-ask",
   "split-handoff-ask",
+  "light-split-with-explicit-untracked-deferred",
   "light-split-with-durable-handoff",
 ]);
 requireMarkers("docs/actions/feature-init.md", ["when the project uses such an optional declaration"]);
@@ -173,15 +196,15 @@ for (const relative of ["docs/actions/feature-init.md", "adapters/claude/skills/
   requireMarkers(relative, ["materialize-feature-artifact.cjs", "no-clobber"]);
 }
 for (const relative of ["adapters/claude/skills/feature-init/SKILL.md", "adapters/codex/skills/feature-init/SKILL.md"]) {
-  requireMarkers(relative, ["Remove a template TODO only when", "generic best practice", "retain it in the applicable section", "proves only its existence", "sync/async relationship", "docs/architecture-design.md", "ordinary features skip it", "continue conversational fill across user turns", "user explicitly pauses or defers", "not handoff-ready"]);
+  requireMarkers(relative, ["Remove a template TODO only when", "generic best practice", "retain it in the applicable section", "proves only its existence", "sync/async relationship", "docs/architecture-design.md", "ordinary features skip it", "continue conversational fill across user turns", "user explicitly pauses or defers", "not handoff-ready", "expects preserved across sessions or people", "untracked out-of-scope outcomes", "never name or summarize those outcomes", "every name or description the user assigned only to untracked outcomes", "transient check", "preservation intent is unclear", "unconfirmed high-impact architecture", "ordinary full-lane work with directly traceable values is `N/A`"]);
 }
 requireMarkers("docs/actions/README.md", ["active runtime adapter", "CLAUDE_PLUGIN_ROOT", ".codex-plugin/plugin.json", "Do not scan another host's cache", "required asset"]);
 forbidMarkers("docs/actions/README.md", ["~/.claude/plugins/cache", "~/.codex/plugins/cache", "most recently installed compatible package"]);
 requireMarkers("adapters/claude/skills/feature-init/SKILL.md", ["`CLAUDE_PLUGIN_ROOT` is required", "scripts/materialize-feature-artifact.cjs"]);
 requireRegex("adapters/claude/skills/feature-init/SKILL.md", /occupied directory.*leave it untouched.*rerun feature-init/i, "occupied-directory no-clobber rerun semantics");
 requireMarkers("adapters/claude/skills/project-init/SKILL.md", ["scripts/materialize-project-baseline.cjs", "six target-mapped files", "Do not ask stack questions"]);
-requireMarkers("docs/actions/project-init.md", ["exactly the neutral baseline", "complete target population including dotfiles", "every file matches the bundled template", "stop before staging", "application structure may still be undecided", "inside the first feature", "govern several later features"]);
-requireMarkers("docs/actions/project-personalize.md", ["complete, partial, unrelated, or missing project-workflow baseline", "excluding version-control metadata from content classification", "A target with other project content but no `AGENTS.md` remains a `project-personalize` case", "not an architecture-quality verdict"]);
+requireMarkers("docs/actions/project-init.md", ["baseline-compatible target", "complete target population including dotfiles", "all absent, all matching, or partial/custom/occupied", "only incidental material", "one focused routing question", "stop before staging", "application structure may still be undecided", "inside the first feature", "govern several later features"]);
+requireMarkers("docs/actions/project-personalize.md", ["complete, partial, unrelated, or missing project-workflow baseline", "excluding version-control metadata from content classification", "A target with project evidence but no `AGENTS.md` remains a `project-personalize` case", "partial/custom/occupied baseline destination", "one focused routing question", "not an architecture-quality verdict"]);
 requireMarkers("docs/actions/project-personalize.md", ["_multi_tier_examples", "Do not claim that an architecture is suitable", "ordinary full lane", "Architecture-design conversational fill is out of scope", "do not load the architecture guide"]);
 requireMarkers("docs/actions/feature-init.md", ["no reserved `project-foundation` action, lane, or slug", "Keep minimal structure inside the first feature", "do not create a new artifact schema", "Multiple components alone do not establish multiple tiers", "Single-tier or tier-undecided work skips tier files and examples"]);
 requireMarkers("docs/architecture-design.md", ["not a workflow action, lane, gate, reviewer, artifact type, or reserved slug", "Ordinary features skip this guide", "smallest sufficient", "Do not infer call direction or sync/async relationships", "Multiple named components do not prove separate tiers or paths", "Do not load tier examples or choose a Sibling Alignment result", "create no additional architecture document or schema", "continue the question → user decision → artifact update loop across user turns", "when ownership changes design or operation", "do not recommend `spec-quality-check`"]);
@@ -190,7 +213,7 @@ forbidMarkers("docs/actions/project-personalize-reference.md", ["默认 80", "de
 requireMarkers("adapters/claude/skills/project-personalize/SKILL.md", ["partial/missing baseline", "materialize-project-baseline.cjs"]);
 requireRegex("adapters/claude/skills/project-personalize/SKILL.md", /missing baseline does not copy host-private rules, hooks, or tier examples/i, "missing-baseline host-private exclusion semantics");
 requireRegex("adapters/claude/skills/project-personalize/SKILL.md", /`codebase-explorer` applies only[\s\S]{0,180}`tech-researcher` applies only/i, "role-applicability prose");
-requireMarkers("adapters/codex/skills/project-personalize/SKILL.md", ["Include dotfiles", "six-file population matching the neutral template is N/A", "materialize-project-baseline.cjs", "Do not copy host-private rules/hooks/tier examples by default"]);
+requireMarkers("adapters/codex/skills/project-personalize/SKILL.md", ["Include dotfiles", "all six matching plus only incidental material is N/A", "materialize-project-baseline.cjs", "Do not copy host-private rules/hooks/tier examples by default"]);
 for (const relative of ["adapters/claude/skills/project-personalize/SKILL.md", "adapters/codex/skills/project-personalize/SKILL.md"]) {
   requireMarkers(relative, ["excluding version-control metadata from content classification"]);
 }
@@ -226,7 +249,7 @@ requireMarkers("adapters/claude/skills/project-init/SKILL.md", ["explicit invoca
 forbidMarkers("adapters/claude/skills/project-init/SKILL.md", ["rm -f ./.claude/settings.json", "-exec cp -r"]);
 requireMarkers("adapters/codex/skills/project-init/SKILL.md", ["materialize-project-baseline.cjs", "six target-mapped files", "--stage", "leaving the target unchanged", "complete target population including dotfiles", "byte-matching template contents", "stop before staging", "neutral workflow baseline is ready"]);
 for (const relative of ["adapters/claude/skills/project-init/SKILL.md", "adapters/codex/skills/project-init/SKILL.md"]) {
-  requireMarkers(relative, ["excluding version-control metadata from content classification", "do not invoke two next paths", "inside the first feature", "governs several later features"]);
+  requireMarkers(relative, ["excluding version-control metadata from content classification", "partial/custom/occupied", "only incidental material", "one focused routing question", "Preserve incidental content without interpreting or merging it", "do not invoke two next paths", "inside the first feature", "governs several later features"]);
 }
 for (const relative of ["docs/actions/project-init.md", "docs/actions/project-personalize.md", "adapters/claude/skills/project-init/SKILL.md", "adapters/claude/skills/project-personalize/SKILL.md"]) {
   forbidMarkers(relative, ["scaffold/inactive", "inactive scaffold"]);

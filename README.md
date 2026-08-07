@@ -35,7 +35,7 @@ See [`docs/cross-tool-methodology.md`](docs/cross-tool-methodology.md).
 
 | Need | project-workflow answer |
 |---|---|
-| Set up a project without guessing | Use `project-init` for an empty target or `project-personalize` when project content beyond the neutral baseline exists; either provides the appropriate P0 handoff |
+| Set up a project without guessing | Use `project-init` when the neutral baseline can be added without conflict or personalization; use `project-personalize` when project evidence or a partial/custom baseline must shape the agreement |
 | Start a feature without losing requirements in chat | Tracked `spec.md` / `plan.md` / `tasks.md` |
 | Keep implementation aligned while coding | spec revise SOP, module-boundary handling, environment-enforced rules |
 | Know whether a feature is ready | L1 + applicable L2/L3 review + delivery receipt |
@@ -160,7 +160,7 @@ $spec-reconcile <area>
 $agents-md-revise
 ```
 
-For an empty target, run `$project-init` once to materialize the neutral six-file baseline: `AGENTS.md`, the one-line `CLAUDE.md` alias, `.gitignore`, `docs/specs/index.md`, `docs/adr/README.md`, and `docs/gotchas.md`. An exact baseline is already initialized and is not evidence for personalization. When any other project content exists—including a newly generated scaffold, copied scaffold, existing codebase, project configuration, or project-specific README—use `$project-personalize` to derive real commands, paths, tiers, and optional host-specific rules/hooks from repository evidence. If a scaffold generator requires an empty target, run it first. `project-init` leaves the workflow baseline ready even when application structure is undecided; `project-personalize` leaves the evidence-backed working agreement aligned without claiming the architecture is suitable.
+Run `$project-init` once when all six neutral baseline destinations are absent and existing content, if any, is merely incidental: `AGENTS.md`, the one-line `CLAUDE.md` alias, `.gitignore`, `docs/specs/index.md`, `docs/adr/README.md`, and `docs/gotchas.md`. It preserves unrelated references, exports, or notes without interpreting them. A matching baseline plus only incidental content is already initialized. Use `$project-personalize` when code, configuration, or project-specific documentation establishes commands, paths, conventions, architecture, product/current truth, or when a baseline destination is partial, custom, or occupied. If a scaffold generator requires an empty target, run it first. `project-init` leaves the workflow baseline ready even when application structure is undecided; `project-personalize` leaves the evidence-backed working agreement aligned without claiming the architecture is suitable.
 
 Application-foundation and architecture work uses the ordinary `$feature-init` classification. Project-wide runtime tiers, module boundaries, data/API contracts, or other architecture changes use the existing full lane when a durable artifact is useful; there is no reserved `project-foundation` action, lane, or slug. Keep minimal setup inside the first feature when the two are inseparable, and create a separate architecture-shaped change only when it governs several later features or otherwise has its own durable consumer. Only that selected architecture-shaped change loads the shared [`architecture-design` guidance](docs/architecture-design.md); ordinary features and `project-personalize` skip it.
 
@@ -195,8 +195,8 @@ Most work does **not** use all nine actions. Initialize once, then use the daily
 
 | Frequency | Action | Purpose |
 |---|---|---|
-| Once, empty target | `project-init` | Create the neutral six-file project baseline. |
-| Once, target with project content beyond the neutral baseline | `project-personalize` | Establish or adapt the evidence-backed project agreement. |
+| Once, baseline-compatible target | `project-init` | Create the neutral six-file project baseline without disturbing incidental content. |
+| Once, project evidence or partial/custom baseline exists | `project-personalize` | Establish or adapt the evidence-backed project agreement. |
 | Per tracked change | `feature-init` | Choose no artifact, light tasks-only, or full spec/plan/tasks. Local, reversible, contract-free behavior work can proceed directly when current truth does not declare it, it fits the current task, and no durable artifact has a consumer. |
 | Full lane only | `spec-quality-check` | Check the collaboratively completed draft before implementation. |
 | End of tracked change | `feature-done` | Run L1, applicable L2/L3, current-truth check, and write one Git-native compact delivery receipt. |

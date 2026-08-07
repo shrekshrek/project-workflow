@@ -1,6 +1,6 @@
 ---
 name: project-personalize
-description: Adapt a target with project content beyond version-control metadata and the neutral baseline, including a generated or copied scaffold or existing codebase, using repository evidence and explicit user decisions.
+description: Adapt a target whose project evidence or partial/custom baseline must shape the working agreement, using repository evidence and explicit user decisions.
 ---
 
 # Project Personalize
@@ -9,7 +9,7 @@ Match the user's language and preserve file language. Read `${CLAUDE_PLUGIN_ROOT
 
 Claude execution details:
 
-- Parse `$ARGUMENTS` as an optional target and include dotfiles in inspection, excluding version-control metadata from content classification. Empty targets redirect to `/project-workflow:project-init`; a six-file population matching the neutral template is N/A; targets with other project content stay here with a complete, partial, custom, or missing baseline.
+- Parse `$ARGUMENTS` as an optional target and include dotfiles in inspection, excluding version-control metadata from content classification. Classify the six baseline destinations and inspect other content only far enough to identify project evidence. All destinations absent plus only incidental material redirects to `/project-workflow:project-init`; all six matching plus only incidental material is N/A; project evidence or any partial/custom/occupied destination stays here. Ask one focused routing question only when the distinction is genuinely ambiguous.
 - Inspect with Read/Grep/Glob/Bash. `codebase-explorer` applies only for a nontrivial structure survey. `tech-researcher` applies only when a material stack, library, or tool choice remains unresolved and needs current external evidence; the user makes the final choice.
 - For a partial/missing baseline, use `${CLAUDE_PLUGIN_ROOT}/scripts/materialize-project-baseline.cjs --stage` in a disposable directory. A missing baseline does not copy host-private rules, hooks, or tier examples.
 - Treat `.claude/rules/` and hooks as host-private: preserve them unless selected, and activate a new hook only under the canonical verified-command rule.

@@ -16,8 +16,8 @@ Single authoritative home for rules that several actions need. Action specs and 
 
 | Action | Purpose |
 |---|---|
-| [`project-init`](project-init.md) | Create the neutral project-workflow baseline in an empty target; an exact baseline is already initialized |
-| [`project-personalize`](project-personalize.md) | Establish or adapt project-workflow when other project content exists |
+| [`project-init`](project-init.md) | Create the neutral baseline when its destinations are absent and existing content needs no personalization |
+| [`project-personalize`](project-personalize.md) | Establish or adapt project-workflow when project evidence or a partial/custom baseline exists |
 | [`feature-init`](feature-init.md) | Create a feature artifact only when needed |
 | [`spec-quality-check`](spec-quality-check.md) | Gate full-lane feature specs before implementation |
 | [`spec-revise`](spec-revise.md) | Revise frozen spec/plan/tasks during implementation |

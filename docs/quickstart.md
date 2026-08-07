@@ -29,19 +29,19 @@
 
 ## 1. 初始化项目约定
 
-空目录:
+六个 baseline 目标路径都不存在,且目录为空或只有不影响项目约定的参考资料、导出物、随手笔记:
 
 ```text
 /project-workflow:project-init
 ```
 
-存在中立 baseline 之外的项目内容,包括刚生成的 scaffold、复制来的 scaffold、已有代码库、项目配置或项目专属 README:
+存在需要写入项目约定的证据,包括 scaffold、代码、配置,或记录命令、目录、架构、约定、产品/current truth 的项目文档;或者六个目标路径中已有部分/自定义内容:
 
 ```text
 /project-workflow:project-personalize
 ```
 
-`project-init` 的预期结果只有六个中立文件:`AGENTS.md`、一行 alias `CLAUDE.md`、`.gitignore`、`docs/specs/index.md`、`docs/adr/README.md`、`docs/gotchas.md`;它不猜语言、命令、tier、rules 或 hooks。只有这六个文件时视为已初始化,不重复写入,也没有可供 `project-personalize` 使用的项目证据。存在其他项目内容后,`project-personalize` 从真实证据建立或调整约定。若代码 scaffold 工具要求目标目录为空,先运行该工具。`project-init` 完成表示 workflow baseline ready,应用结构仍可待定,并提示两条可选后续:在第一个 feature 内完成最小架构,或仅当架构治理多个后续 feature 时单独追踪。`project-personalize` 完成表示 working agreement 已与当前结构对齐,不是架构优劣判定。
+`project-init` 的预期结果只有六个中立文件:`AGENTS.md`、一行 alias `CLAUDE.md`、`.gitignore`、`docs/specs/index.md`、`docs/adr/README.md`、`docs/gotchas.md`;它不猜语言、命令、tier、rules 或 hooks,也不解释或合并已有的无关资料。六文件完全匹配且其余内容仅属无关资料时视为已初始化。只要已有内容提供了需要对齐的项目事实,或 baseline 目标路径已有冲突,就由 `project-personalize` 处理;若资料性质确实无法判断,只问一次再分流。若代码 scaffold 工具要求目标目录为空,先运行该工具。`project-init` 完成表示 workflow baseline ready,应用结构仍可待定,并提示两条可选后续:在第一个 feature 内完成最小架构,或仅当架构治理多个后续 feature 时单独追踪。`project-personalize` 完成表示 working agreement 已与当前结构对齐,不是架构优劣判定。
 
 应用基础或架构设计仍走普通 `feature-init` 分流:会建立或实质改变项目级 runtime tier、模块边界、数据/API 契约等结构,且确有持久 artifact 消费者时使用现有 full lane。没有 `project-foundation` 专用 action、lane 或保留 slug;最小结构与第一个功能不可分时放在同一个 feature 中,只有架构决定本身会约束多个后续功能时才单独追踪。只有命中的 architecture-shaped change 按需读取 [`architecture-design.md`](architecture-design.md);普通 feature 与 `project-personalize` 不读取。
 
@@ -97,7 +97,7 @@ full lane 让 AI 基于 `spec.md` + `plan.md` + `tasks.md` 写代码。轻车道
 - current-truth check(持久产品行为且领域明确但文档尚不存在时记录 `update pending`;只有领域归属未知时才记录 `area unresolved`)
 - delivery receipt 写入 `tasks.md` 的兼容标题 `## Proof Bundle`
 
-需要局部复查时重跑 `feature-done`,或直接 dispatch reviewer sub-agent。同一任务内保留完整 review 证据时,可只复查 finding 与依赖闭包;跨任务或证据缺失时重跑完整 population。没有独立 helper 命令。
+`feature-done` 先跑完必要 L1;L1 失败或不可可靠运行时不启动新的 L2/L3。需要局部复查时重跑 `feature-done`,或直接 dispatch reviewer sub-agent。同一任务内保留完整 review 证据时,可只复查 finding 与依赖闭包;跨任务或证据缺失时重跑完整 population。没有独立 helper 命令。
 
 周期性生命周期清扫只复用指向精确 commit SHA 的 READY receipt。dirty-worktree READY 可在同一任务内直接 archive;若先提交、以后再清扫,需在该提交上运行 `feature-done`(此前已 review dirty worktree 时则为重跑)后再 archive。稳定 receipt 证明该提交曾通过交付门禁;archive 仍单独依据当前实现和后继变更核对待合并的 current truth:
 

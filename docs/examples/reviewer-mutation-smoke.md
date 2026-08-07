@@ -28,6 +28,20 @@ Run the full-lane `clean` case with each adapter and record dispatch timing/mode
 
 If the host cannot expose or constrain reviewer capacity, record that limitation instead of claiming the scheduling branch passed.
 
+## L1 reuse smoke
+
+- In one task, run two independent changed-scope checks and retain both results.
+- Apply a fix that affects only one check, then rerun `feature-done`: rerun that check and its dependency closure; record the unaffected check as `same-task reuse` with its original evidence reference.
+- Confirm heavyweight commands sharing a workspace or build cache run sequentially.
+- Start a new task, or make the relevant-input boundary uncertain, and confirm the applicable checks run again.
+
+## L1 prerequisite smoke
+
+- Plant a required L1 failure and confirm all other independently executable L1 checks still run.
+- Confirm neither adapter dispatches new L2/L3 reviewers; Review execution and each otherwise-applicable L2/L3 slot without a valid same-task result record `not-run(L1 prerequisite)`, and the receipt returns `NEEDS WORK`.
+- Make a required L1 command unavailable and confirm the same reviewer behavior with a `BLOCKED` verdict.
+- Restore L1 to green and confirm the normal applicable L2/L3 dispatch resumes.
+
 ## Spec-quality authorization smoke
 
 Materialize a mechanically complete, subjectively clean full-lane draft with status `草稿`, then run each Claude/Codex adapter in fresh tasks:

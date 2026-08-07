@@ -146,6 +146,25 @@ if (applyResult.copied.length !== baselineResult.copied.length) problems.push("a
 fs.rmSync(baselineStage, { recursive: true, force: true });
 fs.rmSync(baselineRoot, { recursive: true, force: true });
 
+const incidentalRoot = fs.mkdtempSync(path.join(realTmpRoot, "project-workflow-incidental-"));
+const incidentalStage = fs.mkdtempSync(path.join(realTmpRoot, "project-workflow-incidental-stage-"));
+const incidentalPath = path.join(incidentalRoot, "references", "source-note.md");
+fs.mkdirSync(path.dirname(incidentalPath), { recursive: true });
+fs.writeFileSync(incidentalPath, "standalone reference\n");
+const incidentalResult = materialize(path.join(repoRoot, "template"), incidentalStage, { againstRoot: incidentalRoot });
+if (fs.readFileSync(incidentalPath, "utf8") !== "standalone reference\n") {
+  problems.push("baseline staging changed incidental target content");
+}
+applyStaged(incidentalStage, incidentalRoot);
+if (fs.readFileSync(incidentalPath, "utf8") !== "standalone reference\n") {
+  problems.push("baseline apply changed incidental target content");
+}
+if (incidentalResult.skippedExisting.length !== 0 || !fs.existsSync(path.join(incidentalRoot, "AGENTS.md"))) {
+  problems.push("baseline materializer did not add the complete neutral baseline beside incidental content");
+}
+fs.rmSync(incidentalStage, { recursive: true, force: true });
+fs.rmSync(incidentalRoot, { recursive: true, force: true });
+
 const retrofitRoot = fs.mkdtempSync(path.join(realTmpRoot, "project-workflow-retrofit-"));
 fs.writeFileSync(path.join(retrofitRoot, "AGENTS.md"), "# User-owned conventions\n");
 const retrofitResult = materialize(path.join(repoRoot, "template"), retrofitRoot);

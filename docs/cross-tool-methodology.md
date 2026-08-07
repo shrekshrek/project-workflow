@@ -41,7 +41,7 @@ project-workflow 分两层:
    已确认并开始实施后,修改 `spec.md` 必须有修订记录和 plan/tasks 同步;只有架构/模块边界、持久跨功能技术决定或取代既有 ADR 时才创建 ADR。Draft 阶段自由编辑。
 
 6. **交付验证按规则源分层**
-   L1 机械检查、适用的 L2 项目约定与 L3 feature spec 独立运行;full lane 的 L2/L3 在容量允许时并行 dispatch,紧凑 delivery receipt 负责聚合证据和 verdict。
+   先完成 L1 机械检查;必要 L1 通过后,适用的 L2 项目约定与 L3 feature spec 独立运行。full lane 的 L2/L3 在容量允许时并行 dispatch,紧凑 delivery receipt 负责聚合证据和 verdict。
 
 7. **Drift refresh 只处理 A 类约定**
    P4 更新 `AGENTS.md` 以及本次明确纳入范围的 host-specific convention files,不回写历史 spec,也不把 backlog 放进 repo 文件。
