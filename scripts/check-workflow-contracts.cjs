@@ -82,10 +82,10 @@ for (const relative of ["template/docs/specs/changes/_template/tasks.md", "templ
 requireMarkers("docs/examples/reviewer-mutation-smoke.md", ["## L1 reuse smoke", "same-task reuse", "original evidence reference", "workspace or build cache run sequentially", "relevant-input boundary uncertain"]);
 forbidMarkers("docs/actions/feature-done.md", ["reproducible diff identity", "content fingerprint"]);
 requireMarkers("docs/actions/feature-done.md", ["independently executable required L1 checks", "do not dispatch new reviewers", "still-valid same-task reviewer results", "not-run(L1 prerequisite)", "current-truth check", "receipt", "After L1 passes, missing execution evidence", "../reviewers/README.md#reviewer-execution-contract"]);
-requireMarkers("docs/actions/feature-done.md", ["exact changed-file/applicable-item validation", "never infer coverage from `findings=none`", "A PASS never persists applicable IDs or populations", "manual file populations", "population hashes", "dependency closure"]);
+requireMarkers("docs/actions/feature-done.md", ["authoritative changed-path input", "Git/non-Git changed-path population", "exact applicable rule/spec IDs", "unverified-item-count=0", "blocking-ambiguity-count=0", "Never infer coverage from `findings=none`", "A PASS never persists applicable IDs or populations", "manual file populations", "population hashes", "dependency closure"]);
 requireMarkers("docs/actions/feature-done.md", ["same-task optimization", "original full-population evidence", "A later task", "base commit SHA", "before writing those endpoint-owned outputs", "reviewed=<commit SHA>; dirty=no", "reviewed=worktree; dirty=yes", "Other pairings are invalid", "target-branch merge base", "ambiguous base blocks", "Derive changed paths from Git", "For light lane, run it only when", "declared receipt/status write is the only permitted endpoint-output difference"]);
 forbidMarkers("docs/actions/feature-done.md", ["cached L2/L3 results"]);
-requireMarkers("docs/actions/feature-done.md", ["L2 convention-source paths", "L3 spec/artifact paths", "each reviewer independently enumerates", "dispatch L2 and L3 in parallel", "sequential fresh dispatch", "not a fallback condition", "aggregates only after both applicable results"]);
+requireMarkers("docs/actions/feature-done.md", ["every applicable L2/L3 dispatch", "L2 convention-source paths", "L3 spec/artifact paths", "independently enumerates its exact applicable", "dispatch L2 and L3 in parallel", "sequential fresh dispatch", "not a fallback condition", "aggregates only after both terminal reports"]);
 requireMarkers("docs/actions/feature-archive.md", ["receipt-schema migration candidate", "review-scope", "eligible only as a current-task result", "does not re-anchor it", "not proof that the reviewed worktree was unchanged", "delivery evidence and current truth as separate freshness questions", "later movement of the current branch or PR head does not by itself invalidate", "validate every pending current-truth fact against present implementation evidence"]);
 
 requireMarkers("docs/actions/spec-quality-check.md", ["Reviewer Execution", "../reviewers/README.md#reviewer-execution-contract", "fallback reason", "`BLOCKED`", "mechanical prerequisites failed", "stop before subjective review", "explicitly authorizes implementation", "`READY` consumes that authorization", "pure check/review request remains read-only", "`BORDERLINE` never consumes", "Q7a", "Q7b", "Size alone never changes the verdict", "do not ask twice"]);
@@ -109,17 +109,20 @@ for (const filename of fs.readdirSync(path.join(repoRoot, "adapters/claude/agent
   forbidRegex(relative, /[\u3400-\u9fff]/u, "non-English runtime instruction prose");
   requireRegex(relative, /\*\*Response language\*\*:\s*Match the calling (?:skill's|user's) language/i, "caller-language response contract");
 }
-requireMarkers("docs/reviewers/README.md", ["Reviewer execution contract", "dispatch capability", "fresh subagent invocation", "never an agent instance", "fresh-subagent", "result-reuse", "observed reason", "host security approvals still apply", "fail closed", "dependency closure", "same task", "original full-population evidence"]);
+requireMarkers("docs/reviewers/README.md", ["Reviewer execution contract", "dispatch capability", "fresh subagent invocation", "never an agent instance", "fresh-subagent", "result-reuse", "observed reason", "host security approvals still apply", "fail closed", "dependency closure", "same task", "original full-population evidence", "status-only and non-authoritative", "one terminal report"]);
 requireRegex("docs/reviewers/README.md", /Codex plugin skills[\s\S]{0,160}must use[\s\S]{0,160}subagent/i, "mandatory Codex reviewer index wording");
 for (const action of ["feature-init", "project-personalize", "spec-revise", "agents-md-revise"]) {
   requireMarkers(`docs/actions/${action}.md`, ["## Reviewer Execution", "../reviewers/README.md", "`Reviewer execution`", "blocking"]);
 }
 
 for (const relative of ["docs/reviewers/agents-md-reviewer.md", "docs/reviewers/spec-reviewer.md"]) {
-  requireMarkers(relative, ["exact changed", "applicable but unverified", "UNRELIABLE"]);
+  requireMarkers(relative, ["authoritative scope", "If any supplied path cannot be read or assessed", "changed-path-count", "exact applicable", "unverified-item-count", "blocking-ambiguity-count", "zero-valued coverage fields", "UNRELIABLE", "omit the exact changed-path list", "status-only", "must not expose provisional findings", "one terminal report"]);
+  forbidMarkers(relative, ["scope-match=", "count equality alone is insufficient"]);
   forbidMarkers(relative, ["coverage is 100%", "coverage is at least 95%", "coverage >= 95%", "confidence", "skipped-critical"]);
 }
-requireMarkers("docs/reviewers/agents-md-reviewer.md", ["definite non-matches", "applicable population"]);
+requireMarkers("docs/reviewers/agents-md-reviewer.md", ["exact applicable rule IDs"]);
+requireMarkers("docs/reviewers/spec-reviewer.md", ["exact applicable spec IDs"]);
+requireMarkers("docs/reviewers/agents-md-reviewer.md", ["definite non-matches", "applicable population", "applicable-rule-count"]);
 requireMarkers("docs/reviewers/agents-md-reviewer.md", ["project-root `.claude/rules/*.md`", "user-level `~/.claude/rules/` are excluded"]);
 requireMarkers("adapters/claude/agents/agents-md-reviewer.md", ["project-root `.claude/rules/*.md`", "never user-level `~/.claude/rules/`"]);
 for (const relative of [
@@ -160,6 +163,9 @@ for (const relative of [
 }
 requireMarkers("template/docs/specs/changes/_template/tasks.md", ["不记录逐轮命令输出", "已被后续结果取代", "最终 checks 只进"]);
 requireMarkers("template/docs/specs/changes/_template/tasks.md", ["证据义务 → 最小 command / assertion"]);
+for (const relative of ["template/docs/specs/changes/_template/tasks.md", "docs/examples/full-feature-artifact.md"]) {
+  forbidMarkers(relative, ["### Acceptance", "spec §4 Verification 全部 pass"]);
+}
 forbidMarkers("template/docs/specs/changes/_template/tasks.md", ["applicable-rules=", "applicable-items=", "applicable-unverified="]);
 for (const relative of [
   "template/docs/specs/changes/_template/spec-greenfield.md",

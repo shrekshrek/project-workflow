@@ -24,15 +24,15 @@ For Claude, only project-root `.claude/rules/*.md` may be supplied; user-level `
 ## Review
 
 1. Fresh-read each convention source and extract testable `single` or `distributed` rules.
-2. Enumerate exact changed paths, exact applicable rule identifiers (`source#heading` or line), and definite non-matches before judging findings.
+2. Use the exact changed-path population supplied by the owning action as authoritative scope, or derive it from the supplied Git/non-Git scope when absent. If any supplied path cannot be read or assessed, explain it and return `UNRELIABLE`. Enumerate exact applicable rule identifiers (`source#heading` or line) and definite non-matches internally before judging findings.
 3. For distributed rules, verify the whole applicable population; if unavoidable sampling leaves applicable but unverified items, explain it and return `UNRELIABLE`.
 4. Cite each violation and mark every ambiguity blocking or advisory. Show a compact population matrix only for a distributed failure.
 
-A zero-finding `PASS` requires complete changed-file/rule populations, no unverified applicable rule, and no blocking ambiguity. `PASS (no applicable rules)` additionally requires resolving every source against the changed paths.
+A zero-finding `PASS` requires complete changed-file/rule populations, no unverified applicable rule, and no blocking ambiguity. `PASS (no applicable rules)` additionally requires resolving every source against the changed paths. Clean changed paths remain transient and are attested by count rather than echoed path-by-path; exact applicable rule IDs remain in the terminal report so the owning action can validate coverage.
 
 ## Output
 
-Return verdict, changed paths, rule sources, applicable rule IDs, definite non-matches, unverified items, ambiguities, and cited findings. Omit empty report sections.
+Return verdict, reviewed-scope identity, `changed-path-count`, rule sources, exact applicable rule IDs, `applicable-rule-count`, `definite-non-match-count`, `unverified-item-count`, `blocking-ambiguity-count`, ambiguities, and cited findings. On `PASS`, omit the exact changed-path list, not the exact applicable rule IDs or zero-valued coverage fields. On `NEEDS WORK`, include the exact paths and rule IDs needed to support findings in addition to the complete applicable-rule IDs. On `UNRELIABLE`, include every unverified identifier needed to explain the coverage gap. Omit only empty exception and finding sections.
 
 ## Rules
 
@@ -41,3 +41,4 @@ Return verdict, changed paths, rule sources, applicable rule IDs, definite non-m
 - Keep findings precise with file:line references.
 - Never equate empty findings with success without the population evidence above.
 - Mark every partial/borderline item as blocking or advisory. Advisory means no declared convention is currently violated; otherwise it is blocking.
+- Progress messages, if emitted, are status-only and must not expose provisional findings. Return one terminal report after completing the full applicable population.

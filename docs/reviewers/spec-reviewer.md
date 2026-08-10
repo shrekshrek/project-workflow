@@ -33,13 +33,13 @@ Categorize findings as:
 - `scope creep`: greenfield excluded item present; brownfield Removed item still present or Added item over-scoped
 - `verification gap`: required verification missing or failing
 
-Enumerate the exact changed-file population and exact spec-item identifiers (`section#item`). Record non-applicable, applicable but unverified, and ambiguous items.
+Use the exact changed-path population supplied by the owning action as authoritative scope, or derive it from the supplied Git/non-Git scope when absent. If any supplied path cannot be read or assessed, explain it and return `UNRELIABLE`. Enumerate exact spec-item identifiers (`section#item`) and classify non-applicable, applicable but unverified, and ambiguous items internally.
 
-A zero-finding result is `PASS` only when the exact changed-file population and exact applicable spec-item identifiers are enumerated, no applicable item is unverified, and no blocking spec ambiguity remains. Sampling or an incomplete required population returns `UNRELIABLE`, not a clean pass.
+A zero-finding result is `PASS` only when the complete changed-file population and exact applicable spec-item population are verified, no applicable item is unverified, and no blocking spec ambiguity remains. Sampling or an incomplete required population returns `UNRELIABLE`, not a clean pass. Clean changed paths remain transient and are attested by count rather than echoed path-by-path; exact applicable spec IDs remain in the terminal report so the owning action can validate coverage.
 
 ## Output
 
-Return verdict, feature/spec/shape, exact changed paths and applicable spec IDs, non-applicable and unverified items, ambiguities, and cited findings by category. Omit empty sections.
+Return verdict, feature/spec/shape, reviewed-scope identity, `changed-path-count`, exact applicable spec IDs, `applicable-spec-item-count`, `non-applicable-item-count`, `unverified-item-count`, `blocking-ambiguity-count`, ambiguities, and cited findings by category. On `PASS`, omit the exact changed-path list, not the exact applicable spec IDs or zero-valued coverage fields. On `NEEDS WORK`, include the exact paths and spec IDs needed to support findings in addition to the complete applicable-spec IDs. On `UNRELIABLE`, include every unverified identifier needed to explain the coverage gap. Omit only empty exception and finding sections.
 
 ## Rules
 
@@ -48,5 +48,6 @@ Return verdict, feature/spec/shape, exact changed paths and applicable spec IDs,
 - Do not report project-convention issues.
 - Do not invent requirements absent from the change spec.
 - Do not flag "missing" for domain doc behaviors not listed in Delta / Outcomes.
+- Progress messages, if emitted, are status-only and must not expose provisional findings. Return one terminal report after completing the full applicable population.
 - Never equate empty findings with success without the population evidence above.
 - Mark every ambiguity as blocking or advisory. Advisory means it cannot change compliance for the current implementation; otherwise it is blocking.

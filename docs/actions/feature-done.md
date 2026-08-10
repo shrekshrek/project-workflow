@@ -41,7 +41,7 @@ This action owns the endpoint gate: L1, applicable L2, full-lane L3, current-tru
 - Light-lane verification: when no `spec.md` exists, execute or mechanically check every item under `tasks.md` `## 验证`; L3 remains N/A, but an unverified or failed item blocks READY.
 - Evidence deduplication: when one command/assertion proves several related Verification items, execute it once and map that result to each obligation. A matrix runs only when its declared dimensions remain applicable to the final change; do not expand one late for test-layer, endpoint, status-code, or case symmetry.
 - Domain doc check: compare only a declared/relevant `docs/specs/<area>.md`. Resolved durable behavior with no existing area document is `update pending`; genuinely unknown ownership is `area unresolved`; internal/non-durable work is `no relevant domain doc`.
-- Delivery receipt: write compact, decision-relevant evidence to the legacy-compatible `## Proof Bundle` section in `tasks.md`, and show the same receipt in the endpoint response.
+- Delivery receipt: write compact, decision-relevant evidence to the canonical `## Proof Bundle` section in `tasks.md`, and show the same receipt in the endpoint response.
 
 ## Reviewer Execution
 
@@ -49,7 +49,7 @@ Run applicable L2/L3 under the shared [reviewer execution contract](../reviewers
 
 Before the first full L2/L3 dispatch, finish planned implementation and non-receipt spec/plan/tasks edits. Do not interleave bookkeeping edits outside the declared receipt/status outputs between completed review and aggregation. This action reports failed checks and findings; it never repairs implementation or non-receipt artifacts. Separate implementation work may fix them before a later invocation or focused re-review under the rules below.
 
-After required L1 passes, for full lane resolve the shared Git scope, L2 convention-source paths, and L3 spec/artifact paths before dispatch; each reviewer independently enumerates its exact applicable population. When capacity allows two fresh invocations, dispatch L2 and L3 in parallel; otherwise use sequential fresh dispatch. Capacity for only one reviewer is not a fallback condition while sequential dispatch remains available. Each reviewer records evidence independently, and `feature-done` aggregates only after both applicable results return or fail under their own execution contract.
+After required L1 passes, resolve the authoritative Git/non-Git changed-path population before every applicable L2/L3 dispatch and supply it to each reviewer. For full lane also resolve the L2 convention-source paths and L3 spec/artifact paths before dispatch. Each reviewer consumes the supplied population and independently enumerates its exact applicable rule/spec population; inability to read or assess any supplied path returns `UNRELIABLE`. When capacity allows two fresh invocations, dispatch L2 and L3 in parallel; otherwise use sequential fresh dispatch. Capacity for only one reviewer is not a fallback condition while sequential dispatch remains available. Each reviewer records `changed-path-count`, exact applicable rule/spec IDs, `unverified-item-count`, and `blocking-ambiguity-count` independently, and `feature-done` aggregates only after both terminal reports return or fail under their own execution contract.
 
 Focused re-review is a same-task optimization. After findings, a fresh invocation may cover the findings and their dependency closure only while the original full-population evidence remains available and the unaffected population is unchanged. A later task, missing original evidence, or a material change to implementation scope, convention sources, spec contract, or endpoint outputs requires a full-population review. Narrowing scope never authorizes retasking an old reviewer instance.
 
@@ -67,7 +67,7 @@ Persist only fields with a downstream consumer:
 - `Open questions`: only unresolved items that affect handoff or release; omit when empty.
 - `Drift`: only actionable project-convention changes or suggestions; omit when empty. Persist it elsewhere only when the user explicitly asks to revise conventions.
 
-Validate each applicable reviewer result against its transient exact-population contract before compacting it. The receipt must contain Git/non-Git review identity, endpoint outputs, reviewer execution, verdict, checks, applicable baselines, relevant exceptions, and current truth. Return one verdict line plus the exact on-disk `## Proof Bundle`; do not restate its layer details outside the block.
+Validate each applicable reviewer PASS against the authoritative `changed-path-count`, its exact applicable rule/spec IDs, `unverified-item-count=0`, and `blocking-ambiguity-count=0` before compacting it. The receipt must contain Git/non-Git review identity, endpoint outputs, reviewer execution, verdict, checks, applicable baselines, relevant exceptions, and current truth. Return one verdict line plus the exact on-disk `## Proof Bundle`; do not restate its layer details outside the block.
 
 For light lane, when the project already declares disaster-invariant/high-blast-radius paths, re-check the actual diff against them; a match is a misclassification. Projects without this optional declaration rely on the semantic high-risk conditions from `feature-init` and do not need an empty path list.
 
@@ -93,7 +93,7 @@ L2/L3/Drift finding counts live in the delivery receipt; do not add a duplicate 
 - L1/L2/L3 are separate because they answer different questions.
 - The delivery receipt is written at the endpoint, not guessed early.
 - An empty findings array for an applicable reviewer without reviewer evidence is unreliable and blocks READY; an allowed `N/A` is governed by applicability evidence instead.
-- Reviewer compaction follows transient exact changed-file/applicable-item validation; never infer coverage from `findings=none`, and never persist applicable-rule/spec IDs, manual file populations, or population hashes.
+- Reviewer compaction follows authoritative changed-path input plus transient exact applicable-item validation; a clean terminal report carries `changed-path-count`, exact applicable rule/spec IDs, `unverified-item-count=0`, and `blocking-ambiguity-count=0` without echoing the changed-path list. Never infer coverage from `findings=none`, and never persist applicable-rule/spec IDs, manual file populations, or population hashes.
 - Endpoint-owned receipt-only edits and the status-only `已确认` → `已实现` transition do not invalidate completed same-task L2/L3 results; changes to tasks outside `## Proof Bundle` or to the spec contract still invalidate them.
 - Same-task L1 reuse is execution evidence, not a durable cache: reuse it only while the command, relevant inputs, and changed-scope classification are provably unchanged. Documentation-only receipt/status writes do not invalidate it; later tasks rerun the applicable checks.
 - Do not dispatch new L2/L3 reviewers while required L1 is failed or unavailable. This prerequisite does not erase still-valid same-task reviewer evidence and does not suppress current-truth or receipt work.

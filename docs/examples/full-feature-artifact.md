@@ -138,10 +138,6 @@
 - [ ] API / 邮件契约风险 → 运行对应 integration test
 - [ ] 若 provider/config 有变化 → 运行 staging delivery smoke
 
-### Acceptance
-
-- [ ] spec §4 Verification 全部 pass
-
 ## 2. 实施记录
 
 - (只填仍影响交付/维护的偏差、决策或临时方案;不写逐轮测试/调试流水;无则写"无")

@@ -872,9 +872,9 @@ Artifact 写法和 7 问自检见 [`spec-driven.md`](spec-driven.md);运行时�
 
 ### 3.3 交付阶段:delivery receipt
 
-`feature-done` 是端点组合点:L1、适用的 L2/L3、current-truth 判断和交付证据在这里汇合。结果写入 `tasks.md` 末尾兼容旧 artifact 的 `## Proof Bundle`,但内容是一份紧凑 delivery receipt。
+`feature-done` 是端点组合点:L1、适用的 L2/L3、current-truth 判断和交付证据在这里汇合。结果以紧凑 delivery receipt 写入 `tasks.md` 末尾的 `## Proof Bundle`。
 
-Reviewer 的 exact paths、适用规则/spec IDs 和未验证项属于瞬时校验证据;永久 receipt 只保留 Git/non-Git identity、checks、执行方式、各层 verdict/baseline、非空 exceptions 与 current-truth 结论。压缩的是历史记录,不是 review 深度。
+Owning action 统一提供权威 changed-path population;reviewer 的完整 population 属于瞬时校验证据。Clean report 回传 `changed-path-count`、精确 applicable rule/spec IDs、`unverified-item-count=0` 与 `blocking-ambiguity-count=0`,但不重复完整 changed-path list;异常时再展开相关 path。永久 receipt 只保留 Git/non-Git identity、checks、执行方式、各层 verdict/baseline、非空 exceptions 与 current-truth 结论。压缩的是冗长路径输出和历史记录,不是 review 深度或适用条款的可核验性。
 
 稳定 commit receipt 证明历史交付快照曾通过 gate,不自动证明今天的产品现状;dirty-worktree receipt 只在原任务内有效。详细 schema、复查资格和 verdict 只由 [`feature-done`](actions/feature-done.md) 定义。
 

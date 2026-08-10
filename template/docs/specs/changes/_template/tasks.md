@@ -18,9 +18,6 @@
 
 - [ ] {{TODO 一个或多个证据义务 → 最小 command / assertion;具体测试文件和 case 可在实施时决定}}
 
-### Acceptance
-- [ ] spec §4 Verification 全部 pass
-
 ## 2. 实施记录
 
 > 只记录仍影响交付或后续维护的偏差 / 补充决策 / 临时方案。**不改 spec.md**;plan.md 有补充则在
@@ -31,7 +28,7 @@
 
 ## Proof Bundle
 
-> 由 `/project-workflow:feature-done` 填。本节保留历史兼容标题,内容是会在端点回复中原样展示并由 archive/PR 消费的 delivery receipt。
+> 由 `/project-workflow:feature-done` 填。内容会在端点回复中原样展示并由 archive/PR 消费。
 
 - Verdict:
 - Change:`git=[base=<commit SHA>; reviewed=<commit SHA>; dirty=no]` 或 `git=[base=<commit SHA>; reviewed=worktree; dirty=yes]` (非 Git:`inputs=[explicit reviewed paths]`); `endpoint-outputs=[tasks.md receipt, READY spec status when written]`
