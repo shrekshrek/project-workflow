@@ -24,7 +24,7 @@ Full framing with sources: [`docs/workflow.md §0.1`](docs/workflow.md).
 
 project-workflow helps real projects move from **chat-driven AI coding** to **spec-driven, reviewable, maintainable AI-assisted development**.
 
-Personal and team development use the same per-change workflow. A team does not need a project-workflow collaboration layer: each contributor applies the same no-artifact/light/full classification, verification, and archive rules to their own change before submitting it.
+Personal and team development use the same per-change workflow. A team does not need a project-workflow collaboration layer: each contributor applies the same DIRECT/LIGHT/FULL classification, verification, and archive rules to their own change before submitting it.
 
 v3 separates **methodology core** from **runtime adapters**:
 
@@ -197,7 +197,7 @@ Most work does **not** use all nine actions. Initialize once, then use the daily
 |---|---|---|
 | Once, baseline-compatible target | `project-init` | Create the neutral six-file project baseline without disturbing incidental content. |
 | Once, project evidence or partial/custom baseline exists | `project-personalize` | Establish or adapt the evidence-backed project agreement. |
-| Per tracked change | `feature-init` | Choose no artifact, light tasks-only, or full spec/plan/tasks. Local, reversible, contract-free behavior work can proceed directly when current truth does not declare it, it fits the current task, and no durable artifact has a consumer. |
+| Per proposed change | `feature-init` | Return DIRECT, LIGHT tasks-only, or FULL spec/plan/tasks with a concrete reason. Explicit routing questions use read-only PREVIEW; only authorized LIGHT/FULL APPLY creates an artifact, while DIRECT creates nothing and an enclosing implementation request continues. Local, reversible, contract-free behavior work can proceed directly when current truth does not declare it, it fits the current task, and no durable artifact has a consumer. |
 | Full lane only | `spec-quality-check` | Check the collaboratively completed draft before implementation. |
 | End of tracked change | `feature-done` | Run L1, applicable L2/L3, current-truth check, and write one Git-native compact delivery receipt. |
 | Periodic sweep | `feature-archive` | Merge pending current truth and move delivered changes out of the active tree. |
@@ -218,7 +218,7 @@ Exception and maintenance actions appear only when their condition exists:
 
 ## Reviewer methodology
 
-[`docs/reviewers/`](docs/reviewers/) is canonical for the six reviewer, auditor, and research roles. The owning action decides applicability. Independent applicable reviewers run in parallel when capacity permits; otherwise they use sequential fresh dispatch. Same-task focused re-review requires retained full-population evidence. Result reuse never reuses an agent instance, and fallback requires explicit execution evidence. See the [reviewer index](docs/reviewers/README.md).
+[`docs/reviewers/`](docs/reviewers/) is canonical for the six reviewer, auditor, and research roles. The owning action decides applicability. Independent applicable reviewers share one action-owned review-cycle snapshot and run in parallel when capacity permits; otherwise they use sequential fresh dispatch. Same-task focused re-review may cross user turns only while retained full-population evidence and every unaffected input remain unchanged. Reviewers consume rather than rerun L1 evidence. Result reuse never reuses an agent instance, and fallback requires explicit execution evidence. See the [reviewer index](docs/reviewers/README.md).
 
 ## Maintaining generated plugin packages
 

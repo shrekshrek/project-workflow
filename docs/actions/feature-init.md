@@ -6,8 +6,11 @@ Canonical action for starting a tracked feature artifact under `docs/specs/chang
 
 - Beginning a feature, API/data model change, architecture change, or multi-file work that needs explicit requirements before implementation.
 - A small change benefits from a durable acceptance checklist, cross-session handoff, or current-truth tracking.
+- The user explicitly asks whether proposed work needs a project-workflow feature; classify it in read-only preview mode even when the answer is `DIRECT`.
 
-Do not use this action when the task does not need a new project-workflow artifact. Tiny bugfixes, wording/style tweaks, local test expectation fixes, low-risk documentation edits, and implementation under an accepted spec should continue directly and close with checks.
+Absent an explicit feature-routing assessment, do not use this action when the task does not need a new project-workflow artifact. Tiny bugfixes, wording/style tweaks, local test expectation fixes, low-risk documentation edits, and implementation under an accepted spec should continue directly and close with checks.
+
+General discussion, reasonableness assessment, diagnosis, and implementation-status review that does not ask for feature routing does not invoke this action. When the user explicitly asks whether work needs a feature or asks for a routing assessment, invoke it and return a read-only route preview; that assessment never authorizes artifact creation. Automatic skill invocation is not write authorization. Artifact creation is authorized by an explicit request to start/create/initialize the feature artifact, or by an explicit implementation/change request for which the selected route requires a durable artifact as a normal prerequisite.
 
 An application-foundation or architecture request uses this same classification; there is no reserved `project-foundation` action, lane, or slug. Use the ordinary full lane when the work establishes or materially changes project-wide runtime tiers, module boundaries, data/API contracts, or other architecture. Keep minimal structure inside the first feature when it is inseparable from that outcome; create a separate architecture-shaped change only when it has its own durable consumer or governs several later features.
 
@@ -25,9 +28,26 @@ Do not use for mid-implementation frozen-spec changes; use [`spec-revise`](spec-
 
 Read the active tree only: `docs/specs/changes/archive/` is closed history — exclude it when searching for context (its durable conclusions live in `docs/specs/`). If the active tree still has several related historical specs that look contradictory, recommend running [`spec-reconcile`](spec-reconcile.md) before implementation.
 
+## Route Decision
+
+Every completed classification returns exactly one route:
+
+- `DIRECT`: no new feature number or artifact. Continue the requested change directly under applicable project conventions and proportionate checks, or reuse an existing accepted feature without creating a duplicate.
+- `LIGHT`: create only `tasks.md` because a concrete durable consumer exists, such as cross-session or multi-person handoff, several retained acceptance steps, audit/release evidence, or a pending current-truth update, and no full-lane trigger applies.
+- `FULL`: create `spec.md`, `plan.md`, and `tasks.md` because the change is high-risk or contract-shaped. Triggers include API/schema/data migration, security/auth/permissions, multi-tenant behavior, evidence/data invariants, architecture/runtime boundaries, cross-module contracts, new-module ownership, project-declared high-blast-radius surfaces, or an accepted bundled-delivery risk. This is a risk class, not a closed keyword list.
+
+Also classify execution authorization independently:
+
+- `PREVIEW`: report the proposed route and reasons, but create or modify nothing. A read-only request that explicitly asks for feature routing always uses this mode; general discussion/review/diagnosis without that request does not invoke the action.
+- `APPLY`: apply the route to feature artifacts when the user explicitly requested artifact initialization or implementation/change. `APPLY` authorizes only the artifact work owned by this action; this action still writes no implementation code.
+
+Keep the action boundary separate from the enclosing task's continuation. An artifact-initialization-only request stops after this action reports/materializes its route. For an original implementation/change request, completion returns control to that request without another confirmation: `DIRECT/APPLY` continues implementation immediately, `LIGHT/APPLY` continues after `tasks.md` is created, and `FULL/APPLY` proceeds through `spec-quality-check` before implementation under that gate's authorization rules. The feature-init action itself never edits implementation code.
+
+A blocking scope-viability decision remains `Route: pending` until the required selection or risk acceptance exists; `pending` is not a fourth completed route and never authorizes materialization. Resolve an existing active feature that covers the same outcome before allocating a number. Reuse it when compatible, route accepted-spec implementation as `DIRECT`, and never create a duplicate merely because `feature-init` was invoked.
+
 ## Lane Classification
 
-First decide whether the task needs a new project-workflow artifact at all. If no durable artifact is useful, or an accepted spec already covers the work, do not create a pseudo-lane; skip this action and implement directly under the applicable project conventions and checks. Direct work may include a bounded user-visible behavior change when it is local, reversible, not declared in current truth, contract-free, and finishable in the current task with proportionate checks.
+First decide whether the task needs a new project-workflow artifact at all. If no durable artifact is useful, or an accepted spec already covers the work, return `DIRECT`; do not create a pseudo-lane. Skip this action's artifact work and implement directly under the applicable project conventions and checks. Direct work may include a bounded user-visible behavior change when it is local, reversible, not declared in current truth, contract-free, and finishable in the current task with proportionate checks.
 
 Create a light artifact only when its durable checklist has a consumer: cross-session or multi-person handoff, several acceptance steps worth retaining, an explicit audit/release need, or a pending current-truth update. Do not create `tasks.md` merely because code is user-visible or touches several closely related files.
 
@@ -68,6 +88,16 @@ If direct implementation or light-lane work later touches API/schema, DB/data mi
 
 ## Outputs
 
+Always return a compact route decision after classification:
+
+- `Route`: `DIRECT` / `LIGHT` / `FULL`, or `pending` only while a blocking scope-viability decision remains unresolved.
+- `Execution`: `PREVIEW` / `APPLY`.
+- `Reason`: concrete evidence for why `DIRECT` is sufficient, which durable consumer prevents `DIRECT` and triggers `LIGHT`, or which contract/high-risk condition triggers `FULL`. Do not use an unexplained label such as "durable change".
+- `Feature`: `none`, `create=<path>`, or `reuse=<path>`.
+- `Next gates`: the actual remaining sequence — implementation → proportionate direct checks for an enclosing `DIRECT/APPLY` implementation request; implementation → `feature-done` for light; or `spec-quality-check` → implementation → `feature-done` for full. For an artifact-initialization-only request, report the same handoff sequence without executing implementation.
+
+For `PREVIEW`, `Feature` cannot be `create=<path>`. For reuse, cite the matching active feature and do not allocate a number.
+
 Full lane:
 
 - `docs/specs/changes/<NNN>-<slug>/spec.md` (brownfield lean or greenfield full template)
@@ -86,18 +116,20 @@ Adapters materialize the selected template through the packaged `scripts/materia
 
 ## Workflow
 
-1. Resolve the target root and parse the requested slug/optional description.
-2. Read active conventions, search current-truth indexes/headings, and open only domain documents relevant to the feature; exclude archived and unrelated artifacts.
-3. Decide whether a new artifact has a durable consumer. If not, report no-artifact/direct work and stop this action.
+1. Resolve the target root, parse the requested slug/optional description, and classify `PREVIEW` versus `APPLY` from the user's requested operation. Invocation alone is not write authorization.
+2. Read active conventions, search current-truth indexes/headings and compatible active features, and open only domain documents relevant to the feature; exclude archived and unrelated artifacts.
+3. Decide whether a new artifact has a durable consumer and whether an active feature already covers the outcome. If not, return `DIRECT`; if an accepted feature covers implementation, report `Feature: reuse=<path>` and do not create a duplicate. Stop this action's artifact work, then return control to an enclosing implementation/change request when one exists.
 4. Run the scope-viability check. Continue silently for an evident single outcome. If separable outcomes would be bundled, report the compact decision and ask the user to choose a child or accept the bundled-delivery risk. When the user chooses a child, require a durable decomposition handoff only for deferred outcomes they expect preserved; an explicit untracked/out-of-scope decision may proceed without one. Create nothing before the required decision, selection, and handoff are complete.
    While clarification, selection, or a required handoff is pending, stop after the compact result and the one allowed blocking question. Do not pre-read lane-specific templates, the materializer, conditional architecture guidance, or reviewer contracts before an outcome is selected and the owning boundary applies.
-5. Choose light or full lane for the selected outcome. Ask only when the business goal, ownership, or decomposition is unclear.
-6. For full lane, choose brownfield only when a substantive domain document exists; otherwise use greenfield.
-7. Compute the next number across active and archived directories and invoke the packaged materializer with atomic no-clobber behavior.
-8. Replace structural placeholders and prefill only traceable facts. Removing a template TODO closes that decision, so do it only when user input or repository evidence determines the value; reasonable defaults, generic best practices, and implementation-stage discovery are not evidence. Verification prefill records proof obligations and known evidence sources, not speculative test files or case inventories. Do not promote unspecified or out-of-scope inputs into artifact decisions, open questions, or placeholders unless implementation is actually blocked on them. Record an applicable bundled-delivery decision or required durable decomposition handoff in the existing plan/tasks location defined above. Preserve unresolved TODOs elsewhere.
-9. When the selected full-lane change establishes or materially changes project-wide application architecture, read the conditional [`architecture-design` guidance](../architecture-design.md) and use only its applicable conversational-fill topics; ordinary features skip it. Use the existing spec outcomes/scope/constraints/verification and plan module-impact/architecture/prior-decisions/risk sections; do not create a new artifact schema. Continue conversational fill across user turns in a one-material-question → user-decision → artifact-update loop. Do not stop merely by reporting that conversational fill is still needed when the next material question can be asked. End the loop only when no high-impact TODO remains or the user explicitly pauses or defers; a paused flow reports its blockers and is not handoff-ready. Multiple components alone do not establish multiple tiers. Only when explicit user or repository evidence establishes durable separate runtime tiers, read the tier concepts in [`workflow.md §0.3`](../workflow.md#03-概念区分钉死再读后续), the nested-guidance rules in [`§1.4`](../workflow.md#14-agentsmd--claudemd-嵌套层次子级覆盖父级), and the conditional [`_multi_tier_examples`](../../template/_multi_tier_examples/README.md). Single-tier or tier-undecided work skips tier files and examples. This action still creates no implementation code.
-10. Use an inline value-to-source trace for repository- or user-sourced prefill. Dispatch the decision-completeness auditor only when newly generated content contains unconfirmed high-impact architecture, ownership, infrastructure, port, package/API, or ADR choices, or conflicting/weak evidence. Directly traceable values and ordinary features without such choices are `N/A`; do not dispatch merely because the lane is full.
-11. Validate the created population. When the user named explicitly untracked outcomes, check the selected artifact for those names or descriptions, remove any occurrence, and validate again before reporting lane, shape, ownership, unresolved placeholders, evidence, and next action.
+5. Choose `LIGHT` or `FULL` for the selected outcome and record the concrete trigger. Ask only when the business goal, ownership, or decomposition is unclear.
+6. If execution is `PREVIEW`, report the route decision and stop before reading lane templates or conditional architecture guidance, computing a number, invoking the materializer, or dispatching an auditor.
+7. For `FULL`, choose brownfield only when a substantive domain document exists; otherwise use greenfield.
+8. Compute the next number across active and archived directories and invoke the packaged materializer with atomic no-clobber behavior.
+9. Replace structural placeholders and prefill only traceable facts. Removing a template TODO closes that decision, so do it only when user input or repository evidence determines the value; reasonable defaults, generic best practices, and implementation-stage discovery are not evidence. Verification prefill records proof obligations and known evidence sources, not speculative test files or case inventories. Do not promote unspecified or out-of-scope inputs into artifact decisions, open questions, or placeholders unless implementation is actually blocked on them. Record an applicable bundled-delivery decision or required durable decomposition handoff in the existing plan/tasks location defined above. Preserve unresolved TODOs elsewhere.
+10. When the selected `FULL` change establishes or materially changes project-wide application architecture, read the conditional [`architecture-design` guidance](../architecture-design.md) and use only its applicable conversational-fill topics; ordinary features skip it. Use the existing spec outcomes/scope/constraints/verification and plan module-impact/architecture/prior-decisions/risk sections; do not create a new artifact schema. Continue conversational fill across user turns in a one-material-question → user-decision → artifact-update loop. Do not stop merely by reporting that conversational fill is still needed when the next material question can be asked. End the loop only when no high-impact TODO remains or the user explicitly pauses or defers; a paused flow reports its blockers and is not handoff-ready. Multiple components alone do not establish multiple tiers. Only when explicit user or repository evidence establishes durable separate runtime tiers, read the tier concepts in [`workflow.md §0.3`](../workflow.md#03-概念区分钉死再读后续), the nested-guidance rules in [`§1.4`](../workflow.md#14-agentsmd--claudemd-嵌套层次子级覆盖父级), and the conditional [`_multi_tier_examples`](../../template/_multi_tier_examples/README.md). Single-tier or tier-undecided work skips tier files and examples. This action still creates no implementation code.
+11. Use an inline value-to-source trace for repository- or user-sourced prefill. Dispatch the decision-completeness auditor only when newly generated content contains unconfirmed high-impact architecture, ownership, infrastructure, port, package/API, or ADR choices, or conflicting/weak evidence. Directly traceable values and ordinary full-lane work without such choices are `N/A`; do not dispatch merely because the route is `FULL`.
+12. Validate the created population. When the user named explicitly untracked outcomes, check the selected artifact for those names or descriptions, remove any occurrence, and validate again before reporting route, execution, feature action, shape, ownership, unresolved placeholders, evidence, and next gates.
+13. If the original request was implementation/change rather than artifact initialization alone, return control to that request without asking for another confirmation: continue after `DIRECT`, continue after light-lane materialization, or invoke `spec-quality-check` for full lane. This action owns only routing and artifact work, so implementation edits occur after it exits.
 
 ## Reviewer Execution
 
@@ -106,6 +138,10 @@ When the auditor boundary applies, follow the canonical [reviewer execution cont
 ## Invariants
 
 - Resolve the target project root before creating files. Prefer cwd, then nearest parent, then a single matching child; if multiple candidates exist, ask and do not guess.
+- Read-only discussion, assessment, diagnosis, implementation-status review, and route preview never create or modify an artifact. Explicit artifact initialization or implementation/change intent is required for `APPLY`.
+- An explicit feature-routing assessment invokes this action in `PREVIEW`; general discussion or diagnosis without a routing request does not. Read-only intent controls authorization, not whether a requested route assessment can be classified.
+- Completed route labels are stable: `DIRECT` creates nothing, `LIGHT` creates only `tasks.md`, and `FULL` creates `spec.md` / `plan.md` / `tasks.md`. Invocation itself never changes the route or forces creation.
+- Finishing this action does not silently cancel an enclosing implementation/change request. Continue according to the selected route and gate sequence; stop after the route/artifact report only when that was the whole request or a blocking decision remains.
 - Preserve unresolved `{{TODO ...}}` markers for unknown details.
 - Do not plant endpoints, entities, field names, error codes, module paths, or technology choices without traceable support. Knowing that a component or tier exists does not determine its responsibilities, ownership, call direction, sync/async relationship, or coupling; preserve those as TODOs unless the user or repository evidence determines them.
 - If pre-filling from conversation, mark the source briefly.

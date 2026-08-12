@@ -27,6 +27,18 @@ and symlink safety; it does not claim model behavior.
 
 Run this only when skill discovery or lane routing changed. In a fresh host task with the plugin installed, issue ordinary implementation requests without naming `feature-init`: one tiny local fix, one bounded reversible user-visible behavior change not declared in current truth, one low-risk change that explicitly needs a cross-session acceptance checklist, and one contract-shaped or cross-module feature. Confirm that the host keeps the first two direct, invokes `feature-init` for the latter two, selects light then full respectively, and does not search `docs/specs/changes/archive/` for current behavior. Record this manual smoke in the release task; it tests skill discovery and is intentionally not a second CI harness.
 
+## Route and authorization smoke
+
+Run these transcript-level cases on both hosts without grading fixture files as model output:
+
+- Ask only "评估这个改动是否需要 feature" for a schema migration. Confirm the explicit routing request triggers `feature-init` despite being read-only. Expect `Route: FULL`, `Execution: PREVIEW`, a concrete schema/migration reason, `Feature: none`, and zero writes/materializer/auditor calls.
+- Ask to implement a local reversible wording fix through `feature-init`. Expect `Route: DIRECT`, `Execution: APPLY`, a concrete no-durable-consumer reason, `Feature: none`, and no feature number or artifact; the enclosing implementation continues in the same task without another confirmation.
+- Ask to implement a change that needs a current-truth update but no contract change. Expect `Route: LIGHT`, `Execution: APPLY`, `Feature: create=<tasks-only path>`, and `Next gates` ending in `feature-done` without `spec-quality-check`; after materialization, the enclosing implementation continues without another confirmation.
+- Ask to implement an API/schema migration. Expect `Route: FULL`, `Execution: APPLY`, `Feature: create=<full-lane path>`, and `Next gates` beginning with `spec-quality-check`.
+- Ask only to initialize an otherwise identical light/full feature artifact. Expect materialization and a route report, but no implementation continuation because artifact initialization was the whole request.
+- Repeat a covered request when a compatible active or accepted feature already exists. Expect `Feature: reuse=<path>` and no new number. Discussion, diagnosis, reasonableness review, and implementation-status inspection remain read-only even if their preview route is `LIGHT` or `FULL`.
+- Give a multi-outcome request whose scope viability is unresolved. Expect `Route: pending`, `Execution: PREVIEW`, no files, and the existing single clarification question; `pending` must not be treated as a fourth completed route.
+
 ## Equivalence interpretation
 
 - Pre/post comparison is per selected model scenario: same lane, same directory name, same shape, sentinels untouched, no planted specifics, TODO markers retained. Wording differences in reports are not deviations.

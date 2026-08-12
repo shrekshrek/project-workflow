@@ -10,7 +10,7 @@
 
 ```text
 一次项目接入(project-init / project-personalize 二选一)
-  → 小改直接做;需要追踪时 feature-init(no artifact / light / full)
+  → 小改直接做;需要追踪或显式评估路由时 feature-init(DIRECT / LIGHT / FULL;PREVIEW 只读,仅 LIGHT/FULL 的 APPLY 创建 artifact)
   → full lane 与用户补完草稿后跑 spec-quality-check
   → 实施
       ├─ 当前任务立即收尾:feature-done → feature-archive → commit / PR / merge
@@ -48,6 +48,8 @@
 ## 2. 判断是否需要 feature artifact
 
 小 bugfix、文案、样式、局部测试修复、低风险文档编辑、未被 current truth 声明且局部/可逆/无契约/可在当前任务完成的行为小改,以及已确认 spec 下的实施任务,不要启动新的 artifact;直接做,遵守适用的 `AGENTS.md` 和当前宿主提供的项目约定,最后说明改动和验证结果。
+
+如果用户明确询问“这个改动是否需要 feature”,`feature-init` 仍应触发,但只返回 `PREVIEW`,不创建文件。普通讨论、诊断或合理性检查没有提出 feature 路由问题时不触发。对实施请求判为 `DIRECT/APPLY` 后立即继续原实施;判为 `LIGHT/APPLY` 时创建 `tasks.md` 后继续,无需再次确认。只要求初始化 artifact 时则创建后停止,不自动实施。
 
 需要持久追踪、验证记录或规约保护时,再运行:
 
@@ -97,7 +99,7 @@ full lane 让 AI 基于 `spec.md` + `plan.md` + `tasks.md` 写代码。轻车道
 - current-truth check(持久产品行为且领域明确但文档尚不存在时记录 `update pending`;只有领域归属未知时才记录 `area unresolved`)
 - delivery receipt 写入 `tasks.md` 的兼容标题 `## Proof Bundle`
 
-`feature-done` 先跑完必要 L1;L1 失败或不可可靠运行时不启动新的 L2/L3。需要局部复查时重跑 `feature-done`,或直接 dispatch reviewer sub-agent。同一任务内保留完整 review 证据时,可只复查 finding 与依赖闭包;跨任务或证据缺失时重跑完整 population。没有独立 helper 命令。
+`feature-done` 先跑完必要 L1;L1 失败或不可可靠运行时不启动新的 L2/L3。L1 通过后固定一次 review-cycle snapshot 供 L2/L3 共用,reviewer 只消费 L1 证据而不重跑命令。需要局部复查时重跑 `feature-done`,或直接 dispatch reviewer sub-agent。同一任务可跨用户回合复用未漂移且仍可寻址的完整 cycle 证据;跨任务、输入漂移或证据缺失时重跑完整 population。没有独立 helper 命令。
 
 周期性生命周期清扫只复用指向精确 commit SHA 的 READY receipt。dirty-worktree READY 可在同一任务内直接 archive;若先提交、以后再清扫,需在该提交上运行 `feature-done`(此前已 review dirty worktree 时则为重跑)后再 archive。稳定 receipt 证明该提交曾通过交付门禁;archive 仍单独依据当前实现和后继变更核对待合并的 current truth:
 

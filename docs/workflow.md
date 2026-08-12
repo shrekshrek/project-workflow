@@ -6,7 +6,7 @@
 >
 > 风格:opinionated 但可 hack —— 任何一条都可以为具体场景偏离,只要清楚为什么。
 >
-> **统一流程原则**:个人开发与团队开发使用同一条 per-change 流程。每个人在自己的工作范围内按相同的 no-artifact / light / full 分流、验证、归档后提交即可;project-workflow 不要求额外 team mode、协作层或并发协调协议。
+> **统一流程原则**:个人开发与团队开发使用同一条 per-change 流程。每个人在自己的工作范围内按相同的 DIRECT / LIGHT / FULL 分流、验证、归档后提交即可;project-workflow 不要求额外 team mode、协作层或并发协调协议。
 
 ---
 
@@ -874,7 +874,7 @@ Artifact 写法和 7 问自检见 [`spec-driven.md`](spec-driven.md);运行时�
 
 `feature-done` 是端点组合点:L1、适用的 L2/L3、current-truth 判断和交付证据在这里汇合。结果以紧凑 delivery receipt 写入 `tasks.md` 末尾的 `## Proof Bundle`。
 
-Owning action 统一提供权威 changed-path population;reviewer 的完整 population 属于瞬时校验证据。Clean report 回传 `changed-path-count`、精确 applicable rule/spec IDs、`unverified-item-count=0` 与 `blocking-ambiguity-count=0`,但不重复完整 changed-path list;异常时再展开相关 path。永久 receipt 只保留 Git/non-Git identity、checks、执行方式、各层 verdict/baseline、非空 exceptions 与 current-truth 结论。压缩的是冗长路径输出和历史记录,不是 review 深度或适用条款的可核验性。
+Owning action 在 L1 后固定一次 review-cycle snapshot,统一提供权威 changed-path population、reviewer inputs 与 L1 evidence map;L2/L3 共用 snapshot,只做规则/实现/证据映射,不重跑 L1。reviewer 的完整 population 属于瞬时校验证据。Clean report 回传 `changed-path-count`、精确 applicable rule/spec IDs、`unverified-item-count=0` 与 `blocking-ambiguity-count=0`,但不重复完整 changed-path list 或 clean non-match/non-applicable counts;异常时再展开相关 path。永久 receipt 只保留 Git/non-Git identity、checks、执行方式、各层 verdict/baseline、非空 exceptions 与 current-truth 结论。压缩的是冗长路径输出和历史记录,不是 review 深度或适用条款的可核验性。
 
 稳定 commit receipt 证明历史交付快照曾通过 gate,不自动证明今天的产品现状;dirty-worktree receipt 只在原任务内有效。详细 schema、复查资格和 verdict 只由 [`feature-done`](actions/feature-done.md) 定义。
 
@@ -1242,7 +1242,7 @@ LLM 的 attention 是 quadratic 或 sub-linear cost over context length。当 co
 | L2 | reviewer agent + AGENTS.md 作 context | 端点(P3 proof bundle) |
 | L3 | reviewer agent + spec.md 作 context + 测试 | 端点(P3 proof bundle) |
 
-**组合在端点 action**:`feature-done` 是唯一端点组合点。先完成所有必要且可独立执行的 L1;必要 L1 通过后,适用的 L2/L3 独立执行。full lane 的 L2/L3 在容量允许时并行 fresh dispatch,容量不足时顺序执行,最后统一聚合 proof bundle 与 verdict。必要 L1 失败或不可可靠运行时不启动新的 L2/L3,但仍完成 current-truth 与 receipt。局部复查通过重跑 `feature-done`、same-task result reuse 或直接 dispatch reviewer sub-agent 完成,不设第二套 helper 命令。
+**组合在端点 action**:`feature-done` 是唯一端点组合点。先完成所有必要且可独立执行的 L1;必要 L1 通过后固定一次 review-cycle snapshot,适用的 L2/L3 使用同一 changed-path population 和 L1 evidence map 独立执行。full lane 的 L2/L3 在容量允许时并行 fresh dispatch,容量不足时顺序执行,聚合前重新核对 snapshot 未漂移。必要 L1 失败或不可可靠运行时不启动新的 L2/L3,但仍完成 current-truth 与 receipt。同一任务可跨用户回合保留未漂移的 cycle 证据做 focused re-review;跨任务或证据/输入漂移时重开完整 cycle,不设第二套 helper 命令。
 
 #### L2 / L3 Reviewer 承诺
 
