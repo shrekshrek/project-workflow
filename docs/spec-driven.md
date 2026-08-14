@@ -209,16 +209,20 @@ data/authorization/migration/release 信号、遗留或无法归属数据的处�
 
 **为什么**:这是 feature 跟 module 的**显式连接**,review 时一眼看出影响面;实施时知道哪些模块需要协调改动。
 
-#### Prior decisions:**带"为什么 + 来源",当场写回**
+#### Prior decisions:**只把需要持久追踪的选择带“为什么 + 来源”写回**
 
 | 好 ✅ | 坏 ❌ |
 |---|---|
 | 用 Resend 不用 SES:已有 Resend 账号,SES 要跑域名验证;来源=user confirmation 2025-02-06 | 用 Resend |
 
-**为什么**:不带原因的决策,AI 在实施中遇到问题会**重新打开讨论**(`要不要换 SES?`)。带原因 = 关闭讨论。
+**为什么**:非显然技术选择、外部来源解释、冲突/bundled-risk 裁决或 supersede 决定如果不带原因,
+AI 在实施中遇到问题会**重新打开讨论**(`要不要换 SES?`)。带原因 = 关闭讨论。普通 Outcomes、Scope、
+Constraints、Exclusions 仍由 spec.md 单独拥有,不复制到本节;没有需追踪决定时明确写
+`N/A(no durable why/source decision)`。
 
-**关键纪律 —— 当场写回**:每次跟 AI 讨论中作出的重要决定,**立刻**追加到 plan.md §3,写 why
-和稳定来源。仓库证据写 path/section;用户决定写日期/current feature;取代旧语义时明确 supersedes。
+**关键纪律 —— 选择性当场写回**:讨论中形成上述需持久追踪的决定时,**立刻**追加到 plan.md §3,
+写 why 和稳定来源。仓库证据写 path/section;用户决定写日期/current feature;取代旧语义时明确
+supersedes。不要把 ordinary spec contract 再抄一遍。
 不复制聊天原文。这一步常被忽略,但它既关闭重复讨论,也让下一会话能重新对账。
 
 #### 架构决策
@@ -303,7 +307,10 @@ plan.md Delivery Shape Baseline / §1.1 Sibling Alignment / §2 架构决策 / �
 
 #### 末尾提示
 
-先判断 plan 是否形成架构/模块边界、持久跨 feature 技术决定或取代既有 ADR。命中 `ADR_REQUIRED` 才从 plugin 模板实例化 ADR 并在 plan 引用;否则只在 Prior decisions 写 why。然后提示:"全部填完。建议跑 `/project-workflow:spec-quality-check` 做 pre-impl gate 验证。"
+先判断 plan 是否形成架构/模块边界、持久跨 feature 技术决定或取代既有 ADR。命中 `ADR_REQUIRED`
+才从 plugin 模板实例化 ADR 并在 plan 引用;未命中 ADR 但属于非显然选择、外部解释、冲突/
+bundled-risk 或 supersede 的决定才在 Prior decisions 写 why/source,普通实现细节不逐项记账。然后
+提示:"全部填完。建议跑 `/project-workflow:spec-quality-check` 做 pre-impl gate 验证。"
 
 #### 这跟 /spec-revise 的区别
 
@@ -340,7 +347,7 @@ reviewer,也不新增 action。
 
 | # | 问题 | 不通过的修法 |
 |---|---|---|
-| 1 | spec.md 最小集是否齐?(Outcomes / Scope / Constraints / Verification + plan.md 的 Prior decisions / 模块影响 / Delivery Shape Baseline)?旧 active artifact 能否从 Scope + Constraints + Module Impact 唯一推导边界?| 新 artifact 缺的回去补;旧 artifact 只有边界含糊时才修订,不为 schema 单独迁移 |
+| 1 | spec.md 最小集是否齐?(Outcomes / Scope / Constraints / Verification + plan.md 的 Prior decisions section / 模块影响 / Delivery Shape Baseline)?没有需追踪决定时是否显式 N/A?由 Git 历史或当前用户确认的 pre-3.11 active artifact 能否从 Scope + Constraints + Module Impact 唯一推导边界?| 新 artifact 缺的回去补;旧 artifact 只有来源或边界含糊时才修订,不为 schema 单独迁移 |
 | 2 | spec.md §2 Scope 是否显式写了 **`做 / Include` 清单 + `不做 / Exclude` 清单两份**?| **必写"不做"** —— 不写 AI 会自动加,scope creep 最大单一来源(见 [workflow.md §7.5](workflow.md#75-不要让-specmd-和-planmd-内容混淆)) |
 | 3 | spec.md §4 Verification 是否用最小、非重复的证据义务覆盖主要行为/风险?矩阵是否有交互、回归、发布或合规依据?用户可见 outcome 是否在现有义务中恰好标一个 `Primary flow`?| 不可测的改成可测;同一证据能覆盖的义务合并;无依据矩阵删掉或收敛;主流程零个/多个则收敛为一个,不新增义务 |
 | 4 | spec.md §1 Outcomes 是不是**具体场景**而不是模糊愿望?| "提升用户体验"→模糊;"用户邀请流 < 3 次点击完成"→具体 |
@@ -428,7 +435,7 @@ Draft / Filled / Validated **本质同档**(自由编辑);Frozen / Revised **本
 
 | 错的程度 | 落在哪个文件 | 怎么处理 |
 |---|---|---|
-| **小**(漏了一个 prior decision) | `plan.md` §3 Prior decisions | 当场追加,告诉 AI 重新读 plan.md;无需走 §3.5 SOP |
+| **小**(漏了一个需要持久 why/source 的 prior decision) | `plan.md` §3 Prior decisions | 当场追加,告诉 AI 重新读 plan.md;无需走 §3.5 SOP |
 | **小**(临时方案、补丁) | `tasks.md` 实施记录 | 写一行,不改 spec/plan;无需走 SOP |
 | **中**(plan 选型 / 模块边界 需调整) | `plan.md`(可能含 module AGENTS.md)| **走 [workflow.md §3.5](workflow.md#35-开发中发现-specplan-错怎么办) SOP**(修订记录 + 跨文件同步;模块边界变化满足 `ADR_REQUIRED`);若涉模块边界变化,加走 [§2.6](workflow.md#26-module-中途变更feature-实施中发现边界要调整) |
 | **大**(scope / outcomes 实际跟想做的不一样) | `spec.md` § 1/2(经 SOP)| **走 [workflow.md §3.5](workflow.md#35-开发中发现-specplan-错怎么办) SOP**;若大到 outcomes 跑偏,起新功能目录 `<NNN+1>-<slug>/` 引用旧的(见 §5) |
@@ -537,10 +544,10 @@ docs/specs/changes/
 **后果**:AI 把 spec 当步骤手册,失去对"目标"的理解
 **修正**:`spec.md` 只写 WHAT(目标/边界/约束/验收),task 在 `tasks.md`
 
-### 6.2 plan.md Prior decisions 留空
-**症状**:AI 在实施中反复重新讨论已经定好的事
-**后果**:每次新 session 重新对齐,迭代成本暴涨
-**修正**:任何讨论中已定的技术选型,**当场**追加到 `plan.md` §3,带原因
+### 6.2 应持久追踪的 Prior decision 未记录
+**症状**:非显然选择、外部解释、冲突/bundled-risk 或 supersede 决定没有 why/source,AI 在实施中反复重新讨论已经定好的事
+**后果**:每次新 session 重新对齐,迭代成本暴涨,或无法判断旧决定是否已被取代
+**修正**:只把上述决定**当场**追加到 `plan.md` §3,带原因和稳定来源。普通 spec 契约不复制;确实没有此类决定时写 `N/A(no durable why/source decision)` 不属于反模式
 
 ### 6.3 Outcomes 写成 user story
 **症状**:`spec.md` Outcomes 用"As a X I want Y so that Z"

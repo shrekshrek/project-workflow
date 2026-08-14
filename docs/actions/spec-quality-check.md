@@ -99,9 +99,10 @@ Required checks: seven core quality questions, plus conditional current-truth ch
      delivery-risk signal, expected responsibility areas, contract/data/authorization/migration/release
      signals, explicit exclusions,
      and scope-growth triggers. Large/extra-large impact has either separable child outcomes or concrete
-     indivisible coupling; any unresolved coordination/rollback risk is explicitly accepted. A pre-3.11 active
-     artifact may satisfy this check with one unambiguous boundary derived from Scope, Constraints, and Module
-     Impact; record `legacy-unambiguous impact boundary` without rewriting the frozen artifact.
+     indivisible coupling; any unresolved coordination/rollback risk is explicitly accepted. A reliably
+     identified pre-3.11 active artifact may satisfy this check with one unambiguous boundary derived from
+     Scope, Constraints, and Module Impact; record `legacy-unambiguous impact boundary` without rewriting the
+     frozen artifact.
 8. Only when the touched area has a `docs/specs/<area>.md`: the spec cites it and does not contradict it, or explicitly records why it deviates. Projects without current-truth documents skip this check.
 9. When check 8 applies: the spec includes a `## Delta` section with `Added`, `Modified`, and `Removed` subsections; at least one subsection has concrete content (not placeholders or bare N/A).
 

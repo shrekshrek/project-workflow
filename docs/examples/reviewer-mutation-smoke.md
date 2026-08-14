@@ -128,8 +128,9 @@ Run `spec-quality-check` against two full-lane artifacts whose individual tasks 
   confirm Q7c returns `BLOCKED` until it is removed, durably deferred, or given a traceable current
   consumer and necessity.
 - Remove the Delivery Shape Baseline from a new artifact or leave ownership/data-disposition scope-growth
-  triggers unresolved; confirm Q7d returns `BLOCKED`. Repeat with a pre-3.11 active artifact whose Scope,
-  Constraints, and Module Impact establish one unambiguous boundary; confirm it records
+  triggers unresolved; confirm Q7d returns `BLOCKED`. Repeat with an artifact that repository history or
+  explicit current-user confirmation identifies as pre-3.11 and whose Scope, Constraints, and Module Impact
+  establish one unambiguous boundary; confirm it records
   `legacy-unambiguous impact boundary` without rewriting the artifact. Make that boundary ambiguous and
   confirm revision is required.
 

@@ -265,6 +265,9 @@ requireMarkers("docs/reviewers/spec-quality-reviewer.md", ["Every test layer or 
 requireMarkers("docs/reviewers/spec-quality-reviewer.md", ["Q7c current necessity", "Q7d impact completeness", "possible future need", "Use counterexamples"]);
 requireMarkers("docs/spec-driven.md", ["Impact Preflight", "Delivery Shape Baseline", "Q7c", "Q7d", "Scope delta", "speculative-capability", "已经写了代码不构成收编理由"]);
 requireMarkers("docs/workflow.md", ["Impact/Necessity Preflight", "Delivery Shape Baseline", "Scope Delta", "speculative-capability", "已经写出的代码不构成收编理由"]);
+requireMarkers("docs/spec-driven.md", ["只把需要持久追踪的选择", "选择性当场写回", "普通实现细节不逐项记账", "Git 历史或当前用户确认的 pre-3.11", "需要持久 why/source", "N/A(no durable why/source decision)` 不属于反模式"]);
+requireMarkers("docs/workflow.md", ["Prior decisions 选择性写回", "普通 spec 契约不复制", "没有此类决定时显式 N/A"]);
+forbidMarkers("docs/spec-driven.md", ["否则只在 Prior decisions 写 why", "### 6.2 plan.md Prior decisions 留空", "任何讨论中已定的技术选型"]);
 requireMarkers("docs/actions/project-personalize.md", ["A command being available does not make it mandatory for every feature", "Do not introduce a missing test layer, matrix, coverage gate, or release suite for completeness", "does not manufacture layer or matrix symmetry"]);
 for (const relative of ["template/docs/specs/changes/_template/tasks.md", "template/docs/specs/changes/_template/tasks-light.md"]) {
   requireMarkers(relative, ["不要按预计时长或测试 case 机械拆分"]);
@@ -461,6 +464,7 @@ for (const relative of [
 
 requireMarkers("docs/examples/reviewer-mutation-smoke.md", ["Known-bad mutation smoke", "feature-done", "release blocker", "Runtime scheduling smoke", "sequential fresh dispatches", "Spec-quality authorization smoke", "Pure check request", "Explicit conditional request", "`BORDERLINE` result"]);
 requireMarkers("docs/examples/reviewer-mutation-smoke.md", ["Delivery-shape smoke", "independently", "size and breadth signals alone never change the verdict"]);
+requireMarkers("docs/examples/reviewer-mutation-smoke.md", ["repository history or", "explicit current-user confirmation identifies as pre-3.11"]);
 requireMarkers("docs/examples/reviewer-mutation-smoke.md", ["outside the accepted Delivery Shape Baseline", "legacy-unambiguous impact boundary", "justified only by possible future use", "Q7c", "Q7d", "Requirements-reconciliation smoke", "MISMATCH: missing-from-artifact", "MISMATCH: unsupported-artifact", "MISMATCH: superseded-remnant", "MISMATCH: cross-artifact-conflict", "SOURCE GAP", "no second dispatch"]);
 requireMarkers("docs/examples/reviewer-mutation-smoke.md", ["Implementation Scope Stop smoke", "ordinary private helper", "stops before adding more production code", "full lane is not blanket permission", "Minimal-evidence smoke", "duplicate unit, API, e2e", "role × visibility matrix", "file/test counts"]);
 requireMarkers("docs/examples/reviewer-mutation-smoke.md", ["Guidance-placement smoke", "do not propose a nested file merely for symmetry", "one tier", "Q6 blocks", "malformed alias", "no implicit guidance", "must not create or move guidance", "mechanize"]);

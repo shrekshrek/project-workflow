@@ -1141,7 +1141,7 @@ AI 输出质量 ≈ AI 能力 × 输入清晰度。AI 能力是常量(模型版�
 | 跨模块 / 跨职责边界 OR 数据模型 OR API/schema 契约 OR 迁移 / 权限 / 安全 / 不变量路径 | 必写 spec(`docs/specs/changes/<NNN>-<slug>/spec.md`)|
 | 六要素分布 | spec.md = Outcomes / Scope / Constraints / Verification;plan.md = Prior decisions / 模块影响 / 架构 / 风险 |
 | Scope 必写"不做" | 不写"不做",AI 会自动加 → scope creep 最大单一来源 |
-| Prior decisions 当场写回 | 每次跟 AI 讨论中作出的重要决定,立刻追加到 plan.md §3,带原因和稳定来源;supersede 关系明确写出(关闭重复讨论并支持跨会话需求对账) |
+| Prior decisions 选择性写回 | 非显然选择、外部解释、冲突/bundled-risk 裁决和 supersede 决定才追加到 plan.md §3,带原因和稳定来源;普通 spec 契约不复制,没有此类决定时显式 N/A |
 | 涉及多模块时做 Sibling Alignment | plan.md §1.1 对每个"同型决策" 3 选 1:Align / Deviate / Codify(spec 阶段截住空间漂移)|
 
 #### 失效情形(Boundary Conditions)
