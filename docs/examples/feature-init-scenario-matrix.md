@@ -2,7 +2,7 @@
 
 Behavior-equivalence harness for the generative `feature-init` action. Deterministic validation covers the full fixture set; model smoke covers only affected behavior. Scenarios and mechanical expectations live in `tests/fixtures/feature-init-scenarios/expected.json`.
 
-Nineteen scenarios cover lane classification (full / light / no-artifact), including ambiguous
+Twenty-three scenarios cover lane classification (full / light / no-artifact), including ambiguous
 real-work boundaries that do not name the expected lane: implementation already covered by an accepted
 spec, a multi-file behavior-preserving refactor, an existing-contract UI change with a durable handoff
 consumer, and a docs-only cross-module contract change. They also cover target-root resolution from a
@@ -12,7 +12,10 @@ module-ownership non-guessing, pre-materialization decomposition of several inde
 outcomes, implicit decomposition when the user does not name separability, explicit `pending-selection` /
 `pending-handoff` tracking while a required split is blocked, preservation of large coupled migrations and
 cross-module vertical outcomes, refusal when deferred children lack durable issue/PM references,
-and preservation of supplied tracking references in a selected light-lane child. The deterministic check separately covers no-clobber, failed-copy rollback,
+and preservation of supplied tracking references in a selected light-lane child. They additionally cover
+pre-materialization clarification of unknown data disposition, exclusion of speculative capability without
+a current consumer, large coupled impact reporting, and decomposition of independently releasable Provider
+rollouts. The deterministic check separately covers no-clobber, failed-copy rollback,
 and symlink safety; it does not claim model behavior.
 
 ## Run protocol

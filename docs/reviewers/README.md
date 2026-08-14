@@ -8,7 +8,7 @@ Runtime agents and skills must reference these specs instead of redefining the r
 |---|---|
 | [`agents-md-reviewer`](agents-md-reviewer.md) | L2 project-convention compliance review |
 | [`spec-reviewer`](spec-reviewer.md) | L3 implementation-vs-spec compliance review |
-| [`spec-quality-reviewer`](spec-quality-reviewer.md) | subjective pre-implementation spec quality review |
+| [`spec-quality-reviewer`](spec-quality-reviewer.md) | requirements reconciliation plus subjective pre-implementation quality and conditional architecture adequacy |
 | [`decision-completeness-auditor`](decision-completeness-auditor.md) | generated-decision traceability audit |
 | [`tech-researcher`](tech-researcher.md) | stack/library/tool choice research |
 | [`codebase-explorer`](codebase-explorer.md) | existing-codebase structure survey |

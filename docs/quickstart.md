@@ -10,8 +10,8 @@
 
 ```text
 一次项目接入(project-init / project-personalize 二选一)
-  → 小改直接做;需要追踪或显式评估路由时 feature-init(DIRECT / LIGHT / FULL;PREVIEW 只读,仅 LIGHT/FULL 的 APPLY 创建 artifact)
-  → full lane 与用户补完草稿后跑 spec-quality-check
+  → 小改直接做;需要追踪或显式评估路由时 feature-init(先 Impact/Necessity + Scope Viability;DIRECT / LIGHT / FULL;PREVIEW 只读,仅 LIGHT/FULL 的 APPLY 创建 artifact)
+  → high-impact unknown 先问清,full lane 再 materialize/补完草稿并跑 spec-quality-check
   → 实施
       ├─ 当前任务立即收尾:feature-done → feature-archive → commit / PR / merge
       └─ 延后批量收尾:提交实现并记录稳定 commit SHA(可来自 PR head)
@@ -51,19 +51,25 @@
 
 如果用户明确询问“这个改动是否需要 feature”,`feature-init` 仍应触发,但只返回 `PREVIEW`,不创建文件。普通讨论、诊断或合理性检查没有提出 feature 路由问题时不触发。对实施请求判为 `DIRECT/APPLY` 后立即继续原实施;判为 `LIGHT/APPLY` 时创建 `tasks.md` 后继续,无需再次确认。只要求初始化 artifact 时则创建后停止,不自动实施。
 
+`feature-init` 是 Impact/Necessity、scope viability 和 DIRECT/LIGHT/FULL 的唯一规则源。它会在
+materialization 前关闭足以改变范围、归属、授权、数据处置或发布方式的未知项,一次只问一个决定性
+问题;没有当前 consumer 的未来能力不进入当前 feature。精确触发和输出见
+[`feature-init`](actions/feature-init.md),不要从本快速开始维护第二份判定表。
+
 需要持久追踪、验证记录或规约保护时,再运行:
 
 ```text
 /project-workflow:feature-init <feature-slug>
 ```
 
-full lane feature 然后补全:
+FULL 创建并补全:
 
 - `docs/specs/changes/<NNN>-<slug>/spec.md`:结果、范围、约束、验证方式
 - `docs/specs/changes/<NNN>-<slug>/plan.md`:模块影响、Sibling Alignment、技术决策
 - `docs/specs/changes/<NNN>-<slug>/tasks.md`:可验证的实施步骤
 
-只有交接、多步验收、审计/发布或 current-truth 更新确实需要持久清单时,低风险小改才走轻车道并创建 `tasks.md`。补全目标/边界、最小证据义务、任务和 delivery receipt;不跑 `spec-quality-check`,但 `feature-done` 必须兑现 `## 验证`。同一 command 可覆盖多个相关义务且只运行一次。
+LIGHT 只创建 `tasks.md`,用于确有消费者的持久清单;它跳过 `spec-quality-check`,但仍以
+`feature-done` 收尾。精确 lane 条件和升级规则留在 `feature-init`。
 
 full lane 写代码前先跑:
 
@@ -71,11 +77,17 @@ full lane 写代码前先跑:
 /project-workflow:spec-quality-check <feature-slug>
 ```
 
-如果还有 failed 项,先修 spec / plan / tasks,不要直接开始实施。borderline 项可以继续,但必须显式接受具体风险并在 `plan.md` 风险 / open issues 或 `tasks.md` 实施说明里记录后续处理。用户原请求已明确“检查通过就继续实施”时,READY gate 可直接把 spec 状态改为 `已确认` 并继续;纯检查请求保持只读。轻车道不跑 `spec-quality-check`。
+该 gate 先做双向需求对账,再检查 artifact 质量、最小充分证据和已选择的 Guidance Placement;
+阻断项先修 artifact。精确 verdict、状态转换和 reviewer 规则只见
+[`spec-quality-check`](actions/spec-quality-check.md)。
 
 ## 3. 按 spec 边界实施
 
 full lane 让 AI 基于 `spec.md` + `plan.md` + `tasks.md` 写代码。轻车道基于 `tasks.md` 写代码。未启动 project-workflow 的小任务直接按当前上下文实施。
+
+所有 lane 都继承 `feature-init` 的 Implementation Scope Stop:出现未声明的高影响边界、第二个独立
+outcome 或没有当前 consumer 的能力时,在继续扩展前暂停;普通必要细节和保持契约的简化实现继续。
+测试同样只保留能证明不同实质风险的最小证据,不能用层级、矩阵或 case 数量代替风险说明。
 
 如果实施中发现 spec 或 plan 本身错了,先停下,不要边改代码边改规格。运行:
 
@@ -91,23 +103,20 @@ full lane 让 AI 基于 `spec.md` + `plan.md` + `tasks.md` 写代码。轻车道
 /project-workflow:feature-done <feature-slug>
 ```
 
-这是默认端点门禁,会组合执行:
+`feature-done` 统一拥有 completion preflight、L1/L2/L3、current-truth 判断和 `## Proof Bundle`。
+它用低成本 preflight 拒绝未完成工作、混杂 diff、明确范围膨胀、缺失的 Codify 承诺和失败的
+Primary flow;测试价值和 guidance 语义分别由既有 Q3/L2/L3 判断,不在 preflight 再做一轮主观 review。
+文件、测试或代码行数量本身不触发审查。精确证据复用、重跑、Receipt 和触发规则只见
+[`feature-done`](actions/feature-done.md)。
 
-- L1 机械检查:feature 明确 Verification + 变更项目的标准命令;全仓/发布套件只由 spec、适用项目约定或共享面变更触发
-- L2 项目约定 review(full lane 必跑;轻车道按风险触发)
-- L3 code-vs-spec review
-- current-truth check(持久产品行为且领域明确但文档尚不存在时记录 `update pending`;只有领域归属未知时才记录 `area unresolved`)
-- delivery receipt 写入 `tasks.md` 的兼容标题 `## Proof Bundle`
-
-`feature-done` 先跑完必要 L1;L1 失败或不可可靠运行时不启动新的 L2/L3。L1 通过后固定一次 review-cycle snapshot 供 L2/L3 共用,reviewer 只消费 L1 证据而不重跑命令。需要局部复查时重跑 `feature-done`,或直接 dispatch reviewer sub-agent。同一任务可跨用户回合复用未漂移且仍可寻址的完整 cycle 证据;跨任务、输入漂移或证据缺失时重跑完整 population。没有独立 helper 命令。
-
-周期性生命周期清扫只复用指向精确 commit SHA 的 READY receipt。dirty-worktree READY 可在同一任务内直接 archive;若先提交、以后再清扫,需在该提交上运行 `feature-done`(此前已 review dirty worktree 时则为重跑)后再 archive。稳定 receipt 证明该提交曾通过交付门禁;archive 仍单独依据当前实现和后继变更核对待合并的 current truth:
+立即归档可复用同任务的 READY;延后清扫需要指向精确 commit SHA 的 READY receipt:
 
 ```text
 /project-workflow:feature-archive
 ```
 
-它把所有已交付 feature 的目录整体移入 `docs/specs/changes/archive/`(活动区只留进行中的工作,历史 spec 不再污染检索),对标了 "current truth 更新 pending" 的 feature 先把持久结论合并进 `docs/specs/<area>.md`,被取代的老 spec 标 `已取代` / `已废弃`。带 slug 可以只收尾单个 feature。
+它先合并待更新的 current truth,再把已交付目录移入 `archive/`;精确资格和批量/单项行为见
+[`feature-archive`](actions/feature-archive.md)。
 
 ## 4.5 存量项目 spec 已经积累混乱时
 

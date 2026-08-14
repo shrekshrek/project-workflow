@@ -18,6 +18,7 @@
 ## Delta
 
 > 相对上列 domain doc 的变更;**必填**。
+> 每个新增持久状态、API、角色、工作流、管理面、队列或 runtime component 都要注明当前 consumer 与必要性;仅为未来可能性服务的能力不进入本 feature。
 
 ### Added
 
@@ -39,6 +40,6 @@
 
 ## Verification
 
-> 写“已声明 Delta/风险 + 最小可执行证据”,不是预排测试用例。不要从通用测试习惯派生未声明输入、边界或错误 case。一个证据可覆盖多个相关风险;只有交互维度、已有回归要求或发布/合规契约确实改变结果时才使用矩阵。**本节 + Delta = L3 review 基线**(domain doc 只作 context,不作 L3 全文对照)。
+> 写“已声明 Delta/风险 + 最小可执行证据”,不是预排测试用例。不要从通用测试习惯派生未声明输入、边界或错误 case。一个证据可覆盖多个相关风险;只有交互维度、已有回归要求或发布/合规契约确实改变结果时才使用矩阵。用户可见 outcome 在已有义务中恰好标一个 `Primary flow`;它只决定 preflight 顺序,不新增第二套 smoke。**本节 + Delta = L3 review 基线**(domain doc 只作 context,不作 L3 全文对照)。
 
 - {{TODO Delta/主要风险 → 最小 command / assertion;具体测试文件和 case 可在实施时决定}}

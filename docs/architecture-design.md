@@ -4,7 +4,10 @@ Conditional methodology reference for an architecture-shaped full-lane change. I
 
 ## Use boundary
 
-Read this guide only when the selected change establishes or materially changes project-wide application architecture, such as runtime components or tiers, module ownership, cross-component contracts, data ownership, or deployment boundaries.
+Read this guide only when the selected change establishes or materially changes project-wide application
+architecture, such as runtime components or tiers, module ownership, cross-component contracts, data
+ownership, durable trust/authorization ownership boundaries, or deployment boundaries. An ordinary permission
+rule inside an unchanged trust and responsibility boundary does not trigger this guide by itself.
 
 - Keep the minimum architecture needed by one outcome inside that feature.
 - Use a separate architecture-shaped change only when the architecture has its own durable consumer or governs several later features.

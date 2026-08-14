@@ -10,6 +10,10 @@ Match the user's language. Read [`../../../../docs/actions/agents-md-revise.md`]
 - Scope root/applicable nested `AGENTS.md` by default; include host-private convention files only when explicitly selected. Do not translate another host's private rules.
 - Use inline trace for sourced synchronization; only at the narrowed canonical boundary dispatch a fresh subagent for [`decision-completeness-auditor`](../../../../docs/reviewers/decision-completeness-auditor.md), with fallback under the shared execution contract. Blocking or unreliable audit evidence prevents apply.
 - Ask only for material ambiguity or new policy, then use one consolidated apply gate; do not reconfirm objective stale-value synchronization item by item.
+- Include the canonical Guidance Placement audit: path-local root rules, child-parent duplication, evidence-
+  backed missing local guidance, malformed/missing adopted one-line aliases, orphan guidance, and rules better
+  mechanized. Propose evidence-backed keep/move/create/delete/mechanize patches; never judge architecture,
+  create for symmetry, or move root text while consumers remain outside the subtree.
 - Apply only approved convention edits. Do not edit product specs, implementation code, or commit.
 
 Report applied/skipped drift, evidence, applicable audit execution/results, and unresolved questions.

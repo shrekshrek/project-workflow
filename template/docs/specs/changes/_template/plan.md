@@ -1,6 +1,6 @@
 # <NNN> <slug> — Plan
 
-> 基于 spec.md。回答 **HOW** —— 怎么做。实施中可改;改的同时在 §3 Prior decisions 写"为什么改"。
+> 基于 spec.md。回答 **HOW** —— 怎么做。实施中可细化;只有符合 §3 范围的决定才在那里记录 why/source。
 
 ## 1. 模块影响范围
 
@@ -13,15 +13,29 @@
 
 | 兄弟模块 | 对齐方式 | 备注 |
 |---|---|---|
-| `<sibling-module>` | **Align**(沿用现有约定) / **Deviate**(本 feature 特例,写理由) / **Codify**(把本 feature 模式提升为约定,更新 AGENTS.md)| {{TODO}} |
+| `<sibling-module>` | **Align**(沿用现有约定) / **Deviate**(本 feature 特例,写理由) / **Codify**(把本 feature 模式提升为约定)| {{TODO;Codify 时写持久规则 + root/tier/module AGENTS.md 或机械门禁的精确落点 + 来源;嵌套规则只写父级差量}} |
 
-> 单模块 feature 可省本子节。多模块 feature 不填 = drift 风险(见 [spec-driven.md §3.7 Q6](https://github.com/shrekshrek/project-workflow/blob/main/docs/spec-driven.md#37-specplan-写完后的质量自检7-问-checklist))。
+> 单模块 feature 可省本子节。多模块 feature 不填 = drift 风险。Codify 不等于一定新建文件:
+> 跨项目规则留根级,同 tier 共享差量进 tier,只有真实模块特例进 module;产品/feature 语义留 spec/plan/ADR,
+> 可机械判定的优先 lint/hook/test。嵌套 Claude 兼容采用一行 `@AGENTS.md` alias,不复制规则正文。
+
+### 1.2 Delivery Shape Baseline
+
+> 记录 feature-init 已确认的影响边界;不是文件清单或工期估算。实施中触发未声明项时先停下,按 scope delta 重新分类。
+
+- 当前 outcome / consumer: {{TODO}}
+- Delivery risk signal: {{small / medium / large / extra-large + 具体依据}}
+- 预期责任区域: {{TODO}}
+- Contract / data / authorization / migration / release signals: {{TODO}}
+- 明确排除: {{TODO}}
+- Scope growth triggers: {{TODO 新持久状态/API/角色/工作流/管理面/队列/runtime/Provider/迁移/授权/发布边界等}}
 
 ## 2. 架构决策
 
 > 只保留本 feature 真正适用的子节,删除不适用项。数据模型、接口契约、关键算法、状态管理等都属于 **HOW**。
 > 不重复 spec.md(spec 写做什么,plan 写怎么做)。
-> 只有架构/模块边界、持久跨 feature 技术决定或取代既有 ADR 时才创建 ADR,并在本节链接具体文件;其余选择在 §3 Prior decisions 记录 why 即可。
+> 只有架构/模块边界、持久跨 feature 技术决定或取代既有 ADR 时才创建 ADR,并在本节链接具体文件;
+> 其他选择也只有符合 §3 的持久追踪条件时才写入 Prior decisions,普通实现细节不需要逐项记账。
 
 ### 数据模型(若适用)
 
@@ -39,11 +53,15 @@
 
 ## 3. Prior decisions
 
-> 每个决策**带 why**,实施中遇到诱惑回头讨论时 = 关闭讨论的依据。
+> 这里只记录需要持久 why/source 的非显然选择、外部来源解释、冲突裁决、bundled-risk 接受或
+> supersede 决定;Outcomes、Scope、Constraints、Exclusions 只留在 spec.md,不要重复成第二份契约。
+> 仓库来源写 path + section;用户决定写日期/当前 feature。若取代旧决定,在来源中明确
+> `supersedes: ...`。不要粘贴原始聊天记录。没有此类决定时写
+> `N/A(no durable why/source decision)`,不要为填表复制 spec。
 
-| 决策 | 为什么 |
-|---|---|
-| {{TODO 用 X 不用 Y}} | {{TODO 具体原因}} |
+| 决策 | 为什么 | 来源 |
+|---|---|---|
+| {{TODO 用 X 不用 Y}} | {{TODO 具体原因}} | {{TODO repo path/section 或 user confirmation YYYY-MM-DD; supersedes 若适用}} |
 
 ## 4. 风险与未决
 

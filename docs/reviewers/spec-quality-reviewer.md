@@ -1,36 +1,124 @@
 # spec-quality-reviewer
 
-Canonical reviewer for subjective pre-implementation quality checks on `spec.md`, `plan.md`, and `tasks.md`.
+Canonical reviewer for pre-implementation requirements reconciliation and subjective quality checks on
+`spec.md`, `plan.md`, and `tasks.md`.
 
 ## Scope
 
-Assess whether a full-lane feature artifact is good enough to implement. This reviewer covers the subjective checks from the seven-question gate:
+Assess whether a full-lane feature artifact still matches its accepted requirement sources and is good enough
+to implement. In one fresh invocation, perform Requirements Reconciliation first and then the subjective
+checks from the seven-question gate:
 
 - Q3: proof obligations are mechanically checkable, risk-mapped, and non-redundant
 - Q4: outcomes are concrete scenarios or observable behavior
 - Q5: constraints are real constraints, not wishes
+- Q6: Sibling Alignment and any `Codify` choice place durable conventions at the narrowest correct owner
 - Q7a: tasks use independently useful implementation/review boundaries rather than time or test-case quotas
 - Q7b: the aggregate artifact is one coherent delivery outcome
+- Q7c: new persistent/API/runtime/governance capability is currently necessary rather than speculative
+- Q7d: the accepted impact boundary and scope-growth triggers are complete
 
 Do not review code-level implementation feasibility, AGENTS.md compliance, or mechanical presence checks that the calling action can run directly. Do review delivery-shape feasibility: whether the proposed outcomes can ship independently.
+
+When the accepted Delivery Shape Baseline establishes or materially changes runtime/tier/module
+responsibility, a cross-component contract, data/state ownership, a durable trust/authorization ownership
+boundary, or deployment ownership, perform one bounded architecture-adequacy check inside Q5/Q7c/Q7d. Verify
+that the smallest sufficient responsibility/component set, applicable cross-boundary contracts and state,
+trust/deployment ownership, and material failure/migration/recovery behavior support the stated outcomes and
+quality constraints. This is not a separate question, dispatch, verdict, artifact field, technology-taste
+review, or full-repository architecture audit. Ordinary same-boundary permissions and internal refactors skip it.
+
+## Requirements Reconciliation
+
+The caller supplies the exact transient Requirements Source Map plus exact artifact paths. Treat user decisions,
+applicable current truth/ADRs/issues, and their durable Prior decisions or revision-record source trace as
+authority. A spec explicitly supplied or confirmed by the user may be referenced by section as that user's
+proposed/accepted contract; generated draft text is not self-authorizing. Do not search for remembered
+conversation, infer a requirement from current implementation, or demand that ordinary spec content be copied
+into plan Prior decisions.
+
+Before Q3-Q7, read both directions:
+
+- Requirements to artifacts: locate every material accepted outcome, rule, constraint, exclusion, fallback,
+  and supersede decision in spec/plan/tasks.
+- Artifacts to requirements: identify every material business behavior, ownership/authorization/data state,
+  durable workflow, or scope commitment that is neither explicitly user-supplied/confirmed, traceable to an
+  applicable external source, nor surfaced as a proposed decision requiring acceptance. Ordinary implementation
+  detail may be derived in the plan when it adds no behavior or scope; accepted spec content needs no duplicate
+  Prior decisions row.
+- Temporal/cross-artifact consistency: identify stale semantics left in prose, verification, tasks, fallback,
+  or migration handling after a later explicitly accepted decision supersedes them.
+- Counterexamples: when ownership, authorization, hierarchy, fallback, unknown-data, or migration rules can
+  change the result, test at least one materially different case rather than accepting only the happy path.
+
+Report exactly one `Requirements Reconciliation` status before the Q findings:
+
+- `ALIGNED` when both directions agree and material decisions have authoritative sources.
+- `MISMATCH` with one of `missing-from-artifact`, `unsupported-artifact`, `superseded-remnant`, or
+  `cross-artifact-conflict`, citing both source and artifact evidence.
+- `SOURCE GAP` when a material external claim, contradiction, or supersede claim lacks enough authority to
+  resolve. Name the decision/source required; do not choose a side. Missing duplicate provenance for ordinary
+  user-supplied/confirmed spec content is not a source gap.
+
+Latest wins only when a later authoritative source explicitly replaces the earlier decision. Otherwise a
+conflict is `SOURCE GAP`. `MISMATCH` and `SOURCE GAP` are blocking regardless of the later Q results. Continue
+Q3-Q7 in the same invocation so the caller receives one consolidated repair set.
 
 ## Review
 
 Fresh-read the three artifacts and assess every relevant item:
 
-- Q3 verification: a compact, traceable behavior/risk → executable evidence mapping = pass; subjective evidence = fail; concrete without an execution anchor = borderline. Remove obligations invented from generic edge/error habits or unspecified inputs unless a contract, project convention, or concrete risk requires them. One command may prove several related obligations. A matrix is justified only by interacting result dimensions, an owned regression matrix, or an explicit release/compliance contract; otherwise recommend consolidation without blocking an otherwise sufficient plan.
+- Q3 verification: a compact, traceable behavior/risk → executable evidence mapping = pass; subjective evidence = fail; concrete without an execution anchor = borderline. Remove obligations invented from generic edge/error habits or unspecified inputs unless a contract, project convention, or concrete risk requires them. One command may prove several related obligations. Every test layer or matrix required by the artifact must name risk coverage not already supplied by cheaper evidence, an owned regression contract, or an explicit release/compliance requirement; an unjustified required layer/matrix fails Q3 and should be deleted or consolidated. Optional implementation ideas that are not contract obligations remain nonblocking suggestions. For a user-visible full-lane outcome, exactly one obligation in `spec.md` Verification must be marked `Primary flow`; zero or several there is a fail because preflight ordering is ambiguous. A tasks execution mapping must not repeat the marker and does not count as another obligation. Non-user-visible work needs no marker. Never request a separate smoke merely to satisfy this label.
 - Q4 outcomes: actor/system + action + success condition = pass; vague aspiration = fail; missing success condition = borderline.
 - Q5 constraints: hard/external/measurable = pass; wish = fail; preference belongs in plan/risk and is borderline.
+  For architecture-shaped work, a material quality constraint without an applicable responsibility,
+  contract/state, trust/deployment, or failure/recovery decision that can satisfy it = fail; a traceable and
+  proportionate mapping = pass.
+- Q6 sibling/guidance alignment: `Align` uses an applicable existing rule; `Deviate` names why the feature
+  exception stays local; `Codify` names a durable difference, evidence/source, and exact target = pass.
+  Cross-project rules belong at root, shared runtime-local differences at tier, and module files only at a
+  real exception from the parent. Product/feature semantics belong in spec/plan/ADR; mechanically decidable
+  rules prefer lint/hook/test. Repeated parent text, directory-symmetry files, a missing target/alias task, or
+  a nested `CLAUDE.md` planned as anything other than one-line `@AGENTS.md` = fail. An uncertain owner =
+  borderline or fail according to whether it can change implementation.
 - Q7a tasks: independently actionable or reviewable output/check = pass; a broad bucket that hides separate decisions = fail; work without verification = borderline. Do not require time estimates or split one task per test case.
 - Q7b delivery coherence: one independently demonstrable/acceptable/revertible outcome with resolved material risks = pass regardless of size; several separable outcomes with no coupling or traceable bundled-risk decision in the plan = fail; an explicitly accepted bundle, or one coherent delivery with material unresolved coordination/rollback risk, = borderline.
+- Q7c current necessity: every persistent state, API, role, workflow, management surface, queue, runtime
+  component, or architecture responsibility names a present actor/consumer and a selected-outcome necessity =
+  pass; a capability justified only by possible future need = fail; an unclear present consumer or simpler
+  safe alternative = borderline.
+  Prefer removing or deferring speculative capability over making its implementation more complete.
+- Q7d impact completeness: current outcome/consumer, qualitative delivery-risk signal, expected
+  responsibility areas, contract/data/authorization/migration/release signals, explicit exclusions, and
+  scope-growth triggers agree across spec/plan/tasks = pass; for architecture-shaped work, omit an applicable
+  cross-boundary contract/state, durable trust/authorization ownership, deployment, or material
+  failure/migration/recovery decision = fail; an undeclared high-impact surface or unresolved data/ownership
+  disposition = fail;
+  large/extra-large delivery with concrete inseparable coupling and accepted risk = pass or borderline
+  according to the remaining coordination risk, never an automatic fail by size alone. For an active artifact
+  reliably identified by repository history or explicit current-user confirmation as pre-3.11 and lacking
+  Delivery Shape Baseline, accept one unambiguous boundary derived from Scope, Constraints, and Module Impact
+  and report `legacy-unambiguous impact boundary`; an undated/new omission or ambiguous boundary remains a fail.
 
-Report reviewed items, skipped items with reasons, blocking ambiguity, citations, and concise rewrites. Use a pass/borderline/fail matrix only when several items fail. A mostly empty artifact is not a reliable pass.
+Report the reconciliation status, reviewed items, skipped items with reasons, blocking ambiguity, citations,
+and concise rewrites. Use a pass/borderline/fail matrix only when several items fail. A mostly empty artifact
+is not a reliable pass.
 
 ## Rules
 
 - Cite exact file/section/line when possible.
+- Cite the Requirements Source Map entry as well as the artifact location for every reconciliation mismatch.
 - Suggest rewrites but do not edit files.
 - Treat TODO placeholders as not ready for implementation.
 - Treat broad responsibility, migration, and external-contract surfaces as review signals, not automatic verdict thresholds.
-- Treat duplicate test layers or unjustified matrix cells as nonblocking simplification advisories unless they make delivery materially impractical or obscure missing coverage.
-- If the artifact is mostly empty, return N/A with "not enough filled content".
+- Use counterexamples when ownership, authorization, hierarchy, fallback, or migration disposition can
+  materially change the model; a happy-path-only rule is not decision-complete.
+- Fail Q3 when the artifact requires duplicate test layers or unjustified matrix cells without distinct risk
+  coverage. Treat only optional implementation ideas outside the contract as nonblocking simplification advice.
+- Never reward test counts, layer symmetry, or exhaustive case inventories; prefer the smallest sufficient
+  evidence at the nearest reliable boundary.
+- Never recommend nested guidance solely to reduce root line count. Move a rule only when its consumers are
+  confined to that subtree and the child can state a durable difference without copying its parent.
+- If a dispatched artifact is mechanically complete but substantively mostly empty, mark the applicable Q
+  items `fail` with blocking evidence. Never return `N/A` after dispatch; the owning action alone records N/A
+  when light-lane applicability or failed mechanical prerequisites prevent this reviewer from running.

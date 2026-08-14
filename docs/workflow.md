@@ -746,6 +746,11 @@ P0 生成(`/project-init` / `/project-personalize`)Preview Gate 落盘**之前**
 
 **差量原则**:模块 AGENTS.md 只写**跟父级(tier 级或项目级)默认的差异**,绝不重复父级已经说过的事。
 
+**Guidance Placement 门槛**:持久 + 明确 subtree + 与父级真实不同 + 反复推断有成本/风险,四项同时满足
+才创建。跨项目/跨 Provider 规则留根级;同一 runtime 多个 sibling 共用的差量优先 tier 级;产品语义、
+临时 feature 细节和 ADR 理由不进 AGENTS;能由 lint/hook/test 可靠判定的优先机械化。根文件较长本身
+不是迁移理由,只有确认 subtree 外没有消费者才能移动规则。
+
 **文件命名**:写 `<module>/AGENTS.md`(主)+ `<module>/CLAUDE.md`(1 行 `@AGENTS.md` alias),跟项目 / tier 级**双文件方案**一致(见 [§1.4](#14-agentsmd--claudemd-嵌套层次子级覆盖父级))。
 
 **父级是什么**(取决于项目结构):
@@ -756,7 +761,8 @@ P0 生成(`/project-init` / `/project-personalize`)Preview Gate 落盘**之前**
 
 **谁做**:由 P2 spec 阶段(plan.md 的"模块影响范围"节)驱动决定。**不是独立动作**。
 
-**校验**:模块 AGENTS.md 写完后,问 AI:"读这个模块的 AGENTS.md,有哪些信息是父级 AGENTS.md 已经说过的?"如果有重复,删。
+**校验**:模块 AGENTS.md 写完后,问 AI:"读这个模块的 AGENTS.md,有哪些信息是父级 AGENTS.md 已经说过的?"如果有重复,删。若项目采用 Claude 嵌套兼容,同目录 `CLAUDE.md` 必须严格是一行
+`@AGENTS.md`;它不是第二份规则源。
 
 ### 2.5 模块组织建议:领域优先,不要技术分层
 
@@ -794,7 +800,8 @@ project-workflow 对模块**长什么样**有 opinionated 偏好(不强制):
 1. **停**正在写的代码 —— 不要边迁移代码边重新认知边界
 2. **起 ADR**(`docs/adr/NNNN-<topic>.md`)记 module 边界调整决策 + 原因
 3. **重审 plan.md §1.1 Sibling Alignment** —— 这次往往"Codify"选项触发(把新发现的边界规则提升到 AGENTS.md / tier-level AGENTS.md)
-4. **若反常**(参见 [§2.3](#23-反常判定何时该写模块-agentsmd) 判定)→ 写 / 改对应 `<module>/AGENTS.md`(+ 1 行 `CLAUDE.md` alias)
+4. **做 Guidance Placement**:跨项目 → root;同 tier sibling 共享差量 → tier;真实模块反常 → module;
+   可机械判定 → lint/hook/test。记录精确落点、差量、来源和 alias 任务,不为普通模块建文件
 5. **改 spec.md "模块影响范围" 节** + 末尾"修订记录"加一行(走 [§3.5 修订 SOP](#35-开发中发现-specplan-错怎么办))
 6. **改 plan.md §1 模块影响范围**:列实际边界变更
 7. **回到实施**
@@ -817,9 +824,9 @@ project-workflow 对模块**长什么样**有 opinionated 偏好(不强制):
 ```
 [项目约定已建立]
    ├─ 无需持久 artifact → 直接实施并验证
-   └─ 需要追踪 → feature-init(no artifact / light / full)
+   └─ 需要追踪 → feature-init(Impact/Necessity + Scope Viability → no artifact / light / full)
           ├─ light → tasks + 验证
-          └─ full → 与用户补完 spec/plan/tasks → spec-quality-check
+          └─ full → 先关闭高影响未知项 → materialize/fill spec/plan/tasks → spec-quality-check
                          ↓
                       实施
              (契约真错才 spec-revise)
@@ -842,13 +849,20 @@ Artifact 写法和 7 问自检见 [`spec-driven.md`](spec-driven.md);运行时�
 
 ### 3.1 规划阶段
 
-规划阶段只做三件事:按 [`feature-init`](actions/feature-init.md) 判断是否需要 artifact 和 lane;确认整个 feature 是一个可独立验收、上线和回滚的交付结果;把 WHAT、HOW、STEPS 分别放进 spec、plan、tasks。多模块工作在 plan 做 Sibling Alignment,已定技术选择进入 Prior decisions。
+规划阶段由 [`feature-init`](actions/feature-init.md) 统一负责 Impact/Necessity Preflight、scope viability、
+DIRECT/LIGHT/FULL 和 Implementation Scope Stop。足以改变业务范围、所有权、授权、数据处置或发布
+方式的未知项先关闭,不先生成 speculative spec;普通实现细节可保留 TODO。需要 artifact 时再确认一个
+可独立验收和回退的交付结果,把 WHAT、HOW、STEPS 分别写进 spec、plan、tasks,并用 Delivery Shape
+Baseline 保存已接受边界。Prior decisions 只保存需要 why/source 的非显然选择、外部解释、冲突/
+bundled-risk 裁决和 supersede,不复制 spec。精确判定表只在 action 中维护。
 
 应用基础或架构设计不另起 action / lane / 保留 slug:它按普通 change 分类。建立或实质改变项目级 runtime tier、模块边界、数据/API 契约等架构,且确有持久 artifact 消费者时走 full lane;最小结构与第一个功能不可分时留在同一个 feature,只有架构决定本身会约束多个后续功能时才单独追踪。只有命中的 architecture-shaped change 条件读取 [`architecture-design.md`](architecture-design.md),把适用结论写回既有 spec/plan/tasks;普通 feature 与 `project-personalize` 跳过。多 tier 真正适用时才读取 §0.3 / §1.4 与 plugin 的 tier examples;单 tier 不生成 tier 文件。
 
-不要用 plan.md 代替 spec.md。spec.md 写“做什么、为什么”,plan.md 写“怎么做、影响哪些模块”。Full lane 填完后运行 [`spec-quality-check`](actions/spec-quality-check.md);本文不复制其判定表。
+不要用 plan.md 代替 spec.md。spec.md 写“做什么、为什么”,plan.md 写“怎么做、影响哪些模块”。Full
+lane 填完后运行 [`spec-quality-check`](actions/spec-quality-check.md);它统一拥有需求双向对账、质量问题、
+verdict 和状态转换规则,本文不复制其判定表。
 
-### 3.2 实现阶段:不要打断 AI 执行流
+### 3.2 实现阶段:机械细节不中断,方向漂移立即停
 
 | 角色 | 工作 |
 |---|---|
@@ -856,27 +870,36 @@ Artifact 写法和 7 问自检见 [`spec-driven.md`](spec-driven.md);运行时�
 | **AI** | 写代码 / 跑测试 / 跑 hook / 自纠 lint 错误 / 主动列开放问题 |
 | **环境(hook + LSP)** | 自动监督代码符合规范 |
 
-**关键纪律**:不要每个文件改完都看一眼。这是迭代成本爆炸的根源 —— 你打断了 AI 的执行流,人为引入"中途反思"。
+**关键纪律**:不要每个文件改完都看一眼,但也不要让 AI 把边界外工作一直做到 `feature-done` 才发现。
+普通必要细节在已接受 outcome/impact 内自行完成;方向可能变化时执行 Implementation Scope Stop。
 
 **什么时候应该打断 AI**:
 - 跑偏方向(本来改 backend,跑去改 frontend)
 - 陷入循环(同一个错改 3 次没好)
 - 要做的事超出 spec/plan 边界
+- 发现 Delivery Shape Baseline 未声明的新持久状态/API/角色/工作流/管理面/队列/runtime/Provider/
+  迁移/授权或发布边界
+- 发现第二个可独立验收 outcome、没有当前 consumer 的能力,或为了“完整”准备增加额外兼容层/管理能力
 
 **什么时候不该打断**:
 - "我看看它写的对不对" → 让它自己跑测试
 - "这个变量名不太好" → active hook/L1 或 PR review 阶段统一改
 - "这里我有个想法" → 记下来,等它跑完一段再说
 
-**底层逻辑**:中途打断触发"AI 重新解释 → 用户重新评估 → AI 再写"的循环,这是单轮迭代成本高的元凶。环境层(§6.3)接管了机械合规,你不需要中途盯;端点 review(§3.3)管 substantive 问题。
+Scope Stop 的精确分类和输出由 [`feature-init`](actions/feature-init.md) 维护:方向未决时停止扩展,
+同一已接受边界内的必要细节继续,保持契约的更简单实现直接删繁就简。测试服从同一最小充分原则:
+每个新增层、矩阵、fixture 或 case 必须覆盖不同实质风险或明确项目/发布要求;数量和结构对称不是质量
+信号。开发和交付验证的精确路由留给项目约定与 owning action。
+
+**底层逻辑**:机械细节上的中途打断会制造反复解释;方向漂移上的延迟打断会制造大量返工和冗余。
+环境层(§6.3)接管机械合规,Implementation Scope Stop 管方向,端点 review(§3.3)只是最后安全网。
 
 ### 3.3 交付阶段:delivery receipt
 
-`feature-done` 是端点组合点:L1、适用的 L2/L3、current-truth 判断和交付证据在这里汇合。结果以紧凑 delivery receipt 写入 `tasks.md` 末尾的 `## Proof Bundle`。
-
-Owning action 在 L1 后固定一次 review-cycle snapshot,统一提供权威 changed-path population、reviewer inputs 与 L1 evidence map;L2/L3 共用 snapshot,只做规则/实现/证据映射,不重跑 L1。reviewer 的完整 population 属于瞬时校验证据。Clean report 回传 `changed-path-count`、精确 applicable rule/spec IDs、`unverified-item-count=0` 与 `blocking-ambiguity-count=0`,但不重复完整 changed-path list 或 clean non-match/non-applicable counts;异常时再展开相关 path。永久 receipt 只保留 Git/non-Git identity、checks、执行方式、各层 verdict/baseline、非空 exceptions 与 current-truth 结论。压缩的是冗长路径输出和历史记录,不是 review 深度或适用条款的可核验性。
-
-稳定 commit receipt 证明历史交付快照曾通过 gate,不自动证明今天的产品现状;dirty-worktree receipt 只在原任务内有效。详细 schema、复查资格和 verdict 只由 [`feature-done`](actions/feature-done.md) 定义。
+`feature-done` 是端点组合点:低成本 completion preflight 先拦截未完成、混杂、实际范围越界或主流程
+失败;通过后再汇合 L1、适用 L2/L3、current-truth 和交付证据。完整 receipt 写入 `tasks.md` 的
+`## Proof Bundle`,端点只返回业务摘要和链接。Snapshot、证据复用、Git identity、复查资格和 verdict
+全部只由 [`feature-done`](actions/feature-done.md) 定义,本文不复制其 schema。
 
 > 团队 / 外部协作场景:可自行加 `.github/PULL_REQUEST_TEMPLATE.md`,内容同 5 项 —— 见 [§1.9](#19-平台协作默认不铺模板)。project-workflow 默认不预置。
 
@@ -886,15 +909,26 @@ Owning action 在 L1 后固定一次 review-cycle snapshot,统一提供权威 ch
 |---|---|
 | spec 起草 | 可选:开 GitHub Issue,标 label `feature`,描述放 outcomes 摘要 |
 | 实施开始 | git branch `feat/<NNN>-<slug>` |
-| 交付 | delivery receipt 写入 `tasks.md` 的 `## Proof Bundle`;PR 描述可原样复制 |
+| 交付 | 完整 delivery receipt 写入 `tasks.md` 的 `## Proof Bundle`;PR 描述使用同一业务摘要并链接该节,不复制逐条命令证据 |
 | review | PR 评论;reviewer agent 结果可贴到 PR |
 | 合并 | spec/plan/tasks 目录归档(不删),Issue 关闭引用 PR |
 
 ### 3.5 开发中发现 spec/plan 错怎么办
 
-实施已经依据 spec 开始后,发现 scope、outcome、constraint、verification、契约或模块边界本身错误时,先停实现并运行 [`spec-revise`](actions/spec-revise.md)。它负责 revision record、跨文件同步、范围可交付性复核和条件式 ADR。
+实施已经依据 spec 开始后,发现 scope、outcome、constraint、verification、契约或模块边界本身
+错误,或出现 Delivery Shape Baseline 未声明的新持久状态/API/角色/工作流/管理面/队列/runtime/
+Provider/迁移/授权/发布边界时,先停实现并分类 Scope Delta:`necessary-detail` 留在同一 outcome;
+`contract-correction` 运行 [`spec-revise`](actions/spec-revise.md);`separable-outcome` 拆 child;
+`speculative-capability` 删除或延期;`bundled-risk` 只有在具体 coupling 和用户明确接受后才能收编。
+已经写出的代码不构成收编理由。交付门禁曾 READY 但尚未归档、随后发现这类重大 artifact 遗漏时
+也走同一动作:保留旧收据为 superseded evidence,把 `已实现` 退回 `已确认`,补齐任务与验证后重新
+运行 `feature-done`。已归档 feature 不重写历史,另起 successor change。
 
-不改变契约的措辞澄清写入 plan prior decision;实现困难但契约仍正确时改代码,不要为了降低难度改 spec。不要偷偷修改冻结 spec、边改契约边改代码,或在交付时补写一份事后合理化记录。
+需要用户决定时先发一个紧凑 `Scope stop`,一次只问一个方向问题,等确认后再运行 `spec-revise`;
+不得在等待期间继续扩展同一 delta 或做会加深返工的同 feature 工作。`necessary-detail` 与保持契约的
+更简单实现不需要请示;后者直接删除多余工作。full lane 也必须遵守,它不是相邻能力的通行证。
+
+不改变契约的措辞澄清写入 plan prior decision;实现困难或实现回归但契约仍正确时修代码并显式重跑 `feature-done`,由它替换 delivery verdict 和处理状态回退,不要为此运行 `spec-revise`。不要偷偷修改冻结 spec、边改契约边改代码,或在交付时补写一份事后合理化记录。
 
 预防比修订便宜:full lane 实施前先跑 [`spec-driven.md §3.7`](spec-driven.md#37-specplan-写完后的质量自检7-问-checklist)。
 
@@ -1008,20 +1042,24 @@ P4 范围声明说"只动 AGENTS.md",但 AGENTS.md 有 3 层(项目/tier/模块)
 
 - **客观状态已变**:命令、依赖、目录、版本、配置或 tier 边界与约定不一致
 - **感知到 drift**:用户感觉"反复跟 AI 提醒同一件事 ≥ 2 次",或明确要求审计约定
+- **放置 drift**:根规则实际只服务一个 subtree、child 重复 parent、持久局部特例没有 owner、嵌套
+  alias 缺失/不再是一行、模块移动后 guidance 孤立,或 prompt 规则已有可靠机械门禁
 - **~~信号触发 hook~~**:🚫 **project-workflow 不实施** —— hook 自动检测 "记得 X" 重复并主动 nudge 跟 [§0.5 信念 1](#05-实现策略的核心信念)("消除对齐劳动")**相悖**(系统主动提示本身就是新对齐对话源),且模式识别误报率高。用户感知 drift → 走"主动 refresh" 即可
 
 ### 5.2 两种触发模式
 
 | 模式 | 触发 | 工具 |
 |---|---|---|
-| **A. 主动 refresh** | 用户感知到 drift / 发现客观不一致 / 大依赖升级后 | [`agents-md-revise`](actions/agents-md-revise.md) —— 扫客观 drift,在 consolidated preview 中标记 apply / skip / stop,一次批准后应用并生成 commit 草稿 |
-| **B. 端点反思**(顺手) | feature 完成时 | `feature-done` 只把可行动但未沉淀的约定写入 receipt 的可选 `Drift`;要持久修订时由用户调用 `agents-md-revise` |
+| **A. 主动 refresh** | 用户感知到 drift / 发现客观不一致 / 大依赖升级后 | [`agents-md-revise`](actions/agents-md-revise.md) —— 扫客观 drift + Guidance Placement,在 consolidated preview 中标记 keep/move/create/delete/mechanize 与 apply/skip/stop,一次批准后应用 |
+| **B. 端点反思**(顺手) | feature 完成时 | `feature-done` 阻断未兑现的显式 Codify;有证据但未选择的局部约定机会只写 receipt 可选 `Drift`,要持久修订时由用户调用 `agents-md-revise` |
 
 > 历史上还有 "模式 C 信号触发 hook" —— **project-workflow 不实施**,理由见 §5.1 注。
 
 ### 5.3 工具流程概览
 
-精确流程见 canonical [`agents-md-revise` action](actions/agents-md-revise.md):比较 A 类约定与客观仓库状态,只提出有证据的窄 patch;物质歧义先澄清,其余改动集中预览并经一次批准后应用。Runtime skill 只负责宿主执行细节。
+精确流程见 canonical [`agents-md-revise` action](actions/agents-md-revise.md):比较 A 类约定与客观仓库
+状态,检查 root/tier/module 放置、父子重复、一行 alias、孤立 guidance 和可机械化出口,只提出有证据的
+窄 patch;物质歧义先澄清,其余改动集中预览并经一次批准后应用。它不评价架构是否正确。
 
 ### 5.4 与平台流程的协作
 
@@ -1103,7 +1141,7 @@ AI 输出质量 ≈ AI 能力 × 输入清晰度。AI 能力是常量(模型版�
 | 跨模块 / 跨职责边界 OR 数据模型 OR API/schema 契约 OR 迁移 / 权限 / 安全 / 不变量路径 | 必写 spec(`docs/specs/changes/<NNN>-<slug>/spec.md`)|
 | 六要素分布 | spec.md = Outcomes / Scope / Constraints / Verification;plan.md = Prior decisions / 模块影响 / 架构 / 风险 |
 | Scope 必写"不做" | 不写"不做",AI 会自动加 → scope creep 最大单一来源 |
-| Prior decisions 当场写回 | 每次跟 AI 讨论中作出的决策,立刻追加到 plan.md §3,带原因(关闭重复讨论) |
+| Prior decisions 当场写回 | 每次跟 AI 讨论中作出的重要决定,立刻追加到 plan.md §3,带原因和稳定来源;supersede 关系明确写出(关闭重复讨论并支持跨会话需求对账) |
 | 涉及多模块时做 Sibling Alignment | plan.md §1.1 对每个"同型决策" 3 选 1:Align / Deviate / Codify(spec 阶段截住空间漂移)|
 
 #### 失效情形(Boundary Conditions)

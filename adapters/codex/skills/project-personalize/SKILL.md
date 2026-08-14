@@ -13,6 +13,11 @@ Match the user's language and preserve file language. Read [`../../../../docs/ac
 - Read [`../../../../docs/actions/project-personalize-reference.md`](../../../../docs/actions/project-personalize-reference.md) only when repository evidence or a user decision makes one section relevant. It supplies examples, never defaults.
 - Preserve host-private rules/hooks unless explicitly selected. Do not copy host-private rules/hooks/tier examples by default.
 - Do not run architecture-design conversational fill here. Report relevant repository and accepted-decision evidence, and route material architecture changes to `$feature-init`.
+- When structure/guidance scope is selected, run the canonical bounded Guidance Placement survey. Propose
+  nested guidance only for a durable clear-subtree difference that is costly/unsafe to infer and not product,
+  temporary, inherited, or better enforced mechanically. Prefer tier over duplicate module files; require
+  evidence before moving a root rule; use exactly `@AGENTS.md` in an adopted nested Claude alias. Include all
+  proposed create/move/delete paths in the consolidated approval; never create files for symmetry.
 - Show one consolidated diff/new-file list and use Codex-native approval before the single preflighted apply. Conflict, symlink, rejection, or blocking audit leaves the target unchanged.
 - Do not rewrite feature history or commit.
 

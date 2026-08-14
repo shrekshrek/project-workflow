@@ -19,7 +19,7 @@
 - Verdict:
 - Change:`git=[base=<commit SHA>; reviewed=<commit SHA>; dirty=no]` or `git=[base=<commit SHA>; reviewed=worktree; dirty=yes]`; `endpoint-outputs=[tasks.md receipt]`
 - Checks / 轻车道验证 / 不变量反核:
-- Review execution:`L2=N/A(low-risk light lane; no L2 trigger after convention-scope triage)|not-run(L1 prerequisite when otherwise applicable); L3=N/A(light lane)`
-- L2:`N/A(low-risk light lane; no L2 trigger after convention-scope triage)` or `not-run(L1 prerequisite)`
-- L3:`N/A(light lane); verification=[item#id: PASS|FAIL]`
+- Review execution:`L2=N/A(low-risk light lane; no L2 trigger after convention-scope triage)|not-run(completion preflight)|not-run(L1 prerequisite when otherwise applicable); L3=N/A(light lane)|not-run(completion preflight)`
+- L2:`N/A(low-risk light lane; no L2 trigger after convention-scope triage)` or `not-run(completion preflight)` or `not-run(L1 prerequisite)`
+- L3:`N/A(light lane); verification=[item#id: PASS|FAIL]` or `not-run(completion preflight)`
 - Current truth:

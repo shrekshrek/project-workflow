@@ -44,7 +44,7 @@ adapters/claude/skills/
 adapters/claude/agents/ Claude Code sub-agent adapters(thin wrappers over docs/reviewers/)
 ├── agents-md-reviewer.md            L2 AGENTS.md 合规 review(by /feature-done L2 层)
 ├── spec-reviewer.md                 L3 spec.md 合规 review(by /feature-done L3 层)
-├── spec-quality-reviewer.md         spec 自身质量主观二审(by /spec-quality-check)
+├── spec-quality-reviewer.md         需求对账 + spec 质量与条件式架构充分性复核(by /spec-quality-check)
 ├── tech-researcher.md               技术选型调研(by /project-personalize;spec 填写时仅作可选研究,不为覆盖率强制调用)
 ├── codebase-explorer.md             非平凡 codebase 结构扫描(by /project-personalize 按需调用)
 └── decision-completeness-auditor.md plant 决策追溯审计(by /project-personalize / /feature-init / /spec-revise / /agents-md-revise,Preview Gate 之前)— 实施 workflow.md §1.12

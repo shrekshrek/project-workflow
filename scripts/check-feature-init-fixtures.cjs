@@ -140,13 +140,17 @@ function gradeScenario(name, config, runDir) {
 }
 
 function validateFixtures() {
-  for (const scenario of [
-    "scope-viability-implicit-ask",
-    "scope-viability-coupled-migration",
-    "scope-viability-cross-module-vertical",
-  ]) {
-    if (!expected[scenario]) problems.push(`missing required Scope Viability scenario ${scenario}`);
-  }
+ for (const scenario of [
+   "scope-viability-implicit-ask",
+   "scope-viability-coupled-migration",
+   "scope-viability-cross-module-vertical",
+    "impact-unknown-data-disposition-ask",
+    "scope-necessity-speculative-admin-ask",
+    "impact-large-coupled-cutover",
+    "scope-split-provider-rollout-ask",
+ ]) {
+    if (!expected[scenario]) problems.push(`missing required scope/impact scenario ${scenario}`);
+ }
 
   const checkedNumberingBases = new Set();
   for (const [name, config] of Object.entries(expected)) {

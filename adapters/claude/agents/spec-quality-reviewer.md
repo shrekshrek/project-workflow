@@ -1,6 +1,6 @@
 ---
 name: spec-quality-reviewer
-description: Claude Code adapter for subjective pre-implementation spec quality review. Reads docs/reviewers/spec-quality-reviewer.md as the canonical reviewer spec, then assesses Q3/Q4/Q5/Q7 quality for spec.md, plan.md, and tasks.md. Does not review code-vs-spec compliance.
+description: Claude Code adapter for pre-implementation Requirements Reconciliation and Q3-Q7 artifact quality, including bounded architecture adequacy inside Q5/Q7c/Q7d when the accepted delivery shape has a real architecture boundary signal. Reads docs/reviewers/spec-quality-reviewer.md and does not review code-vs-spec compliance.
 tools: Read, Grep, Glob, Bash
 ---
 

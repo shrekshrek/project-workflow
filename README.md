@@ -38,7 +38,7 @@ See [`docs/cross-tool-methodology.md`](docs/cross-tool-methodology.md).
 | Set up a project without guessing | Use `project-init` when the neutral baseline can be added without conflict or personalization; use `project-personalize` when project evidence or a partial/custom baseline must shape the agreement |
 | Start a feature without losing requirements in chat | Tracked `spec.md` / `plan.md` / `tasks.md` |
 | Keep implementation aligned while coding | spec revise SOP, module-boundary handling, environment-enforced rules |
-| Know whether a feature is ready | L1 + applicable L2/L3 review + delivery receipt |
+| Know whether a feature is ready | Completion preflight + proportionate L1 + applicable L2/L3 + delivery receipt |
 | Keep the codebase from drifting over months | `agents-md-revise` refresh of project conventions |
 
 The intended outcome is practical: fewer repeated reminders, fewer unreviewed AI changes, clearer handoff artifacts, and project rules that stay close to the codebase as it evolves.
@@ -114,7 +114,7 @@ codex plugin add project-workflow@project-workflow
 
 Start a new Codex task after installing or updating so the refreshed skills are loaded.
 
-Before archiving, rerun `feature-done` for an older `## Proof Bundle` that either lacks `Verdict:` or has READY but lacks the current `git=[...]` / non-Git `inputs=[...]` identity, including the earlier `review-scope` / `base/worktree` schema. `feature-archive` sweep lists these as receipt-schema migration candidates and never infers READY from legacy fields.
+Before archiving, rerun `feature-done` for an older `## Proof Bundle` that either lacks `Verdict:` or has READY but lacks the current `git=[base=...; reviewed=...; dirty=...]` / non-Git `inputs=[...]` identity, including the earlier `review-scope` or prose `base/worktree` schema. `feature-archive` lists these as receipt-schema migration candidates and never infers READY from incomplete legacy fields.
 
 <details>
 <summary>Local development install (repo contributors only)</summary>
@@ -196,10 +196,10 @@ Most work does **not** use all nine actions. Initialize once, then use the daily
 | Frequency | Action | Purpose |
 |---|---|---|
 | Once, baseline-compatible target | `project-init` | Create the neutral six-file project baseline without disturbing incidental content. |
-| Once, project evidence or partial/custom baseline exists | `project-personalize` | Establish or adapt the evidence-backed project agreement. |
-| Per proposed change | `feature-init` | Return DIRECT, LIGHT tasks-only, or FULL spec/plan/tasks with a concrete reason. Explicit routing questions use read-only PREVIEW; only authorized LIGHT/FULL APPLY creates an artifact, while DIRECT creates nothing and an enclosing implementation request continues. Local, reversible, contract-free behavior work can proceed directly when current truth does not declare it, it fits the current task, and no durable artifact has a consumer. |
-| Full lane only | `spec-quality-check` | Check the collaboratively completed draft before implementation. |
-| End of tracked change | `feature-done` | Run L1, applicable L2/L3, current-truth check, and write one Git-native compact delivery receipt. |
+| Once, project evidence or partial/custom baseline exists | `project-personalize` | Establish or adapt the evidence-backed project agreement; when structure/guidance scope is selected, propose evidence-backed root/tier/module placement without creating files for symmetry. |
+| Per proposed change | `feature-init` | Assess impact and uncertainty, then choose DIRECT, LIGHT, or FULL. Material unknowns pause before artifact creation; undeclared direction changes pause during implementation. |
+| Full lane only | `spec-quality-check` | Reconcile accepted requirements and gate the completed artifact before implementation. |
+| End of tracked change | `feature-done` | Validate the actual delivery, run proportionate L1 and applicable L2/L3, and write one compact receipt. |
 | Periodic sweep | `feature-archive` | Merge pending current truth and move delivered changes out of the active tree. |
 
 Choose lifecycle ordering by archive timing. For immediate closure, run `feature-done` on the current worktree, then `feature-archive` in the same task before committing. For a deferred sweep, first create the implementation commit (or capture the exact commit SHA at the PR head), run `feature-done` against that immutable SHA, and commit its receipt/status outputs. The stable receipt remains historical delivery evidence when the branch later advances; `feature-archive` separately validates pending current-truth facts against the present state. A dirty-worktree receipt is never made reusable merely by committing it later.
@@ -208,9 +208,13 @@ Exception and maintenance actions appear only when their condition exists:
 
 | Condition | Action |
 |---|---|
-| A confirmed contract becomes materially wrong during implementation | `spec-revise` |
+| A confirmed contract becomes materially wrong during implementation, or a delivered-but-unarchived contract/plan/Verification must reopen | `spec-revise` |
 | Historical active specs contradict each other | `spec-reconcile` |
-| Objective project state drifts from `AGENTS.md` or explicitly selected host-specific convention files | `agents-md-revise` |
+| Objective project state or root/tier/module guidance placement drifts from `AGENTS.md` or explicitly selected host-specific convention files | `agents-md-revise` |
+
+Exact rule ownership and architecture-risk routing are defined once in the
+[`docs/actions` index](docs/actions/README.md). The overview and quickstart summarize that contract; they do
+not add gates, reviewers, artifacts, or trigger conditions.
 
 > Reusable templates (feature/domain/ADR) are plugin-canonical and are not retained in generated projects. Actions instantiate only concrete artifacts when needed. To customize, fork the plugin and edit `template/`.
 >

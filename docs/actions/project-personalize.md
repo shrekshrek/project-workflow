@@ -25,6 +25,10 @@ Use [`project-init`](project-init.md) when all six baseline destinations are abs
 - Updated host-specific convention files when they already exist or the user explicitly chooses them; for example, Claude may use `.claude/rules/`.
 - Existing hook adapter preserved unless the user approves a repair; a new hook adapter is generated only for an `active + verified` command, otherwise report `not installed + reason`.
 - Added or repaired tier-level `AGENTS.md` and one-line `CLAUDE.md` aliases when relevant.
+- A guidance-placement report when repository evidence shows root rules that are actually path-local, a
+  durable tier/module exception without local guidance, duplicated parent/child guidance, a missing or
+  malformed one-line `CLAUDE.md` alias, or guidance whose directory no longer exists. Report `none` only
+  when this scope was selected and no candidate exists; do not create empty nested guidance.
 - Removed stale scaffold placeholders/defaults.
 - Compact summary of values changed, deferred items, and exceptions requiring human review. Do not restate unchanged evidence or expand an ordinary successful role execution beyond its required one-line evidence.
 
@@ -35,6 +39,13 @@ Use [`project-init`](project-init.md) when all six baseline destinations are abs
 3. Present only applicable scopes: create/complete the minimum working agreement, replace demonstrably stale scaffold values, repair real tier guidance, survey structure, or explicitly selected host-private rules/hooks.
 4. For a missing baseline, stage the neutral six-file template with `scripts/materialize-project-baseline.cjs`; do not write the target yet.
 5. Use the codebase-explorer methodology only for a nontrivial or unclear structure survey. When observed project content shows multiple durable runtime tiers and the user selects tier-level guidance, read the conditional [`_multi_tier_examples`](../../template/_multi_tier_examples/README.md) reference before drafting it. When a material stack, library, or tool choice remains unresolved and current external evidence would change the result, run the tech-researcher methodology, present 2-3 suitable candidates and one recommendation, and let the user make the final choice. Derive commands, their actual scope/trigger, source/test paths, project-specific rules, and tier ownership from repository evidence; ask only for material gaps. A command being available does not make it mandatory for every feature.
+   When structure/guidance scope is selected, perform a bounded guidance-placement survey. A nested
+   `AGENTS.md` candidate must be a durable rule for a clear existing or intentionally planned subtree,
+   differ materially from its parent, be costly or unsafe to infer repeatedly, and be neither temporary
+   feature/product behavior nor better enforced mechanically. Keep cross-project and cross-Provider rules
+   at the root. Prefer one tier file over many module files when siblings share the rule; create a module
+   file only for a real exception. A selected nested `CLAUDE.md` contains exactly `@AGENTS.md` plus a newline.
+   Findings propose narrow moves/creation/deletion; they do not establish that the architecture itself is good.
 6. Validate selected host-private rules and hooks only when they already exist or the user chose them. Never copy optional assets by default.
 7. Run an inline trace for repository- or user-sourced synchronization and the decision-completeness auditor only for unconfirmed high-impact choices, ADRs, or conflicting/weak evidence.
 8. Preflight unchanged baselines and staged destinations, show one consolidated diff/new-file list, and apply once after approval. Normalize an existing target-root symlink to its real directory, but reject symlinked destination components and an absent target below a symlinked ancestor. Conflicts, rejection, or a blocking audit leave the target unchanged.
@@ -55,6 +66,9 @@ Every applicable explorer, researcher, or auditor boundary follows the canonical
 - Align observed structure and conventions with repository evidence, explicit user decisions, and accepted specs/ADRs when present. Do not claim that an architecture is suitable without goals and quality constraints, and do not redesign it inside this action; route a material architecture change to the ordinary full lane in [`feature-init`](feature-init.md).
 - Architecture-design conversational fill is out of scope. Report the relevant repository and accepted-decision evidence for a material architecture change so `feature-init` can consume it; do not load the architecture guide or make foundation decisions here.
 - `AGENTS.md` remains concise; put tier-specific guidance in tier files.
+- Nested guidance follows the difference-only rule: never repeat inherited parent text, never create a file
+  solely because a directory is named module/tier, and never move a root rule whose consumers cross the
+  proposed subtree.
 - Do not leave an existing scaffold's commands and source/test paths deferred when objective repository evidence resolves them. Do not invent style, Git, coverage, deployment, or tier policies that the repository and user do not establish.
 - Do not introduce a missing test layer, matrix, coverage gate, or release suite for completeness. Preserve an existing matrix only with its observed command and purpose; add a new one only after the user explicitly selects it for concrete interacting risks or a release/compliance contract.
 - When the selected host uses path-scoped convention files, their path patterns must match existing or intentionally planned paths. Do not translate one host's private files into another host's runtime format unless the user explicitly requests a migration.
