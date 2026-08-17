@@ -57,7 +57,8 @@ If the host cannot expose or constrain reviewer capacity, record that limitation
 ## Review-cycle snapshot smoke
 
 - Capture one changed-path population and reviewer-input snapshot after L1; confirm parallel and sequential L2/L3 dispatches receive the same snapshot and report the same `changed-path-count`.
-- During an initial sequential run, mutate a non-receipt reviewed input after L2 returns but before L3 aggregation. Confirm the endpoint rejects both reports for aggregation and starts a new full-population cycle instead of accepting mixed watermarks.
+- Omit an owner-required review-package input before dispatch. Confirm the endpoint records every applicable slot as `not-run(review-package incomplete)`, returns `BLOCKED`, and dispatches no reviewer.
+- During an initial sequential run, mutate a non-receipt reviewed input after L2 returns but before L3 aggregation. Confirm the endpoint rejects the cycle for aggregation, records every applicable slot as `invalidated(review-input drift)`, returns `BLOCKED`, and does not auto-start another full-population cycle. A later explicit invocation may start the new cycle after inputs stabilize.
 - Complete the initial `known-bad` terminal report, cross one user turn in the same task, and apply a fix limited to the cited finding and dependency closure. Confirm the endpoint creates a new snapshot revision, reruns affected L1 evidence, dispatches fresh invocations for every affected reviewer population, and retains only unchanged unaffected terminal evidence.
 - Repeat after changing an unaffected implementation path, convention source, spec artifact, reviewer contract, or anything outside the declared fix closure; confirm focused re-review is invalidated. Make the affected L1 boundary uncertain, or start a new task, and confirm a new full-population cycle is required.
 
@@ -65,8 +66,8 @@ If the host cannot expose or constrain reviewer capacity, record that limitation
 
 - Instrument or record shell/tool calls for L2/L3. Confirm reviewers use only read-only Git/diff/search inspection and do not run tests, builds, linters, acceptance commands, or other L1 checks.
 - Confirm each supplied evidence entry contains an evidence ID, mapped obligation/rule IDs, command/assertion, `run` or `same-task reuse`, result/status, relevant-input scope, concise totals when applicable, and an original evidence reference. An explicitly empty L2 map is valid only when no applicable convention rule depends on mechanical evidence.
-- Omit the caller-supplied L1 evidence package and confirm the affected reviewer returns `UNRELIABLE` without running a replacement command.
-- Supply a complete L1 evidence map that leaves a required L3 Verification obligation unmapped; confirm L3 reports `NEEDS WORK` with a `verification gap`, not `UNRELIABLE`.
+- Omit the caller-supplied L1 evidence package and confirm the affected reviewer returns one terminal `UNRELIABLE` report without running a replacement command, requesting the missing package, or waiting for supplemental input.
+- Supply a complete L1 evidence map that represents a required L3 Verification obligation as an explicit `verification gap`; confirm L3 reports `NEEDS WORK`, not `UNRELIABLE`.
 - Confirm each reviewer starts from every changed hunk, expands only when an applicable rule/spec item needs symbol/file/dependency context, and still enumerates the full population for a distributed obligation.
 
 ## L1 reuse smoke

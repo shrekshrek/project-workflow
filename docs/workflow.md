@@ -1293,7 +1293,7 @@ LLM 的 attention 是 quadratic 或 sub-linear cost over context length。当 co
 | L2 | reviewer agent + AGENTS.md 作 context | 端点(P3 proof bundle) |
 | L3 | reviewer agent + spec.md 作 context + 测试 | 端点(P3 proof bundle) |
 
-**组合在端点 action**:`feature-done` 是唯一端点组合点。先完成所有必要且可独立执行的 L1;必要 L1 通过后固定一次 review-cycle snapshot,适用的 L2/L3 使用同一 changed-path population 和 L1 evidence map 独立执行。full lane 的 L2/L3 在容量允许时并行 fresh dispatch,容量不足时顺序执行,聚合前重新核对 snapshot 未漂移。必要 L1 失败或不可可靠运行时不启动新的 L2/L3,但仍完成 current-truth 与 receipt。同一任务可跨用户回合保留未漂移的 cycle 证据做 focused re-review;跨任务或证据/输入漂移时重开完整 cycle,不设第二套 helper 命令。
+**组合在端点 action**:`feature-done` 是唯一端点组合点。先完成所有必要且可独立执行的 L1;必要 L1 通过后固定一次 review-cycle snapshot,自检完整 owner-supplied review package 后,适用的 L2/L3 使用同一 changed-path population 和 L1 evidence map 独立执行。full lane 的 L2/L3 在容量允许时并行 fresh dispatch,容量不足时顺序执行,聚合前重新核对 snapshot 未漂移。必要 L1 失败或 package 不完整时不启动新的 L2/L3,但仍完成 current-truth 与 receipt。reviewer 发现必要输入缺失时按 canonical role 的失败形式终止(L2/L3 为 terminal `UNRELIABLE`),不在 active invocation 中追问补件。dispatch 后输入漂移则本次 endpoint `BLOCKED`,不自动重开 cycle;输入稳定后的显式新调用才重开完整 cycle。同一任务可跨用户回合保留未漂移的 cycle 证据做 focused re-review;跨任务时重开完整 cycle,不设第二套 helper 命令。
 
 #### L2 / L3 Reviewer 承诺
 

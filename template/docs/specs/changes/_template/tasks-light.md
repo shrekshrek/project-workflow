@@ -27,8 +27,8 @@
 - Verdict:
 - Change:`git=[base=<commit SHA>; reviewed=<commit SHA>; dirty=no]` 或 `git=[base=<commit SHA>; reviewed=worktree; dirty=yes]` (非 Git:`inputs=[explicit reviewed paths]`); `endpoint-outputs=[tasks.md receipt]`
 - Checks / 轻车道验证 / 不变量反核:`<去重后的 command/assertion + 覆盖的验证项 + mode=run|same-task reuse + result + reused evidence reference when applicable>`
-- Review execution:`L2=<reviewer; mode=fresh-subagent|result-reuse|main-session fallback; status; fallback-reason=none|exact reason>|N/A(low-risk light lane; no L2 trigger after convention-scope triage)|not-run(completion preflight)|not-run(L1 prerequisite when otherwise applicable); L3=N/A(light lane)|not-run(completion preflight)`
-- L2:`verdict + baseline; add findings/unverified/ambiguities only when non-empty` 或 `N/A(low-risk light lane; no L2 trigger after convention-scope triage)` 或 `not-run(completion preflight)` 或 `not-run(L1 prerequisite)`
+- Review execution:`L2=<state=completed|N/A(low-risk light lane; no L2 trigger after convention-scope triage)|not-run(completion preflight)|not-run(L1 prerequisite when otherwise applicable)|not-run(review-package incomplete)|invalidated(review-input drift); reviewer/mode/completion/fallback-reason when dispatched>; L3=<state=N/A(light lane)|not-run(completion preflight)>`
+- L2:`verdict + baseline; add findings/unverified/ambiguities only when non-empty` 或 `N/A(low-risk light lane; no L2 trigger after convention-scope triage)` 或 `not-run(completion preflight)` 或 `not-run(L1 prerequisite)` 或 `not-run(review-package incomplete)` 或 `invalidated(review-input drift)`
 - L3:`N/A(light lane); verification=[item#id: PASS|FAIL]` 或 `not-run(completion preflight)`
 - Current truth:
 - Open questions:(仅非空时保留)

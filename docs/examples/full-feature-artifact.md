@@ -157,8 +157,8 @@
 - Verdict:
 - Change:`git=[base=<commit SHA>; reviewed=<commit SHA>; dirty=no]` 或 `git=[base=<commit SHA>; reviewed=worktree; dirty=yes]`; `endpoint-outputs=[tasks receipt, READY status]`
 - Checks:`<command; mode=run|same-task reuse; result; totals; reused evidence reference when applicable>`
-- Review execution:`L2=<reviewer; mode=fresh-subagent|result-reuse|main-session fallback; status; fallback-reason>|not-run(completion preflight)|not-run(L1 prerequisite); L3=<same shape>`
-- L2:`verdict; baseline=[AGENTS.md + applicable convention paths]; add non-empty exceptions only` 或 `not-run(completion preflight)` 或 `not-run(L1 prerequisite)`
-- L3:`verdict; baseline=[spec.md + applicable sections]; add non-empty exceptions only` 或 `not-run(completion preflight)` 或 `not-run(L1 prerequisite)`
+- Review execution:`L2=<state=completed|not-run(completion preflight)|not-run(L1 prerequisite)|not-run(review-package incomplete)|invalidated(review-input drift); reviewer/mode/completion/fallback-reason when dispatched>; L3=<same shape>`
+- L2:`verdict; baseline=[AGENTS.md + applicable convention paths]; add non-empty exceptions only` 或 `not-run(completion preflight)` 或 `not-run(L1 prerequisite)` 或 `not-run(review-package incomplete)` 或 `invalidated(review-input drift)`
+- L3:`verdict; baseline=[spec.md + applicable sections]; add non-empty exceptions only` 或 `not-run(completion preflight)` 或 `not-run(L1 prerequisite)` 或 `not-run(review-package incomplete)` 或 `invalidated(review-input drift)`
 - Current truth:
 ```

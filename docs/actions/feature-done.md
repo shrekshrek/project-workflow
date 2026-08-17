@@ -118,13 +118,21 @@ every reviewer dispatched for that revision; reviewers independently enumerate o
 populations. Inability to assess a supplied path or required evidence returns `UNRELIABLE`. Reviewers consume
 the L1 evidence map and must not rerun, substitute, or expand L1 commands.
 
+Validate the complete owner-supplied review package before dispatch: reviewed identity, authoritative changed-path
+population, L1 evidence entries and mappings, applicable L2 convention sources, and applicable L3 artifact plus
+one representation for every Verification obligation. Each L3 obligation must have either an evidence mapping or
+an explicit `verification gap`; this owner check validates package structure, presence, and readability, not the
+mapped result. A missing, unreadable, or unrepresented required item returns `BLOCKED` without dispatching a
+reviewer to discover or repair it; record every applicable review slot as
+`not-run(review-package incomplete)`.
+
 Resolve the L2 convention-source paths from the full authoritative changed-path population, not from one
 representative file: for each path, collect root `AGENTS.md` and every ancestor tier/module `AGENTS.md` through
 the nearest nested source, then union the chains. Keep the transient path-to-source applicability map in the
 review-cycle snapshot so L2 can independently verify completeness and root-to-nearest inheritance; do not
 include unrelated sibling guidance or persist this map in the delivery receipt.
 
-The L1 evidence map is a structured transient package, not a prose summary. Each evidence entry records an evidence ID, mapped obligation or convention-rule IDs, command or assertion, execution mode (`run` or `same-task reuse`), result/status, relevant-input scope, concise totals when applicable, and the original execution-evidence reference. The L2 package may be explicitly empty when no applicable convention rule depends on mechanical evidence. For L3, every Verification obligation must map to an evidence entry or remain an explicit `verification gap`; a complete package with an unmapped or failed obligation is a finding, while a missing or unreadable required package is `UNRELIABLE`.
+The L1 evidence map is a structured transient package, not a prose summary. Each evidence entry records an evidence ID, mapped obligation or convention-rule IDs, command or assertion, execution mode (`run` or `same-task reuse`), result/status, relevant-input scope, concise totals when applicable, and the original execution-evidence reference. The L2 package may be explicitly empty when no applicable convention rule depends on mechanical evidence. For L3, every Verification obligation must map to an evidence entry or remain an explicit `verification gap`; an explicit gap or failed mapped evidence is a finding, while a package that becomes missing or unreadable after owner validation is `UNRELIABLE`.
 
 When capacity permits, dispatch L2 and L3 in parallel. Otherwise use sequential fresh dispatch.
 Capacity for fewer simultaneous reviewers is not a fallback condition while sequential dispatch remains
@@ -132,7 +140,10 @@ available. L2/L3 record their existing population fields independently. After bo
 initial terminal reports return or fail, revalidate the current reviewed inputs against the transient snapshot
 before initial aggregation. Endpoint-owned receipt/status writes remain the only allowed difference during
 this dispatch-to-aggregation window; any other material path, content, convention source,
-spec/artifact, L1-evidence, or contract drift invalidates the cycle and requires a new full-population cycle.
+spec/artifact, L1-evidence, or contract drift invalidates the cycle. Stop the current invocation with `BLOCKED`
+and record every applicable review slot as `invalidated(review-input drift)`; never auto-start another full-population
+cycle inside the same invocation. A later explicit `feature-done` invocation creates the required new cycle after
+the worktree and review package are stable.
 The snapshot is transient validation evidence: do not persist its path list or a population/content hash in
 the receipt.
 
@@ -147,12 +158,14 @@ Persist only fields with a downstream consumer:
 - `Verdict`: READY / NEEDS WORK / BLOCKED.
 - `Change`: in Git, write `git=[base=<commit SHA>; reviewed=<commit SHA>; dirty=no]` for an immutable reviewed state, or `git=[base=<commit SHA>; reviewed=worktree; dirty=yes]` for the current dirty worktree. Other reviewed/dirty pairings are invalid. Also record endpoint-owned output paths (`tasks.md` receipt and READY status marker when written). Capture `base`, `reviewed`, and `dirty` before writing those endpoint-owned outputs; the receipt/status edits do not change the recorded dirty status. `base` is the actual left side of the reviewed diff: use an explicit PR base or target-branch merge base for committed branch work, and use `HEAD` only when all reviewed work is uncommitted. An ambiguous repository, base, or feature boundary blocks a reliable verdict. Derive changed paths from Git; do not copy a manual population or persist a population hash. Outside Git, record the explicit reviewed input paths.
 - `Checks`: commands, execution mode (`run` or `same-task reuse`), exit status, and concise test totals. A reused check must retain or reference its original same-task result and must not be presented as newly executed.
-- `Review execution`: for each L2/L3 slot, record the reviewer identifier, execution
-  mode (`fresh-subagent`, `result-reuse`, or `main-session fallback`), completion status, and fallback reason
-  or `none` when applicable; otherwise record the allowed `N/A` reason, `not-run(completion preflight)`, or
-  `not-run(L1 prerequisite)`. `result-reuse` must retain or reference the original execution evidence.
-- `L2` / `L3` for full lane: persist verdict and baseline for every valid reviewer result; add findings, applicable-but-unverified identifiers, or ambiguities only when non-empty. When preflight or L1 prevents a new dispatch and no valid same-task result exists, record the matching `not-run(...)` reason instead of verdict and baseline. A PASS never persists applicable IDs or populations, including inside baseline; those remain transient validation evidence.
-- `L2` / `L3` for light lane: record the L2 verdict and baseline when applicable, adding only non-empty exceptions; record the matching `not-run(...)` reason when preflight or L1 suppresses applicable L2 and no valid same-task result exists; otherwise record the allowed `N/A` reason. Record `L3=N/A(light lane)` plus every verification item and result after preflight passes; a preflight stop records `L3=not-run(completion preflight)`.
+- `Review execution`: for each L2/L3 slot, record exactly one state: `completed`, an allowed `N/A` reason,
+  `not-run(completion preflight)`, `not-run(L1 prerequisite)`, `not-run(review-package incomplete)`, or
+  `invalidated(review-input drift)`. When a reviewer was dispatched, also record its identifier, execution mode
+  (`fresh-subagent`, `result-reuse`, or `main-session fallback`), completion status, and fallback reason or `none`;
+  an invalidated dispatched result retains those execution details. `result-reuse` must retain or reference the
+  original execution evidence.
+- `L2` / `L3` for full lane: persist verdict and baseline for every valid reviewer result; add findings, applicable-but-unverified identifiers, or ambiguities only when non-empty. Without a valid result, record the slot's exact `not-run(...)` or `invalidated(review-input drift)` state instead of verdict and baseline. A PASS never persists applicable IDs or populations, including inside baseline; those remain transient validation evidence.
+- `L2` / `L3` for light lane: record the L2 verdict and baseline when applicable, adding only non-empty exceptions; without a valid applicable L2 result, record its exact `not-run(...)` or `invalidated(review-input drift)` state; otherwise record the allowed `N/A` reason. Record `L3=N/A(light lane)` plus every verification item and result after preflight passes; a preflight stop records `L3=not-run(completion preflight)`.
 - `Current truth`: no relevant domain doc / aligned / update pending / area unresolved. Use `area unresolved` only for durable behavior whose ownership is genuinely unknown.
 - `Open questions`: only unresolved items that affect handoff or release; omit when empty.
 - `Drift`: only actionable project-convention suggestions already produced by L2; omit when empty. Persist it
@@ -166,7 +179,7 @@ contain the Git/non-Git review identity, endpoint outputs, reviewer execution, v
 baselines, relevant exceptions, and current truth.
 
 Return a concise human-facing delivery summary containing: verdict; primary-flow result; aggregate check
-result; L2/L3 result or N/A/not-run; current-truth state; `Lifecycle: READY; archive pending` when READY;
+result; L2/L3 result or N/A/not-run/invalidated; current-truth state; `Lifecycle: READY; archive pending` when READY;
 blocking findings when non-empty; and the repository-relative `tasks.md#proof-bundle` path.
 Do not inline the full receipt or repeat individual passing commands in the
 endpoint response.
@@ -182,7 +195,9 @@ Run completion preflight first. Only after it passes, run all independently exec
 - Verdict contract: failed required checks or blocking L2/L3/light-verification/current-truth findings = `NEEDS WORK`; missing required inputs or an environment that prevents required checks from running reliably = `BLOCKED`; after L1 passes, missing applicable reviewer evidence also = `BLOCKED`; evidence-backed required gates with only explicit nonblocking advisories = `READY`.
 - `READY`: L1 passes, applicable L2/L3 are evidence-backed PASS or an allowed explicit `N/A`, light-lane verification passes when applicable, no blocking current-truth issue remains, and the delivery receipt is complete. Explicitly nonblocking advisories are allowed.
 - `NEEDS WORK`: blocking or fixable findings remain.
-- `BLOCKED`: required context/spec is missing, required checks cannot run for an environmental/input reason, or applicable required reviewer-dispatch/execution evidence is missing in a way that prevents a reliable verdict.
+- `BLOCKED`: required context/spec is missing, required checks cannot run for an environmental/input reason,
+  the owner-supplied review package is incomplete, reviewed inputs drift after dispatch, or applicable required
+  reviewer-dispatch/execution evidence is missing in a way that prevents a reliable verdict.
 
 `READY` means the implementation passes checks against the feature artifact. It does not mean the feature is closed: every delivered feature is eventually moved to `docs/specs/changes/archive/` by [`feature-archive`](feature-archive.md) (its sweep mode makes this a cheap periodic batch, not a per-feature ceremony). If the current-truth check reported "update pending", the delivery receipt must say so explicitly and archiving that feature must include the current-truth merge — a READY feature with a pending merge is not silently complete.
 
@@ -207,5 +222,7 @@ L2/L3/Drift finding counts live in the delivery receipt; do not add a duplicate 
 - Same-task L1 reuse is execution evidence, not a durable cache: reuse it only while the command, relevant inputs, and changed-scope classification are provably unchanged. Documentation-only receipt/status writes do not invalidate it; later tasks rerun the applicable checks.
 - Do not dispatch new L2/L3 reviewers while required L1 is failed or unavailable. This prerequisite does not erase still-valid same-task reviewer evidence and does not suppress current-truth or receipt work.
 - Within one snapshot revision, reuse completed reviewer results only when the canonical reviewer contract, snapshot identity, exact scope, every reviewer input, L1 evidence, and applicable population are provably unchanged. Across a permitted focused-re-review revision, retain only an unaffected reviewer's terminal evidence whose reviewer-specific scope, inputs, evidence dependencies, and applicable population remain unchanged; the cycle-level reviewed identity itself advances for the fix. The declared receipt/status write is the only permitted endpoint-output difference outside that fix revision. A user turn alone is not an invalidator. Never reuse or retask the reviewer instance. A later task starts a new full-population cycle instead of relying on transient evidence.
+- Review-package gaps block before dispatch. Material review-input drift after dispatch terminates the current
+  invocation; it never triggers an automatic replacement cycle.
 - Historical specs remain archived; delivery evidence goes to `tasks.md`.
 - `已实现` is a delivery marker, not a claim that the spec is still the current product baseline; the spec's final resting place is `docs/specs/changes/archive/` (see [`feature-archive`](feature-archive.md) / [`spec-reconcile`](spec-reconcile.md)).

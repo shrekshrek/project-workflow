@@ -20,6 +20,8 @@ Claude execution details:
   inheritance, and semantic-placement judgment remains in L2. Never create/move guidance or require files
   from directory shape inside this gate.
 - Apply the action's L1 scope, reuse, sequencing, prerequisite, and evidence rules exactly with Bash. Do not expand checks or dispatch reviewers beyond those rules, and do not repair a failure inside this gate.
+- Validate the complete owner-supplied review package before dispatch. After snapshot creation, any non-endpoint
+  review-input drift stops this invocation as `BLOCKED`; never auto-start a replacement review cycle.
 - After required L1 passes, dispatch fresh `agents-md-reviewer` / `spec-reviewer` agents for applicable
   boundaries under the canonical execution contract. Run them in parallel when capacity permits, otherwise
   sequentially; limited simultaneous slots are not fallback. Light lane uses conditional L2 and records L3 as
