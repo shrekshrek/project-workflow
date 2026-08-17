@@ -130,9 +130,9 @@ Run `spec-quality-check` against two full-lane artifacts whose individual tasks 
 - Remove the Delivery Shape Baseline from a new artifact or leave ownership/data-disposition scope-growth
   triggers unresolved; confirm Q7d returns `BLOCKED`. Repeat with an artifact that repository history or
   explicit current-user confirmation identifies as pre-3.11 and whose Scope, Constraints, and Module Impact
-  establish one unambiguous boundary; confirm it records
-  `legacy-unambiguous impact boundary` without rewriting the artifact. Make that boundary ambiguous and
-  confirm revision is required.
+  establish one unambiguous large boundary but whose frozen plan has no continuation sequence; confirm it records
+  `legacy-unambiguous impact boundary`, treats the sequence as N/A, and does not rewrite the artifact. Make that
+  boundary ambiguous and confirm revision is required.
 
 ## Architecture-shaped spec-quality smoke
 
@@ -157,6 +157,10 @@ Run `spec-quality-check` against two full-lane artifacts whose individual tasks 
 - Copy inherited parent prose into a nested file and use a nested `CLAUDE.md` whose bytes are not
   `@AGENTS.md\n`. Confirm the placement audit flags duplication and malformed alias without claiming the
   architecture itself is wrong.
+- Give one tier a difference-only rule that names and replaces the same root requirement, change files inside that
+  tier and in an unrelated sibling tier, and confirm L2 applies the override only inside its subtree while the
+  sibling still inherits the root rule. Omit the tier source from the caller package and confirm L2 returns
+  `UNRELIABLE` instead of silently reviewing against root alone.
 - Put a path-local rule at root, but leave one real consumer outside the proposed subtree. Confirm
   `agents-md-revise` may suggest a local copy/difference but must not move the root rule until evidence shows
   no outside consumer remains. Repeat with no explicit `Codify`: `feature-done` creates no implicit guidance
@@ -164,6 +168,19 @@ Run `spec-quality-check` against two full-lane artifacts whose individual tasks 
 - Put product behavior or a temporary feature decision into nested guidance and confirm it routes back to
   spec/plan/ADR. Give the same rule an objective lint/hook/test implementation and confirm the preferred
   proposal is `mechanize`, not another prompt file.
+
+## Personalization conversation smoke
+
+- Give `project-personalize` a manifest and CI file that agree on one test command. Confirm it reports the
+  command as Observed and asks no question about it.
+- Add two conflicting active lint commands with no ownership evidence. Confirm it reports the smallest Proposed
+  adjustment, puts only the deciding choice under Unresolved, and asks one material question in that turn.
+- Answer the question, then expose a separate hook-policy gap. Confirm the staged draft/source trace updates and
+  the next question does not restate settled command evidence.
+- Make the remaining uncertainty an architecture/product decision. Confirm it routes to `feature-init` instead
+  of extending personalization.
+- Close all material gaps. Confirm one consolidated preview and one existing apply approval, with no additional
+  feature, spec, lane, gate, reviewer, status, or approval cycle created by the conversation.
 
 ## Implementation Scope Stop smoke
 
@@ -196,6 +213,24 @@ console, compatibility state, and second Provider:
   surfaces, and applicable conventions. Confirm no complete suite is added without one of those triggers and
   each unchanged final evidence source is recorded once.
 - Vary file/test counts without changing traceable risk coverage and confirm the verdict does not change.
+
+## Implementation Continuation Check smoke
+
+Start with one accepted large/extra-large full-lane outcome whose plan has a dependency-ordered domain/state
+slice, public-contract slice, actor-operation slice, and end-to-end integration slice:
+
+- Complete the first slice, then resume after context compaction. Confirm implementation re-reads spec
+  Verification, Delivery Shape, implementation order, and incomplete tasks before dependent work.
+- Keep the completed and next slices aligned with the accepted boundary. Confirm work continues silently without
+  user reconfirmation or a new feature, action, gate, reviewer, status, evidence layer, or receipt.
+- Change the next public DTO so that it contradicts the accepted failure-state contract. Confirm Scope Stop
+  activates before dependent UI, tests, or documentation are added.
+- Replace the sequence with backend/frontend/test or file-count/time buckets. Confirm Q7a/Q7d blocks it until
+  the plan uses contract-bearing slices with inspectable exits and next consumers.
+- Keep the real dependency order inside each named contract/consumer slice. Confirm Q7a accepts it rather than
+  treating internal coding order as a tier/file/test/time bucket.
+- Make one slice independently acceptable, enableable, and revertible. Confirm scope viability is rechecked and
+  the slice remains bundled only when concrete coupling requires one delivery.
 
 ## Release interpretation
 

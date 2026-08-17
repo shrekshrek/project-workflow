@@ -118,6 +118,12 @@ every reviewer dispatched for that revision; reviewers independently enumerate o
 populations. Inability to assess a supplied path or required evidence returns `UNRELIABLE`. Reviewers consume
 the L1 evidence map and must not rerun, substitute, or expand L1 commands.
 
+Resolve the L2 convention-source paths from the full authoritative changed-path population, not from one
+representative file: for each path, collect root `AGENTS.md` and every ancestor tier/module `AGENTS.md` through
+the nearest nested source, then union the chains. Keep the transient path-to-source applicability map in the
+review-cycle snapshot so L2 can independently verify completeness and root-to-nearest inheritance; do not
+include unrelated sibling guidance or persist this map in the delivery receipt.
+
 The L1 evidence map is a structured transient package, not a prose summary. Each evidence entry records an evidence ID, mapped obligation or convention-rule IDs, command or assertion, execution mode (`run` or `same-task reuse`), result/status, relevant-input scope, concise totals when applicable, and the original execution-evidence reference. The L2 package may be explicitly empty when no applicable convention rule depends on mechanical evidence. For L3, every Verification obligation must map to an evidence entry or remain an explicit `verification gap`; a complete package with an unmapped or failed obligation is a finding, while a missing or unreadable required package is `UNRELIABLE`.
 
 When capacity permits, dispatch L2 and L3 in parallel. Otherwise use sequential fresh dispatch.

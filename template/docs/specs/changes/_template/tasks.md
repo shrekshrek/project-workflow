@@ -2,6 +2,7 @@
 
 > 基于 plan.md。只在工作可独立实施、验证或 review 时拆分,实施时勾选 + 加注。
 > 实施中出现 plan Delivery Shape Baseline 未声明的 outcome/持久状态/API/角色/工作流/管理面/队列/runtime/Provider/迁移/授权/发布边界时,在继续写生产代码、测试、migration 或兼容层前立即停下。先按 scope delta 分类,报告 delta、当前必要性和推荐的删除/收窄/child/spec-revise 方向;只有方向确需用户决定时一次问一个问题。不得因代码已经写出而自动收编。
+> Large/extra-large feature 按 plan §5 执行 Implementation Continuation Check，不要求用户重复确认。
 
 ## 1. 任务清单
 

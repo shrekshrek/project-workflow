@@ -16,6 +16,8 @@ Claude execution details:
 - Read `${CLAUDE_PLUGIN_ROOT}/docs/actions/project-personalize-reference.md` only when repository evidence or a user decision makes a specific section relevant; it supplies examples, never defaults.
 - Use inline trace or fresh named agents at the canonical `codebase-explorer`, `tech-researcher`, and `decision-completeness-auditor` boundaries; fallback follows the shared execution contract.
 - Do not run architecture-design conversational fill here. Report relevant repository and accepted-decision evidence, and route material architecture changes to `/project-workflow:feature-init`.
+- Use the canonical Evidence-led Decision Conversation: present Observed / Proposed / Unresolved, ask one
+  material question per turn, and update the staged draft without restating settled evidence before approval.
 - When structure/guidance scope is selected, run the canonical bounded Guidance Placement survey. Propose
   nested guidance only for a durable clear-subtree difference that is costly/unsafe to infer and not product,
   temporary, inherited, or better enforced mechanically. Prefer tier over duplicate module files; require

@@ -110,9 +110,9 @@
 
 ## 5. 实施顺序
 
-1. 建数据模型和 invitation service,先验证 token 生命周期。
-2. 接 API 与邮件发送,验证 API / 邮件契约。
-3. 接管理页和邀请落地页,按剩余发布风险完成验证。
+1. 关闭邀请生命周期契约——退出:过期/重放/伪造不变量可验证;下一个 consumer:API 与邮件流;最小证据:invitation service focused test。
+2. 关闭管理员发送与撤销契约——退出:API、授权和邮件 payload 一致;下一个 consumer:管理页;最小证据:API/邮件 integration test。
+3. 关闭被邀请成员注册入队路径——退出:管理页与落地页完成主流程;下一个 consumer:发布验收;最小证据:Primary flow 与剩余发布风险检查。
 ```
 
 ## `docs/specs/changes/002-invitation/tasks.md`

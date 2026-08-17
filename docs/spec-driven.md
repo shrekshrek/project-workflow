@@ -71,7 +71,7 @@
 详细写法见 [workflow.md §1.3 AGENTS.md 的内容标准](workflow.md#13-agentsmd-的内容标准) + [§1.4 嵌套层次](workflow.md#14-claudemd-嵌套层次子级覆盖父级)。
 
 要点速查:
-- 项目周期内**最低频更新**(明显低于 tier / 模块级 AGENTS.md);3 层频率梯度详见 [workflow.md §5.0 三层 AGENTS.md 的更新频率梯度](workflow.md#50-三层-agentsmd-的更新频率梯度)
+- 项目级与 tier / 模块级都是事件触发,只在出现持久、可证实的约定变化时更新;作用域与 P2/P4 分工详见 [workflow.md §5.0 三层 AGENTS.md 的更新频率梯度](workflow.md#50-三层-agentsmd-的更新频率梯度)
 - 六要素(Addy 框架):Commands / Testing / Project Structure / Code Style / Git Workflow / Boundaries
 - Boundaries 三档:✅ Always / ⚠️ Ask first / 🚫 Never
 - 嵌套层次:**用户 / 项目根 / 子目录(tier + 模块)/ 私有**(详细见 [workflow.md §1.4](workflow.md#14-agentsmd--claudemd-嵌套层次子级覆盖父级);系统级 `/etc/claude-code/CLAUDE.md` 为企业 IT 场景,project-workflow audience 不覆盖)
@@ -296,6 +296,7 @@ plan.md Delivery Shape Baseline / §1.1 Sibling Alignment / §2 架构决策 / �
 | §4 Verification | "怎么机验?本次最关键的成功与错误路径是什么?用哪个最小测试层级就能证明主要风险?"(→ §3.7 Q3 可测)|
 | §2 Scope(末轮)| "现在你知道边界了——**显式不做**哪些?至少列 2-3 条"(→ §3.7 Q2 必有"不做")|
 | Delivery Shape Baseline | "谁现在使用?影响哪些责任区域/契约/数据/授权/迁移/发布?哪些新状态/API/管理能力没有当前 consumer?什么发现会触发暂停?"(→ §3.7 Q7c/Q7d)|
+| Large/extra-large 实施顺序 | "哪些合同切片能在依赖工作开始前独立检查?每片关闭什么责任/契约/状态/用户路径,下一个 consumer 和最小 focused evidence 是什么?"(→ §3.7 Q7a/Q7d)|
 
 #### 每节填完做 1 行确认
 
@@ -446,6 +447,12 @@ Draft / Filled / Validated **本质同档**(自由编辑);Frozen / Revised **本
 同一 outcome/baseline 内的 `necessary-detail` 或保持契约的更简单实现直接继续,不制造无意义确认。
 已经写出的代码/测试不构成收编理由;full lane 也不例外。
 
+Large/extra-large feature 在 plan §5 使用少量合同切片；切片转换与 context/session 恢复按
+[`feature-init`](actions/feature-init.md#implementation-continuation-check) 执行静默 Continuation Check，
+一致就继续，material mismatch 才触发 Scope Stop。
+切片按可检查合同边界,不按 tier、目录、文件、测试层/case 或预计工时机械划分。
+这约束的是切片边界,不是切片内部的真实依赖顺序。
+
 测试遵循“最小充分证据”:每个新增 test layer、matrix、fixture 或 case 必须覆盖现有更便宜证据没有覆盖
 的实质风险,或满足项目/发布约定。一个 evidence 可覆盖多个义务;优先扩展最近且清晰的已有测试,删除
 已取代行为的测试并合并重叠 case。测试数量、层级对称和穷举 inventory 不提高 verdict。
@@ -457,6 +464,7 @@ Draft / Filled / Validated **本质同档**(自由编辑);Frozen / Revised **本
 | AI 主动加超出范围的功能 | `spec.md` 没写"不做" | 必填 §3.3 Scope boundaries 的"不做"部分 |
 | AI 在开发中不断收编新状态/API/模块 | plan 没有 Delivery Shape Baseline / growth triggers | 触发即停,按 Scope delta 五分类处理;已经写了代码不构成收编理由 |
 | AI 在实施中反复猜 | spec/plan 写得抽象 | 把 §3.3-3.5 的好/坏对照内化,自检一遍 |
+| Large/extra-large 到端点才发现合同缺口 | plan §5 只有 tier/file 步骤,切片间未重读接受边界 | 改为合同切片;依赖切片前/恢复实施时做静默 Continuation Check,一致继续,material delta 才 Scope Stop |
 
 ---
 

@@ -90,7 +90,7 @@ Required checks: seven core quality questions, plus conditional current-truth ch
    feature/product semantics remain in spec/plan/ADR. If the project uses nested Claude compatibility,
    the planned `CLAUDE.md` is exactly a one-line `@AGENTS.md` alias.
 7. Delivery shape is viable:
-   - Q7a: tasks are independently actionable or reviewable where splitting helps, without time-box or one-test-case-per-task quotas, and include the necessary validation/proof work.
+   - Q7a: tasks are independently actionable or reviewable where splitting helps, without time-box or one-test-case-per-task quotas, and include the necessary validation/proof work. Large/extra-large implementation order uses contract-bearing slices with inspectable exits instead of tier/file/test/time partitions. This constrains slice boundaries, not the real dependency order inside a slice.
    - Q7b: the artifact represents one independently demonstrable, acceptable, and revertible outcome. Size alone never changes the verdict. Separable outcomes are split unless concrete coupling requires one delivery or the plan records an explicit bundled-risk decision and source.
    - Q7c: every proposed persistent state, API, role, workflow, management surface, queue, runtime component,
      or architecture responsibility has a traceable current consumer and is necessary for the selected
@@ -99,10 +99,13 @@ Required checks: seven core quality questions, plus conditional current-truth ch
      delivery-risk signal, expected responsibility areas, contract/data/authorization/migration/release
      signals, explicit exclusions,
      and scope-growth triggers. Large/extra-large impact has either separable child outcomes or concrete
-     indivisible coupling; any unresolved coordination/rollback risk is explicitly accepted. A reliably
-     identified pre-3.11 active artifact may satisfy this check with one unambiguous boundary derived from
-     Scope, Constraints, and Module Impact; record `legacy-unambiguous impact boundary` without rewriting the
-     frozen artifact.
+     indivisible coupling; any unresolved coordination/rollback risk is explicitly accepted. Its plan also
+     provides a dependency-ordered contract-bearing implementation sequence and silent continuation checks
+     that can expose a mismatch before dependent work or endpoint review, without adding slice-level gates,
+     approvals, reviewers, statuses, or receipts. This sequence requirement is N/A when the reliable pre-3.11
+     fallback applies. Such an active artifact may satisfy Q7d with one unambiguous boundary derived from Scope,
+     Constraints, and Module Impact; record `legacy-unambiguous impact boundary` without rewriting the frozen
+     artifact.
 8. Only when the touched area has a `docs/specs/<area>.md`: the spec cites it and does not contradict it, or explicitly records why it deviates. Projects without current-truth documents skip this check.
 9. When check 8 applies: the spec includes a `## Delta` section with `Added`, `Modified`, and `Removed` subsections; at least one subsection has concrete content (not placeholders or bare N/A).
 
@@ -194,8 +197,8 @@ Run the canonical subjective reviewer under the shared [reviewer execution contr
   same reviewer invocation. Ordinary same-boundary permission behavior and internal refactors skip it.
 - Review findings cite the file/section they refer to.
 - More test layers, cases, or matrix cells never improve the verdict by themselves; distinct risk coverage does.
-- A `READY` artifact carries the Implementation Scope Stop forward: later undeclared scope is not authorized
-  by this gate and must pause before implementation expands it.
+- For large/extra-large full-lane work, `READY` carries Implementation Scope Stop and Implementation Continuation
+  Check into execution: aligned work continues silently; a material mismatch stops dependent work.
 - Codify is fail-closed only when the artifact selected it or the accepted outcome depends on a durable local
   convention. This gate never demands nested guidance for an ordinary module merely to make the tree symmetric.
 - Reviewer execution is fail-closed: an unexplained main-session run cannot satisfy this gate when host-native dispatch was available.
