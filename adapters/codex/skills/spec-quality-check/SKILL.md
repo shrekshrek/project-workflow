@@ -27,8 +27,8 @@ Match the user's language. Read [`../../../../docs/actions/spec-quality-check.md
   internal refactors are not applicable.
 - Deduplicate findings by root cause and cite exact evidence.
 - On `READY`, consume an explicit current-request "if this passes, continue implementation" authorization by changing only the top status marker from draft to confirmed, then continue the requested implementation. Pure checks remain read-only; `BORDERLINE` requires explicit acceptance of its concrete risk and follow-up. Never use this authorization to repair artifact content or commit.
-- A pass authorizes only the accepted outcome and impact boundary. Carry the canonical
-  `Implementation Scope Stop` and smallest-sufficient-evidence rules into any implementation continuation.
+- A pass authorizes only the accepted outcome and impact boundary. Carry `Implementation Scope Stop`, large/extra-large
+  `Implementation Continuation Check`, and smallest-sufficient-evidence rules into implementation.
 
 Report one compact passing mechanical range, `Requirements Reconciliation` (`ALIGNED`, `MISMATCH`, or
 `SOURCE GAP`), `Reviewer execution` (reviewer, mode, completion status, fallback reason or `none`), the

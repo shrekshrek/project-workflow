@@ -13,7 +13,7 @@ checks from the seven-question gate:
 - Q4: outcomes are concrete scenarios or observable behavior
 - Q5: constraints are real constraints, not wishes
 - Q6: Sibling Alignment and any `Codify` choice place durable conventions at the narrowest correct owner
-- Q7a: tasks use independently useful implementation/review boundaries rather than time or test-case quotas
+- Q7a: tasks use independently useful implementation/review boundaries rather than tier/file/test/time quotas
 - Q7b: the aggregate artifact is one coherent delivery outcome
 - Q7c: new persistent/API/runtime/governance capability is currently necessary rather than speculative
 - Q7d: the accepted impact boundary and scope-growth triggers are complete
@@ -81,7 +81,7 @@ Fresh-read the three artifacts and assess every relevant item:
   rules prefer lint/hook/test. Repeated parent text, directory-symmetry files, a missing target/alias task, or
   a nested `CLAUDE.md` planned as anything other than one-line `@AGENTS.md` = fail. An uncertain owner =
   borderline or fail according to whether it can change implementation.
-- Q7a tasks: independently actionable or reviewable output/check = pass; a broad bucket that hides separate decisions = fail; work without verification = borderline. Do not require time estimates or split one task per test case.
+- Q7a tasks: independently actionable or reviewable output/check = pass; a broad bucket that hides separate decisions = fail; work without verification = borderline. Large/extra-large implementation order should use contract-bearing slices with inspectable exits and next consumers rather than tier, directory, file, test, or time partitions. This constrains slice boundaries, not the real dependency order inside a slice. Do not require time estimates or split one task per test case.
 - Q7b delivery coherence: one independently demonstrable/acceptable/revertible outcome with resolved material risks = pass regardless of size; several separable outcomes with no coupling or traceable bundled-risk decision in the plan = fail; an explicitly accepted bundle, or one coherent delivery with material unresolved coordination/rollback risk, = borderline.
 - Q7c current necessity: every persistent state, API, role, workflow, management surface, queue, runtime
   component, or architecture responsibility names a present actor/consumer and a selected-outcome necessity =
@@ -95,10 +95,17 @@ Fresh-read the three artifacts and assess every relevant item:
   failure/migration/recovery decision = fail; an undeclared high-impact surface or unresolved data/ownership
   disposition = fail;
   large/extra-large delivery with concrete inseparable coupling and accepted risk = pass or borderline
-  according to the remaining coordination risk, never an automatic fail by size alone. For an active artifact
+  according to the remaining coordination risk, never an automatic fail by size alone. Unless the reliable
+  pre-3.11 fallback below applies, large/extra-large
+  work, the plan also needs a dependency-ordered contract-bearing sequence plus a silent continuation check
+  at slice transitions and context/session resume; it must allow aligned implementation to continue without
+  another user approval, reviewer, status, or receipt while routing a material mismatch to Scope Stop before
+  dependent work. A sequence divided only by tiers/files/tests/time, or with no inspectable point before
+  endpoint review, is a fail. For an active artifact
   reliably identified by repository history or explicit current-user confirmation as pre-3.11 and lacking
   Delivery Shape Baseline, accept one unambiguous boundary derived from Scope, Constraints, and Module Impact
-  and report `legacy-unambiguous impact boundary`; an undated/new omission or ambiguous boundary remains a fail.
+  and report `legacy-unambiguous impact boundary`; the continuation-sequence requirement is N/A and the frozen
+  artifact is not rewritten. An undated/new omission or ambiguous boundary remains a fail.
 
 Report the reconciliation status, reviewed items, skipped items with reasons, blocking ambiguity, citations,
 and concise rewrites. Use a pass/borderline/fail matrix only when several items fail. A mostly empty artifact

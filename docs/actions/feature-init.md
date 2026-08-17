@@ -161,6 +161,34 @@ to stay busy when they could deepen rework. User acceptance of a material change
 in the existing Prior decisions/revision trace. Do not emit a `Scope stop` report for ordinary details that
 are clearly inside the accepted boundary.
 
+### Implementation Continuation Check
+
+This is a lightweight execution discipline inside the accepted route, not another feature, action, lane, gate,
+reviewer, status, approval, or receipt. For a large/extra-large full-lane feature, `plan.md` implementation
+order should use a small dependency-ordered sequence of **contract-bearing slices**. Each slice closes an
+inspectable responsibility, public contract/state transition, or actor-to-result segment and names the next
+consumer plus the smallest focused evidence needed before dependent work starts.
+
+Before beginning the next contract-bearing slice, and whenever implementation resumes after context
+compaction or a later session, re-read the current spec Verification, the plan Delivery Shape Baseline and
+implementation order, and incomplete tasks. Compare the completed slice and the next proposed work against
+the relevant accepted behavior, public contracts/state, exclusions, and scope-growth triggers:
+
+- When they still align, continue silently. Do not ask the user to reconfirm, announce a new gate, dispatch
+  L2/L3, or create slice-level evidence/receipts.
+- When the comparison exposes a contract mismatch, undeclared high-impact surface, second outcome, or
+  capability without a current consumer, invoke Implementation Scope Stop before adding dependent code,
+  tests, migrations, compatibility, or documentation.
+
+Ordinary necessary details and simpler contract-preserving implementations continue under the Scope Stop
+rules above without ceremony.
+
+Do not define slices by tier, directory, file count, test layer/case, or estimated duration. If a proposed
+slice is independently acceptable, enableable, and revertible, recheck whether it is actually a separable
+feature; concrete contract/transaction/release coupling may still justify keeping it inside one feature.
+This constrains slice boundaries, not coding order inside a slice: implementation may follow its real internal
+dependency order while the slice still closes one named contract or consumer outcome.
+
 ## Outputs
 
 Always return a compact route decision after classification:
@@ -230,7 +258,7 @@ Adapters materialize the selected template through the packaged `scripts/materia
    [`_multi_tier_examples`](../../template/_multi_tier_examples/README.md). Single-tier or tier-undecided
    work skips tier files and examples.
 9. Compute the next number across active and archived directories and invoke the packaged materializer with atomic no-clobber behavior.
-10. Replace structural placeholders and prefill only traceable facts. Removing a template TODO closes that decision, so do it only when user input or repository evidence determines the value; reasonable defaults, generic best practices, and implementation-stage discovery are not evidence. Verification prefill records proof obligations and known evidence sources, not speculative test files or case inventories. Do not promote unspecified or out-of-scope inputs into artifact decisions, open questions, or placeholders unless implementation is actually blocked on them. Record the accepted impact boundary, current-consumer decisions, and any bundled-delivery decision or required durable decomposition handoff in the existing spec/plan/tasks sections. Keep outcomes, scope, constraints, and exclusions in `spec.md`; do not copy them into plan Prior decisions. Use Prior decisions only for non-obvious material choices, external-source interpretations, conflict resolutions, bundled-risk acceptance, and supersede decisions that need a durable why/source trace. Use a repository path/section or a dated/current-feature user confirmation, not a raw transcript. Preserve unresolved low-level TODOs elsewhere.
+10. Replace structural placeholders and prefill only traceable facts. Removing a template TODO closes that decision, so do it only when user input or repository evidence determines the value; reasonable defaults, generic best practices, and implementation-stage discovery are not evidence. Verification prefill records proof obligations and known evidence sources, not speculative test files or case inventories. Do not promote unspecified or out-of-scope inputs into artifact decisions, open questions, or placeholders unless implementation is actually blocked on them. Record the accepted impact boundary, current-consumer decisions, and any bundled-delivery decision or required durable decomposition handoff in the existing spec/plan/tasks sections. Keep outcomes, scope, constraints, and exclusions in `spec.md`; do not copy them into plan Prior decisions. Use Prior decisions only for non-obvious material choices, external-source interpretations, conflict resolutions, bundled-risk acceptance, and supersede decisions that need a durable why/source trace. Use a repository path/section or a dated/current-feature user confirmation, not a raw transcript. For large/extra-large full-lane work, prefill plan implementation order per Implementation Continuation Check. Preserve unresolved low-level TODOs elsewhere.
    If Guidance Placement applies, put the target and difference-only rule in Sibling Alignment/module impact,
    and add the create/update/alias or mechanical-enforcement work to tasks. Do not add a new artifact type.
 11. Use an inline value-to-source trace for repository- or user-sourced prefill and make only the non-obvious,

@@ -610,7 +610,10 @@ docs/adr/
 
 #### 实际问什么(对齐 `project-init` / `project-personalize` action)
 
-`project-init` 不问栈问题。`project-personalize` 先读 manifests、lockfiles、目录和现有配置,只追问仓库证据无法回答且会实质改变结果的决定。tech-researcher、codebase-explorer、decision-completeness-auditor 仍按复杂度条件调用,而不是每次初始化固定运行。
+`project-init` 不问栈问题。`project-personalize` 先读 manifests、lockfiles、目录和现有配置,再把适用内容分为
+“已观察 / 建议调整 / 待确认”；待确认项一次只问一个会实质改变 working agreement 的问题,回答后即时更新
+待应用方案,不复述已确认内容。tech-researcher、codebase-explorer、decision-completeness-auditor 仍按复杂度
+条件调用,而不是每次初始化固定运行。
 
 #### 不问什么(故意省的题,每项都有原则)
 
@@ -631,8 +634,8 @@ docs/adr/
 
 #### 关键纪律
 
-- 只在 `project-personalize` 遇到影响结果的真实缺口时提问;技术选型需要外部证据时按 [`tech-researcher`](reviewers/tech-researcher.md) 调研,返 2-3 候选 + 推荐,用户确认再回填
-- 二选一 / 填空 > 开放式
+- 只把仓库无法证明、不能安全 deferred、且会改变命令/路径/规则/归属的事项放入“待确认”
+- 一次只问一个,二选一/填空优先;技术选型需外部证据时才运行 [`tech-researcher`](reviewers/tech-researcher.md)
 - 所有目标文件先在 staging/内存形成一个 consolidated preview,用户审批后一次应用
 
 ### 1.11 校验
@@ -873,6 +876,12 @@ verdict 和状态转换规则,本文不复制其判定表。
 **关键纪律**:不要每个文件改完都看一眼,但也不要让 AI 把边界外工作一直做到 `feature-done` 才发现。
 普通必要细节在已接受 outcome/impact 内自行完成;方向可能变化时执行 Implementation Scope Stop。
 
+Large/extra-large full-lane feature 用少量、按依赖排序的**合同切片**推进。切片应关闭可检查的责任、
+公共契约/状态转换或 actor-to-result 片段，而不是按 tier、文件、测试或工时分桶。切片转换与恢复实施时，
+按 [`feature-init`](actions/feature-init.md#implementation-continuation-check) 静默对账：一致直接继续，
+material delta 才在依赖工作前 Scope Stop；可独立验收、启用、回退的切片重新判断是否应成为 child feature。
+合同切片只约束可检查边界,不限制切片内部的真实依赖顺序。
+
 **什么时候应该打断 AI**:
 - 跑偏方向(本来改 backend,跑去改 frontend)
 - 陷入循环(同一个错改 3 次没好)
@@ -892,7 +901,8 @@ Scope Stop 的精确分类和输出由 [`feature-init`](actions/feature-init.md)
 信号。开发和交付验证的精确路由留给项目约定与 owning action。
 
 **底层逻辑**:机械细节上的中途打断会制造反复解释;方向漂移上的延迟打断会制造大量返工和冗余。
-环境层(§6.3)接管机械合规,Implementation Scope Stop 管方向,端点 review(§3.3)只是最后安全网。
+环境层(§6.3)接管机械合规,Implementation Continuation Check 在合同切片间前移对账,
+Implementation Scope Stop 管方向,端点 review(§3.3)只是最后安全网。
 
 ### 3.3 交付阶段:delivery receipt
 
@@ -1026,17 +1036,20 @@ P3 持续机制设对了的信号:
 
 ### 5.0 三层 AGENTS.md 的更新频率梯度
 
-P4 范围声明说"只动 AGENTS.md",但 AGENTS.md 有 3 层(项目/tier/模块),各自实际更新节奏跨 P2/P4 分工。**P4 主战场是项目级,tier/模块级更多在 P2 内顺手做**:
+P4 范围声明说"只动 AGENTS.md",但 AGENTS.md 有 3 层(项目/tier/模块),各自实际更新通道跨
+P2/P4 分工。这里的梯度表示作用域和触发方式不同,**不是层级越深更新越频繁**;任何一层都只在
+出现持久、可证实的约定变化时更新:
 
 | 层级 | 更新频率 | 典型触发 | 跟 phase 关系 |
 |---|---|---|---|
-| **项目级** `AGENTS.md` | 最低 | P4 客观 drift audit / 重大架构选型变化 / 多 feature 反复出现某约束 | **P4 主战场**;不在单 feature 内 |
-| **Tier 级** `<tier>/AGENTS.md` | 中(数周到月) | 某 tier 内多个模块共用模式提炼 / 加新 tier-wide 库 | 偶尔 P2 in-feature(发现新模式时 codify);P4 顺带 review |
-| **模块级** `<module>/AGENTS.md` | 最高(单 feature 周期内常见) | [§2.6 模块边界调整](#26-module-中途变更feature-实施中发现边界要调整) / [§3.5 spec-revise](#35-开发中发现-specplan-错怎么办) / 新增 / 拆分模块时建立 | **几乎全 P2 in-feature**;delivery receipt 的 `Drift` 字段显式记录未沉淀约定;P4 一般不动 |
+| **项目级** `AGENTS.md` | 低频、事件触发 | P4 客观 drift audit / 重大架构选型变化 / 多 feature 反复出现某约束 / feature 明确选择跨项目 `Codify` | **P4 主战场**;明确的跨项目 `Codify` 也可在 P2 内完成 |
+| **Tier 级** `<tier>/AGENTS.md` | 偶发、事件触发 | 某 runtime 内多个 sibling 模块形成共同差量 / 加入持久 tier-wide 库或约束 | P2 明确 `Codify` 时及时更新;P4 处理客观 drift |
+| **模块级** `<module>/AGENTS.md` | 少见、事件触发 | 模块新增或改变一个满足 [§2.3](#23-反常判定何时该写模块-agentsmd) 四项门槛的持久父级例外 | 通常由相关 P2 change 明确 `Codify`;P4 可修正或删除孤立 guidance |
 
 **反模式**:
-- 把 P0 baseline 或首次 personalization 当"终身合同",任何后续变化都拖到 P4 —— 模块级反常约定常在第一次写到该模块的 feature 中固化下来,不在 P4 等
-- 把 P4 当成"定期重写全部 3 层" —— P4 可以比对所有适用 A 类文件,但只 patch 有客观 drift 的项;tier/模块级约定更多在相关 P2 change 中及时演化
+- 把 P0 baseline 或首次 personalization 当"终身合同",连当前 feature 已明确选择的 `Codify` 也拖到 P4
+- 把模块级文件当成每个 feature 或每个目录的常规产物;没有持久父级例外就不创建、不更新
+- 把 P4 当成"定期重写全部 3 层" —— P4 可以比对所有适用 A 类文件,但只 patch 有客观 drift 的项
 
 ### 5.1 何时触发
 

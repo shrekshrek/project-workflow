@@ -32,13 +32,25 @@ Use [`project-init`](project-init.md) when all six baseline destinations are abs
 - Removed stale scaffold placeholders/defaults.
 - Compact summary of values changed, deferred items, and exceptions requiring human review. Do not restate unchanged evidence or expand an ordinary successful role execution beyond its required one-line evidence.
 
+## Evidence-led Decision Conversation
+
+Keep the target unchanged while material decisions remain. Present only applicable findings as **Observed**
+(repository evidence), **Proposed** (the smallest evidence-backed adjustment), and **Unresolved** (a decision
+whose answer changes the working agreement). Ask one material question per turn, prefer a bounded choice, and
+after each answer update the in-memory/staged draft plus its source trace without restating settled evidence.
+When no material gap remains, proceed to the existing single consolidated preview and apply approval.
+
+Do not ask about facts the repository already proves, values that may safely remain deferred, or architecture/
+product decisions owned by `feature-init`. This conversation creates no additional feature, spec, lane, gate,
+reviewer, status, or approval cycle.
+
 ## Workflow
 
 1. Resolve the target and inspect its complete population including dotfiles, excluding version-control metadata from content classification. Classify the six baseline destinations and inspect other content only far enough to identify project evidence. All destinations absent plus only incidental material uses `project-init`; all six matching plus only incidental material is N/A; project evidence or any partial/custom/occupied baseline destination continues here. Ask one focused routing question only when the distinction is genuinely ambiguous.
 2. Inspect root/nested `AGENTS.md`, aliases, manifests, shallow structure, commands, source/test paths, project-specific boundaries, existing test/CI configuration, and existing host-private assets. Preserve useful custom guidance.
-3. Present only applicable scopes: create/complete the minimum working agreement, replace demonstrably stale scaffold values, repair real tier guidance, survey structure, or explicitly selected host-private rules/hooks.
+3. Start the Evidence-led Decision Conversation with only applicable scopes: create/complete the minimum working agreement, replace demonstrably stale scaffold values, repair real tier guidance, survey structure, or explicitly selected host-private rules/hooks.
 4. For a missing baseline, stage the neutral six-file template with `scripts/materialize-project-baseline.cjs`; do not write the target yet.
-5. Use the codebase-explorer methodology only for a nontrivial or unclear structure survey. When observed project content shows multiple durable runtime tiers and the user selects tier-level guidance, read the conditional [`_multi_tier_examples`](../../template/_multi_tier_examples/README.md) reference before drafting it. When a material stack, library, or tool choice remains unresolved and current external evidence would change the result, run the tech-researcher methodology, present 2-3 suitable candidates and one recommendation, and let the user make the final choice. Derive commands, their actual scope/trigger, source/test paths, project-specific rules, and tier ownership from repository evidence; ask only for material gaps. A command being available does not make it mandatory for every feature.
+5. Use the codebase-explorer methodology only for a nontrivial or unclear structure survey. When observed project content shows multiple durable runtime tiers and the user selects tier-level guidance, read the conditional [`_multi_tier_examples`](../../template/_multi_tier_examples/README.md) reference before drafting it. When a material stack, library, or tool choice remains unresolved and current external evidence would change the result, run the tech-researcher methodology, present 2-3 suitable candidates and one recommendation, and let the user make the final choice. Derive commands, their actual scope/trigger, source/test paths, project-specific rules, and tier ownership from repository evidence. A command being available does not make it mandatory for every feature.
    When structure/guidance scope is selected, perform a bounded guidance-placement survey. A nested
    `AGENTS.md` candidate must be a durable rule for a clear existing or intentionally planned subtree,
    differ materially from its parent, be costly or unsafe to infer repeatedly, and be neither temporary

@@ -75,6 +75,10 @@
 
 ## 5. 实施顺序
 
-{{TODO 按依赖顺序或可独立验证的 phase 排列;不要默认某个 tier 先行}}
+> 按真实依赖顺序排列可独立检查的实施步骤,不默认某个 tier 先行。
+> 仅当 Delivery risk signal 为 large/extra-large 时,把步骤组织为少量合同切片,并写明可检查退出条件、
+> 下一个 consumer 与最小 focused evidence；切片转换和 context/session 恢复时执行 Implementation Continuation Check：
+> 一致直接继续,material delta 才触发 Implementation Scope Stop。该要求只约束切片边界,
+> 不限制切片内部的真实依赖顺序。
 
-1. {{TODO}}
+1. {{TODO 实施步骤;large/extra-large 时补充:合同切片 / 可检查退出条件 / 下一个 consumer / 最小 focused evidence}}

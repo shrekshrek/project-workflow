@@ -35,6 +35,8 @@ Claude execution details:
   the delta/necessity/recommended remove-narrow-child-revise direction, and ask at most one material question
   only when direction requires the user. Already-written code and tests never authorize absorption. Apply the
   action's smallest-sufficient-evidence rule; do not add test layers or matrices without distinct risk coverage.
+- For large/extra-large full-lane work, carry the canonical Implementation Continuation Check into execution:
+  silently recheck accepted boundaries at contract-bearing slice transitions/resume; Scope Stop material mismatches before dependent work.
 - Do not terminate an enclosing implementation/change request at this action boundary. After `DIRECT/APPLY`, return control for immediate implementation; after `LIGHT/APPLY`, return control after materialization; after `FULL/APPLY`, continue to `spec-quality-check` and then only as that gate permits. Stop after the route/artifact report when the user requested only preview or artifact initialization.
 - If materialization reports an occupied directory, leave it untouched and rerun feature-init to recompute the number.
 
