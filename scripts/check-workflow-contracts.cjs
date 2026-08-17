@@ -124,7 +124,11 @@ requireMarkers("docs/actions/feature-done.md", ["review-cycle snapshot", "Git/no
 requireMarkers("docs/actions/feature-done.md", ["same-task, same-review-cycle optimization", "new revision of the cycle snapshot", "original full-population terminal evidence", "fix limited to the cited findings and their dependency closure", "change outside the finding/dependency closure", "unaffected changed-path population", "A later task", "base=<commit SHA>", "before writing those endpoint-owned outputs", "reviewed=<commit SHA>; dirty=no", "reviewed=worktree; dirty=yes", "Other reviewed/dirty pairings are invalid", "target-branch merge base", "ambiguous repository, base, or feature boundary blocks", "Derive changed paths from Git", "For light lane, run it only when", "declared receipt/status write is the only permitted endpoint-output difference"]);
 requireMarkers("docs/actions/feature-done.md", ["Within one snapshot revision", "Across a permitted focused-re-review revision", "reviewer-specific scope, inputs, evidence dependencies, and applicable population", "cycle-level reviewed identity itself advances"]);
 forbidMarkers("docs/actions/feature-done.md", ["cached L2/L3 results"]);
-requireMarkers("docs/actions/feature-done.md", ["one transient review-cycle snapshot", "authoritative Git/non-Git changed-path population", "L1 command/result evidence map", "L2 convention-source paths", "L3 spec/artifact paths", "same snapshot revision and changed-path population", "must not rerun, substitute, or expand L1 commands", "evidence ID", "mapped obligation or convention-rule IDs", "relevant-input scope", "original execution-evidence reference", "L2 package may be explicitly empty", "every Verification obligation must map", "dispatch L2 and L3 in parallel", "sequential fresh dispatch", "not a fallback condition", "dispatch-to-aggregation window", "revalidate the current reviewed inputs", "requires a new full-population cycle", "do not persist its path list"]);
+requireMarkers("docs/actions/feature-done.md", ["one transient review-cycle snapshot", "authoritative Git/non-Git changed-path population", "L1 command/result evidence map", "L2 convention-source paths", "L3 spec/artifact paths", "same snapshot revision and changed-path population", "must not rerun, substitute, or expand L1 commands", "evidence ID", "mapped obligation or convention-rule IDs", "relevant-input scope", "original execution-evidence reference", "L2 package may be explicitly empty", "every Verification obligation must map", "dispatch L2 and L3 in parallel", "sequential fresh dispatch", "not a fallback condition", "dispatch-to-aggregation window", "revalidate the current reviewed inputs", "later explicit `feature-done` invocation", "do not persist its path list"]);
+requireMarkers("docs/actions/feature-done.md", ["Validate the complete owner-supplied review package", "one representation for every Verification obligation", "validates package structure, presence, and readability", "explicit gap or failed mapped evidence is a finding", "record every applicable review slot", "not-run(review-package incomplete)", "invalidated(review-input drift)", "never auto-start another full-population", "terminates the current"]);
+requireMarkers("docs/reviewers/README.md", ["failure form defined by its canonical role and owning action", "roles whose verdict", "terminal `UNRELIABLE` report", "must not request the missing material", "piecemeal questions", "supplement the active invocation"]);
+requireMarkers("docs/reviewers/spec-reviewer.md", ["complete package explicitly records a `verification gap`", "mapped evidence reliably shows failure"]);
+requireMarkers("docs/examples/reviewer-mutation-smoke.md", ["owner-required review-package input", "every applicable slot", "dispatches no reviewer", "rejects the cycle for aggregation", "does not auto-start another full-population cycle", "requesting the missing package", "explicit `verification gap`"]);
 requireMarkers("docs/actions/feature-done.md", ["full authoritative changed-path population", "every ancestor tier/module `AGENTS.md`", "union the chains", "path-to-source applicability map", "root-to-nearest inheritance", "unrelated sibling guidance"]);
 requireMarkers("docs/actions/feature-archive.md", ["receipt-schema migration candidate", "review-scope", "git=[base=...; reviewed=...; dirty=...]", "eligible only as a current-task result", "does not re-anchor it", "not proof that the reviewed worktree was unchanged", "delivery evidence and current truth as separate freshness questions", "later movement of a current branch or PR head does not by itself invalidate", "validate every pending current-truth fact against present implementation evidence"]);
 requireMarkers("docs/actions/spec-revise.md", ["delivered-but-unarchived", "implementation regression under an unchanged accepted contract does not use this action", "return `已实现` to `已确认`", "Previous Proof Bundle", "date-or-sequence", "exactly one canonical `## Proof Bundle`", "archived feature requires a successor change"]);
@@ -216,7 +220,7 @@ for (const relative of [
   requireRegex(relative, /^- Verdict:/m, "receipt Verdict field");
   requireReceiptChangeSchema(relative);
   requireRegex(relative, /^- Checks/m, "receipt Checks field");
-  requireRegex(relative, /^- Review execution:/m, "reviewer execution evidence field");
+  requireRegex(relative, /^- Review execution:.*state=/m, "reviewer execution state field");
   requireRegex(relative, /^- Current truth:/m, "receipt Current truth field");
   forbidMarkers(relative, ["coverage=", "confidence=", "Rule sources:", "drift ledger", "review-scope=", "population-hash"]);
 }
@@ -229,6 +233,15 @@ for (const relative of [
 ]) {
   requireRegex(relative, /^- L2:.*not-run\(L1 prerequisite\)/m, "full-lane L2 prerequisite-skip receipt");
   requireRegex(relative, /^- L3:.*not-run\(L1 prerequisite\)/m, "full-lane L3 prerequisite-skip receipt");
+  requireRegex(relative, /^- L2:.*not-run\(review-package incomplete\).*invalidated\(review-input drift\)/m, "full-lane L2 package/drift receipt states");
+  requireRegex(relative, /^- L3:.*not-run\(review-package incomplete\).*invalidated\(review-input drift\)/m, "full-lane L3 package/drift receipt states");
+}
+for (const relative of [
+  "template/docs/specs/changes/_template/tasks-light.md",
+  "tests/fixtures/reviewer-smoke/light-base/docs/specs/changes/002-normalize-key-light/tasks.md",
+]) {
+  requireRegex(relative, /^- L2:.*not-run\(review-package incomplete\).*invalidated\(review-input drift\)/m, "light-lane L2 package/drift receipt states");
+  requireRegex(relative, /^- Review execution:.*L3=<state=N\/A\(light lane\)\|not-run\(completion preflight\)>/m, "light-lane L3 execution state");
 }
 requireMarkers("template/docs/specs/changes/_template/tasks.md", ["不记录逐轮命令输出", "已被后续结果取代", "最终 checks 只进"]);
 requireMarkers("template/docs/specs/changes/_template/tasks.md", ["证据义务 → 最小 command / assertion"]);

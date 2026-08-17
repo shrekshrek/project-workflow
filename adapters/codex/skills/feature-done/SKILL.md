@@ -18,6 +18,8 @@ Match the user's language. Read [`../../../../docs/actions/feature-done.md`](../
   inheritance, and semantic-placement judgment remains in L2. Never create/move guidance or require files
   from directory shape inside this gate.
 - Apply the action's L1 scope, reuse, sequencing, prerequisite, and evidence rules exactly. Do not expand checks or dispatch reviewers beyond those rules, and do not repair a failure inside this gate.
+- Validate the complete owner-supplied review package before dispatch. After snapshot creation, any non-endpoint
+  review-input drift stops this invocation as `BLOCKED`; never auto-start a replacement review cycle.
 - After required L1 passes, dispatch fresh general subagents for applicable
   [`agents-md-reviewer`](../../../../docs/reviewers/agents-md-reviewer.md) and
   [`spec-reviewer`](../../../../docs/reviewers/spec-reviewer.md) boundaries under the canonical execution contract.
