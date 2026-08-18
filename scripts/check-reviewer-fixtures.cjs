@@ -4,11 +4,17 @@ const fs = require("node:fs");
 const os = require("node:os");
 const path = require("node:path");
 const { spawnSync } = require("node:child_process");
+const { validateFullFixtureAgainstCurrentPreflight } = require("./lib/fixture-contracts.cjs");
 
 const root = path.resolve(__dirname, "..");
 const fixtureRoot = path.join(root, "tests/fixtures/reviewer-smoke");
 const expected = JSON.parse(fs.readFileSync(path.join(fixtureRoot, "expected.json"), "utf8"));
 const problems = [];
+
+problems.push(...validateFullFixtureAgainstCurrentPreflight(
+  path.join(fixtureRoot, "base/docs/specs/changes/001-normalize-key"),
+  { label: "reviewer-smoke full base", userVisible: false, requireComplete: true },
+));
 
 function aggregateVerdict({ l1Available = true, l1Passed, l2Blocking, l3Blocking, lightVerificationPassed, receiptReliable, reviewerExecutionApplicable = true, reviewerExecutionReliable }) {
   if (!receiptReliable || !l1Available) return "BLOCKED";
@@ -147,4 +153,4 @@ if (problems.length) {
   process.exit(1);
 }
 
-console.log("Endpoint fixture inputs OK: full/light mutations, required finding concepts, and deterministic verdict truth table are coherent (model reviewers not executed)." );
+console.log("Endpoint fixture inputs OK: current full preflight shape, full/light mutations, required finding concepts, and deterministic verdict truth table are coherent (model reviewers not executed)." );

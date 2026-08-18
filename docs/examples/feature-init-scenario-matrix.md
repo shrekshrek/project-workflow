@@ -39,7 +39,13 @@ Run these transcript-level cases on both hosts without grading fixture files as 
 - Ask to implement a change that needs a current-truth update but no contract change. Expect `Route: LIGHT`, `Execution: APPLY`, `Feature: create=<tasks-only path>`, and `Next gates` ending in `feature-done` without `spec-quality-check`; after materialization, the enclosing implementation continues without another confirmation.
 - Ask to implement an API/schema migration. Expect `Route: FULL`, `Execution: APPLY`, `Feature: create=<full-lane path>`, and `Next gates` beginning with `spec-quality-check`.
 - Ask only to initialize an otherwise identical light/full feature artifact. Expect materialization and a route report, but no implementation continuation because artifact initialization was the whole request.
-- Repeat a covered request when a compatible active or accepted feature already exists. Expect `Feature: reuse=<path>` and no new number. Discussion, diagnosis, reasonableness review, and implementation-status inspection remain read-only even if their preview route is `LIGHT` or `FULL`.
+- Repeat a covered request when a compatible active or accepted feature already exists. Expect
+  `Feature: reuse=<path>` and no new number. Confirm `Next gates` come from the reused artifact's lane/status,
+  not the `DIRECT` no-creation label: accepted full first passes the current mechanical artifact-shape recheck,
+  then continues implementation → `feature-done` without another subjective review; a failure routes through
+  repair/`spec-revise` plus `spec-quality-check`. Draft full begins with `spec-quality-check`, and light continues implementation → `feature-done`. Discussion, diagnosis,
+  reasonableness review, and implementation-status inspection remain read-only even if their preview route is
+  `LIGHT` or `FULL`.
 - Give a multi-outcome request whose scope viability is unresolved. Expect `Route: pending`, `Execution: PREVIEW`, no files, and the existing single clarification question; `pending` must not be treated as a fourth completed route.
 
 ## Equivalence interpretation

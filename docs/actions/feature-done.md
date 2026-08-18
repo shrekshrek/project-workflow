@@ -9,7 +9,8 @@ Canonical endpoint action for deciding whether a feature is ready and recording 
 
 This action owns the endpoint gate: completion preflight, L1, applicable L2, full-lane L3, current-truth check,
 and delivery receipt. Adapters implement it as one entry point.
-Same-task partial reruns may narrow to a finding plus its dependency closure under the evidence rules below.
+Same-task later explicit invocations may narrow to a finding plus its dependency closure under the evidence
+rules below. One invocation never repairs and redispatches its own terminal result.
 
 ## Completion Preflight
 
@@ -21,9 +22,20 @@ new review layer:
   `## Proof Bundle`, any `## Previous Proof Bundle ...` history, and endpoint-owned receipt/status fields;
   those are outputs of this action, not completion inputs.
   A full-lane feature normally enters at `已确认`; `已实现` is accepted only for an explicit same-feature
-  rerun or receipt-schema migration whose non-receipt contract has not changed. Draft, superseded,
+  rerun whose non-receipt contract has not changed. Draft, superseded,
   abandoned, or archived artifacts do not enter this gate. A knowingly incomplete artifact returns
   `NEEDS WORK` without running expanded L1.
+- Every full-lane artifact still satisfies the applicable current mechanical artifact-shape prerequisites
+  from [`spec-quality-check`](spec-quality-check.md#mechanical-check-table), including the semantic
+  decision/why/source Prior decisions columns (or the explicit N/A). This bounded check catches accepted or
+  reused artifacts that predate the current contract; it does not repeat subjective spec review. A failure
+  returns `NEEDS WORK` and routes to artifact repair/`spec-revise` plus `spec-quality-check` before expanded L1.
+- Every multi-boundary full-lane feature, including a reused feature that did not rerun
+  `spec-quality-check`, has matching contract-bearing slice IDs in plan/tasks. Every slice's implementation and
+  focused L1 items are complete, and no unmatched task bucket hides work between slices. A genuinely
+  one-boundary feature is N/A; merely omitting slice declarations does not claim that exception. A missing
+  mapping or incomplete slice returns `NEEDS WORK` before expanded L1. The endpoint consumes completed slice
+  evidence under the normal L1 reuse rules; it does not recreate the slice loop.
 - Derive the changed scope from Git. If the dirty repository contains changes from another
   active feature or unrelated work that cannot be separated confidently, return `BLOCKED` and ask for a
   commit/worktree boundary. Never construct READY by manually subtracting ambiguous paths.
@@ -32,9 +44,9 @@ new review layer:
   role, workflow, management surface, queue, runtime, Provider/responsibility area, contract, migration,
   authorization rule, or release boundary that was not declared returns `NEEDS WORK` before expanded L1
   and routes to `spec-revise`, lane upgrade, or a child feature; this gate never absorbs it automatically.
-  If ownership of the extra change is ambiguous, return `BLOCKED`. For an older active artifact created
-  before the baseline existed, use its module-impact/scope sections only when they establish one
-  unambiguous boundary and record `legacy-unambiguous impact boundary`; otherwise require revision.
+  If ownership of the extra change is ambiguous, return `BLOCKED`. A full-lane artifact without an accepted
+  `Delivery Shape Baseline` returns `NEEDS WORK` and routes to `spec-revise` before expanded L1; other sections
+  do not substitute for the missing baseline.
 - Close every explicit Guidance Placement commitment before expanded L1. When plan Sibling Alignment or an
   accepted task says `Codify`, mechanically require either the named root/tier/module `AGENTS.md` target plus
   any project-adopted one-line `CLAUDE.md` alias, or the named mechanical enforcement. Verify the named subtree
@@ -45,11 +57,9 @@ new review layer:
 - For a user-visible outcome, identify and run the artifact's declared primary-flow smoke first. It must
   exercise the shortest meaningful actor-to-result journey, not merely render a component or call an
   isolated helper. Select it from an existing Verification obligation explicitly marked `Primary flow`;
-  preflight must not invent an additional smoke or proof obligation. For an older active artifact created
-  before this marker existed, one existing obligation may be selected only when it unambiguously already
-  exercises that journey; record `legacy-unambiguous selection` in the evidence map without editing the
-  frozen artifact. Zero or several plausible legacy choices return `NEEDS WORK` for an explicit revision.
-  A missing or failed required smoke returns `NEEDS WORK` before expanded L1. Non-user-visible changes
+  preflight must not invent an additional smoke or proof obligation. A missing or ambiguous `Primary flow`
+  marker returns `NEEDS WORK` for `spec-revise`; a failed required smoke returns `NEEDS WORK` before expanded L1.
+  Non-user-visible changes
   record `N/A(not user-visible)`.
 - A passing primary-flow result becomes an ordinary L1 evidence entry and is not rerun unless its relevant
   inputs change. This preflight never adds a second smoke or a new test layer.
@@ -108,7 +118,7 @@ applicable reviewer blocks `READY`. When L1 fails or is unavailable, record new 
 `not-run(L1 prerequisite)` without treating that expected non-execution as a separate reviewer failure. An
 allowed light-lane `N/A` is an applicability decision, not missing evidence.
 
-Before the first full L2/L3 dispatch, finish planned implementation and non-receipt spec/plan/tasks edits. Do not interleave bookkeeping edits outside the declared receipt/status outputs between completed review and aggregation. This action reports failed checks and findings; it never repairs implementation or non-receipt artifacts. Separate implementation work may fix them before a later invocation or focused re-review under the rules below.
+Before the first full L2/L3 dispatch, finish planned implementation and non-receipt spec/plan/tasks edits. Do not interleave bookkeeping edits outside the declared receipt/status outputs between completed review and aggregation. This action reports failed checks and findings; it never repairs implementation or non-receipt artifacts. Each explicit invocation dispatches at most one applicable L2/L3 population against one snapshot revision; parallel L2/L3 roles together count as that one review cycle. A terminal `NEEDS WORK` ends the invocation. Separate implementation work may fix findings before a later explicit invocation under the focused re-review rules below.
 
 After required L1 passes and before the first applicable reviewer dispatch, create one transient review-cycle snapshot
 containing the reviewed repository identity, the authoritative Git/non-Git changed-path population, the L1 command/result evidence map,
@@ -147,7 +157,7 @@ the worktree and review package are stable.
 The snapshot is transient validation evidence: do not persist its path list or a population/content hash in
 the receipt.
 
-Focused re-review is a same-task, same-review-cycle optimization implemented as a new revision of the cycle snapshot. A task is the host conversation/thread and may span multiple user turns; crossing a user turn alone does not invalidate retained evidence. After an initial terminal `NEEDS WORK` report, a fix limited to the cited findings and their dependency closure may create a revised snapshot: rerun affected L1 checks, refresh their evidence entries and reviewed identity, dispatch fresh invocations for every affected reviewer population, and retain only unaffected terminal evidence whose inputs and population remain unchanged. The revision may change content and paths inside that declared closure; that expected fix does not by itself force a new full-population cycle.
+Focused re-review is a same-task optimization available only in a later explicit `feature-done` invocation. A task is the host conversation/thread and may span multiple user turns; crossing a user turn alone does not invalidate retained evidence. After an earlier terminal `NEEDS WORK` report and separate implementation work, a later explicit invocation may create one revised snapshot when the fix is limited to the cited findings and their dependency closure: rerun affected L1 checks, refresh their evidence entries and reviewed identity, dispatch one fresh invocation for every affected reviewer population, and retain only unaffected terminal evidence whose inputs and population remain unchanged. The revision may change content and paths inside that declared closure; that expected fix does not by itself force a new full-population cycle. The later invocation still ends after its first terminal aggregation and never auto-fixes or redispatches.
 
 A later task, missing original full-population terminal evidence, a change outside the finding/dependency closure, a change to the unaffected changed-path population, convention sources, spec contract, reviewer contract, or endpoint outputs, or uncertainty about which L1/reviewer populations the fix affects requires a new full-population review cycle. Narrowing scope never authorizes retasking an old reviewer instance.
 
@@ -208,21 +218,18 @@ L2/L3/Drift finding counts live in the delivery receipt; do not add a duplicate 
 ## Invariants
 
 - L1/L2/L3 are separate because they answer different questions.
+- Each explicit `feature-done` invocation performs at most one L2/L3 dispatch cycle and ends on its first
+  terminal verdict; implementation fixes and focused re-review require a later explicit invocation.
 - The delivery receipt is written at the endpoint, not guessed early.
-- Completion preflight stops knowingly incomplete, primary-flow-broken, mixed-feature, or accepted-scope-
-  drifted work before expensive checks; it never replaces L1/L2/L3 for an eligible feature.
-- Completion preflight is the safety net, not permission to defer scope control: implementation should have
-  stopped at the first undeclared trigger under the Implementation Scope Stop contract.
-- Guidance Placement preflight is mechanical and applies only to an explicit Codify/accepted commitment;
-  difference-only and semantic-placement judgment remains in L2. Potential local guidance never creates an
-  implicit delivery requirement.
-- An empty findings array for an applicable reviewer without reviewer evidence is unreliable and blocks READY; an allowed `N/A` is governed by applicability evidence instead.
-- Reviewer compaction follows one snapshot revision shared by all reviewers dispatched for that revision plus transient exact applicable-item validation; a clean terminal report carries `changed-path-count`, exact applicable rule/spec IDs, `unverified-item-count=0`, and `blocking-ambiguity-count=0` without echoing the changed-path list or clean non-match/non-applicable counts. Never infer coverage from `findings=none`, and never persist applicable-rule/spec IDs, manual file populations, or population/content hashes.
-- Endpoint-owned receipt/history edits and the allowed status-only `已确认` ↔ `已实现` transitions do not invalidate completed same-task L2/L3 results; changes to tasks outside receipt/history sections or to the spec contract still invalidate them.
-- Same-task L1 reuse is execution evidence, not a durable cache: reuse it only while the command, relevant inputs, and changed-scope classification are provably unchanged. Documentation-only receipt/status writes do not invalidate it; later tasks rerun the applicable checks.
-- Do not dispatch new L2/L3 reviewers while required L1 is failed or unavailable. This prerequisite does not erase still-valid same-task reviewer evidence and does not suppress current-truth or receipt work.
-- Within one snapshot revision, reuse completed reviewer results only when the canonical reviewer contract, snapshot identity, exact scope, every reviewer input, L1 evidence, and applicable population are provably unchanged. Across a permitted focused-re-review revision, retain only an unaffected reviewer's terminal evidence whose reviewer-specific scope, inputs, evidence dependencies, and applicable population remain unchanged; the cycle-level reviewed identity itself advances for the fix. The declared receipt/status write is the only permitted endpoint-output difference outside that fix revision. A user turn alone is not an invalidator. Never reuse or retask the reviewer instance. A later task starts a new full-population cycle instead of relying on transient evidence.
-- Review-package gaps block before dispatch. Material review-input drift after dispatch terminates the current
-  invocation; it never triggers an automatic replacement cycle.
+- Completion preflight is an early safety net for incomplete, primary-flow-broken, mixed-feature, scope-drifted,
+  or unfulfilled explicit Guidance work; it neither replaces eligible L1/L2/L3 nor excuses missed Scope Stops.
+- Reviewer evidence—not `findings=none`—proves applicable coverage; allowed N/A requires applicability evidence.
+  Compact only after the exact transient population/baseline validation defined above.
+- Endpoint-owned receipt/history and status writes preserve otherwise valid same-task evidence. Other relevant
+  input drift invalidates it; same-task L1 reuse is execution evidence, never a durable cache.
+- Failed/unavailable required L1 suppresses new review dispatch but not current-truth or receipt work. Package
+  gaps block before dispatch; post-dispatch input drift ends the invocation without an automatic replacement.
+- Reuse reviewer results only under the unchanged-snapshot or focused-re-review rules above. Never reuse or
+  retask a reviewer instance across tasks or outside the declared finding/dependency closure.
 - Historical specs remain archived; delivery evidence goes to `tasks.md`.
 - `已实现` is a delivery marker, not a claim that the spec is still the current product baseline; the spec's final resting place is `docs/specs/changes/archive/` (see [`feature-archive`](feature-archive.md) / [`spec-reconcile`](spec-reconcile.md)).

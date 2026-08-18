@@ -35,4 +35,11 @@ Main-session fallback is allowed only when dispatch is unavailable, fails, or th
 
 Reviewers consume prerequisite/check evidence supplied by the owning action. They must not rerun, expand, or substitute for the owning action's mechanical gate unless a role specification explicitly owns such execution. An evidence entry identifies the mapped obligation/rule IDs, command or assertion, execution mode, result/status, relevant-input scope, concise totals when applicable, and original execution-evidence reference. Missing or unreadable required execution evidence makes the review `UNRELIABLE`; evidence that reliably demonstrates a role-level compliance gap remains a finding under that role's verdict contract.
 
-Focused re-review is allowed only as a new snapshot revision in the same task and review cycle while the original full-population evidence remains addressable and the unaffected population is unchanged. It covers the findings and their dependency closure, consumes rerun affected L1 evidence, uses a fresh invocation for every affected reviewer population, and fails closed on unverified applicable items. Content or path changes inside that declared fix closure are expected; changes outside it, changes to unaffected scope/input/contract, or uncertain impact require a new full-population review cycle. Crossing a user turn inside the same task does not by itself invalidate the cycle.
+Focused re-review is allowed only in a later explicit owning-action invocation, as one new snapshot revision in
+the same task and review cycle, while the original full-population evidence remains addressable and the
+unaffected population is unchanged. It covers the findings and their dependency closure, consumes rerun
+affected L1 evidence, uses a fresh invocation for every affected reviewer population, and fails closed on
+unverified applicable items. Content or path changes inside that declared fix closure are expected; changes
+outside it, changes to unaffected scope/input/contract, or uncertain impact require a new full-population
+review cycle. Crossing a user turn inside the same task does not by itself invalidate the cycle. A terminal
+review result never authorizes the owning action to repair and redispatch inside that same explicit invocation.

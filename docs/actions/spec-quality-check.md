@@ -15,11 +15,8 @@ Do not use as the main gate for light-lane features; `feature-done` checks their
 - `plan.md`
 - `tasks.md`
 - The existing `plan.md` prior-decisions or risks entry when a bundled-delivery decision exists.
-- The accepted impact boundary and current-consumer/necessity trace recorded in existing spec/plan sections.
-  For an active artifact that repository history or explicit current-user confirmation identifies as
-  pre-3.11 and that lacks `Delivery Shape Baseline`, use its Scope, Constraints, and Module Impact only when
-  they establish one unambiguous legacy boundary; schema migration alone is not required. A newly created or
-  undated artifact cannot claim the fallback merely because the field is missing.
+- The accepted impact boundary and current-consumer/necessity trace recorded in existing spec/plan sections,
+  including a complete `Delivery Shape Baseline`.
 - For an architecture-shaped artifact, the applicable responsibility, cross-boundary contract/state,
   durable trust/authorization ownership, deployment, failure/recovery, and quality-constraint decisions
   already recorded in the ordinary spec/plan/tasks. Infer applicability from the accepted Delivery Shape
@@ -36,9 +33,11 @@ Do not rely on remembered chat as the only source across sessions. Before this g
 non-obvious material choice that interprets an external source, resolves a conflict, accepts bundled risk, or
 supersedes an older decision needs a durable why/source trace. Repository sources use a path and section; user
 decisions use a dated/current-feature reference. Outcomes, scope, constraints, and exclusions remain owned by
-`spec.md` and are not duplicated in Prior decisions. For an older artifact without the current Source column,
-an equivalent stable source in the same decision entry, an adjacent revision record, a cited current-truth
-section, or explicit current user confirmation is accepted; do not require a table-shape migration by itself.
+`spec.md` and are not duplicated in Prior decisions. Every required Prior decisions entry uses three semantic
+columns—decision, why, and source—and records its stable source in that row. The bundled Chinese template labels
+them `决策 | 为什么 | 来源`; an equivalent localized header is valid. When no such decision exists, use the
+explicit `N/A(no durable why/source decision)`. A missing semantic column, row source, or explicit N/A is a
+mechanical failure and must be repaired before subjective review.
 Use `SOURCE GAP` only when missing authority prevents resolution of a material external claim, contradiction,
 or supersede decision—not merely because ordinary contract prose has no duplicate plan row.
 
@@ -90,22 +89,21 @@ Required checks: seven core quality questions, plus conditional current-truth ch
    feature/product semantics remain in spec/plan/ADR. If the project uses nested Claude compatibility,
    the planned `CLAUDE.md` is exactly a one-line `@AGENTS.md` alias.
 7. Delivery shape is viable:
-   - Q7a: tasks are independently actionable or reviewable where splitting helps, without time-box or one-test-case-per-task quotas, and include the necessary validation/proof work. Large/extra-large implementation order uses contract-bearing slices with inspectable exits instead of tier/file/test/time partitions. This constrains slice boundaries, not the real dependency order inside a slice.
+   - Q7a: tasks are independently actionable or reviewable where splitting helps, without time-box or one-test-case-per-task quotas, and include the necessary validation/proof work. Every multi-boundary full-lane implementation uses matching contract-bearing slice IDs in plan/tasks instead of tier/file/test/time partitions; each slice owns focused L1 evidence. A one-boundary full-lane feature is not artificially split. Large/extra-large slices also name inspectable exits, next consumers, and focused evidence. This constrains slice boundaries, not the real dependency order inside a slice.
    - Q7b: the artifact represents one independently demonstrable, acceptable, and revertible outcome. Size alone never changes the verdict. Separable outcomes are split unless concrete coupling requires one delivery or the plan records an explicit bundled-risk decision and source.
    - Q7c: every proposed persistent state, API, role, workflow, management surface, queue, runtime component,
      or architecture responsibility has a traceable current consumer and is necessary for the selected
      outcome; speculative future capability is excluded or durably deferred.
-   - Q7d: a new artifact records the accepted delivery-shape baseline: current outcome/consumer, qualitative
+   - Q7d: the artifact records the accepted delivery-shape baseline: current outcome/consumer, qualitative
      delivery-risk signal, expected responsibility areas, contract/data/authorization/migration/release
      signals, explicit exclusions,
      and scope-growth triggers. Large/extra-large impact has either separable child outcomes or concrete
-     indivisible coupling; any unresolved coordination/rollback risk is explicitly accepted. Its plan also
-     provides a dependency-ordered contract-bearing implementation sequence and silent continuation checks
-     that can expose a mismatch before dependent work or endpoint review, without adding slice-level gates,
-     approvals, reviewers, statuses, or receipts. This sequence requirement is N/A when the reliable pre-3.11
-     fallback applies. Such an active artifact may satisfy Q7d with one unambiguous boundary derived from Scope,
-     Constraints, and Module Impact; record `legacy-unambiguous impact boundary` without rewriting the frozen
-     artifact.
+     indivisible coupling; any unresolved coordination/rollback risk is explicitly accepted. Every
+     multi-boundary full-lane plan also provides a dependency-ordered contract-bearing implementation sequence
+     whose slice IDs map directly to tasks, with focused L1 and compact progress before dependent work. Slice
+     transitions use continuation checks without adding gates, approvals, L2/L3 reviewers, statuses, or receipts.
+     A missing or incomplete `Delivery Shape Baseline` fails Q7d and must be repaired before `READY`; Scope,
+     Constraints, or Module Impact do not substitute for it.
 8. Only when the touched area has a `docs/specs/<area>.md`: the spec cites it and does not contradict it, or explicitly records why it deviates. Projects without current-truth documents skip this check.
 9. When check 8 applies: the spec includes a `## Delta` section with `Added`, `Modified`, and `Removed` subsections; at least one subsection has concrete content (not placeholders or bare N/A).
 
@@ -121,7 +119,7 @@ Greenfield shape:
 
 | # | Check |
 |---|---|
-| M1 | Required elements present (spec §1–§4 + plan Prior decisions section, which may explicitly be `N/A(no durable why/source decision)`, + module impact + Delivery Shape Baseline), or a reliably identified pre-3.11 active artifact has one unambiguous legacy boundary derivable from Scope + Constraints + Module Impact |
+| M1 | Required elements present (spec §1–§4 + plan Prior decisions using decision/why/source semantic columns—`决策 / 为什么 / 来源` in the bundled template—with a source in every required row, or explicit `N/A(no durable why/source decision)` + module impact + Delivery Shape Baseline) |
 | M2 | Scope has explicit `做` and `不做` lists, each with ≥1 non-TODO item |
 | M3 | Verification is non-empty, contains no unresolved TODO, and identifies proof obligations plus executable evidence; coverage, redundancy, and any matrix justification are judged by Q3 |
 | M4 | plan §1.1 Sibling Alignment filled (multi-module work only); each `Codify` row names a durable rule, source, exact root/tier/module/mechanical target, and difference-only/alias work when applicable |
@@ -132,7 +130,7 @@ Brownfield shape (M1/M2 replaced by M1b/M2b; M4/M5 shared):
 
 | # | Check |
 |---|---|
-| M1b | Motivation + Domain References + Delta + Constraints + Verification + plan Prior decisions section, which may use the same explicit N/A, + module impact + Delivery Shape Baseline, or the same unambiguous reliably identified pre-3.11 legacy-boundary fallback |
+| M1b | Motivation + Domain References + Delta + Constraints + Verification + plan Prior decisions using the same semantic columns/source rule or explicit N/A + module impact + Delivery Shape Baseline |
 | M2b | Delta has Added/Modified/Removed subsections, ≥1 non-TODO |
 | M3b | Verification is non-empty, contains no unresolved TODO, and identifies proof obligations plus executable evidence; Delta/risk coverage, redundancy, and any matrix justification are judged by Q3 |
 | M6 | Spec cites `docs/specs/<area>.md` without contradiction, or records an explicit deviation |
@@ -197,8 +195,9 @@ Run the canonical subjective reviewer under the shared [reviewer execution contr
   same reviewer invocation. Ordinary same-boundary permission behavior and internal refactors skip it.
 - Review findings cite the file/section they refer to.
 - More test layers, cases, or matrix cells never improve the verdict by themselves; distinct risk coverage does.
-- For large/extra-large full-lane work, `READY` carries Implementation Scope Stop and Implementation Continuation
-  Check into execution: aligned work continues silently; a material mismatch stops dependent work.
+- For multi-boundary full-lane work, `READY` carries matching plan/tasks slices, focused L1/progress,
+  Implementation Scope Stop and Implementation Continuation Check into execution. Aligned work continues without reconfirmation;
+  a material mismatch stops dependent work. Large/extra-large slices retain their additional exit/consumer/evidence detail.
 - Codify is fail-closed only when the artifact selected it or the accepted outcome depends on a durable local
   convention. This gate never demands nested guidance for an ordinary module merely to make the tree symmetric.
 - Reviewer execution is fail-closed: an unexplained main-session run cannot satisfy this gate when host-native dispatch was available.

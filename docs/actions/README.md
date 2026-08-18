@@ -17,6 +17,7 @@ copying its decision table or inventing a second gate.
 | Bidirectional requirements reconciliation and pre-implementation full-lane quality | [`spec-quality-check`](spec-quality-check.md) | The spec-quality reviewer supplies the assessment method; it does not own routing or implementation scope |
 | Frozen-contract correction, reopening, and synchronized scope-delta handling | [`spec-revise`](spec-revise.md) | It reuses `feature-init` viability rules only when the accepted boundary changes |
 | Actual-diff completion preflight, L1/L2/L3 aggregation, current-truth decision, and delivery receipt | [`feature-done`](feature-done.md) | Reviewers consume the action-owned snapshot and never add a delivery layer |
+| Archive eligibility, current-truth merge, and physical lifecycle closure | [`feature-archive`](feature-archive.md) | It consumes the complete `feature-done` receipt and never infers READY from partial or historical fields |
 | Durable root/tier/module guidance maintenance | [`agents-md-revise`](agents-md-revise.md) | Feature actions may select or verify a placement, but do not run a convention-maintenance sweep |
 
 The action specs are the executable contract. Reviewer documents own assessment methods, adapters own

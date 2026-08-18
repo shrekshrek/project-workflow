@@ -828,10 +828,13 @@ project-workflow 对模块**长什么样**有 opinionated 偏好(不强制):
 [项目约定已建立]
    ├─ 无需持久 artifact → 直接实施并验证
    └─ 需要追踪 → feature-init(Impact/Necessity + Scope Viability → no artifact / light / full)
-          ├─ light → tasks + 验证
-          └─ full → 先关闭高影响未知项 → materialize/fill spec/plan/tasks → spec-quality-check
+          ├─ reuse accepted full → current mechanical shape 复查
+          │      ├─ pass → 沿用现有 tasks/切片
+          │      └─ fail → repair/spec-revise → spec-quality-check
+          ├─ light → materialize tasks
+          └─ new/draft full → 先关闭高影响未知项 → materialize/fill spec/plan/tasks → spec-quality-check
                          ↓
-                      实施
+             实施(FULL 合同切片 / LIGHT 任务清单)+ focused 验证
              (契约真错才 spec-revise)
                          ↓
               ┌─ 同任务:feature-done → feature-archive → PR/merge
@@ -854,10 +857,12 @@ Artifact 写法和 7 问自检见 [`spec-driven.md`](spec-driven.md);运行时�
 
 规划阶段由 [`feature-init`](actions/feature-init.md) 统一负责 Impact/Necessity Preflight、scope viability、
 DIRECT/LIGHT/FULL 和 Implementation Scope Stop。足以改变业务范围、所有权、授权、数据处置或发布
-方式的未知项先关闭,不先生成 speculative spec;普通实现细节可保留 TODO。需要 artifact 时再确认一个
+方式的未知项先关闭,不先生成 speculative spec;普通实现细节可在 materialization/fill 期间保留 TODO，
+但进入实施前必须解析或改成有边界、owner 和证据的具体实施时任务/决定。需要 artifact 时再确认一个
 可独立验收和回退的交付结果,把 WHAT、HOW、STEPS 分别写进 spec、plan、tasks,并用 Delivery Shape
 Baseline 保存已接受边界。Prior decisions 只保存需要 why/source 的非显然选择、外部解释、冲突/
-bundled-risk 裁决和 supersede,不复制 spec。精确判定表只在 action 中维护。
+bundled-risk 裁决和 supersede,不复制 spec。复用 accepted FULL 时只重跑当前 mechanical artifact-shape
+前置条件；通过后不重复主观 review，不通过则 repair/spec-revise 后重新过 quality gate。精确判定表只在 action 中维护。
 
 应用基础或架构设计不另起 action / lane / 保留 slug:它按普通 change 分类。建立或实质改变项目级 runtime tier、模块边界、数据/API 契约等架构,且确有持久 artifact 消费者时走 full lane;最小结构与第一个功能不可分时留在同一个 feature,只有架构决定本身会约束多个后续功能时才单独追踪。只有命中的 architecture-shaped change 条件读取 [`architecture-design.md`](architecture-design.md),把适用结论写回既有 spec/plan/tasks;普通 feature 与 `project-personalize` 跳过。多 tier 真正适用时才读取 §0.3 / §1.4 与 plugin 的 tier examples;单 tier 不生成 tier 文件。
 
@@ -876,15 +881,18 @@ verdict 和状态转换规则,本文不复制其判定表。
 **关键纪律**:不要每个文件改完都看一眼,但也不要让 AI 把边界外工作一直做到 `feature-done` 才发现。
 普通必要细节在已接受 outcome/impact 内自行完成;方向可能变化时执行 Implementation Scope Stop。
 
-Large/extra-large full-lane feature 用少量、按依赖排序的**合同切片**推进。切片应关闭可检查的责任、
-公共契约/状态转换或 actor-to-result 片段，而不是按 tier、文件、测试或工时分桶。切片转换与恢复实施时，
-按 [`feature-init`](actions/feature-init.md#implementation-continuation-check) 静默对账：一致直接继续，
-material delta 才在依赖工作前 Scope Stop；可独立验收、启用、回退的切片重新判断是否应成为 child feature。
-合同切片只约束可检查边界,不限制切片内部的真实依赖顺序。
+多边界 full-lane feature 用少量、按依赖排序的**合同切片**推进，plan/tasks 使用相同 slice ID。
+切片关闭可检查的责任、公共契约/状态转换或 actor-to-result 片段，而不是按 tier、文件、测试或工时
+分桶。一次只做当前片：实现 → 最小 focused L1 → 勾选本片 tasks → 简洁报告已关闭边界/证据/下一片 →
+[`feature-init`](actions/feature-init.md#implementation-continuation-check) 对账。一致无需确认并继续，
+material delta 才在依赖工作前 Scope Stop。切片内不运行 L2/L3 或写 Proof Bundle；focused L1 失败留在
+当前片修复，同一失败无新诊断证据地重复时停止并报告 blocker。单边界 FULL 不为形式硬拆；large/
+extra-large 每片额外写退出条件、下一个 consumer 和最小 focused evidence。可独立验收、启用、回退的
+切片重新判断是否应成为 child feature。合同切片只约束可检查边界，不限制片内真实依赖顺序。
 
 **什么时候应该打断 AI**:
 - 跑偏方向(本来改 backend,跑去改 frontend)
-- 陷入循环(同一个错改 3 次没好)
+- 陷入循环(同一失败重复且没有新诊断证据)
 - 要做的事超出 spec/plan 边界
 - 发现 Delivery Shape Baseline 未声明的新持久状态/API/角色/工作流/管理面/队列/runtime/Provider/
   迁移/授权或发布边界
@@ -901,7 +909,7 @@ Scope Stop 的精确分类和输出由 [`feature-init`](actions/feature-init.md)
 信号。开发和交付验证的精确路由留给项目约定与 owning action。
 
 **底层逻辑**:机械细节上的中途打断会制造反复解释;方向漂移上的延迟打断会制造大量返工和冗余。
-环境层(§6.3)接管机械合规,Implementation Continuation Check 在合同切片间前移对账,
+环境层(§6.3)接管机械合规,每片 focused L1 提前暴露局部失败,Implementation Continuation Check 在合同切片间前移对账,
 Implementation Scope Stop 管方向,端点 review(§3.3)只是最后安全网。
 
 ### 3.3 交付阶段:delivery receipt
@@ -1293,7 +1301,7 @@ LLM 的 attention 是 quadratic 或 sub-linear cost over context length。当 co
 | L2 | reviewer agent + AGENTS.md 作 context | 端点(P3 proof bundle) |
 | L3 | reviewer agent + spec.md 作 context + 测试 | 端点(P3 proof bundle) |
 
-**组合在端点 action**:`feature-done` 是唯一端点组合点。先完成所有必要且可独立执行的 L1;必要 L1 通过后固定一次 review-cycle snapshot,自检完整 owner-supplied review package 后,适用的 L2/L3 使用同一 changed-path population 和 L1 evidence map 独立执行。full lane 的 L2/L3 在容量允许时并行 fresh dispatch,容量不足时顺序执行,聚合前重新核对 snapshot 未漂移。必要 L1 失败或 package 不完整时不启动新的 L2/L3,但仍完成 current-truth 与 receipt。reviewer 发现必要输入缺失时按 canonical role 的失败形式终止(L2/L3 为 terminal `UNRELIABLE`),不在 active invocation 中追问补件。dispatch 后输入漂移则本次 endpoint `BLOCKED`,不自动重开 cycle;输入稳定后的显式新调用才重开完整 cycle。同一任务可跨用户回合保留未漂移的 cycle 证据做 focused re-review;跨任务时重开完整 cycle,不设第二套 helper 命令。
+**组合在端点 action**:`feature-done` 是唯一端点组合点。先完成所有必要且可独立执行的 L1;必要 L1 通过后固定一次 review-cycle snapshot,自检完整 owner-supplied review package 后,适用的 L2/L3 使用同一 changed-path population 和 L1 evidence map 独立执行。full lane 的 L2/L3 在容量允许时并行 fresh dispatch,容量不足时顺序执行,聚合前重新核对 snapshot 未漂移。每次显式调用最多 dispatch 一轮适用 L2/L3 population，并在首次 terminal verdict 结束；不在调用内修复后重派。必要 L1 失败或 package 不完整时不启动新的 L2/L3,但仍完成 current-truth 与 receipt。reviewer 发现必要输入缺失时按 canonical role 的失败形式终止(L2/L3 为 terminal `UNRELIABLE`),不在 active invocation 中追问补件。dispatch 后输入漂移则本次 endpoint `BLOCKED`,不自动重开 cycle。输入稳定或独立修复完成后，只有后续显式调用才能重开完整 cycle 或在同一任务内用未漂移证据做 focused re-review；跨任务时重开完整 cycle,不设第二套 helper 命令。
 
 #### L2 / L3 Reviewer 承诺
 

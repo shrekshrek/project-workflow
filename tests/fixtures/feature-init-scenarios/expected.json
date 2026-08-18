@@ -41,7 +41,8 @@
     "shape": null,
     "mustRetainTodoMarker": false,
     "forbiddenPlantPatterns": [],
-    "sentinel": "docs/specs/changes/001-approved-feature/spec.md"
+    "sentinel": "docs/specs/changes/001-approved-feature/spec.md",
+    "expectedBehavior": "不得新建 artifact；报告 Feature: reuse=<001-approved-feature path>，先复查当前 mechanical artifact shape，通过后按已有 full-lane/已确认状态继续 implementation → feature-done；不通过则 repair/spec-revise → spec-quality-check。不得把 DIRECT no-creation 误解释为跳过 tracked endpoint。"
   },
   "no-artifact-multifile-refactor": {
     "base": "base-numbered",

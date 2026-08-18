@@ -81,7 +81,7 @@ Fresh-read the three artifacts and assess every relevant item:
   rules prefer lint/hook/test. Repeated parent text, directory-symmetry files, a missing target/alias task, or
   a nested `CLAUDE.md` planned as anything other than one-line `@AGENTS.md` = fail. An uncertain owner =
   borderline or fail according to whether it can change implementation.
-- Q7a tasks: independently actionable or reviewable output/check = pass; a broad bucket that hides separate decisions = fail; work without verification = borderline. Large/extra-large implementation order should use contract-bearing slices with inspectable exits and next consumers rather than tier, directory, file, test, or time partitions. This constrains slice boundaries, not the real dependency order inside a slice. Do not require time estimates or split one task per test case.
+- Q7a tasks: independently actionable or reviewable output/check = pass; a broad bucket that hides separate decisions = fail; work without verification = borderline. Every multi-boundary full-lane implementation should use matching contract-bearing slice IDs in plan/tasks rather than tier, directory, file, test, or time partitions, and each slice should own focused L1 evidence. A genuinely one-boundary feature is not artificially split. Large/extra-large slices additionally name inspectable exits, next consumers, and focused evidence. This constrains slice boundaries, not the real dependency order inside a slice. Do not require time estimates or split one task per test case.
 - Q7b delivery coherence: one independently demonstrable/acceptable/revertible outcome with resolved material risks = pass regardless of size; several separable outcomes with no coupling or traceable bundled-risk decision in the plan = fail; an explicitly accepted bundle, or one coherent delivery with material unresolved coordination/rollback risk, = borderline.
 - Q7c current necessity: every persistent state, API, role, workflow, management surface, queue, runtime
   component, or architecture responsibility names a present actor/consumer and a selected-outcome necessity =
@@ -95,17 +95,15 @@ Fresh-read the three artifacts and assess every relevant item:
   failure/migration/recovery decision = fail; an undeclared high-impact surface or unresolved data/ownership
   disposition = fail;
   large/extra-large delivery with concrete inseparable coupling and accepted risk = pass or borderline
-  according to the remaining coordination risk, never an automatic fail by size alone. Unless the reliable
-  pre-3.11 fallback below applies, large/extra-large
-  work, the plan also needs a dependency-ordered contract-bearing sequence plus a silent continuation check
-  at slice transitions and context/session resume; it must allow aligned implementation to continue without
-  another user approval, reviewer, status, or receipt while routing a material mismatch to Scope Stop before
-  dependent work. A sequence divided only by tiers/files/tests/time, or with no inspectable point before
-  endpoint review, is a fail. For an active artifact
-  reliably identified by repository history or explicit current-user confirmation as pre-3.11 and lacking
-  Delivery Shape Baseline, accept one unambiguous boundary derived from Scope, Constraints, and Module Impact
-  and report `legacy-unambiguous impact boundary`; the continuation-sequence requirement is N/A and the frozen
-  artifact is not rewritten. An undated/new omission or ambiguous boundary remains a fail.
+  according to the remaining coordination risk, never an automatic fail by size alone. Multi-boundary full-lane
+  work needs a dependency-ordered contract-bearing
+  sequence with matching plan/tasks slice IDs, focused L1 and compact progress at each slice, plus a continuation
+  check at transitions and context/session resume. It must allow aligned implementation to continue without
+  another user approval, L2/L3 reviewer, status, or receipt while routing a material mismatch to Scope Stop
+  before dependent work. Large/extra-large slices additionally require an inspectable exit, next consumer, and
+  smallest focused evidence. A sequence divided only by tiers/files/tests/time, a plan/tasks mismatch, or no
+  inspectable point before endpoint review is a fail. A missing or incomplete Delivery Shape Baseline is a fail;
+  Scope, Constraints, or Module Impact do not substitute for it.
 
 Report the reconciliation status, reviewed items, skipped items with reasons, blocking ambiguity, citations,
 and concise rewrites. Use a pass/borderline/fail matrix only when several items fail. A mostly empty artifact

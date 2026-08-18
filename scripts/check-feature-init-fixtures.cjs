@@ -14,6 +14,7 @@ const fs = require("node:fs");
 const os = require("node:os");
 const path = require("node:path");
 const { spawnSync } = require("node:child_process");
+const { validateFullFixtureAgainstCurrentPreflight } = require("./lib/fixture-contracts.cjs");
 
 const root = path.resolve(__dirname, "..");
 const fixtureRoot = path.join(root, "tests/fixtures/feature-init-scenarios");
@@ -140,6 +141,40 @@ function gradeScenario(name, config, runDir) {
 }
 
 function validateFixtures() {
+  const approvedFeature = path.join(
+    fixtureRoot,
+    "base-numbered/docs/specs/changes/001-approved-feature",
+  );
+  problems.push(...validateFullFixtureAgainstCurrentPreflight(approvedFeature, {
+    label: "feature-init accepted reuse base",
+    userVisible: true,
+    requireComplete: false,
+  }));
+
+  const staleRoot = fs.mkdtempSync(path.join(os.tmpdir(), "project-workflow-stale-reuse-"));
+  try {
+    const staleFeature = path.join(staleRoot, "001-approved-feature");
+    fs.cpSync(approvedFeature, staleFeature, { recursive: true });
+    const stalePlan = path.join(staleFeature, "plan.md");
+    fs.writeFileSync(
+      stalePlan,
+      read(stalePlan).replace(
+        "N/A(no durable why/source decision)",
+        "- 使用现有 auth 契约，因为这是已确认的展示行为。",
+      ),
+    );
+    const staleProblems = validateFullFixtureAgainstCurrentPreflight(staleFeature, {
+      label: "feature-init stale accepted reuse",
+      userVisible: true,
+      requireComplete: false,
+    });
+    if (!staleProblems.some((problem) => problem.includes("Prior decisions"))) {
+      problems.push("feature-init stale accepted reuse: old Prior decisions shape was not rejected");
+    }
+  } finally {
+    fs.rmSync(staleRoot, { recursive: true, force: true });
+  }
+
  for (const scenario of [
    "scope-viability-implicit-ask",
    "scope-viability-coupled-migration",
@@ -359,7 +394,7 @@ async function main() {
       for (const problem of problems) console.error(`- ${problem}`);
       process.exit(1);
     }
-    console.log("Feature-init scenario fixtures OK: bases and expectations are coherent; materializer lane/shape/NNN/no-clobber/rollback/symlink checks passed (no model executed).");
+    console.log("Feature-init scenario fixtures OK: accepted/stale reuse shape, bases, expectations, and materializer lane/shape/NNN/no-clobber/rollback/symlink checks passed (no model executed).");
   }
 }
 

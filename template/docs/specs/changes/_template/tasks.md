@@ -1,24 +1,32 @@
 # <NNN> <slug> — Tasks
 
-> 基于 plan.md。只在工作可独立实施、验证或 review 时拆分,实施时勾选 + 加注。
+> 基于 plan.md。只在工作可独立实施、验证或 review 时拆分,实施时勾选 + 加注；不要按预计时长或测试 case 机械拆分。
 > 实施中出现 plan Delivery Shape Baseline 未声明的 outcome/持久状态/API/角色/工作流/管理面/队列/runtime/Provider/迁移/授权/发布边界时,在继续写生产代码、测试、migration 或兼容层前立即停下。先按 scope delta 分类,报告 delta、当前必要性和推荐的删除/收窄/child/spec-revise 方向;只有方向确需用户决定时一次问一个问题。不得因代码已经写出而自动收编。
-> Large/extra-large feature 按 plan §5 执行 Implementation Continuation Check，不要求用户重复确认。
+> 多边界 FULL feature 的标题与 plan §5 slice ID 一一对应。一次只做当前切片：实现 → focused L1 → 勾选
+> 本片任务 → 简洁报告已关闭边界/证据/下一片 → Implementation Continuation Check。一致继续且不要求用户
+> 重复确认；切片内不运行 L2/L3、不写 Proof Bundle。单边界 FULL 不为形式硬拆。
 
 ## 1. 任务清单
 
-### Setup(仅当 plan 标注新增 component/module)
-- [ ] 建 `<component-or-tier>/<module-path>/` 及该栈所需的最小入口文件
-- [ ] 接入父级 composition/registration point
-- [ ] 若 plan 明确包含持久化结构变化,添加并验证对应 migration
+### `S1` {{TODO 与 plan §5 相同的合同切片 ID 与名称；单边界 FULL 写唯一责任}}
 
-### `<component-or-tier>`
-- [ ] {{TODO 按实际受影响 component 分组;避免大而含糊的 bucket,也不要按预计时长或测试 case 机械拆分}}
+- [ ] {{TODO 本片实现工作；Setup / migration / composition 放入实际拥有它的切片}}
+- [ ] Focused L1: {{TODO 本片关闭边界所需的最小 command / assertion → 映射 spec §4 obligation}}
+
+### `S2` {{TODO 仅多边界时保留并按依赖增加；必须与 plan §5 对应}}
+
+- [ ] {{TODO 本片实现工作}}
+- [ ] Focused L1: {{TODO 本片关闭边界所需的最小 command / assertion → 映射 spec §4 obligation}}
 
 ### Verification
 
-> 兑现 spec §4 的最小证据义务。一个 command / assertion 可映射多个相关风险且只运行一次;每个新增测试层、矩阵、fixture 或 case 必须覆盖现有更便宜证据未覆盖的实质风险,或满足项目/发布约定。优先扩展最近且清晰的已有测试,合并重叠验证,删除只保护已取代行为的测试。测试数量和层级对称不构成质量。
+> 只列尚未由 slice focused L1 映射覆盖的跨切片/最终证据；若全部已覆盖，写
+> `N/A(all spec §4 obligations mapped in slices)`，不要重复 checklist。输入未变化的 slice evidence
+> 由 feature-done 按规则复用，不重复执行。一个 command / assertion 可映射多个相关风险且只运行一次。每个新增测试层、矩阵、fixture 或 case
+> 必须覆盖现有更便宜证据未覆盖的实质风险,或满足项目/发布约定。优先扩展最近且清晰的已有测试,
+> 合并重叠验证,删除只保护已取代行为的测试。测试数量和层级对称不构成质量。
 
-- [ ] {{TODO 一个或多个证据义务 → 最小 command / assertion;具体测试文件和 case 可在实施时决定}}
+- [ ] {{TODO 仅剩余跨切片/最终证据义务 → 最小 command / assertion；或改为 N/A(...)}}
 
 ## 2. 实施记录
 

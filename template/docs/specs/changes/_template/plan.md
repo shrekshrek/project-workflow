@@ -71,14 +71,18 @@
 
 ### 未决(实施时决)
 
-- {{TODO}}
+> 在 spec-quality-check 前移除 `{{TODO}}`。确需实施时决定的事项写成具体边界、owner 和完成证据，
+> 不保留泛化 discovery placeholder；没有则写“无”。
+
+- {{TODO 具体实施时决事项，或“无”}}
 
 ## 5. 实施顺序
 
 > 按真实依赖顺序排列可独立检查的实施步骤,不默认某个 tier 先行。
-> 仅当 Delivery risk signal 为 large/extra-large 时,把步骤组织为少量合同切片,并写明可检查退出条件、
-> 下一个 consumer 与最小 focused evidence；切片转换和 context/session 恢复时执行 Implementation Continuation Check：
-> 一致直接继续,material delta 才触发 Implementation Scope Stop。该要求只约束切片边界,
-> 不限制切片内部的真实依赖顺序。
+> 多边界 FULL feature 把步骤组织为少量合同切片并分配稳定 slice ID；tasks.md 使用相同 ID，
+> 每片完成实现、最小 focused L1 和任务勾选后，给出简洁进度，再执行 Implementation Continuation Check。
+> 一致直接继续，material delta 才触发 Implementation Scope Stop；切片中不运行 L2/L3 或写 Proof Bundle。
+> 单边界 FULL 不为形式硬拆。Delivery risk signal 为 large/extra-large 时，每片还写明可检查退出条件、
+> 下一个 consumer 与最小 focused evidence。该要求只约束切片边界，不限制切片内部真实依赖顺序。
 
-1. {{TODO 实施步骤;large/extra-large 时补充:合同切片 / 可检查退出条件 / 下一个 consumer / 最小 focused evidence}}
+1. `S1` {{TODO 合同切片或单一责任;large/extra-large 时补充:可检查退出条件 / 下一个 consumer / 最小 focused evidence}}

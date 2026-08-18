@@ -71,8 +71,18 @@ requireMarkers("docs/actions/README.md", [
   "The action specs are the executable contract",
   "## Architecture risk routing",
   "There is no standalone architecture action",
+  "Archive eligibility, current-truth merge, and physical lifecycle closure",
+  "complete `feature-done` receipt",
 ]);
 requireMarkers("docs/architecture-design.md", ["durable trust/authorization ownership boundaries", "ordinary permission", "does not trigger"]);
+requireMarkers("README.md", ["Reused accepted FULL artifacts first pass the current mechanical-shape recheck"]);
+requireMarkers("docs/workflow.md", ["reuse accepted full → current mechanical shape 复查", "通过后不重复主观 review"]);
+requireMarkers("docs/project-workflow-overview.drawio", ["复用 accepted full 先复查 current shape", "当前合同切片", "completion preflight", "首次 terminal verdict", "完整 READY receipt", "后续显式调用", "approved patch + 验证摘要"]);
+forbidMarkers("docs/project-workflow-overview.drawio", ["唯一端点入口(幂等)", "same-task partial recheck", "backlog/drift 自动入", "commit message 草稿"]);
+requireMarkers("scripts/lib/fixture-contracts.cjs", ["validateFullFixtureAgainstCurrentPreflight", "Delivery Shape Baseline", "Prior decisions lacks", "plan/tasks slice IDs", "completion fixture contains unfinished tasks"]);
+for (const relative of ["scripts/check-reviewer-fixtures.cjs", "scripts/check-feature-init-fixtures.cjs"]) {
+  requireMarkers(relative, ["validateFullFixtureAgainstCurrentPreflight"]);
+}
 
 const ciWorkflow = read(".github/workflows/version-sync-check.yml");
 for (const marker of [
@@ -96,16 +106,17 @@ forbidMarkers("adapters/claude/skills/feature-done/SKILL.md", [
   "git checkout HEAD",
 ]);
 for (const relative of ["adapters/claude/skills/feature-done/SKILL.md", "adapters/codex/skills/feature-done/SKILL.md"]) {
-  requireMarkers(relative, ["agents-md-reviewer", "spec-reviewer", "## Proof Bundle", "After required L1 passes", "Reviewers are read-only", "completion preflight", "not-run(completion preflight)", "preserve the prior non-empty receipt", "Lifecycle: READY; archive pending", "do not inline the full receipt"]);
+  requireMarkers(relative, ["agents-md-reviewer", "spec-reviewer", "## Proof Bundle", "After required L1 passes", "Reviewers are read-only", "completion preflight", "not-run(completion preflight)", "later explicit invocation", "Lifecycle: READY; archive pending", "do not inline the full receipt"]);
   forbidMarkers(relative, ["lightweight architecture-drift observation", "architecture-drift observation"]);
 }
-requireMarkers("docs/actions/feature-done.md", ["Light-lane verification", "transient validation evidence", "receipt/history edits", "Resolved durable behavior with no existing area document is `update pending`", "area unresolved", "Persist only fields with a downstream consumer", "Completion Preflight", "primary-flow smoke", "mixed-feature", "Do not inline the full receipt"]);
+requireMarkers("docs/actions/feature-done.md", ["Light-lane verification", "transient validation evidence", "receipt/history", "Resolved durable behavior with no existing area document is `update pending`", "area unresolved", "Persist only fields with a downstream consumer", "Completion Preflight", "primary-flow smoke", "mixed-feature", "Do not inline the full receipt"]);
 requireMarkers("docs/actions/feature-done.md", ["unfinished checklist item", "return `BLOCKED`", "git=[base=<commit SHA>; reviewed=<commit SHA>; dirty=no]", "git=[base=<commit SHA>; reviewed=worktree; dirty=yes]", "repository-relative `tasks.md#proof-bundle` path"]);
-requireMarkers("docs/actions/feature-done.md", ["Delivery Shape Baseline", "high-impact surfaces", "routes to `spec-revise`, lane upgrade, or a child feature", "legacy-unambiguous impact boundary", "accepted-scope-"]);
+requireMarkers("docs/actions/feature-done.md", ["Delivery Shape Baseline", "high-impact surfaces", "routes to `spec-revise`, lane upgrade, or a child feature", "without an accepted", "other sections", "do not substitute"]);
 forbidMarkers("docs/actions/feature-done.md", ["newly added or materially expanded test layers", "Architecture drift observation", "architecture-drift observation", "bounded architecture-drift"]);
-requireMarkers("docs/actions/feature-done.md", ["Ignore the canonical", "Previous Proof Bundle", "not-run(completion preflight)", "do not leave an older READY receipt", "date-or-sequence", "non-READY rerun returns the status to `已确认`", "existing Verification obligation", "explicitly marked `Primary flow`", "must not invent an additional smoke", "older active artifact", "legacy-unambiguous selection", "frozen artifact", "Zero or several plausible legacy choices"]);
+requireMarkers("docs/actions/feature-done.md", ["Ignore the canonical", "Previous Proof Bundle", "not-run(completion preflight)", "do not leave an older READY receipt", "date-or-sequence", "non-READY rerun returns the status to `已确认`", "existing Verification obligation", "explicitly marked `Primary flow`", "must not invent an additional smoke", "missing or ambiguous `Primary flow`", "for `spec-revise`"]);
 requireMarkers("docs/actions/feature-done.md", ["explicit Verification checks", "standard mechanical", "changed project scope", "repository-wide or release suites", "Do not treat every command listed"]);
 requireMarkers("docs/actions/feature-done.md", ["reuse a passing check", "relevant inputs", "changed-scope classification", "provably unchanged", "uncertainty requires a rerun", "failed or affected checks", "dependency closure", "full changed-scope L1 population", "workspace or build cache sequentially", "same-task reuse", "must not be presented as newly executed", "Before the first full L2/L3 dispatch", "non-receipt spec/plan/tasks edits", "never repairs implementation or non-receipt artifacts"]);
+requireMarkers("docs/actions/feature-done.md", ["Every multi-boundary full-lane feature", "reused feature", "matching contract-bearing slice IDs in plan/tasks", "one-boundary feature is N/A", "omitting slice declarations does not claim", "A missing", "mapping or incomplete slice returns `NEEDS WORK`"]);
 for (const relative of ["template/docs/specs/changes/_template/tasks.md", "template/docs/specs/changes/_template/tasks-light.md", "docs/examples/full-feature-artifact.md"]) {
   requireMarkers(relative, ["mode=run|same-task reuse", "reused evidence reference"]);
 }
@@ -120,17 +131,17 @@ requireMarkers("docs/examples/reviewer-mutation-smoke.md", ["## L1 reuse smoke",
 requireMarkers("docs/examples/reviewer-mutation-smoke.md", ["## Completion-preflight smoke", "## Endpoint-summary smoke", "## Reopen smoke", "does not inline", "git=[base=...; reviewed=...; dirty=...]", "ignores both receipt regions", "Lifecycle: READY; archive pending", "pure implementation regression", "not-run(completion preflight)"]);
 forbidMarkers("docs/actions/feature-done.md", ["reproducible diff identity", "content fingerprint"]);
 requireMarkers("docs/actions/feature-done.md", ["independently executable required L1 checks", "do not dispatch new reviewers", "still-valid same-task reviewer results", "not-run(L1 prerequisite)", "current-truth check", "receipt", "After L1 passes, missing execution evidence", "../reviewers/README.md#reviewer-execution-contract"]);
-requireMarkers("docs/actions/feature-done.md", ["review-cycle snapshot", "Git/non-Git changed-path population", "exact applicable rule/spec IDs", "unverified-item-count=0", "blocking-ambiguity-count=0", "Never infer coverage from `findings=none`", "A PASS never persists applicable IDs or populations", "manual file populations", "population/content hashes", "dependency closure"]);
-requireMarkers("docs/actions/feature-done.md", ["same-task, same-review-cycle optimization", "new revision of the cycle snapshot", "original full-population terminal evidence", "fix limited to the cited findings and their dependency closure", "change outside the finding/dependency closure", "unaffected changed-path population", "A later task", "base=<commit SHA>", "before writing those endpoint-owned outputs", "reviewed=<commit SHA>; dirty=no", "reviewed=worktree; dirty=yes", "Other reviewed/dirty pairings are invalid", "target-branch merge base", "ambiguous repository, base, or feature boundary blocks", "Derive changed paths from Git", "For light lane, run it only when", "declared receipt/status write is the only permitted endpoint-output difference"]);
-requireMarkers("docs/actions/feature-done.md", ["Within one snapshot revision", "Across a permitted focused-re-review revision", "reviewer-specific scope, inputs, evidence dependencies, and applicable population", "cycle-level reviewed identity itself advances"]);
+requireMarkers("docs/actions/feature-done.md", ["review-cycle snapshot", "Git/non-Git changed-path population", "exact applicable", "unverified-item-count=0", "blocking-ambiguity-count=0", "A PASS never persists applicable IDs or populations", "do not persist its path list or a population/content hash", "dependency closure"]);
+requireMarkers("docs/actions/feature-done.md", ["available only in a later explicit `feature-done` invocation", "one revised snapshot", "original full-population terminal evidence", "fix is limited to the cited findings and their dependency closure", "change outside the finding/dependency closure", "unaffected changed-path population", "A later task", "base=<commit SHA>", "before writing those endpoint-owned outputs", "reviewed=<commit SHA>; dirty=no", "reviewed=worktree; dirty=yes", "Other reviewed/dirty pairings are invalid", "target-branch merge base", "ambiguous repository, base, or feature boundary blocks", "Derive changed paths from Git", "For light lane, run it only when", "The only allowed output difference is this action's declared receipt/status write"]);
+requireMarkers("docs/actions/feature-done.md", ["Each explicit invocation dispatches at most one applicable L2/L3 population", "parallel L2/L3 roles together count as that one review cycle", "A terminal `NEEDS WORK` ends the invocation", "never auto-fixes or redispatches", "at most one L2/L3 dispatch cycle", "later explicit invocation"]);
 forbidMarkers("docs/actions/feature-done.md", ["cached L2/L3 results"]);
 requireMarkers("docs/actions/feature-done.md", ["one transient review-cycle snapshot", "authoritative Git/non-Git changed-path population", "L1 command/result evidence map", "L2 convention-source paths", "L3 spec/artifact paths", "same snapshot revision and changed-path population", "must not rerun, substitute, or expand L1 commands", "evidence ID", "mapped obligation or convention-rule IDs", "relevant-input scope", "original execution-evidence reference", "L2 package may be explicitly empty", "every Verification obligation must map", "dispatch L2 and L3 in parallel", "sequential fresh dispatch", "not a fallback condition", "dispatch-to-aggregation window", "revalidate the current reviewed inputs", "later explicit `feature-done` invocation", "do not persist its path list"]);
-requireMarkers("docs/actions/feature-done.md", ["Validate the complete owner-supplied review package", "one representation for every Verification obligation", "validates package structure, presence, and readability", "explicit gap or failed mapped evidence is a finding", "record every applicable review slot", "not-run(review-package incomplete)", "invalidated(review-input drift)", "never auto-start another full-population", "terminates the current"]);
+requireMarkers("docs/actions/feature-done.md", ["Validate the complete owner-supplied review package", "one representation for every Verification obligation", "validates package structure, presence, and readability", "explicit gap or failed mapped evidence is a finding", "record every applicable review slot", "not-run(review-package incomplete)", "invalidated(review-input drift)", "never auto-start another full-population", "Stop the current invocation"]);
 requireMarkers("docs/reviewers/README.md", ["failure form defined by its canonical role and owning action", "roles whose verdict", "terminal `UNRELIABLE` report", "must not request the missing material", "piecemeal questions", "supplement the active invocation"]);
 requireMarkers("docs/reviewers/spec-reviewer.md", ["complete package explicitly records a `verification gap`", "mapped evidence reliably shows failure"]);
 requireMarkers("docs/examples/reviewer-mutation-smoke.md", ["owner-required review-package input", "every applicable slot", "dispatches no reviewer", "rejects the cycle for aggregation", "does not auto-start another full-population cycle", "requesting the missing package", "explicit `verification gap`"]);
 requireMarkers("docs/actions/feature-done.md", ["full authoritative changed-path population", "every ancestor tier/module `AGENTS.md`", "union the chains", "path-to-source applicability map", "root-to-nearest inheritance", "unrelated sibling guidance"]);
-requireMarkers("docs/actions/feature-archive.md", ["receipt-schema migration candidate", "review-scope", "git=[base=...; reviewed=...; dirty=...]", "eligible only as a current-task result", "does not re-anchor it", "not proof that the reviewed worktree was unchanged", "delivery evidence and current truth as separate freshness questions", "later movement of a current branch or PR head does not by itself invalidate", "validate every pending current-truth fact against present implementation evidence"]);
+requireMarkers("docs/actions/feature-archive.md", ["archive-eligible only", "required fields defined by the", "`Verdict: READY`", "Checks", "Review execution", "Current truth", "ineligible", "rerun feature-done", "eligible only as a current-task result", "does not re-anchor it", "not proof that the reviewed worktree was unchanged", "delivery evidence and current truth as separate freshness questions", "later movement of a current branch or PR head does not by itself invalidate", "validate every pending current-truth fact against present implementation evidence"]);
 requireMarkers("docs/actions/spec-revise.md", ["delivered-but-unarchived", "implementation regression under an unchanged accepted contract does not use this action", "return `已实现` to `已确认`", "Previous Proof Bundle", "date-or-sequence", "exactly one canonical `## Proof Bundle`", "archived feature requires a successor change"]);
 requireMarkers("docs/actions/spec-revise.md", ["necessary-detail", "contract-correction", "separable-outcome", "speculative-capability", "bundled-risk", "already-written implementation", "becomes incomplete again", "scope expansion, contraction, or semantic correction"]);
 requireMarkers("docs/actions/spec-revise.md", ["Stop implementation work", "code, tests, migrations, or compatibility paths", "compact `Scope stop`", "at most one"]);
@@ -161,6 +172,7 @@ for (const filename of fs.readdirSync(path.join(repoRoot, "adapters/claude/agent
   requireRegex(relative, /\*\*Response language\*\*:\s*Match the calling (?:skill's|user's) language/i, "caller-language response contract");
 }
 requireMarkers("docs/reviewers/README.md", ["Reviewer execution contract", "dispatch capability", "fresh subagent invocation", "never an agent instance", "fresh-subagent", "result-reuse", "observed reason", "host security approvals still apply", "fail closed", "dependency closure", "same task and review cycle", "original full-population evidence", "multiple user turns", "must not rerun, expand, or substitute", "status-only and non-authoritative", "one terminal report"]);
+requireMarkers("README.md", ["Same-task focused re-review requires a later explicit `feature-done` invocation"]);
 requireRegex("docs/reviewers/README.md", /Codex plugin skills[\s\S]{0,160}must use[\s\S]{0,160}subagent/i, "mandatory Codex reviewer index wording");
 for (const action of ["feature-init", "project-personalize", "spec-revise", "agents-md-revise"]) {
   requireMarkers(`docs/actions/${action}.md`, ["## Reviewer Execution", "../reviewers/README.md", "`Reviewer execution`", "blocking"]);
@@ -270,17 +282,19 @@ requireMarkers("template/docs/specs/changes/_template/tasks-light.md", ["verific
 
 requireMarkers("docs/actions/feature-init.md", ["do not create a pseudo-lane", "Use full lane for high-risk or contract-shaped work", "Use light lane only when all are true"]);
 requireMarkers("docs/actions/feature-init.md", ["## Route Decision", "`DIRECT`", "`LIGHT`", "`FULL`", "`PREVIEW`", "`APPLY`", "return a read-only route preview", "that assessment never authorizes artifact creation", "Automatic skill invocation is not write authorization", "This is a risk class, not a closed keyword list", "Route: pending", "never create a duplicate", "`Feature`: `none`, `create=<path>`, or `reuse=<path>`", "`Next gates`"]);
+requireMarkers("docs/actions/feature-init.md", ["For `Feature: reuse=<path>`", "derive the sequence from that artifact's lane and lifecycle", "accepted full first rechecks", "current mechanical artifact-shape prerequisites", "draft full begins with", "without another subjective review", "A reused artifact follows its own lane/lifecycle gates"]);
+requireMarkers("docs/actions/feature-init.md", ["no `{{TODO}}` enters implementation", "concrete bounded implementation-time task/decision", "owner, boundary, and evidence", "without routine section-by-section confirmation", "Preserve unknowns as TODOs"]);
 requireMarkers("docs/actions/feature-init.md", ["Absent an explicit feature-routing assessment", "general discussion/review/diagnosis without that request does not invoke the action", "completion returns control to that request without another confirmation", "artifact-initialization-only request stops"]);
 requireMarkers("docs/actions/feature-init.md", ["proof obligations", "do not derive generic edge, error, status-code, or unspecified-input cases", "one command or assertion may satisfy several related obligations", "interacting dimensions can change the result", "Do not create a test-layer, endpoint, status-code, or happy/boundary/error matrix for symmetry"]);
 requireMarkers("docs/actions/feature-init.md", ["impact and necessity preflight", "present actor/consumer", "dirty-worktree overlap", "small, medium, large, or extra-large", "Speculative future capability", "one material question at a time across turns", "Do not materialize a speculative", "`Impact` section"]);
-requireMarkers("docs/actions/spec-quality-check.md", ["smallest non-redundant proof obligations", "Generic derived edge/error cases and unspecified inputs are removed", "One evidence source may cover several related obligations", "artifact that requires an additional test layer or matrix", "distinct risk coverage", "fails Q3", "compact passing range", "More test layers, cases, or matrix cells never improve the verdict", "Implementation Scope Stop", "pre-3.11 active artifact", "legacy-unambiguous impact boundary", "ordinary contract prose has no duplicate plan row"]);
+requireMarkers("docs/actions/spec-quality-check.md", ["smallest non-redundant proof obligations", "Generic derived edge/error cases and unspecified inputs are removed", "One evidence source may cover several related obligations", "artifact that requires an additional test layer or matrix", "distinct risk coverage", "fails Q3", "compact passing range", "More test layers, cases, or matrix cells never improve the verdict", "Implementation Scope Stop", "missing or incomplete `Delivery Shape Baseline`", "do not substitute for it", "ordinary contract prose has no duplicate plan row"]);
 requireMarkers("docs/actions/spec-quality-check.md", ["Q7c", "Q7d", "traceable current consumer", "Delivery Shape Baseline", "scope-growth triggers", "currently necessary outcome"]);
 requireMarkers("docs/reviewers/spec-quality-reviewer.md", ["One command may prove several related obligations", "Do not require time estimates or split one task per test case", "Optional implementation ideas"]);
-requireMarkers("docs/reviewers/spec-quality-reviewer.md", ["Every test layer or matrix required by the artifact", "fails Q3", "deleted or consolidated", "test counts", "smallest sufficient", "legacy-unambiguous impact boundary", "accepted spec content needs no duplicate"]);
+requireMarkers("docs/reviewers/spec-quality-reviewer.md", ["Every test layer or matrix required by the artifact", "fails Q3", "deleted or consolidated", "test counts", "smallest sufficient", "missing or incomplete Delivery Shape Baseline", "do not substitute for it", "accepted spec content needs no duplicate"]);
 requireMarkers("docs/reviewers/spec-quality-reviewer.md", ["Q7c current necessity", "Q7d impact completeness", "possible future need", "Use counterexamples"]);
 requireMarkers("docs/spec-driven.md", ["Impact Preflight", "Delivery Shape Baseline", "Q7c", "Q7d", "Scope delta", "speculative-capability", "已经写了代码不构成收编理由"]);
 requireMarkers("docs/workflow.md", ["Impact/Necessity Preflight", "Delivery Shape Baseline", "Scope Delta", "speculative-capability", "已经写出的代码不构成收编理由"]);
-requireMarkers("docs/spec-driven.md", ["只把需要持久追踪的选择", "选择性当场写回", "普通实现细节不逐项记账", "Git 历史或当前用户确认的 pre-3.11", "需要持久 why/source", "N/A(no durable why/source decision)` 不属于反模式"]);
+requireMarkers("docs/spec-driven.md", ["只把需要持久追踪的选择", "选择性当场写回", "普通实现细节不逐项记账", "不能替代当前 Prior decisions schema 或 Delivery Shape Baseline", "需要持久 why/source", "N/A(no durable why/source decision)` 不属于反模式"]);
 requireMarkers("docs/workflow.md", ["Prior decisions 选择性写回", "普通 spec 契约不复制", "没有此类决定时显式 N/A"]);
 forbidMarkers("docs/spec-driven.md", ["否则只在 Prior decisions 写 why", "### 6.2 plan.md Prior decisions 留空", "任何讨论中已定的技术选型"]);
 requireMarkers("docs/actions/project-personalize.md", ["A command being available does not make it mandatory for every feature", "Do not introduce a missing test layer, matrix, coverage gate, or release suite for completeness", "does not manufacture layer or matrix symmetry"]);
@@ -289,14 +303,14 @@ for (const relative of ["template/docs/specs/changes/_template/tasks.md", "templ
   forbidMarkers(relative, ["30min-2h", "30 分钟 - 2 小时"]);
 }
 requireMarkers("docs/actions/feature-done.md", ["merely for symmetry", "each layer proves a distinct risk"]);
-requireMarkers("docs/actions/feature-init.md", ["scope-viability check", "Never report a nonblocking Scope Viability result", "clarification-required", "split-required", "bundled-risk-accepted", "pending-selection", "pending-handoff", "size alone never requires a split", "durable decomposition handoff", "untracked out-of-scope outcomes", "Do not create a repository backlog", "separate external write that requires the user's explicit authorization", "Recheck them at `spec-quality-check`"]);
-requireMarkers("docs/actions/feature-init.md", ["### Implementation Scope Stop", "before", "production code", "tests, migrations, compatibility paths", "Safe read-only", "necessary-detail", "simpler implementation", "compact `Scope stop`", "Ask at most one", "full lane is not"]);
-requireMarkers("docs/actions/feature-init.md", ["### Implementation Continuation Check", "contract-bearing slices", "context", "compaction", "continue silently", "Do not ask the user to reconfirm", "scope-growth triggers", "tier, directory, file count, test layer/case, or estimated duration", "feature, action, lane, gate"]);
+requireMarkers("docs/actions/feature-init.md", ["scope-viability check", "Never report a nonblocking Scope Viability result", "clarification-required", "split-required", "bundled-risk-accepted", "pending-selection", "pending-handoff", "size alone never requires a split", "durable decomposition handoff", "explicitly untracked outcomes", "Do not create a repository backlog", "separate external write that requires the user's explicit authorization", "Recheck them at `spec-quality-check`"]);
+requireMarkers("docs/actions/feature-init.md", ["### Implementation Scope Stop", "before", "production code", "tests, migrations, compatibility paths", "Safe read-only", "necessary-detail", "simpler implementation", "compact `Scope stop`", "Ask at most one", "FULL is not permission"]);
+requireMarkers("docs/actions/feature-init.md", ["### Implementation Continuation Check", "Every multi-boundary full-lane feature", "contract-bearing slices", "same slice IDs", "one-boundary full-lane feature", "implement the current slice", "focused L1", "compact progress update", "Do not dispatch L2/L3", "same failure repeats without new diagnostic evidence", "context", "compaction", "continue without reconfirmation", "scope-growth triggers", "tier, directory, file count, test layer/case, or estimated duration", "feature, action, lane, gate"]);
 requireMarkers("docs/actions/feature-init.md", ["constrains slice boundaries, not coding order inside a slice", "real internal", "dependency order"]);
 requireMarkers("docs/actions/feature-init.md", ["add or retain a distinct test layer/case only", "cheaper existing evidence", "Prefer extending the nearest existing test", "focused checks", "final check population", "applicable project/release conventions", "Execute each unchanged final evidence source once", "test counts"]);
 requireRegex("docs/actions/feature-init.md", /Remove\s+tests that only protect superseded behavior/i, "remove superseded-behavior tests");
 forbidMarkers("docs/actions/feature-init.md", ["Scope Viability: single", "Scope Viability: N/A"]);
-requireRegex("docs/actions/feature-init.md", /Run the impact and necessity preflight[\s\S]{0,700}Decide whether a new artifact[\s\S]{0,700}Run the scope-viability check/, "impact before artifact decision before scope viability");
+requireRegex("docs/actions/feature-init.md", /Apply the Impact, necessity[\s\S]{0,700}Decide whether a new artifact[\s\S]{0,900}Apply Scope Viability/, "impact before artifact decision before scope viability");
 requireMarkers("tests/fixtures/feature-init-scenarios/expected.json", [
   "no-artifact-accepted-spec-implementation",
   "no-artifact-multifile-refactor",
@@ -321,7 +335,7 @@ for (const relative of ["docs/actions/feature-init.md", "adapters/claude/skills/
   requireMarkers(relative, ["materialize-feature-artifact.cjs", "no-clobber"]);
 }
 for (const relative of ["adapters/claude/skills/feature-init/SKILL.md", "adapters/codex/skills/feature-init/SKILL.md"]) {
-  requireMarkers(relative, ["impact/necessity preflight", "scope-viability", "before materialization", "Add `Impact` only", "docs/architecture-design.md", "ordinary features skip it", "unconfirmed high-impact architecture", "ordinary full-lane work with directly traceable values is `N/A`"]);
+  requireMarkers(relative, ["canonical impact, necessity, scope-viability", "ordinary single-outcome paths silent", "docs/architecture-design.md", "ordinary features skip it", "decision-completeness-auditor", "Reviewer execution"]);
 }
 requireMarkers("docs/actions/README.md", ["active runtime adapter", "CLAUDE_PLUGIN_ROOT", ".codex-plugin/plugin.json", "Do not scan another host's cache", "required asset"]);
 forbidMarkers("docs/actions/README.md", ["~/.claude/plugins/cache", "~/.codex/plugins/cache", "most recently installed compatible package"]);
@@ -390,14 +404,10 @@ for (const relative of ["adapters/claude/skills/feature-init/SKILL.md", "adapter
     "explicitly asks whether work needs a project-workflow feature",
     "Do not invoke for general discussion",
     "DIRECT, LIGHT tasks-only, or FULL spec/plan/tasks",
-    "`PREVIEW` never invokes the materializer",
-    "invocation alone is not write authorization",
-    "Reuse a compatible active feature",
-    "canonical `Route`, `Execution`, concrete `Reason`, `Feature`",
-    "on the normal path do not mention that check, its field name, or its omission",
-    "Do not terminate an enclosing implementation/change request",
-    "`DIRECT` creates nothing and continues an enclosing implementation request",
-    "`LIGHT` proceeds to implementation after materialization and skips `spec-quality-check`",
+    "`PREVIEW` is",
+    "compatible active feature is reused",
+    "canonical compact route result",
+    "DIRECT/LIGHT/FULL gate sequence",
   ]);
 }
 forbidMarkers("template/AGENTS.md", ["{{HOOK_INDEX}}", ".claude/hooks/", ".codex/hooks.json", "High-Blast-Radius Paths", "None declared yet"]);
@@ -424,11 +434,13 @@ for (const relative of ["adapters/claude/skills/spec-revise/SKILL.md", "adapters
   requireMarkers(relative, ["necessary-detail", "contract-correction", "separable-outcome", "speculative-capability", "bundled-risk", "already-written implementation", "Scope stop", "code, tests, migrations", "at most one decision question"]);
 }
 for (const relative of ["adapters/claude/skills/feature-done/SKILL.md", "adapters/codex/skills/feature-done/SKILL.md"]) {
-  requireMarkers(relative, ["high-impact scope outside the accepted Delivery", "not-run(completion preflight)", "mechanically", "exact adopted one-line alias", "semantic-placement judgment remains in L2"]);
+  requireMarkers(relative, ["current full-lane artifact shape", "completed slices and focused L1", "Git/scope/Baseline", "explicit Guidance", "not-run(completion preflight)"]);
+  forbidMarkers(relative, ["reused legacy work"]);
+  requireMarkers(relative, ["Each explicit invocation performs at most one", "L2/L3", "ends on its first terminal verdict", "do not repair or redispatch", "later explicit invocation"]);
   forbidMarkers(relative, ["new test layers/matrices/fixtures/cases", "architecture-drift observation"]);
 }
 requireMarkers("template/docs/specs/changes/_template/plan.md", ["Delivery Shape Baseline", "当前 outcome / consumer", "Delivery risk signal", "Scope growth triggers", "| 决策 | 为什么 | 来源 |", "supersedes", "不要粘贴原始聊天记录", "只有符合 §3 范围的决定", "普通实现细节不需要逐项记账", "N/A(no durable why/source decision)", "不要为填表复制 spec"]);
-requireMarkers("template/docs/specs/changes/_template/plan.md", ["按真实依赖顺序", "仅当 Delivery risk signal 为 large/extra-large", "合同切片", "Implementation Continuation Check", "material delta", "Implementation Scope Stop", "下一个 consumer", "最小 focused evidence", "large/extra-large 时补充"]);
+requireMarkers("template/docs/specs/changes/_template/plan.md", ["按真实依赖顺序", "多边界 FULL feature", "稳定 slice ID", "tasks.md 使用相同 ID", "单边界 FULL 不为形式硬拆", "合同切片", "Implementation Continuation Check", "material delta", "Implementation Scope Stop", "下一个 consumer", "最小 focused evidence", "large/extra-large"]);
 requireMarkers("docs/examples/full-feature-artifact.md", ["Delivery risk signal:large", "## 5. 实施顺序", "退出:", "下一个 consumer:", "最小证据:"]);
 for (const relative of [
   "docs/actions/feature-init.md",
@@ -439,28 +451,29 @@ for (const relative of [
 ]) {
   forbidMarkers(relative, ["domain/backend", "API/BFF", "frontend → focused verification", "领域/后端"]);
 }
-requireMarkers("docs/actions/feature-init.md", ["Keep outcomes, scope, constraints, and exclusions in `spec.md`", "do not copy them into plan Prior decisions", "non-obvious", "not a raw transcript", "before `spec-quality-check`"]);
+requireMarkers("docs/actions/feature-init.md", ["Keep outcomes, scope, constraints", "exclusions in `spec.md`", "do not copy them into plan Prior decisions", "non-obvious", "not a raw transcript", "before `spec-quality-check`"]);
 for (const relative of ["adapters/claude/skills/feature-init/SKILL.md", "adapters/codex/skills/feature-init/SKILL.md"]) {
-  requireMarkers(relative, ["ordinary outcomes/scope/constraints/exclusions in `spec.md`", "non-obvious choices", "plan Prior decisions", "Do not preserve a raw transcript"]);
-  requireMarkers(relative, ["Implementation Scope Stop", "every route", "Already-written code and tests", "smallest-sufficient-evidence", "distinct risk coverage"]);
-  requireMarkers(relative, ["Implementation Continuation Check", "contract-bearing slice transitions/resume", "silently recheck accepted boundaries", "dependent work"]);
+  requireMarkers(relative, ["Carry Scope Stop and the Continuation Check", "contract-bearing slice", "focused L1", "task/progress update", "boundary recheck", "Do not add artificial slices", "L2/L3", "Proof Bundle", "dependent work"]);
+  requireMarkers(relative, ["reused accepted FULL", "current mechanical-shape recheck", "new/draft FULL", "spec-quality-check"]);
 }
 for (const relative of ["template/docs/specs/changes/_template/spec-greenfield.md", "template/docs/specs/changes/_template/spec-brownfield.md"]) {
   requireMarkers(relative, ["当前 consumer", "仅为未来可能性服务的能力不进入本 feature"]);
 }
 requireMarkers("template/docs/specs/changes/_template/tasks-light.md", ["预期影响 / 熔断"]);
 requireMarkers("template/docs/specs/changes/_template/tasks.md", ["Delivery Shape Baseline", "scope delta", "继续写生产代码、测试、migration 或兼容层前立即停下", "一次问一个问题", "不得因代码已经写出而自动收编", "测试数量和层级对称不构成质量"]);
-requireMarkers("template/docs/specs/changes/_template/tasks.md", ["plan §5", "Implementation Continuation Check", "不要求用户重复确认"]);
+requireMarkers("template/docs/specs/changes/_template/tasks.md", ["plan §5 slice ID 一一对应", "实现 → focused L1 → 勾选", "Implementation Continuation Check", "不要求用户", "不运行 L2/L3", "单边界 FULL 不为形式硬拆", "Setup / migration / composition", "映射 spec §4 obligation", "只列尚未由 slice focused L1", "N/A(all spec §4 obligations mapped in slices)", "不要重复 checklist"]);
 requireMarkers("template/docs/specs/changes/_template/tasks-light.md", ["继续写代码、测试、migration 或兼容层前停", "一次问一个问题", "不得因已写代码自动收编", "测试数量和层级对称不构成质量"]);
 for (const relative of ["adapters/claude/skills/spec-quality-check/SKILL.md", "adapters/codex/skills/spec-quality-check/SKILL.md"]) {
-  requireMarkers(relative, ["accepted outcome and impact boundary", "`Implementation Scope Stop`", "smallest-sufficient-evidence"]);
-  requireMarkers(relative, ["`Implementation Continuation Check`", "smallest-sufficient-evidence rules", "into implementation"]);
+  requireMarkers(relative, ["accepted outcome and impact boundary", "`Implementation Scope Stop`", "smallest-"]);
+  requireMarkers(relative, ["matching", "plan/tasks slices for multi-boundary full-lane work", "`Implementation Continuation Check`", "focused/final evidence rules into implementation"]);
+  requireMarkers(relative, ["missing or incomplete Delivery Shape Baseline", "other artifact sections do not substitute"]);
   requireMarkers(relative, ["Q6 Guidance Placement", "root/tier/module/mechanical", "difference-only", "one-line alias"]);
 }
-requireMarkers("docs/actions/spec-quality-check.md", ["contract-bearing slices", "inspectable exits", "silent continuation checks", "sequence requirement is N/A", "Implementation Scope Stop and Implementation Continuation", "aligned work continues silently", "material mismatch stops dependent work"]);
-requireMarkers("docs/reviewers/spec-quality-reviewer.md", ["contract-bearing slices", "inspectable exits", "next consumers", "context/session resume", "inspectable point before", "endpoint review", "continuation-sequence requirement is N/A", "artifact is not rewritten"]);
+requireMarkers("docs/actions/spec-quality-check.md", ["Every multi-boundary full-lane implementation", "matching contract-bearing slice IDs", "one-boundary full-lane feature is not artificially split", "focused L1", "inspectable exits", "compact progress", "must be repaired before `READY`", "Scope,", "do not substitute for it", "Implementation Scope Stop and Implementation Continuation Check", "without reconfirmation", "material mismatch stops dependent work"]);
+requireMarkers("docs/reviewers/spec-quality-reviewer.md", ["Multi-boundary full-lane", "matching plan/tasks slice IDs", "one-boundary feature is not artificially split", "focused L1", "inspectable exit", "next consumer", "context/session resume", "plan/tasks mismatch", "inspectable point before endpoint review", "missing or incomplete Delivery Shape Baseline", "do not substitute for it"]);
 requireMarkers("docs/actions/spec-quality-check.md", ["Multi-module work has sibling alignment", "exact enforcement/placement", "Nested guidance repeats no parent text", "one-line `@AGENTS.md` alias"]);
-requireMarkers("docs/actions/spec-quality-check.md", ["Prior decisions section, which may explicitly be `N/A(no durable why/source decision)`", "reliably identified pre-3.11 active artifact", "repository history or explicit current-user confirmation", "cannot claim the fallback merely because the field is missing"]);
+requireMarkers("docs/actions/spec-quality-check.md", ["Every required Prior decisions entry uses three semantic", "decision, why, and source", "`决策 | 为什么 | 来源`", "equivalent localized header is valid", "missing semantic column, row source, or explicit N/A", "mechanical failure", "including a complete `Delivery Shape Baseline`", "Constraints, or Module Impact do not substitute for it"]);
+requireMarkers("docs/actions/spec-quality-check.md", ["Q7d: the artifact records", "decision/why/source semantic columns", "source in every required row"]);
 requireMarkers("docs/reviewers/spec-quality-reviewer.md", ["Q6 sibling/guidance alignment", "directory-symmetry files", "mechanically decidable"]);
 requireMarkers("template/docs/specs/changes/_template/plan.md", ["Codify 不等于一定新建文件", "root/tier/module AGENTS.md 或机械门禁", "嵌套规则只写父级差量"]);
 requireMarkers("docs/actions/spec-revise.md", ["Guidance Placement", "changed tier/module", "root/tier/module/mechanical"]);
@@ -501,11 +514,27 @@ for (const relative of [
 
 requireMarkers("docs/examples/reviewer-mutation-smoke.md", ["Known-bad mutation smoke", "feature-done", "release blocker", "Runtime scheduling smoke", "sequential fresh dispatches", "Spec-quality authorization smoke", "Pure check request", "Explicit conditional request", "`BORDERLINE` result"]);
 requireMarkers("docs/examples/reviewer-mutation-smoke.md", ["Delivery-shape smoke", "independently", "size and breadth signals alone never change the verdict"]);
-requireMarkers("docs/examples/reviewer-mutation-smoke.md", ["repository history or", "explicit current-user confirmation identifies as pre-3.11"]);
-requireMarkers("docs/examples/reviewer-mutation-smoke.md", ["outside the accepted Delivery Shape Baseline", "legacy-unambiguous impact boundary", "justified only by possible future use", "Q7c", "Q7d", "Requirements-reconciliation smoke", "MISMATCH: missing-from-artifact", "MISMATCH: unsupported-artifact", "MISMATCH: superseded-remnant", "MISMATCH: cross-artifact-conflict", "SOURCE GAP", "no second dispatch"]);
+requireMarkers("docs/examples/reviewer-mutation-smoke.md", ["Remove the Delivery Shape Baseline", "regardless of artifact age", "module-impact/scope sections must not substitute"]);
+requireMarkers("docs/examples/reviewer-mutation-smoke.md", ["Prior decisions semantic source column", "mechanical gate returns", "before reviewer dispatch", "N/A(no durable why/source decision)"]);
+requireMarkers("docs/examples/reviewer-mutation-smoke.md", ["outside the accepted Delivery Shape Baseline", "justified only by possible future use", "Q7c", "Q7d", "Requirements-reconciliation smoke", "MISMATCH: missing-from-artifact", "MISMATCH: unsupported-artifact", "MISMATCH: superseded-remnant", "MISMATCH: cross-artifact-conflict", "SOURCE GAP", "no second dispatch"]);
 requireMarkers("docs/examples/reviewer-mutation-smoke.md", ["Implementation Scope Stop smoke", "ordinary private helper", "stops before adding more production code", "full lane is not blanket permission", "Minimal-evidence smoke", "duplicate unit, API, e2e", "role × visibility matrix", "file/test counts"]);
-requireMarkers("docs/examples/reviewer-mutation-smoke.md", ["Implementation Continuation Check smoke", "resume after context compaction", "continues silently", "contradicts the accepted failure-state contract", "backend/frontend/test", "independently acceptable, enableable, and revertible"]);
-requireMarkers("docs/examples/reviewer-mutation-smoke.md", ["real dependency order inside each named", "internal coding order as a tier/file/test/time bucket", "frozen plan has no continuation sequence", "treats the sequence as N/A"]);
+requireMarkers("docs/examples/reviewer-mutation-smoke.md", ["Implementation Continuation Check smoke", "accepted medium, multi-boundary full-lane outcome", "resume after context compaction", "without new diagnostic evidence", "no L2/L3 or Proof Bundle", "contradicts the accepted failure-state contract", "backend/frontend/test", "one real contract boundary", "large/extra-large", "independently acceptable, enableable, and revertible"]);
+requireMarkers("docs/examples/reviewer-mutation-smoke.md", ["real dependency order inside each named", "internal coding order as a tier/file/test/time bucket", "omit the multi-boundary", "remains `BLOCKED` until plan/tasks", "must not repeat all slice checks as bookkeeping"]);
+
+for (const relative of [
+  "docs/actions/feature-done.md",
+  "docs/actions/spec-quality-check.md",
+  "docs/reviewers/spec-quality-reviewer.md",
+  "docs/spec-driven.md",
+  "docs/examples/reviewer-mutation-smoke.md",
+  "adapters/claude/skills/spec-quality-check/SKILL.md",
+  "adapters/codex/skills/spec-quality-check/SKILL.md",
+]) forbidMarkers(relative, ["pre-3.11", "legacy-boundary fallback", "legacy-unambiguous", "a new artifact records", "older artifact without the current Source", "table-shape migration"]);
+requireMarkers("docs/spec-driven.md", ["每节填完简洁同步并继续", "不要为常规 section transition 请求确认", "一次问一个阻塞问题并等待", "不重复列一遍"]);
+forbidMarkers("docs/spec-driven.md", ["OK 进下一节?", "至少列 2-3 条"]);
+requireMarkers("docs/workflow.md", ["同一失败重复且没有新诊断证据"]);
+forbidMarkers("docs/workflow.md", ["同一个错改 3 次没好"]);
+requireMarkers("docs/quickstart.md", ["accepted full 先复查当前 mechanical artifact shape", "通过后继续实施并最终走 `feature-done`", "不通过则修复/revise 后走 `spec-quality-check`", "当前 slice 实现 → focused L1", "切片内不运行 L2/L3", "每次显式调用最多一轮适用 L2/L3", "不会在同一调用内形成修复—复审循环"]);
 requireMarkers("docs/examples/reviewer-mutation-smoke.md", ["Guidance-placement smoke", "do not propose a nested file merely for symmetry", "one tier", "Q6 blocks", "malformed alias", "no implicit guidance", "must not create or move guidance", "mechanize"]);
 requireMarkers("docs/examples/reviewer-mutation-smoke.md", ["Personalization conversation smoke", "asks no question", "one material question", "does not restate settled command evidence", "routes to `feature-init`", "one consolidated preview"]);
 requireMarkers("docs/workflow.md", ["已观察 / 建议调整 / 待确认", "一次只问一个", "不复述已确认内容", "不能安全 deferred", "consolidated preview"]);
@@ -522,9 +551,15 @@ for (const relative of [
   forbidMarkers(relative, ["plan.md §1.2", "plan §1.2"]);
 }
 requireMarkers("tests/fixtures/reviewer-smoke/expected.json", ["known-bad", "clean"]);
-requireMarkers("docs/actions/feature-archive.md", ["receipt-schema migration candidate", "without `Verdict:`", "never infer READY", "current-task READY", "ordinary filesystem rename", "move the directory back", "rerun `feature-done`"]);
-requireMarkers("adapters/claude/skills/feature-archive/SKILL.md", ["migration candidates", "dirty-worktree READY", "immutable reviewed commit SHA", "does not re-anchor it", "present implementation and successor changes", "ordinary filesystem rename", "move the directory back", "feature-done"]);
-requireMarkers("adapters/codex/skills/feature-archive/SKILL.md", ["migration candidates", "dirty-worktree READY", "immutable reviewed commit SHA", "does not re-anchor it", "present implementation and successor changes", "ordinary filesystem rename", "move the directory back", "$feature-done"]);
+requireMarkers("docs/actions/feature-archive.md", ["required fields defined by the", "`Verdict: READY`", "Checks", "Review execution", "Current truth", "missing or invalid required", "ineligible", "never infer READY", "current-task dirty-worktree READY", "reuse across tasks", "ordinary filesystem rename", "move the directory back", "rerun `feature-done`"]);
+requireMarkers("adapters/claude/skills/feature-archive/SKILL.md", ["canonical archive-eligibility receipt field", "rerun `feature-done`", "exact Git/non-Git identity and freshness rules", "pending current truth", "ordinary filesystem rename", "move the directory back"]);
+requireMarkers("adapters/codex/skills/feature-archive/SKILL.md", ["canonical archive-eligibility receipt field", "rerun `$feature-done`", "exact Git/non-Git identity and freshness rules", "pending current truth", "ordinary filesystem rename", "move the directory back"]);
+for (const relative of [
+  "README.md",
+  "docs/actions/feature-archive.md",
+  "adapters/claude/skills/feature-archive/SKILL.md",
+  "adapters/codex/skills/feature-archive/SKILL.md",
+]) forbidMarkers(relative, ["receipt-schema migration", "migration candidate", "review-scope", "legacy fields", "older receipt"]);
 for (const relative of [
   "docs/actions/feature-done.md",
   "template/docs/specs/changes/_template/tasks-light.md",

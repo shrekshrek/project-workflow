@@ -17,8 +17,8 @@ Claude execution details:
   The same reviewer performs Requirements Reconciliation first and Q3-Q7 second; never dispatch
   a separate reconciliation reviewer. `MISMATCH` or `SOURCE GAP` is `BLOCKED`.
 - Reference user-supplied/confirmed spec sections directly and never require ordinary spec content to be
-  copied into plan Prior decisions. Apply the canonical pre-3.11 legacy-boundary fallback before treating a
-  missing Delivery Shape Baseline as a mechanical failure.
+  copied into plan Prior decisions. Treat a missing or incomplete Delivery Shape Baseline as a mechanical
+  failure; other artifact sections do not substitute for it.
 - Include Q6 Guidance Placement in that same review: a selected `Codify` must name the durable difference,
   source, narrowest root/tier/module/mechanical owner, and any difference-only nested guidance/one-line alias
   task. Do not require nested files for ordinary modules.
@@ -28,8 +28,9 @@ Claude execution details:
   changes and internal refactors skip this check.
 - Deduplicate findings by root cause and cite exact evidence.
 - On `READY`, consume an explicit current-request "if this passes, continue implementation" authorization by changing only the top status marker from draft to confirmed, then continue the requested implementation. Pure checks remain read-only; `BORDERLINE` requires explicit acceptance of its concrete risk and follow-up. Never use this authorization to repair artifact content or commit.
-- A pass authorizes only the accepted outcome and impact boundary. Carry `Implementation Scope Stop`, large/extra-large
-  `Implementation Continuation Check`, and smallest-sufficient-evidence rules into implementation.
+- A pass authorizes only the accepted outcome and impact boundary. Carry `Implementation Scope Stop`, matching
+  plan/tasks slices for multi-boundary full-lane work, the `Implementation Continuation Check`, and smallest-
+  sufficient focused/final evidence rules into implementation.
 
 Report one compact passing mechanical range, `Requirements Reconciliation` (`ALIGNED`, `MISMATCH`, or
 `SOURCE GAP`), `Reviewer execution` (reviewer, mode, completion status, fallback reason or `none`), the

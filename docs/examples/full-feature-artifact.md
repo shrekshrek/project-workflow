@@ -36,7 +36,8 @@
 ## 4. Verification
 
 - token 生命周期与滥用风险:`invitation service` test 覆盖过期、重复使用、伪造和速率限制
-- `Primary flow` — API / 邮件契约风险:一条 integration test 覆盖 POST、邮件 payload 和 GET token 解码
+- API / 邮件契约风险:一条 integration test 覆盖 POST、邮件 payload 和 GET token 解码
+- `Primary flow` — 受邀注册主流程:管理员发出邀请后,受邀者通过落地页完成注册入队
 - provider/config 发生变化时:staging delivery smoke 验证真实邮件链路
 - 上线指标:发送成功率 ≥ 99%
 ```
@@ -110,9 +111,9 @@
 
 ## 5. 实施顺序
 
-1. 关闭邀请生命周期契约——退出:过期/重放/伪造不变量可验证;下一个 consumer:API 与邮件流;最小证据:invitation service focused test。
-2. 关闭管理员发送与撤销契约——退出:API、授权和邮件 payload 一致;下一个 consumer:管理页;最小证据:API/邮件 integration test。
-3. 关闭被邀请成员注册入队路径——退出:管理页与落地页完成主流程;下一个 consumer:发布验收;最小证据:Primary flow 与剩余发布风险检查。
+1. `S1` 关闭邀请生命周期契约——退出:过期/重放/伪造不变量可验证;下一个 consumer:API 与邮件流;最小证据:invitation service focused test。
+2. `S2` 关闭管理员发送与撤销契约——退出:API、授权和邮件 payload 一致;下一个 consumer:管理页;最小证据:API/邮件 integration test。
+3. `S3` 关闭被邀请成员注册入队路径——退出:管理页与落地页完成主流程;下一个 consumer:发布验收;最小证据:Primary flow 与剩余发布风险检查。
 ```
 
 ## `docs/specs/changes/002-invitation/tasks.md`
@@ -124,28 +125,30 @@
 
 ## 1. 任务清单
 
-### Setup
+### `S1` 邀请生命周期契约
 
 - [ ] 建 `backend/src/invitations/` 与最小入口文件
 - [ ] 接入 backend composition point
 - [ ] 添加并验证 invitations migration
+- [ ] 实现 invitation service 与 token 过期/重放/伪造不变量
+- [ ] Focused L1:运行 invitation service tests → 映射 spec §4 token 生命周期与滥用风险
 
-### Backend
+### `S2` 管理员发送与撤销契约
 
 - [ ] 接入 POST `/invitations` 与 Resend 契约
-- [ ] 接入 GET `/invitations/<token>` 与注册校验
 - [ ] 接入 DELETE `/invitations/<id>` 撤销行为
-
-### Frontend
-
 - [ ] 接入团队设置页邀请表单
 - [ ] 接入邀请管理页的列表与撤销行为
+- [ ] Focused L1:运行 API / 邮件 integration test → 映射 spec §4 API / 邮件契约风险
+
+### `S3` 被邀请成员注册入队路径
+
+- [ ] 接入 GET `/invitations/<token>` 与注册校验
 - [ ] 接入邀请落地页的接受与注册流
+- [ ] Focused L1:运行邀请注册主流程 → 映射 spec §4 邀请注册主流程
 
 ### Verification
 
-- [ ] token 生命周期与滥用风险 → 运行 invitation service tests
-- [ ] API / 邮件契约风险 → 运行对应 integration test(映射 spec.md 同名义务)
 - [ ] 若 provider/config 有变化 → 运行 staging delivery smoke
 
 ## 2. 实施记录

@@ -21,4 +21,5 @@
 
 ## 4. Verification
 
-- 现有测试通过。
+- Primary flow: 已登录用户打开个人资料页后可看到现有会话列表 → 现有 profile/session 展示测试。
+- 会话列表继续沿用现有 auth 契约且不新增 API → 同一测试与 changed-scope project checks。
