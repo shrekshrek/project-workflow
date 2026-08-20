@@ -282,7 +282,7 @@
         <mxCell id="a_codebase" value="&lt;b&gt;codebase-explorer&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;扫已有 codebase → 推荐 Project Structure 节&lt;br/&gt;Tools: Read, Grep, Glob, Bash&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF8E1;strokeColor=#F57F17;fontSize=11;align=left;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
           <mxGeometry x="960" y="220" width="380" height="70" as="geometry"/>
         </mxCell>
-        <mxCell id="a_dcaudit" value="&lt;b&gt;decision-completeness-auditor&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;Preview Gate 前 trace 每个 plant 决策 → Q&amp;A / 栈惯例 / null&lt;br/&gt;Tools: Read, Grep, Glob  ·  Read-only&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF8E1;strokeColor=#F57F17;strokeWidth=2;fontSize=11;align=left;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
+        <mxCell id="a_dcaudit" value="&lt;b&gt;decision-completeness-auditor&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;写入前核对高影响值 → 仓库证据 / 用户决定 / accepted artifact&lt;br/&gt;Tools: Read, Grep, Glob  ·  Read-only&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF8E1;strokeColor=#F57F17;strokeWidth=2;fontSize=11;align=left;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
           <mxGeometry x="960" y="310" width="380" height="70" as="geometry"/>
         </mxCell>
         <mxCell id="a_specqr" value="&lt;b&gt;spec-quality-reviewer&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;spec 自身主观二审 (Outcomes/Constraints/Verification 真假)&lt;br/&gt;4-phase methodology  ·  Read-only&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF8E1;strokeColor=#F57F17;fontSize=11;align=left;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
@@ -368,7 +368,7 @@
         <mxCell id="legend2_a" value="&lt;b&gt;实线&lt;/b&gt; 必需 reviewer role (优先 subagent,不可用时主会话 fallback) · &lt;b&gt;虚线&lt;/b&gt; 条件 delegation / action orchestration" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=11;" vertex="1" parent="1">
           <mxGeometry x="60" y="815" width="1280" height="20" as="geometry"/>
         </mxCell>
-        <mxCell id="legend2_b" value="&lt;b&gt;decision-completeness-auditor&lt;/b&gt; 是唯一被 4 个 generator skill 共用的 agent — 实施 workflow §1.12 generation discipline (Preview Gate 前 trace plant 决策)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=11;" vertex="1" parent="1">
+        <mxCell id="legend2_b" value="&lt;b&gt;decision-completeness-auditor&lt;/b&gt; 是 4 个 generator skill 共用的按需 agent — 实施 workflow §1.12 evidence discipline，复核高影响、弱证据或冲突来源" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=11;" vertex="1" parent="1">
           <mxGeometry x="60" y="838" width="1280" height="20" as="geometry"/>
         </mxCell>
         <mxCell id="legend2_c" value="&lt;b&gt;/spec-revise&lt;/b&gt; 仅在 canonical boundary 调 auditor; &lt;b&gt;/feature-archive / /spec-reconcile&lt;/b&gt; 做生命周期编排,无独立 reviewer agent" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=11;" vertex="1" parent="1">

@@ -643,67 +643,23 @@ docs/adr/
 - hook active 时改一个匹配文件验证真执行;未安装时确认项目内无 hook mapping/script并报告原因
 - 把 AGENTS.md 给 AI 读一遍,问它"基于本文件总结这个项目",看理解是否准确
 
-### 1.12 生成纪律(Generation Discipline)
+### 1.12 生成证据纪律(Evidence Discipline)
 
-> **Serves §0.5 信念 1**:消除"P0 setup 期间的人工对齐劳动"——用户审 AGENTS.md 时不应该靠肉眼分辨"哪些是 agent 猜的"。
+P0 写入前，每个项目特定的命令、路径、名称、端口、归属或规则都必须来自仓库证据、当前用户决定
+或适用的已接受 spec/ADR。生态惯例只能作为待选择建议，不能伪装成项目事实；内部来源追踪不写成
+`Q&A 轮 N` 等标记污染最终文件。
 
-#### 主张
+处理顺序保持简单：
 
-P0 生成(`/project-init` / `/project-personalize`)Preview Gate 落盘**之前**,待写入的所有文件里**每条特定字符串决策**(模块名 / 路径 / broker / 端口 / 包名 / 命名空间 / etc.)必须 trace 回三类来源之一:
+1. 仓库已经证明的直接采用并保留来源；同一事实跨文件出现时检查一致性。
+2. 未被证明但可安全暂缓的省略或明确 deferred，不为占位而虚构 ADR、命令或目录。
+3. 只有答案会改变 working agreement 且不能安全暂缓时才询问；依赖问题顺序推进，相关独立问题可合并。
+4. 简单单源同步用 inline trace；新 ownership/port/package/path/infra、弱证据、冲突证据或跨文件高影响同步才调用 `decision-completeness-auditor`。
+5. 阻塞审计或未解决的实质决定保持目标不变；没有阻塞时预检 staged changes，并在当前请求已授权范围内应用，不再增加形式化审批。
 
-- ✅ Q&A 直接答 → 标 `(Q&A 轮 N)`
-- ⚠️ 语言/社区惯例 → 标 `(Python app/ 惯例)` / `(cargo init 默认 src/)`
-- 🚫 纯 plant 无出处 → **禁入库**,必须满足下列之一:
-  - (a) 改成显式 deferred:`(待定,见 ADR 000N-XXX)`
-  - (b) 回 Q&A 追问用户
-  - (c) 显式标 template default + 注明改时同步指针
-
-#### 底层逻辑
-
-§1.10 "不问什么"已经处理一半("不该问的题不让 LLM 即兴编")。本节处理另一半:**该问的题用 plant 顶包**。两类失败模式正交:
-
-| §1.10 防 | 本节防 |
-|---|---|
-| Aspirational(P0 没数据时 AI 编"看起来对"的特殊约束 / 性能门槛) | Plant(Q&A 未问的决策细节 agent 自行填,且填得不自洽) |
-
-不防的代价是:用户拿到 AGENTS.md 跑命令 → 报错 → 回查发现是 agent 猜的。**P0 生成期的对齐对话被推到 P2 runtime,违 §0.5 信念 1**。
-
-#### 怎么用
-
-##### Generator 承诺(类比 §6.4 Reviewer 承诺,落地形态见下)
-
-| 承诺 | 含义 |
-|---|---|
-| **Trace-or-defer** | 每条 plant 决策必须 trace 来源或显式 deferred,不允许无标记 plant 入库 |
-| **Cross-file consistency** | 同一决策多处引用必须对齐(grep 自检,而非"写完不看") |
-| **Anti-cargo-cult** | Q&A 选项 / 默认值不引用具体已存在项目(monorepo 兄弟 / 父仓库 reference),用栈通用描述 |
-| **Greenfield isolation** | 默认值基于语言/社区惯例,不基于父目录 / 兄弟项目偏好 |
-
-##### 落地形态(二选一,都符合本节主张)
-
-| 形态 | 适用 | 实施 |
-|---|---|---|
-| **Skill 内置 trace matrix** | 单一来源、单文件同步、具体值少 | 列“值 → 来源”;缺 trace block Preview |
-| **Sub-agent reviewer** | 新 ownership/port/package/path/infra、弱证据、或生成决定跨多文件 | dispatch `decision-completeness-auditor`;must-fix block Preview |
-
-无论哪种形态,**Preview Gate 必须强制 block 严重项,不允许"audit 报警但用户一键 approve 略过"**。
-
-#### 失效情形
-
-- **既有项目 retrofit**(`/project-personalize`):代码可读,plant 决策能从代码扫出,本节弱化为"agent 标注哪些是扫出来的、哪些是真 plant",不强 block
-- **P0 前 brainstorm**:用户也没决策,brainstorm 阶段所有"决策"都是探索,本节不适用
-- **真正的 deferred**:标了 `(待定,见 ADR)` 就是合法非 plant(部署命令 / Celery broker 等 B 层未起场景)
-- **生成 ≤ 1 处的决策**:单点决策无跨文件一致性问题,Trace-or-defer 适用但 Cross-file consistency 不适用
-
-#### 跟其他原则的边界
-
-- **vs §6.4 三层 review**:**不是第 4 类 review**。§6.4 是 P3 implementation 完成时按规则源分层审产物;本节是 P0 setup 生成时审决策追溯。时机 / 对象 / 失败处置都不同
-- **vs §6.3 环境强制**:§6.3 是 P2/P4 持续 runtime(hook),本节是 P0 一次性 generation gate;前者治持续漂移,后者治源头污染
-- **vs §1.10 Q&A 设计**:互补——§1.10 列"不问什么"(防 aspirational),本节列"plant 怎么处理"(防 unanchored plant)。两节共同覆盖 P0 内容来源纪律
-
-#### 给 plugin 实施者的提示
-
-按复杂度触发 audit,不按固定次数或 finding 数触发:简单单源同步用 inline trace;新 ownership/port/package/path/infra、弱证据或跨文件生成才用 auditor。Reviewer 的 sensitivity 由 known-bad mutation smoke 证明,不要用连续空报告推断有效性。
+`project-init` 因缺少项目证据而保持中立；`project-personalize` 先读仓库再补最小 working agreement。
+产品或架构方向不在 P0 猜测，交给 `feature-init`。本节是生成时的来源约束，不是 P3 的第 4 层 review，
+也不要求用户看到内部 trace matrix。
 
 ---
 
