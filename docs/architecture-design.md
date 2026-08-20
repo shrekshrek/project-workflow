@@ -16,7 +16,7 @@ rule inside an unchanged trust and responsibility boundary does not trigger this
 
 ## Evidence and conversation
 
-Use explicit user decisions, accepted current truth/ADRs, and observed repository evidence. Generic best practice and directory names are not project decisions. Ask one material question at a time only when its answer changes the selected artifact; skip resolved or irrelevant topics. When a high-impact choice needs help, present 2-3 compatible options with constraints and trade-offs, but let the user decide. After the artifact exists, continue the question → user decision → artifact update loop across user turns. Stop only when no high-impact TODO remains or the user explicitly pauses or defers; when paused, report the blockers and do not claim handoff readiness.
+Use explicit user decisions, accepted current truth/ADRs, and observed repository evidence. Generic best practice and directory names are not project decisions. Ask only questions whose answers change the selected artifact; dependent decisions proceed in sequence and closely related independent choices may be grouped. When a high-impact choice needs help, present 2-3 compatible options with constraints and trade-offs, but let the user decide. After the artifact exists, continue the question → user decision → artifact update loop across user turns. Stop only when no high-impact TODO remains or the user explicitly pauses or defers; when paused, report the blockers and do not claim handoff readiness.
 
 Work from outcomes toward structure:
 

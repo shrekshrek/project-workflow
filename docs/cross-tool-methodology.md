@@ -29,7 +29,7 @@ project-workflow 分两层:
    `AGENTS.md` 是跨工具 canonical 入口。工具私有的 rules/hooks 可以增强本地体验,但不构成第二套 portable core,其他 adapter 也不必翻译或读取它们。
 
 2. **无需新 artifact 的任务不启动 project-workflow**
-   小 bugfix、文案、样式、局部测试修复、低风险文档编辑、未被 current truth 声明且局部/可逆/无契约/可在当前任务完成的行为小改,以及已确认 spec 下的实施任务,不新建 feature artifact;直接做时仍遵守适用的 `AGENTS.md` 和相关检查。复用已确认 FULL 时先通过当前 mechanical artifact-shape 复查，再按原 tasks/切片实施。只有持久清单存在交接、多步验收、审计/发布或 current-truth 消费者时,低风险小改才进入 light lane。
+   小 bugfix、文案、样式、局部测试修复、低风险文档编辑、未被 current truth 声明且局部/可逆/无契约/可在当前任务完成的行为小改,以及已确认 spec 下的实施任务,不新建 feature artifact;直接做时仍遵守适用的 `AGENTS.md` 和相关检查。复用已确认 FULL 时先通过语义实施就绪度复查，再按原 tasks 实施。只有持久清单存在交接、多步验收、审计/发布或 current-truth 消费者时,低风险小改才进入 light lane。
 
 3. **Feature artifact 只有 Full / Light 两类**
    full lane feature 使用 `docs/specs/changes/<NNN>-<slug>/{spec,plan,tasks}.md`;轻车道使用同目录下的 `tasks.md`。
@@ -53,7 +53,7 @@ project-workflow 分两层:
    `docs/reviewers/` 定义 reviewer、auditor、researcher 的任务边界、输入、检查方法和输出形状。Claude `adapters/claude/agents/` 与 Codex plugin skills 只是 adapter,不能各自维护一套 reviewer 方法。
 
 10. **所有 adapter 暴露同一组 public action,没有第二套 surface**
-   默认跨工具 action 是 `project-init` / `project-personalize` / `feature-init` / `spec-quality-check` / `spec-revise` / `feature-done` / `feature-archive` / `spec-reconcile` / `agents-md-revise`。`feature-init` 把 DIRECT/LIGHT/FULL 路由与 PREVIEW/APPLY 写入授权分开;显式 feature 路由评估触发只读 PREVIEW,普通讨论、诊断和检查不触发。`feature-done` 内聚 L1、适用的 L2/L3、current-truth check 和 delivery receipt;每次显式调用只产生一个 terminal verdict。同一任务可跨用户回合保留未漂移的 review-cycle 证据,但 finding/dependency closure 的修复 revision 只能由独立修复后的后续显式调用建立,不再设独立 helper 命令。
+   默认跨工具 action 是 `project-init` / `project-personalize` / `feature-init` / `spec-quality-check` / `spec-revise` / `feature-done` / `feature-archive` / `spec-reconcile` / `agents-md-revise`。`feature-init` 把 DIRECT/LIGHT/FULL 路由与 PREVIEW/APPLY 写入授权分开;显式 feature 路由评估触发只读 PREVIEW,普通讨论、诊断和检查不触发。`feature-done` 内聚 L1、适用的 L2/L3、current-truth check 和 delivery receipt,审查一个稳定最终快照并在首个终态结束。实现修复后只有用户再次明确要求验收才使用新快照，只复用相关输入未变化的 L1 证据,不再设独立 helper 命令。
 
 11. **`已实现` 不等于"仍是产品现状"**
    交付后的生命周期语义是跨工具的:`docs/specs/changes/` 活动区只放进行中的变更,已交付的整目录归档到 `docs/specs/changes/archive/`(检索现状时排除);被取代的 change 标 `已取代` / `已废弃`;current truth(`docs/specs/<area>.md`)是产品域现状的唯一权威。任何 adapter 在长周期产品域取 context 时,应优先读 current truth,不把 archive 内容当有效基线。
@@ -77,7 +77,7 @@ Adapter 设计必须遵守一个约束:**不要复制 methodology core**。例�
 
 Runtime adapter 本身则应保持 **host-native 且薄**:`adapters/claude/skills/` 使用 Claude Code 的交互、具名 agent 和 slash-command 语义;`adapters/codex/skills/` 使用 Codex 的 `$skill`、通用 subagent 和 Codex 工具语义。两端在 canonical dispatch boundary 都遵守“能力与容量存在则必须调度;否则有据 fallback;缺证据 fail closed”,同时保持同一 action 集合并引用同名 canonical spec,但不得把一端 SKILL.md 原样复制给另一端。源仓库的 [`scripts/check-adapter-parity.js`](../scripts/check-adapter-parity.js) 机械校验 action parity、canonical 引用、行数和 runtime marker 隔离。
 
-Adapter 不设 helper 命令层:`feature-done` 是端点的唯一入口。每次显式调用最多完成一轮 L1/适用 L2/L3/delivery receipt 并在首次 terminal verdict 结束，不在调用内修复后重派。独立修复后的后续显式调用可按同一任务、同一 review cycle 的证据规则复用未受影响 result，或重开完整 cycle；用户回合边界本身不使证据失效，输入漂移、证据缺失或跨任务才强制重开完整 cycle。历史上 Claude Code 曾有 `/l1-review` / `/l2-review` / `/l3-review` / `/proof-bundle` 四个 helper skill,已在 v3.0 合并进 `feature-done`。
+Adapter 不设 helper 命令层:`feature-done` 是端点的唯一入口。每次交付审查一个稳定最终快照并返回一个终态；原实施请求不会在非 READY 后自动开启下一轮 L2/L3。实现层修复后只有用户再次明确要求验收才用新快照复审，并只复用相关输入未变化的 L1 证据。用户回合边界本身不使证据失效，输入漂移、证据缺失或跨任务则重新取得相应证据。历史上 Claude Code 曾有 `/l1-review` / `/l2-review` / `/l3-review` / `/proof-bundle` 四个 helper skill,已在 v3.0 合并进 `feature-done`。
 
 ---
 

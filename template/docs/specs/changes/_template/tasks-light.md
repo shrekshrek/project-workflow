@@ -1,7 +1,7 @@
 # <NNN> <slug> — Tasks(轻车道)
 
 > **轻车道**:bugfix / polish / additive 小改,无 frozen spec.md / plan.md。判据见 [spec-driven.md §3.2.5](https://github.com/shrekshrek/project-workflow/blob/main/docs/spec-driven.md#325-入口分流先判是否需要-project-workflow)。
-> ⚠️ 实施中若触达 API / DB / security / multi-tenant / evidence invariants / 跨模块契约 / 高爆破半径,或出现边界外 outcome/能力 → 在继续写代码、测试、migration 或兼容层前停。报告 delta、当前必要性和推荐方向;只有方向确需用户决定时一次问一个问题。需要时升级 full lane,不得因已写代码自动收编。
+> ⚠️ 实施中若触达 API / DB / security / multi-tenant / evidence invariants / 跨模块契约 / 高爆破半径,或出现边界外 outcome/能力 → 在继续写代码、测试、migration 或兼容层前停。报告 delta、当前必要性和推荐方向;只有方向确需用户决定时询问所需的最少问题。需要时升级 full lane,不得因已写代码自动收编。
 
 ## 目标 / 边界
 
@@ -12,13 +12,13 @@
 
 ## 验证(spec §4 等价 —— 不可省)
 
-> 轻车道只保留可追溯到目标/边界/项目约定的最小交付证据,不从通用习惯派生未声明输入、边界或错误 case。每个新增测试层/矩阵/fixture/case 必须覆盖更便宜证据尚未覆盖的实质风险或满足项目/发布约定;优先扩展最近的已有测试并合并重叠验证。用户可见 outcome 在已有义务中恰好标一个 `Primary flow`,只决定 preflight 顺序;测试数量和层级对称不构成质量。
+> 轻车道只保留可追溯到目标/边界/项目约定的最小交付证据,不从通用习惯派生未声明输入、边界或错误 case。每个新增测试层/矩阵/fixture/case 必须覆盖更便宜证据尚未覆盖的实质风险或满足项目/发布约定;优先扩展最近的已有测试并合并重叠验证。用户可见验证按最短 actor-to-result 流程优先排序;测试数量和层级对称不构成质量。
 
 - {{TODO 可执行/可机验的验收项}}
 
 ## Tasks
 
-- [ ] {{TODO 仅在工作可独立实施、验证或 review 时拆分;不要按预计时长或测试 case 机械拆分}}
+- [ ] {{TODO 按可独立实施、验证或 review 的结果组织}}
 
 ## Proof Bundle
 
@@ -27,9 +27,7 @@
 - Verdict:
 - Change:`git=[base=<commit SHA>; reviewed=<commit SHA>; dirty=no]` 或 `git=[base=<commit SHA>; reviewed=worktree; dirty=yes]` (非 Git:`inputs=[explicit reviewed paths]`); `endpoint-outputs=[tasks.md receipt]`
 - Checks / 轻车道验证 / 不变量反核:`<去重后的 command/assertion + 覆盖的验证项 + mode=run|same-task reuse + result + reused evidence reference when applicable>`
-- Review execution:`L2=<state=completed|N/A(low-risk light lane; no L2 trigger after convention-scope triage)|not-run(completion preflight)|not-run(L1 prerequisite when otherwise applicable)|not-run(review-package incomplete)|invalidated(review-input drift); reviewer/mode/completion/fallback-reason when dispatched>; L3=<state=N/A(light lane)|not-run(completion preflight)>`
-- L2:`verdict + baseline; add findings/unverified/ambiguities only when non-empty` 或 `N/A(low-risk light lane; no L2 trigger after convention-scope triage)` 或 `not-run(completion preflight)` 或 `not-run(L1 prerequisite)` 或 `not-run(review-package incomplete)` 或 `invalidated(review-input drift)`
-- L3:`N/A(light lane); verification=[item#id: PASS|FAIL]` 或 `not-run(completion preflight)`
+- Reviews:`L2=<completed + verdict/baseline/exceptions | N/A/not-run/invalidated + reason>; L3=N/A(light lane); verification=[item: PASS|FAIL]`
 - Current truth:
 - Open questions:(仅非空时保留)
 - Drift:(仅非空时保留;不会自动写入其他 ledger)

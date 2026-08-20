@@ -13,7 +13,7 @@ node scripts/check-reviewer-fixtures.cjs
 
 ## Endpoint expectations
 
-- `clean`: `feature-done 001-normalize-key` returns `READY`; the owning action supplies one review-cycle snapshot and both L2/L3 reports return its matching `changed-path-count`, every exact applicable rule/spec ID, `unverified-item-count=0`, and `blocking-ambiguity-count=0` without echoing the changed-path list or clean non-match/non-applicable counts. The persisted receipt records Git base/reviewed/dirty identity and compresses each PASS review to its baseline plus non-empty exceptions, with no manual path population or applicable-ID fields.
+- `clean`: `feature-done 001-normalize-key` returns `READY`; the owning action supplies one stable review snapshot and both L2/L3 reports declare complete applicable coverage against it. The persisted receipt records Git base/reviewed/dirty identity and compresses each PASS review to its baseline plus non-empty exceptions.
 - `known-bad`: L1 remains green, but the endpoint returns `NEEDS WORK`; L2 cites the matching-test-name and no-throw conventions, while L3 cites empty-string behavior and missing empty-input verification.
 - `light-clean` / `light-known-bad`: L1 remains green and L2 is explicitly `N/A(low-risk light lane; no L2 trigger after convention-scope triage)` in both; only the explicit `tasks.md` verification distinguishes READY from NEEDS WORK, proving that conditional L2 never skips light-lane acceptance.
 - Run both Claude and Codex endpoint adapters when shared/canonical behavior changes. When only one adapter changes, run that adapter plus the deterministic fixture check.
@@ -24,24 +24,24 @@ node scripts/check-reviewer-fixtures.cjs
 - Reuse or invoke `feature-done` directly on an accepted full-lane artifact whose Prior decisions lacks the
   semantic source column (or its explicit N/A). Confirm implementation/expanded L1 does not start and the
   artifact routes through repair/`spec-revise` plus `spec-quality-check`.
-- Use a reused multi-boundary full-lane feature with no declared slices and confirm completion preflight
-  returns `NEEDS WORK`; omitting slice declarations must not be treated as a one-boundary exception. Add matching
-  completed plan/tasks slices plus focused L1 evidence and confirm normal preflight resumes.
+- Use a reused full-lane feature whose tasks omit a focused check that its accepted plan explicitly declares before
+  dependent work. Confirm completion preflight returns `NEEDS WORK`. Complete and record that declared check and
+  confirm normal preflight resumes from the artifact's declared boundary and evidence.
 - For a user-visible fixture, make its declared primary-flow smoke fail while lower-level checks remain green; confirm expensive L1 and L2/L3 do not start. Restore it and confirm the same result is reused as ordinary L1 evidence rather than run twice.
-- Remove the `Primary flow` marker from a user-visible artifact and confirm preflight returns `NEEDS WORK` for
-  `spec-revise` instead of selecting an obligation or inventing another smoke.
+- Reorder a user-visible artifact so a broad matrix precedes its shortest actor-to-result journey; confirm Q3
+  requests a clearer evidence order without inventing another smoke.
 - Add an unrelated active-feature change to the same dirty repository and confirm the endpoint returns `BLOCKED` instead of manually subtracting paths. Restore a clean single-feature boundary and confirm the receipt writes one `git=[base=...; reviewed=...; dirty=...]` identity.
-- Add a new persistent state/API/responsibility area outside the accepted Delivery Shape Baseline and
+- Add a new persistent state/API/responsibility area outside the accepted Scope / Constraints / Module Impact and
   confirm preflight returns `NEEDS WORK` before expanded L1, routing to `spec-revise`, lane upgrade, or a
   child feature. Make ownership of that extra change ambiguous and confirm the verdict becomes `BLOCKED`.
-- Remove the Delivery Shape Baseline from a full-lane artifact and confirm preflight returns `NEEDS WORK` for
-  `spec-revise` before expanded L1; module-impact/scope sections must not substitute for it.
+- For multi-boundary or materially high-risk work, remove the recorded coupling/rollback boundary and confirm
+  preflight returns `NEEDS WORK`; ordinary same-boundary work does not require that conditional section.
 - Leave the canonical `## Proof Bundle` fields empty and add a non-empty superseded Proof Bundle history; confirm completion preflight ignores both receipt regions rather than treating them as unfinished placeholders.
 - For a non-user-visible fixture, confirm preflight records `N/A(not user-visible)` without inventing a smoke.
 
 ## Endpoint-summary smoke
 
-- Confirm the endpoint response contains verdict, `Lifecycle: READY; archive pending` when READY, primary-flow result, aggregate checks, L2/L3, current truth, non-empty blockers, and a repository-relative `tasks.md#proof-bundle` link.
+- Confirm the endpoint response contains verdict, `Lifecycle: READY; archive pending` when READY, the first declared actor-to-result result when applicable, aggregate checks, L2/L3, current truth, non-empty blockers, and a repository-relative `tasks.md#proof-bundle` link.
 - Confirm the full receipt remains on disk and the endpoint response does not inline it or repeat every passing command.
 
 ## Reopen smoke
@@ -49,14 +49,14 @@ node scripts/check-reviewer-fixtures.cjs
 - Start from an active, unarchived full-lane READY feature. Run `spec-revise` for a material contract/plan/Verification omission and confirm status returns from `已实现` to `已确认`, the exact prior receipt moves under a uniquely named dated-or-numbered superseded heading, and exactly one empty canonical `## Proof Bundle` remains.
 - With the accepted contract unchanged, introduce a pure implementation regression, repair it, and explicitly rerun `feature-done`. Confirm the old receipt is preserved before replacement; a non-READY result returns status to `已确认`, while READY keeps `已实现`. A completion-preflight stop writes the new receipt with reviewers `not-run(completion preflight)` rather than leaving the old READY active.
 - Confirm `feature-archive` rejects the reopened feature until a new `feature-done` writes READY. Confirm an already archived feature requires a successor change instead of reopening history.
-- Remove Checks, Review execution/applicable L2/L3 state, or Current truth from an otherwise READY receipt and
+- Remove Checks, applicable L2/L3 review outcomes, or Current truth from an otherwise READY receipt and
   confirm `feature-archive` rejects it and reports `rerun feature-done`; optional Open questions/Drift may be absent.
 
 ## Runtime scheduling smoke
 
 Run the full-lane `clean` case with each adapter and record dispatch timing/mode:
 
-- With capacity for both reviewers, L2 and L3 fresh dispatches start before either result returns; both retain independent exact-population evidence.
+- With capacity for both reviewers, L2 and L3 fresh dispatches start before either result returns; both retain independent reviewed-scope and coverage evidence.
 - With only one reviewer slot available, L2 and L3 run as sequential fresh dispatches. Do not record `main-session fallback` merely because the second slot was unavailable.
 - A failure in one reviewer does not cancel or erase the independently executable result from the other reviewer.
 
@@ -64,25 +64,23 @@ If the host cannot expose or constrain reviewer capacity, record that limitation
 
 ## Review-cycle snapshot smoke
 
-- Capture one changed-path population and reviewer-input snapshot after L1; confirm parallel and sequential L2/L3 dispatches receive the same snapshot and report the same `changed-path-count`.
+- Capture one changed-path population and reviewer-input snapshot after L1; confirm parallel and sequential L2/L3 dispatches receive the same stable snapshot.
 - Omit an owner-required review-package input before dispatch. Confirm the endpoint records every applicable slot as `not-run(review-package incomplete)`, returns `BLOCKED`, and dispatches no reviewer.
 - During an initial sequential run, mutate a non-receipt reviewed input after L2 returns but before L3 aggregation. Confirm the endpoint rejects the cycle for aggregation, records every applicable slot as `invalidated(review-input drift)`, returns `BLOCKED`, and does not auto-start another full-population cycle. A later explicit invocation may start the new cycle after inputs stabilize.
-- Complete the initial `known-bad` terminal report and confirm that explicit `feature-done` invocation ends:
-  it does not repair the finding or dispatch a second reviewer population. Cross one user turn in the same task,
-  apply a separate fix limited to the cited finding and dependency closure, then explicitly invoke
-  `feature-done` again. Confirm only that later invocation creates one new snapshot revision, reruns affected
-  L1 evidence, dispatches one fresh invocation for every affected reviewer population, and retains only
-  unchanged unaffected terminal evidence. If that focused review still returns `NEEDS WORK`, confirm the later
-  invocation also ends without another repair/review loop.
-- Repeat after changing an unaffected implementation path, convention source, spec artifact, reviewer contract, or anything outside the declared fix closure; confirm focused re-review is invalidated. Make the affected L1 boundary uncertain, or start a new task, and confirm a new full-population cycle is required.
+- Complete the initial `known-bad` report and confirm the terminal verdict ends that gate run without automatic
+  repair or redispatch. Apply an unambiguous in-scope fix in the enclosing implementation, then issue a later
+  explicit user request to invoke `feature-done` again. Confirm the new invocation creates a fresh reviewer
+  snapshot, reruns affected L1 evidence, and reuses only unchanged evidence whose dependency closure remains valid.
+- Change an implementation path, convention source, spec artifact, or reviewer contract and confirm the later
+  invocation reviews the new complete snapshot rather than trying to preserve a focused-review state machine.
 
 ## Reviewer execution-boundary smoke
 
 - Instrument or record shell/tool calls for L2/L3. Confirm reviewers use only read-only Git/diff/search inspection and do not run tests, builds, linters, acceptance commands, or other L1 checks.
-- Confirm each supplied evidence entry contains an evidence ID, mapped obligation/rule IDs, command/assertion, `run` or `same-task reuse`, result/status, relevant-input scope, concise totals when applicable, and an original evidence reference. An explicitly empty L2 map is valid only when no applicable convention rule depends on mechanical evidence.
+- Confirm each supplied evidence entry identifies the obligation, rule, or coverage area it supports, plus the command/assertion, `run` or `same-task reuse`, result/status, relevant-input scope, concise totals when applicable, and original evidence reference. An explicitly empty L2 map is valid only when no applicable convention rule depends on mechanical evidence.
 - Omit the caller-supplied L1 evidence package and confirm the affected reviewer returns one terminal `UNRELIABLE` report without running a replacement command, requesting the missing package, or waiting for supplemental input.
 - Supply a complete L1 evidence map that represents a required L3 Verification obligation as an explicit `verification gap`; confirm L3 reports `NEEDS WORK`, not `UNRELIABLE`.
-- Confirm each reviewer starts from every changed hunk, expands only when an applicable rule/spec item needs symbol/file/dependency context, and still enumerates the full population for a distributed obligation.
+- Confirm each reviewer starts from every changed hunk, expands only when an applicable rule/spec item needs symbol/file/dependency context, and completely assesses the supplied scope plus any whole population required by a distributed obligation.
 
 ## L1 reuse smoke
 
@@ -94,7 +92,8 @@ If the host cannot expose or constrain reviewer capacity, record that limitation
 ## L1 prerequisite smoke
 
 - Plant a required L1 failure and confirm all other independently executable L1 checks still run.
-- Confirm neither adapter dispatches new L2/L3 reviewers; Review execution and each otherwise-applicable L2/L3 slot without a valid same-task result record `not-run(L1 prerequisite)`, and the receipt returns `NEEDS WORK`.
+- Confirm neither adapter dispatches new L2/L3 reviewers; each otherwise-applicable L2/L3 review records
+  `not-run(L1 prerequisite)`, and the receipt returns `NEEDS WORK`.
 - Make a required L1 command unavailable and confirm the same reviewer behavior with a `BLOCKED` verdict.
 - Restore L1 to green and confirm the normal applicable L2/L3 dispatch resumes.
 
@@ -119,9 +118,8 @@ one fresh reviewer performs reconciliation first and Q3-Q7 second; there is no s
 - Supply or explicitly confirm an ordinary outcome/scope/constraint in `spec.md` without copying it into plan
   Prior decisions; expect ALIGNED when no external conflict exists. Add a non-obvious external interpretation,
   bundled-risk acceptance, or supersede claim without authority and expect `SOURCE GAP`.
-- Remove the Prior decisions semantic source column (`来源` in the bundled template) or a required row source and confirm the mechanical gate returns
-  `BLOCKED` before reviewer dispatch. Use explicit `N/A(no durable why/source decision)` only when no decision
-  requires a durable source trace.
+- Remove the source from a non-obvious external/conflict/bundled-risk/supersede decision and confirm the gate
+  returns `BLOCKED` before implementation. When no decision requires a durable source trace, the section may be omitted.
 - Add a material accepted owner/fallback rule to the source map but omit it from the artifacts; expect
   `MISMATCH: missing-from-artifact` with both source-map and artifact citations.
 - Add a Pending state, management console, or permission workflow to the artifacts without a current accepted
@@ -145,9 +143,10 @@ Run `spec-quality-check` against two full-lane artifacts whose individual tasks 
 - Add a Pending state, management surface, queue, or CAS workflow justified only by possible future use;
   confirm Q7c returns `BLOCKED` until it is removed, durably deferred, or given a traceable current
   consumer and necessity.
-- Remove the Delivery Shape Baseline or leave ownership/data-disposition scope-growth triggers unresolved;
-  confirm Q7d returns `BLOCKED` regardless of artifact age. Add a complete baseline but omit the multi-boundary
-  continuation sequence; confirm Q7a/Q7d remains `BLOCKED` until plan/tasks add matching slices and focused L1.
+- For multi-boundary or materially high-risk work, leave ownership/data-disposition coupling or scope-growth
+  triggers unresolved and confirm Q7d returns `BLOCKED`. Ordinary same-boundary artifacts rely on Scope,
+  Constraints, Module Impact, and Verification. When real dependency checkpoints are
+  missing, confirm Q7a/Q7d remains `BLOCKED` until plan/tasks make them actionable with focused checks.
 
 ## Architecture-shaped spec-quality smoke
 
@@ -189,17 +188,17 @@ Run `spec-quality-check` against two full-lane artifacts whose individual tasks 
 - Give `project-personalize` a manifest and CI file that agree on one test command. Confirm it reports the
   command as Observed and asks no question about it.
 - Add two conflicting active lint commands with no ownership evidence. Confirm it reports the smallest Proposed
-  adjustment, puts only the deciding choice under Unresolved, and asks one material question in that turn.
+  adjustment, puts only the deciding choices under Unresolved, and asks only the questions needed to resolve them.
 - Answer the question, then expose a separate hook-policy gap. Confirm the staged draft/source trace updates and
   the next question does not restate settled command evidence.
 - Make the remaining uncertainty an architecture/product decision. Confirm it routes to `feature-init` instead
   of extending personalization.
-- Close all material gaps. Confirm one consolidated preview and one existing apply approval, with no additional
+- Close all material gaps. Confirm the authorized changes apply without an additional
   feature, spec, lane, gate, reviewer, status, or approval cycle created by the conversation.
 
 ## Implementation Scope Stop smoke
 
-Start implementing an accepted full-lane artifact whose Delivery Shape Baseline excludes a generic admin
+Start implementing an accepted full-lane artifact whose accepted scope excludes a generic admin
 console, compatibility state, and second Provider:
 
 - Discover that the simplest implementation needs an ordinary private helper inside an already declared
@@ -207,7 +206,8 @@ console, compatibility state, and second Provider:
   user question or `Scope stop` narration.
 - Propose a reusable Pending state/admin console “for possible future operations.” Confirm implementation
   stops before adding more production code, tests, migrations, compatibility paths, or docs for it; the report
-  contains the delta, baseline mismatch, current necessity, recommended removal, and at most one question.
+  contains the delta, boundary mismatch, current necessity, recommended removal, and only the questions needed
+  to choose direction.
 - Choose removal and confirm speculative code/tests are isolated or removed without creating a child feature,
   repository backlog, or `spec-revise` record merely to preserve them.
 - Instead discover a real material authorization correction. Confirm work on that delta waits for one user
@@ -229,38 +229,38 @@ console, compatibility state, and second Provider:
   each unchanged final evidence source is recorded once.
 - Vary file/test counts without changing traceable risk coverage and confirm the verdict does not change.
 
-## Implementation Continuation Check smoke
+## Phase-focused validation smoke
 
-Start with one accepted medium, multi-boundary full-lane outcome whose plan and tasks have the same
-dependency-ordered `S1` domain/state, `S2` public-contract, and `S3` actor-operation slice IDs:
+Start with one accepted medium, multi-boundary full-lane outcome whose plan and tasks describe three meaningful
+dependency-ordered results: domain/state, public contract, and actor operation:
 
-- Complete only `S1`: implement it, run its smallest focused L1, check its tasks, and emit one compact progress
-  update naming the closed boundary/evidence and `S2` as next. Confirm no L2/L3 or Proof Bundle runs.
-- Then resume after context compaction. Confirm implementation re-reads spec Verification, Delivery Shape,
+- Complete the domain/state result, run its smallest focused check, and record the result on the existing task.
+  Confirm no L2/L3 or Proof Bundle is introduced before endpoint review.
+- Resume after context compaction. Confirm implementation re-reads spec Verification, the accepted boundary,
   implementation order, and incomplete tasks before dependent work.
-- Keep `S1` and `S2` aligned with the accepted boundary. Confirm work continues after the compact update without
-  user reconfirmation or a new feature, action, gate, reviewer, status, evidence artifact, or receipt.
-- Fail `S2` focused L1 once and confirm the implementation repairs only `S2` and reruns affected evidence. Repeat
-  the same failure without new diagnostic evidence and confirm it reports the blocker instead of starting an
-  L2/L3 or broad endpoint-review loop.
+- Keep the next result aligned with the accepted boundary. Confirm work continues under the same active feature,
+  tasks, accepted boundary, and endpoint gates.
+- Fail the public-contract focused check once and confirm the implementation repairs only that phase and reruns
+  affected evidence. Repeat the same failure without new diagnostic evidence and confirm it reports the blocker
+  instead of starting an L2/L3 or broad endpoint-review loop.
 - Change the next public DTO so that it contradicts the accepted failure-state contract. Confirm Scope Stop
   activates before dependent UI, tests, or documentation are added.
-- Replace the sequence with backend/frontend/test or file-count/time buckets. Confirm Q7a/Q7d blocks it until
-  plan/tasks use matching contract-bearing slice IDs with focused L1.
-- Keep the real dependency order inside each named contract/consumer slice. Confirm Q7a accepts it rather than
-  treating internal coding order as a tier/file/test/time bucket.
-- Reduce the same feature to one real contract boundary and confirm Q7a accepts one responsibility instead of
-  forcing artificial slices.
-- Raise its delivery-risk signal to large/extra-large and confirm every slice additionally names an inspectable
-  exit, next consumer, and smallest focused evidence.
-- Map each slice's focused L1 directly to its spec Verification obligation. Confirm the final Verification
-  checklist contains only remaining cross-slice/endpoint evidence, or an explicit N/A when every obligation is
-  already mapped; it must not repeat all slice checks as bookkeeping.
-- Make one slice independently acceptable, enableable, and revertible. Confirm scope viability is rechecked and
-  the slice remains bundled only when concrete coupling requires one delivery.
+- Replace the inspectable results with broad technical buckets that hide a real dependency checkpoint. Confirm
+  Q7a/Q7d blocks the missing result/evidence boundary.
+- Reduce the same feature to one directly verifiable responsibility and confirm Q7a accepts its existing task and
+  evidence boundary.
+- Add a material dependency/rollback risk and confirm important dependent phases name an inspectable
+  exit, next consumer, and smallest focused evidence where that information helps execution.
+- Map phase-focused checks to applicable spec Verification obligations. Confirm the final Verification checklist
+  contains only remaining cross-phase/endpoint evidence, or an explicit N/A when all obligations are already
+  covered; completed phase checks remain valid evidence for the endpoint.
+- Make one result independently acceptable, enableable, and revertible. Confirm scope viability is rechecked and
+  it remains bundled only when concrete coupling requires one delivery.
+- Complete all declared focused checks, then invoke `feature-done`. Confirm it reuses still-valid same-task evidence,
+  runs only remaining final/cross-phase checks, then reviews one stable final snapshot.
 
 ## Release interpretation
 
-- Record case, adapter, endpoint verdict, review-cycle identity, transient changed-path count and exact applicable IDs, every unverified/ambiguity count plus non-empty identifiers, actual cited findings, scheduling/status-transition evidence, and the Git-native compact persisted receipt in the release PR/task. A static CI pass is not endpoint evidence.
+- Record case, adapter, endpoint verdict, reviewed-scope identity, coverage gaps or ambiguities, actual cited findings, scheduling/status-transition evidence, and the Git-native compact persisted receipt in the release PR/task. A static CI pass is not endpoint evidence.
 - A clean result on the `known-bad` case is a release blocker: reviewer sensitivity or endpoint assembly is broken even if the output schema is complete.
 - This is a sensitivity smoke, not a benchmark. Repeated zero-finding production runs are only a cost signal and never substitute for a known-bad case.

@@ -26,7 +26,7 @@ This file is the cross-tool source of truth for working in this repository. Keep
   API, role, workflow, management surface, queue, runtime, responsibility area, contract, migration,
   authorization rule, or release boundary outside the accepted scope/impact baseline. Full lane is not
   blanket permission for adjacent capability. Report the discovered delta, why it is or is not necessary
-  now, the recommended remove/narrow/child/revise direction, and ask at most one material question. Continue
+  now, the recommended remove/narrow/child/revise direction, and ask the smallest useful set of material questions. Continue
   only after a required direction is confirmed and recorded; already-written code is never a reason to absorb it.
 
 ## Working Rules

@@ -14,8 +14,8 @@ Default invocation is **sweep mode**: with no argument, find all features whose 
 
 A feature is archive-eligible only when its `## Proof Bundle` contains the required fields defined by the
 [`feature-done` delivery receipt](feature-done.md#delivery-receipt--proof-bundle-on-disk): `Verdict: READY`,
-valid Git/non-Git reviewed-state identity and endpoint outputs, Checks, Review execution with applicable L2/L3
-states, and Current truth. Optional Open questions and Drift remain optional. A missing or invalid required
+valid Git/non-Git reviewed-state identity and endpoint outputs, Checks, applicable L2/L3 review outcomes,
+and Current truth. Optional Open questions and Drift remain optional. A missing or invalid required
 field makes the feature ineligible; report `rerun feature-done` and never infer READY from other or historical
 fields.
 

@@ -36,9 +36,11 @@ Use [`project-init`](project-init.md) when all six baseline destinations are abs
 
 Keep the target unchanged while material decisions remain. Present only applicable findings as **Observed**
 (repository evidence), **Proposed** (the smallest evidence-backed adjustment), and **Unresolved** (a decision
-whose answer changes the working agreement). Ask one material question per turn, prefer a bounded choice, and
+whose answer changes the working agreement). Ask dependent material questions in sequence; closely related
+independent choices may be grouped. Prefer bounded choices, and
 after each answer update the in-memory/staged draft plus its source trace without restating settled evidence.
-When no material gap remains, proceed to the existing single consolidated preview and apply approval.
+When no material gap remains, summarize and preflight the staged changes, then apply them under the current
+request's authorization. Ask again only for a materially different policy choice or external write.
 
 Do not ask about facts the repository already proves, values that may safely remain deferred, or architecture/
 product decisions owned by `feature-init`. This conversation creates no additional feature, spec, lane, gate,
@@ -60,7 +62,10 @@ reviewer, status, or approval cycle.
    Findings propose narrow moves/creation/deletion; they do not establish that the architecture itself is good.
 6. Validate selected host-private rules and hooks only when they already exist or the user chose them. Never copy optional assets by default.
 7. Run an inline trace for repository- or user-sourced synchronization and the decision-completeness auditor only for unconfirmed high-impact choices, ADRs, or conflicting/weak evidence.
-8. Preflight unchanged baselines and staged destinations, show one consolidated diff/new-file list, and apply once after approval. Normalize an existing target-root symlink to its real directory, but reject symlinked destination components and an absent target below a symlinked ancestor. Conflicts, rejection, or a blocking audit leave the target unchanged.
+8. Preflight unchanged baselines and staged destinations, summarize the proposed changes, and apply when the
+   current request authorizes them. Ask only when a material policy choice or different/external write remains
+   unresolved. Normalize an existing target-root symlink to its real directory, but reject symlinked destination
+   components and an absent target below a symlinked ancestor. Conflicts or a blocking audit leave the target unchanged.
 9. Validate placeholders, commands, source/test paths, project-specific rules/boundaries, real tier ownership, aliases, selected rule scopes, hook status, and `AGENTS.md` concision.
 
 ## Reviewer Execution
@@ -86,7 +91,10 @@ Every applicable explorer, researcher, or auditor boundary follows the canonical
 - When the selected host uses path-scoped convention files, their path patterns must match existing or intentionally planned paths. Do not translate one host's private files into another host's runtime format unless the user explicitly requests a migration.
 - Historical feature specs are not rewritten.
 - Successful completion means the evidence-backed working agreement is aligned with the currently observable project. The target is ready for direct work or [`feature-init`](feature-init.md); this is not an architecture-quality verdict.
-- Compose every proposed patch in memory or a disposable staging directory, then run trace/audit and show one consolidated diff before applying it. Rejection or a blocking audit leaves the target unchanged. Missing-baseline apply uses strict no-clobber preflight: any approval-time conflict or symlinked destination beneath the resolved project root rejects the whole staged population before copying anything.
+- Compose every proposed patch in memory or a disposable staging directory, then run trace/audit before applying
+  it under the current authorization. A blocking audit leaves the target unchanged. Missing-baseline apply uses
+  strict no-clobber preflight: any apply-time conflict or symlinked destination beneath the resolved project root
+  rejects the whole staged population before copying anything.
 
 ## Validation
 

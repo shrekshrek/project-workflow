@@ -38,50 +38,29 @@ function validateFullFixtureAgainstCurrentPreflight(featureDir, options = {}) {
   if (!/^-\s+\S/m.test(verification) || verification.includes("{{TODO")) {
     problems.push(`${label}: spec Verification is empty or unresolved`);
   }
-  const primaryFlowCount = (verification.match(/Primary flow/g) || []).length;
-  if (options.userVisible === true && primaryFlowCount !== 1) {
-    problems.push(`${label}: user-visible spec needs exactly one Primary flow`);
-  }
-  if (options.userVisible === false && primaryFlowCount !== 0) {
-    problems.push(`${label}: non-user-visible spec must not declare Primary flow`);
-  }
-
-  for (const marker of ["## 1. 模块影响范围", "### 1.2 Delivery Shape Baseline", "## 3. Prior decisions", "## 5. 实施顺序"]) {
+  for (const marker of ["## 1. 模块影响范围", "## 5. 实施顺序"]) {
     if (!plan.includes(marker)) problems.push(`${label}: plan missing ${marker}`);
   }
-  for (const field of [
-    "当前 outcome / consumer:",
-    "Delivery risk signal:",
-    "预期责任区域:",
-    "Contract / data / authorization / migration / release signals:",
-    "明确排除:",
-    "Scope growth triggers:",
-  ]) {
-    const line = plan.split(/\r?\n/).find((candidate) => candidate.includes(field));
-    if (!line || line.includes("{{TODO") || !line.slice(line.indexOf(field) + field.length).trim()) {
-      problems.push(`${label}: Delivery Shape Baseline missing value for ${field}`);
-    }
-  }
   const prior = section(plan, "## 3. Prior decisions");
-  const hasSemanticHeader = /\|\s*(?:决策|Decision)\s*\|\s*(?:为什么|Why)\s*\|\s*(?:来源|Source)\s*\|/i.test(prior);
-  const hasExplicitNA = prior.includes("N/A(no durable why/source decision)");
-  if (!hasSemanticHeader && !hasExplicitNA) {
-    problems.push(`${label}: Prior decisions lacks decision/why/source semantic columns or explicit N/A`);
+  const containsDecision = /(?:决策|决定|Decision)\s*[:：]/i.test(prior);
+  const hasWhy = /(?:为什么|理由|Why)\s*[:：]\s*\S/i.test(prior);
+  const hasSource = /(?:来源|Source)\s*[:：]\s*\S/i.test(prior);
+  if (containsDecision && (!hasWhy || !hasSource)) {
+    problems.push(`${label}: Prior decisions entry lacks why/source semantics`);
   }
   if (prior.includes("{{TODO")) problems.push(`${label}: Prior decisions contains unresolved TODO`);
 
-  const planSlices = [...plan.matchAll(/^\d+\.\s+`(S\d+)`/gm)].map((match) => match[1]);
-  const taskSlices = [...tasks.matchAll(/^###\s+`(S\d+)`/gm)].map((match) => match[1]);
-  if (!planSlices.length || JSON.stringify(planSlices) !== JSON.stringify(taskSlices)) {
-    problems.push(`${label}: plan/tasks slice IDs are missing or mismatched`);
+  const implementationOrder = section(plan, "## 5. 实施顺序");
+  if (!/^\d+\.\s+\S/m.test(implementationOrder) || implementationOrder.includes("{{TODO")) {
+    problems.push(`${label}: implementation order is empty or unresolved`);
   }
   const taskContract = tasks.split("## Proof Bundle")[0];
-  if (!/Focused L1:/.test(taskContract)) problems.push(`${label}: tasks lack focused L1 evidence`);
+  if (!/^- \[[ x]\]\s+\S/m.test(taskContract)) problems.push(`${label}: tasks lack actionable checklist items`);
   if (taskContract.includes("{{TODO")) problems.push(`${label}: tasks contain unresolved TODO`);
   if (options.requireComplete && /^- \[ \]/m.test(taskContract)) {
     problems.push(`${label}: completion fixture contains unfinished tasks`);
   }
-  for (const field of ["Verdict:", "Change:", "Checks:", "Review execution:", "L2:", "L3:", "Current truth:"]) {
+  for (const field of ["Verdict:", "Change:", "Checks:", "Reviews:", "Current truth:"]) {
     if (!tasks.includes(`- ${field}`)) problems.push(`${label}: Proof Bundle missing ${field}`);
   }
 

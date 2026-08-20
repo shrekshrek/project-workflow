@@ -40,29 +40,16 @@
 
 ---
 
-## 1. 业界三流派(选一个心智模型)
+## 1. 本项目采用的心智模型
 
-> **本节范围**:仅 spec/plan/tasks(**B 类任务**)的写法流派。**C 类决策(ADR)** 自成一派(Michael Nygard 2011),见 [workflow.md §1.8](workflow.md#18-adr-目录初始化);**A 类约定(AGENTS.md)** 见 [workflow.md §1.3](workflow.md#13-agentsmd-的内容标准)。
+本项目取轻量约定、change artifact 和 spec-as-contract 的共同部分，不引入完整 Spec Kit 工具链：
 
-| 流派 | 代表 | 形态 | 适合谁 |
-|---|---|---|---|
-| **重型** | [GitHub Spec Kit](https://github.com/github/spec-kit) | `.specify/specs/<NNN>/{spec,plan,tasks}.md` + command suite | 大团队、流程纪律强 |
-| **轻量** | [Addy Osmani agents.md](https://addyosmani.com/blog/good-spec/) | 根目录单文件六要素 | 单人/小团队、要灵活 |
-| **学术** | [SDD: From Code to Contract — arXiv 2602.00180](https://arxiv.org/abs/2602.00180) | spec 是契约,代码是契约的实现 | 高合规、强保证场景 |
+- 项目约定写入 `AGENTS.md`；
+- 需要追踪的变更使用 `docs/specs/changes/<NNN>-<slug>/`，按风险选择轻车道或 full lane；
+- 只有命中 `ADR_REQUIRED` 才创建 ADR；
+- spec 可以按正式流程修订，但实施时不能靠猜测补全契约。
 
-### 本项目采用混合
-
-- **项目级约定**(A 类):agents.md 风格 → 根 `AGENTS.md`(workflow §1.3)
-- **变更级 artifact**(B 类):Spec Kit 简化版 → `docs/specs/changes/<NNN>-<slug>/`(full lane 三件套;轻车道仅 `tasks.md`)
-- **架构决策**(C 类):具体 ADR → `docs/adr/`;空模板保留在 plugin,需要时实例化(详见 workflow.md §1.8)
-- **哲学**:学术 SDD 的"spec-as-contract"精神,**不上** Spec Kit 的工具链负担
-
-**为什么混合**:
-- 全照 Spec Kit:工具链开销大,适合大团队
-- 全照 agents.md:只有项目级,功能级 + 决策史缺位
-- 学术派的契约精神告诉我们:spec **可以变更但不能模糊**
-
-> A / B / C 三类的角色 + 寿命对比见 [workflow.md §1.8 ADR vs AGENTS.md vs spec vs plan](workflow.md#18-adr-目录初始化)。本文档 §3 起只展开 B 类(功能级 spec / plan / tasks)。
+A / B / C 三类的职责与寿命见 [workflow.md §1.8](workflow.md#18-adr-目录初始化)。本文档后续只展开功能级 spec / plan / tasks；方法来源统一列在文末参考。
 
 ---
 
@@ -97,7 +84,7 @@
 
 | 文件 | 回答 | 内容 | 何时冻结 |
 |---|---|---|---|
-| `spec.md` | **WHAT** | Outcomes / Scope boundaries / Constraints / Verification | 确认并开始实施后冻结,变更 = 起新功能目录 |
+| `spec.md` | **WHAT** | Outcomes / Scope boundaries / Constraints / Verification | 确认并开始实施后冻结;活动且未归档时真实契约错误走 `spec-revise`,已归档或 outcome 方向改变时起 successor feature |
 | `plan.md` | **HOW** | 模块影响范围 / 架构决策 / Prior decisions / 风险 | 实施中可补充,不能推翻 spec.md |
 | `tasks.md` | **STEPS** | Task breakdown(checkbox)+ 实施记录 | 实施中持续更新,完成后归档 |
 
@@ -142,14 +129,10 @@ docs/specs/changes/
 | **Light lane** | 低风险小改,但交接、多步验收、审计/发布或 current-truth 更新需要持久清单 | `tasks.md` |
 | **Full lane** | API/数据/安全/权限/架构/跨模块契约、新模块或其他高风险变更 | `spec.md + plan.md + tasks.md` |
 
-改变已有 `docs/specs/<area>.md` 声明的持久行为时至少进入 Light lane。实施中发现原分类不再成立时停止并升级,不把 Light lane 当成逃生舱。
-
-创建 artifact 前先做有界只读 Impact Preflight:确认当前 outcome/consumer、预期责任区域、Contract/
-data/authorization/migration/release 信号、遗留或无法归属数据的处置、dirty worktree 重叠和高影响
-未知项。高影响业务、所有权、授权、数据处置或发布耦合没确认时保持 pending,一次只问一个决定性
-问题;不要先生成 speculative spec 再补答案。规模是复核信号,不是机械拆分阈值。
-
-多个小改只有共享用户目标且必须同批交付时才合成一个 feature。能独立验收、上线和回滚且没有事务、契约或发布耦合的结果默认拆分;用户接受合并交付时,在 plan 现有 Prior decisions 或风险小节记录决定来源与协调/回滚风险。选择拆分时,先把暂缓结果持久化到既有 Issue/PM 系统并保留稳定引用,再只创建当前 child;不在 repo 另造 backlog,也不靠聊天记忆。责任面、migration 或外部契约宽度只是复核信号,不是硬阈值。
+改变 current truth 已声明的持久行为时至少进入 Light lane；实施中分类失效则停止并升级。创建
+artifact 前关闭会改变范围、所有权、授权、数据处置或发布耦合的未知项，规模本身不决定车道或拆分。
+可独立验收、上线和回滚且无强耦合的结果默认拆分，只创建当前 child；已有 Issue/PM 引用可复用，
+但外部 tracking 不是启动所选 child 的前置条件。完整判定只见 [`feature-init`](actions/feature-init.md)。
 
 ### 3.3 `spec.md` 写法(WHAT,冻结)
 
@@ -183,9 +166,9 @@ data/authorization/migration/release 信号、遗留或无法归属数据的处�
 
 | 好 ✅ | 坏 ❌ |
 |---|---|
-| token 生命周期与滥用风险 → service test 覆盖相关不变量<br>`Primary flow`:API 与邮件契约风险 → 一条 integration test 验邀请创建到 token 打开<br>只有 provider/config 变化时 → staging delivery smoke | 固定要求单测、集成、e2e 各一套,按 endpoint/状态码凑矩阵,或只写覆盖率 80% |
+| token 生命周期与滥用风险 → service test 覆盖相关不变量<br>API 与邮件契约风险 → 一条 integration test 验邀请创建到 token 打开<br>只有 provider/config 变化时 → staging delivery smoke | 固定要求单测、集成、e2e 各一套,按 endpoint/状态码凑矩阵,或只写覆盖率 80% |
 
-**为什么**:覆盖率、测试层数和 case 数都不等于覆盖**关键风险**。一个证据可以覆盖多个相关义务;只有交互维度会改变结果、已有回归要求或发布/合规契约存在时才展开矩阵。用户可见 outcome 只在现有义务中标一个 `Primary flow`,供交付预检优先运行,不是再加一套测试。
+**为什么**:覆盖率、测试层数和 case 数都不等于覆盖**关键风险**。一个证据可以覆盖多个相关义务;只有交互维度会改变结果、已有回归要求或发布/合规契约存在时才展开矩阵。用户可见 outcome 把最短的 actor-to-result 路径排在前面即可,不需要额外标签。
 
 按主要风险选择能证明它们的**最小可执行验证集**。测试层级按需;除非各层证明不同风险,不要求在单测、集成和 e2e 中重复覆盖同一行为,也不按固定状态码凑错误路径矩阵。文档、配置或迁移型变更可使用相应的静态检查、CLI 或数据断言。
 
@@ -217,8 +200,7 @@ data/authorization/migration/release 信号、遗留或无法归属数据的处�
 
 **为什么**:非显然技术选择、外部来源解释、冲突/bundled-risk 裁决或 supersede 决定如果不带原因,
 AI 在实施中遇到问题会**重新打开讨论**(`要不要换 SES?`)。带原因 = 关闭讨论。普通 Outcomes、Scope、
-Constraints、Exclusions 仍由 spec.md 单独拥有,不复制到本节;没有需追踪决定时明确写
-`N/A(no durable why/source decision)`。
+Constraints、Exclusions 仍由 spec.md 单独拥有,不复制到本节;没有需追踪决定时可省略该节或自然说明无。
 
 **关键纪律 —— 选择性当场写回**:讨论中形成上述需持久追踪的决定时,**立刻**追加到 plan.md §3,
 写 why 和稳定来源。仓库证据写 path/section;用户决定写日期/current feature;取代旧语义时明确
@@ -238,18 +220,16 @@ supersedes。不要把 ordinary spec contract 再抄一遍。
 
 **包含 2 节**:任务清单 + 实施记录。
 
-#### 任务清单:直接映射 plan 合同切片,按依赖排序
+#### 任务清单:按可交付结果和真实依赖排序
 
 | 好 ✅ | 坏 ❌ |
 |---|---|
-| `S1 邀请生命周期`<br>- [ ] 建 migration 并实现 token 不变量<br>- [ ] Focused L1:生命周期检查<br><br>`S2 管理员发送/撤销`<br>- [ ] 接入 API、授权与邮件契约<br>- [ ] Focused L1:API/邮件集成检查 | `Backend`<br>- [ ] 实现邀请后端<br><br>`Frontend`<br>- [ ] 实现邀请前端 |
+| `邀请生命周期`<br>- [ ] 建 migration 并实现 token 不变量<br>- [ ] Focused check:生命周期检查<br><br>`管理员发送/撤销`<br>- [ ] 接入 API、授权与邮件契约<br>- [ ] Focused check:API/邮件集成检查 | `Backend`<br>- [ ] 实现邀请后端<br><br>`Frontend`<br>- [ ] 实现邀请前端 |
 
 **为什么**:过粗会隐藏独立决策和失败点,按技术层分组又会让一个用户合同跨多个 bucket 才闭环；过细则
-制造清单维护与重复验证。多边界 FULL 的 plan/tasks 使用相同 slice ID，每片在进入依赖片前完成实现、
-最小 focused L1、任务勾选和简洁进度报告。切片内 focused L1 直接映射 spec §4 obligation；全局
-Verification 只保留尚未被切片覆盖的跨切片/最终证据，不重复列一遍。单边界 FULL 不为形式硬拆；
-不要按预计时长或每个测试 case 机械切任务。large/extra-large 每片再补退出条件、下一个 consumer 与
-focused evidence。
+制造清单维护与重复验证。有真实依赖或风险边界时，把实施组织为少量可验证阶段；每个阶段关闭一个
+可检查的责任、契约、状态或用户结果，并在依赖工作开始前完成最小相关检查和任务记录。全局
+Verification 只保留尚未被阶段检查覆盖的跨阶段/最终证据，不重复列一遍。对依赖或回滚风险明显的阶段，可补退出条件、下一个 consumer 与 focused evidence。
 
 **跨 tier 契约先行**:先确定共同 API/schema/event/fixture,再按依赖或可独立验证的阶段排序;见 [workflow §8.6](workflow.md#86-全栈项目的契约先行contract-first-tactic)。
 
@@ -272,17 +252,12 @@ focused evidence。
 <a id="365-phase-a填-todos-的-ai-协作-sop"></a>
 ### 3.6.5 Phase A:填 TODOs 的 AI 协作 SOP(主会话用 ── primary mode)
 
-**本节是 conversational fill 的 primary mode SOP**:`/feature-init` 先在主会话完成 Impact/
-Necessity Preflight 和所有会改变 scope、ownership、authorization、data disposition 或 release
-coupling 的高影响决定,再创建并预填 spec/plan/tasks scaffold。创建后只保留不改变契约的低层 TODO,
-由 user 与 AI 按本节继续填(spec.md §1 Outcomes / §2 Scope "不做" / §3 Constraints / §4 Verification /
-plan.md Delivery Shape Baseline / §1.1 Sibling Alignment / §2 架构决策 / §3 Prior decisions / tasks.md
-任务清单等)。这些 TODO 只属于 materialization/fill 阶段；进入 quality gate 前必须解析，或改成有
-边界、owner 和证据的具体实施时任务/决定。AI 应**读本节后按规则引导**,不依赖事后 quality-check
-才发现根本方向错误。
+`feature-init` 先关闭会改变 scope、ownership、authorization、data disposition 或 release coupling
+的高影响决定，再创建并预填 artifact。创建后只保留不改变契约的低层 TODO；quality gate 前必须
+解析，或改成有边界、owner 和证据的实施时任务/决定。
 
 > **本节既适用 `/feature-init` materialization 前后的 conversational fill,也适用主会话非-skill context 的纯人 + AI 协作填**。
-> Plugin 不使用固定问卷:只对实际阻塞的高影响未知项一次问一个问题;低层实现细节可在 fill 期间保留 TODO，但 `{{TODO}}` 不进入实施。
+> Plugin 不使用固定问卷:只询问实际阻塞的高影响未知项;依赖问题按顺序推进，相关独立问题可以合并。低层实现细节可在 fill 期间保留 TODO，但 `{{TODO}}` 不进入实施。
 
 #### 顺序:按节依次填,不跳
 
@@ -302,14 +277,8 @@ plan.md Delivery Shape Baseline / §1.1 Sibling Alignment / §2 架构决策 / �
 | §3 Constraints | "真约束还是希望?如'希望快'→量化成'P95 < 200ms'"(→ §3.7 Q5 真假)|
 | §4 Verification | "怎么机验?本次最关键的成功与错误路径是什么?用哪个最小测试层级就能证明主要风险?"(→ §3.7 Q3 可测)|
 | §2 Scope(末轮)| "现在你知道边界了——本次**明确不做**的实质边界是什么?"(→ §3.7 Q2 必有"不做")|
-| Delivery Shape Baseline | "谁现在使用?影响哪些责任区域/契约/数据/授权/迁移/发布?哪些新状态/API/管理能力没有当前 consumer?什么发现会触发暂停?"(→ §3.7 Q7c/Q7d)|
-| 多边界 FULL 实施顺序 | "哪些合同切片能在依赖工作开始前独立检查?plan/tasks 的 slice ID 如何对应?每片关闭什么责任/契约/状态/用户路径并用哪个最小 focused L1 证明?若为 large/extra-large,退出条件与下一个 consumer 是什么?"(→ §3.7 Q7a/Q7d)|
-
-#### 每节填完简洁同步并继续
-
-用一行说明“§N 已填:<总结>”，然后继续下一节；不要为常规 section transition 请求确认。只有缺失
-信息会改变 scope、ownership、authorization、data disposition、release coupling 或 delivery shape
-时，才按 `feature-init` 一次问一个阻塞问题并等待。
+| 多边界 / 架构型 / 实质高风险边界 | "谁现在使用?哪些责任或契约必须一起变化?耦合和回滚边界是什么?什么发现会触发暂停?"(→ §3.7 Q7c/Q7d)|
+| 多边界 FULL 实施顺序 | "哪些责任、契约、状态或用户结果值得在依赖工作开始前独立检查?用哪个最小 focused check 证明?重要阶段的退出条件与下一个 consumer 是什么?"(→ §3.7 Q7a/Q7d)|
 
 #### 用户不确定某节技术选型时
 
@@ -340,51 +309,32 @@ bundled-risk 或 supersede 的决定才在 Prior decisions 写 why/source,普通
 
 **为什么必跑**:实施开始后才发现"输入不清晰" → 回炒成本是 spec 阶段修的 5-10 倍。这 7 个问题是 project-workflow 实证里**最常出错的 7 个位置**。
 
-在 7 问之前,同一个 fresh reviewer 先做一次 **Requirements Reconciliation**。调用方把当前已接受
-用户决定、适用 current truth/ADR/Issue 和真正需要来源追踪的 plan Prior decisions 组装成临时
-Requirements Source Map。用户明确提供或确认的 spec 可直接按 section 引用,不把普通契约内容复制
-到 plan,然后双向检查:
-
-- requirements → artifacts:接受的 outcome、规则、约束、排除、fallback、supersede 是否都落入 spec/plan/tasks;
-- artifacts → requirements:artifact 新增的业务语义、ownership/authorization/data state、持久 workflow
-  或 scope commitment 是否由用户提供/确认、来自适用外部来源,或仍明确标成待接受决定,并具有当前必要性;
-- 新决定明确取代旧决定后,旧语义是否仍残留在正文、Verification、tasks、fallback 或 migration;
-- ownership、authorization、hierarchy、fallback、unknown-data、migration 规则是否经反例检查。
-
-结果只有 `ALIGNED`、`MISMATCH`、`SOURCE GAP`。后两者都阻断实施;`SOURCE GAP` 只用于无法解析的
-外部事实、冲突或 supersede 权威,不是普通 spec 没有重复 plan 行。它不是第 8 个问题、不是第二个
-reviewer,也不新增 action。
+同一个 fresh reviewer 先用临时 Requirements Source Map 做双向对账，再执行质量检查：接受的要求必须
+落入 artifact，artifact 的新增业务语义必须有当前必要性和权威来源，已取代语义不得残留。结果为
+`ALIGNED`、`MISMATCH` 或 `SOURCE GAP`；后两者阻断实施。普通 spec 内容直接引用原 section，不复制到
+Prior decisions，也不会因为缺少第二份记录而产生 `SOURCE GAP`。
 
 | # | 问题 | 不通过的修法 |
 |---|---|---|
-| 1 | spec.md 最小集是否齐?(Outcomes / Scope / Constraints / Verification + plan.md 使用决策/为什么/来源三个语义列的 Prior decisions，内置模板采用这组中文表头，本地化等价表头也有效；或显式 N/A / 模块影响 / Delivery Shape Baseline)?| 缺失项或来源列/值先补齐；其他 section 不能替代当前 Prior decisions schema 或 Delivery Shape Baseline |
+| 1 | spec.md 的 Outcomes / Scope / Constraints / Verification 与 plan 模块影响是否齐全？需要持久来源的非显然选择是否带 why/source？| 补缺失契约；普通 spec 内容不复制到 Prior decisions，没有此类决定时该节可省略或自然说明无 |
 | 2 | spec.md §2 Scope 是否显式写了 **`做 / Include` 清单 + `不做 / Exclude` 清单两份**?| **必写"不做"** —— 不写 AI 会自动加,scope creep 最大单一来源(见 [workflow.md §7.5](workflow.md#75-不要让-specmd-和-planmd-内容混淆)) |
-| 3 | spec.md §4 Verification 是否用最小、非重复的证据义务覆盖主要行为/风险?矩阵是否有交互、回归、发布或合规依据?用户可见 outcome 是否在现有义务中恰好标一个 `Primary flow`?| 不可测的改成可测;同一证据能覆盖的义务合并;无依据矩阵删掉或收敛;主流程零个/多个则收敛为一个,不新增义务 |
+| 3 | spec.md §4 Verification 是否用最小、非重复的证据义务覆盖主要行为/风险?矩阵是否有交互、回归、发布或合规依据?用户可见 outcome 是否先写最短的 actor-to-result 路径?| 不可测的改成可测;同一证据能覆盖的义务合并;无依据矩阵删掉或收敛;按价值排序已有义务 |
 | 4 | spec.md §1 Outcomes 是不是**具体场景**而不是模糊愿望?| "提升用户体验"→模糊;"用户邀请流 < 3 次点击完成"→具体 |
 | 5 | spec.md §3 Constraints 是**真约束**还是 wish list?| "必须 Vue 3"→真约束;"希望响应快"→wish(扔掉或具体化:"P95 < 200ms")|
-| 6 | plan.md §1.1 Sibling Alignment 是否填(涉及多模块时)?Codify 是否写明持久差量、来源和 root/tier/module/mechanical 精确落点?| 必填 Align/Deviate/Codify 三选一;Codify 不闭环则补落点和 tasks。嵌套 guidance 只写父级差量,普通 module 不为对称建文件 |
-| 7a | tasks.md 是否按真正可独立实施、验证或 review 的边界拆分?| 笼统到隐藏多个决定时拆开;只是预计时长不同或每个 test case 不同则不要机械拆分 |
+| 6 | 真正存在 sibling-convention 选择时，Alignment/Deviation/Codify 是否明确？Codify 是否写明持久差量、来源和精确落点？| 只在存在选择时补；多模块本身不要求该节，普通 module 不为对称建 guidance |
+| 7a | tasks.md 是否按真正可独立实施、验证或 review 的结果组织?| 笼统到隐藏多个决定或真实依赖检查点时拆开 |
 | 7b | 整个 artifact 是否仍是一个可独立演示、验收和回滚的交付结果?| 多个可独立交付结果且没有事务 / 契约 / 发布耦合 → 拆子 feature;接受合并交付时在 plan 既有的 Prior decisions 或风险小节写明结果、耦合/风险和决定来源。规模本身不改变 verdict |
 | 7c | 每个新增持久状态、API、角色、工作流、管理面、队列或 runtime component 是否有当前 consumer,且当前 outcome 没有它就无法安全完成?| 只有未来可能性 → 删除或按用户意愿持久延期;不要用“更完整”代替当前必要性 |
-| 7d | Delivery Shape Baseline 是否完整记录当前 outcome/consumer、定性 delivery risk、预期责任区域、Contract/data/authorization/migration/release 信号、明确排除和 scope growth triggers?| 缺失或不完整就先修订；高影响未知项先问清，large/XL 有可拆结果则拆，不可拆则写具体 coupling 和接受风险 |
+| 7d | 普通工作是否由 Scope / Constraints / Module Impact / Verification 形成清晰边界?多边界、架构型或实质高风险工作是否额外写清耦合、回滚边界和 scope-growth triggers?| 缺失或不完整就先修订；有可拆结果则拆，不可拆则写具体 coupling 和接受风险 |
 
-**Gate 语义**:
-- **Failed 项 > 0**:不要开始实施。先修 spec / plan / tasks,再重跑 quality check。
-- **Failed = 0,但有 borderline**:可以进入实施,但要在 plan.md `## 4. 风险与未决` 或 tasks.md 实施记录里写清楚风险、接受理由和后续修法。
-- **全部 pass**:进入实施。若当前请求已明确授权“检查通过就继续”,gate 同时把状态从 `草稿` 更新为 `已确认`;纯检查请求只报告结果。
-
-7 问之外还有一组条件式 current-truth 检查:已有 domain doc 时检查 Domain References/Delta;没有则 N/A,不为了通过 gate 造空文档。ADR 仍按上节的规划判断创建,不属于本质量 gate 的独立硬门禁。
-
-开始后才发现要回炒成本高 5-10x,所以 failed 项不能带进实现阶段。
+**Gate 语义**：failed 阻断实施；borderline 需要记录并接受具体风险；全部通过后，只有当前请求已授权
+继续实施时才把 `草稿` 改为 `已确认`。Domain References/Delta 仅在已有 current-truth 文档时检查，
+ADR 仍按 `ADR_REQUIRED` 条件创建。
 
 **跟 [workflow.md §3.5](workflow.md#35-开发中发现-specplan-错怎么办) 的关系**:本节是 **pre-implementation 自检**(便宜阶段),§3.5 是 **mid-implementation 修订**(贵阶段)。两者都不可省。
 
-**Action**:[`spec-quality-check`](actions/spec-quality-check.md) 自动化本流程——机械检查(M1-M5)+ 同一
-[`spec-quality-reviewer`](reviewers/spec-quality-reviewer.md) 先做 Requirements Reconciliation,再做主观
-7 问(Q3/Q4/Q5/Q7a/Q7b/Q7c/Q7d)。在 dispatch boundary,Claude 必须用 named agent、Codex 必须用
-general subagent;只有调度不可用/失败或无容量时才由主会话按同一 reviewer spec fallback,并记录原因。
-缺执行证据 fail closed。**实施前 gate**——pass / borderline / fail 三档 verdict + 修法建议;
-reconciliation 的 `MISMATCH`/`SOURCE GAP` 或其他 failed 都阻断实施,borderline 需要显式记录风险。
+**Action**：[`spec-quality-check`](actions/spec-quality-check.md) 拥有机械检查、同一 reviewer 的 Requirements
+Reconciliation + 质量检查、dispatch/fallback 和 verdict 规则；本文只保留写作者视角的速查。
 
 ---
 
@@ -449,20 +399,18 @@ Draft / Filled / Validated **本质同档**(自由编辑);Frozen / Revised **本
 | **小**(临时方案、补丁) | `tasks.md` 实施记录 | 写一行,不改 spec/plan;无需走 SOP |
 | **中**(plan 选型 / 模块边界 需调整) | `plan.md`(可能含 module AGENTS.md)| **走 [workflow.md §3.5](workflow.md#35-开发中发现-specplan-错怎么办) SOP**(修订记录 + 跨文件同步;模块边界变化满足 `ADR_REQUIRED`);若涉模块边界变化,加走 [§2.6](workflow.md#26-module-中途变更feature-实施中发现边界要调整) |
 | **大**(scope / outcomes 实际跟想做的不一样) | `spec.md` § 1/2(经 SOP)| **走 [workflow.md §3.5](workflow.md#35-开发中发现-specplan-错怎么办) SOP**;若大到 outcomes 跑偏,起新功能目录 `<NNN+1>-<slug>/` 引用旧的(见 §5) |
-| **Scope delta**(出现未声明持久状态/API/角色/工作流/管理面/队列/runtime/Provider/迁移/授权/发布边界) | 先对照 Delivery Shape Baseline | 立即停实现并分类:`necessary-detail` 留在原 outcome;`contract-correction` 走 `/spec-revise`;`separable-outcome` 拆 child;`speculative-capability` 删除/延期;`bundled-risk` 需具体 coupling + 用户接受 |
+| **Scope delta**(出现未声明持久状态/API/角色/工作流/管理面/队列/runtime/Provider/迁移/授权/发布边界) | 对照已接受的 Scope / Constraints / Module Impact 和条件式边界 | 立即停实现并分类:`necessary-detail` 留在原 outcome;`contract-correction` 走 `/spec-revise`;`separable-outcome` 拆 child;`speculative-capability` 删除/延期;`bundled-risk` 需具体 coupling + 用户接受 |
 
-这里的“立即停”发生在继续为 delta 写生产代码、测试、migration 或兼容层之前。AI 先报告 delta、baseline
-差异、当前必要性和推荐的删除/收窄/child/revise 方向;只有方向确需用户决定时才一次问一个问题并等待。
-同一 outcome/baseline 内的 `necessary-detail` 或保持契约的更简单实现直接继续,不制造无意义确认。
+这里的“立即停”发生在继续为 delta 写生产代码、测试、migration 或兼容层之前。AI 先报告 delta、既有边界
+差异、当前必要性和推荐的删除/收窄/child/revise 方向;只有方向确需用户决定时才询问。
+同一 outcome/边界内的 `necessary-detail` 或保持契约的更简单实现直接继续。
 已经写出的代码/测试不构成收编理由;full lane 也不例外。
 
-多边界 FULL feature 在 plan §5 与 tasks 使用相同 ID 的少量合同切片；一次只完成当前片的实现、
-最小 focused L1、任务勾选和简洁进度报告，再按
-[`feature-init`](actions/feature-init.md#implementation-continuation-check) 对账后继续。切片内不运行
-L2/L3 或写 Proof Bundle；focused L1 失败只在当前片修复并重跑受影响证据，同一失败没有新诊断证据
-地重复时停止并报告 blocker。单边界 FULL 不为形式硬拆，large/extra-large 每片额外写退出条件、
-下一个 consumer 和最小 focused evidence。切片按可检查合同边界，不按 tier、目录、文件、测试层/case
-或预计工时机械划分；它只约束切片边界，不限制片内真实依赖顺序。
+多边界 FULL feature 在真实依赖或风险需要时使用少量可验证阶段。完成一个可检查的责任、契约、状态或
+用户结果后，立即运行最小相关检查，把结果记在现有 task 上，再进入依赖工作。focused check 失败时
+留在当前阶段修复并重跑受影响证据；同一失败没有新诊断证据地重复时停止并报告 blocker。依赖或
+回滚风险明显的重要阶段可写退出条件、下一个 consumer 和最小 focused evidence。L2/L3 与 Proof Bundle
+由 `feature-done` 执行。
 
 测试遵循“最小充分证据”:每个新增 test layer、matrix、fixture 或 case 必须覆盖现有更便宜证据没有覆盖
 的实质风险,或满足项目/发布约定。一个 evidence 可覆盖多个义务;优先扩展最近且清晰的已有测试,删除
@@ -473,9 +421,9 @@ L2/L3 或写 Proof Bundle；focused L1 失败只在当前片修复并重跑受�
 | 场景 | 根因 | 应对 |
 |---|---|---|
 | AI 主动加超出范围的功能 | `spec.md` 没写"不做" | 必填 §3.3 Scope boundaries 的"不做"部分 |
-| AI 在开发中不断收编新状态/API/模块 | plan 没有 Delivery Shape Baseline / growth triggers | 触发即停,按 Scope delta 五分类处理;已经写了代码不构成收编理由 |
+| AI 在开发中不断收编新状态/API/模块 | 已接受边界或必要的 growth triggers 不清楚 | 触发即停,按 Scope delta 五分类处理;已经写了代码不构成收编理由 |
 | AI 在实施中反复猜 | spec/plan 写得抽象 | 把 §3.3-3.5 的好/坏对照内化,自检一遍 |
-| 多边界 FULL 到端点才发现合同缺口 | plan/tasks 只有 tier/file bucket、ID 不对应或片内没有 focused L1 | 改为同 ID 合同切片；每片实现→focused L1→勾选→进度→Continuation Check，一致继续，material delta 才 Scope Stop |
+| 多边界 FULL 到端点才发现合同缺口 | plan/tasks 只有 tier/file bucket，依赖工作前没有局部检查 | 按真实依赖改为少量可验证阶段；阶段结果完成后立即跑 focused check 并记录，material delta 才 Scope Stop |
 
 ---
 
@@ -521,9 +469,9 @@ L2/L3 或写 Proof Bundle；focused L1 失败只在当前片修复并重跑受�
 
 可选辅助:`docs/specs/changes/index.md` 平铺列出全部 feature(编号 → 标题 / 状态 / 位置),让指向已归档 spec 的旧链接可解析。它是索引不是替代——注意力防线靠 archive/ 目录隔离,不靠这份清单。
 
-### 变更需求 = 起新功能目录
+### 已交付需求变更 = 起 successor 功能目录
 
-**不要改老 `<NNN>-<feature>/spec.md`**,起一份新功能目录引用旧的:
+**不要修改已归档或已被后续方向取代的 `<NNN>-<feature>/spec.md`**,起一份 successor 功能目录引用旧的。活动且未归档的 feature 若发现真实契约错误,按 `spec-revise` 修订并保留修订记录:
 
 ```
 docs/specs/changes/
@@ -566,7 +514,7 @@ docs/specs/changes/
 ### 6.2 应持久追踪的 Prior decision 未记录
 **症状**:非显然选择、外部解释、冲突/bundled-risk 或 supersede 决定没有 why/source,AI 在实施中反复重新讨论已经定好的事
 **后果**:每次新 session 重新对齐,迭代成本暴涨,或无法判断旧决定是否已被取代
-**修正**:只把上述决定**当场**追加到 `plan.md` §3,带原因和稳定来源。普通 spec 契约不复制;确实没有此类决定时写 `N/A(no durable why/source decision)` 不属于反模式
+**修正**:只把上述决定**当场**追加到 `plan.md` §3,带原因和稳定来源。普通 spec 契约不复制;确实没有此类决定时不需要占位符
 
 ### 6.3 Outcomes 写成 user story
 **症状**:`spec.md` Outcomes 用"As a X I want Y so that Z"

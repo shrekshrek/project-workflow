@@ -151,7 +151,7 @@ function validateFixtures() {
     requireComplete: false,
   }));
 
-  const staleRoot = fs.mkdtempSync(path.join(os.tmpdir(), "project-workflow-stale-reuse-"));
+  const staleRoot = fs.mkdtempSync(path.join(os.tmpdir(), "project-workflow-older-reuse-"));
   try {
     const staleFeature = path.join(staleRoot, "001-approved-feature");
     fs.cpSync(approvedFeature, staleFeature, { recursive: true });
@@ -159,17 +159,27 @@ function validateFixtures() {
     fs.writeFileSync(
       stalePlan,
       read(stalePlan).replace(
-        "N/A(no durable why/source decision)",
-        "- 使用现有 auth 契约，因为这是已确认的展示行为。",
+        /^\s*(?:N\/A\(no durable why\/source decision\)|- 无。)\s*$/m,
+        "- 决定：使用现有 auth 契约；为什么：这是已确认的展示行为；来源：AGENTS.md#Auth。",
       ),
     );
     const staleProblems = validateFullFixtureAgainstCurrentPreflight(staleFeature, {
-      label: "feature-init stale accepted reuse",
+      label: "feature-init older accepted reuse",
       userVisible: true,
       requireComplete: false,
     });
-    if (!staleProblems.some((problem) => problem.includes("Prior decisions"))) {
-      problems.push("feature-init stale accepted reuse: old Prior decisions shape was not rejected");
+    if (staleProblems.some((problem) => problem.includes("Prior decisions"))) {
+      problems.push("feature-init older accepted reuse: equivalent decision/why/source semantics were rejected");
+    }
+
+    fs.writeFileSync(stalePlan, read(stalePlan).replace("；来源：AGENTS.md#Auth。", "。"));
+    const sourceGapProblems = validateFullFixtureAgainstCurrentPreflight(staleFeature, {
+      label: "feature-init older accepted reuse source gap",
+      userVisible: true,
+      requireComplete: false,
+    });
+    if (!sourceGapProblems.some((problem) => problem.includes("Prior decisions"))) {
+      problems.push("feature-init older accepted reuse: missing durable source was not rejected");
     }
   } finally {
     fs.rmSync(staleRoot, { recursive: true, force: true });
@@ -181,7 +191,7 @@ function validateFixtures() {
    "scope-viability-cross-module-vertical",
     "impact-unknown-data-disposition-ask",
     "scope-necessity-speculative-admin-ask",
-    "impact-large-coupled-cutover",
+    "impact-coupled-cutover",
     "scope-split-provider-rollout-ask",
  ]) {
     if (!expected[scenario]) problems.push(`missing required scope/impact scenario ${scenario}`);
@@ -394,7 +404,7 @@ async function main() {
       for (const problem of problems) console.error(`- ${problem}`);
       process.exit(1);
     }
-    console.log("Feature-init scenario fixtures OK: accepted/stale reuse shape, bases, expectations, and materializer lane/shape/NNN/no-clobber/rollback/symlink checks passed (no model executed).");
+    console.log("Feature-init scenario fixtures OK: accepted/older semantic reuse, bases, expectations, and materializer lane/shape/NNN/no-clobber/rollback/symlink checks passed (no model executed).");
   }
 }
 

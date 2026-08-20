@@ -20,7 +20,7 @@ checks from the seven-question gate:
 
 Do not review code-level implementation feasibility, AGENTS.md compliance, or mechanical presence checks that the calling action can run directly. Do review delivery-shape feasibility: whether the proposed outcomes can ship independently.
 
-When the accepted Delivery Shape Baseline establishes or materially changes runtime/tier/module
+When an accepted multi-boundary or materially high-risk delivery boundary establishes or changes runtime/tier/module
 responsibility, a cross-component contract, data/state ownership, a durable trust/authorization ownership
 boundary, or deployment ownership, perform one bounded architecture-adequacy check inside Q5/Q7c/Q7d. Verify
 that the smallest sufficient responsibility/component set, applicable cross-boundary contracts and state,
@@ -68,7 +68,7 @@ Q3-Q7 in the same invocation so the caller receives one consolidated repair set.
 
 Fresh-read the three artifacts and assess every relevant item:
 
-- Q3 verification: a compact, traceable behavior/risk → executable evidence mapping = pass; subjective evidence = fail; concrete without an execution anchor = borderline. Remove obligations invented from generic edge/error habits or unspecified inputs unless a contract, project convention, or concrete risk requires them. One command may prove several related obligations. Every test layer or matrix required by the artifact must name risk coverage not already supplied by cheaper evidence, an owned regression contract, or an explicit release/compliance requirement; an unjustified required layer/matrix fails Q3 and should be deleted or consolidated. Optional implementation ideas that are not contract obligations remain nonblocking suggestions. For a user-visible full-lane outcome, exactly one obligation in `spec.md` Verification must be marked `Primary flow`; zero or several there is a fail because preflight ordering is ambiguous. A tasks execution mapping must not repeat the marker and does not count as another obligation. Non-user-visible work needs no marker. Never request a separate smoke merely to satisfy this label.
+- Q3 verification: a compact, traceable behavior/risk → executable evidence mapping = pass; subjective evidence = fail; concrete without an execution anchor = borderline. Remove obligations invented from generic edge/error habits or unspecified inputs unless a contract, project convention, or concrete risk requires them. One command may prove several related obligations. Every test layer or matrix required by the artifact must name risk coverage not already supplied by cheaper evidence, an owned regression contract, or an explicit release/compliance requirement; an unjustified required layer/matrix fails Q3 and should be deleted or consolidated. Optional implementation ideas that are not contract obligations remain nonblocking suggestions. For user-visible work, order the shortest meaningful actor-to-result journey first when one is declared; no label or duplicate smoke is required.
 - Q4 outcomes: actor/system + action + success condition = pass; vague aspiration = fail; missing success condition = borderline.
 - Q5 constraints: hard/external/measurable = pass; wish = fail; preference belongs in plan/risk and is borderline.
   For architecture-shaped work, a material quality constraint without an applicable responsibility,
@@ -81,29 +81,25 @@ Fresh-read the three artifacts and assess every relevant item:
   rules prefer lint/hook/test. Repeated parent text, directory-symmetry files, a missing target/alias task, or
   a nested `CLAUDE.md` planned as anything other than one-line `@AGENTS.md` = fail. An uncertain owner =
   borderline or fail according to whether it can change implementation.
-- Q7a tasks: independently actionable or reviewable output/check = pass; a broad bucket that hides separate decisions = fail; work without verification = borderline. Every multi-boundary full-lane implementation should use matching contract-bearing slice IDs in plan/tasks rather than tier, directory, file, test, or time partitions, and each slice should own focused L1 evidence. A genuinely one-boundary feature is not artificially split. Large/extra-large slices additionally name inspectable exits, next consumers, and focused evidence. This constrains slice boundaries, not the real dependency order inside a slice. Do not require time estimates or split one task per test case.
+- Q7a tasks: independently actionable or reviewable output/check = pass; a broad bucket that hides separate decisions or a material dependency checkpoint = fail; work without verification = borderline. Each real dependency or risk checkpoint should close an inspectable result and own its smallest relevant check before dependent work.
 - Q7b delivery coherence: one independently demonstrable/acceptable/revertible outcome with resolved material risks = pass regardless of size; several separable outcomes with no coupling or traceable bundled-risk decision in the plan = fail; an explicitly accepted bundle, or one coherent delivery with material unresolved coordination/rollback risk, = borderline.
 - Q7c current necessity: every persistent state, API, role, workflow, management surface, queue, runtime
   component, or architecture responsibility names a present actor/consumer and a selected-outcome necessity =
   pass; a capability justified only by possible future need = fail; an unclear present consumer or simpler
   safe alternative = borderline.
   Prefer removing or deferring speculative capability over making its implementation more complete.
-- Q7d impact completeness: current outcome/consumer, qualitative delivery-risk signal, expected
-  responsibility areas, contract/data/authorization/migration/release signals, explicit exclusions, and
-  scope-growth triggers agree across spec/plan/tasks = pass; for architecture-shaped work, omit an applicable
+- Q7d impact completeness: Scope, Constraints, Module Impact, and Verification agree across spec/plan/tasks =
+  pass for ordinary same-boundary work. Multi-boundary, architecture-shaped, or materially high-risk work also
+  records the relevant coupling, rollback boundary, and scope-growth triggers; omitting an applicable
   cross-boundary contract/state, durable trust/authorization ownership, deployment, or material
   failure/migration/recovery decision = fail; an undeclared high-impact surface or unresolved data/ownership
   disposition = fail;
-  large/extra-large delivery with concrete inseparable coupling and accepted risk = pass or borderline
-  according to the remaining coordination risk, never an automatic fail by size alone. Multi-boundary full-lane
-  work needs a dependency-ordered contract-bearing
-  sequence with matching plan/tasks slice IDs, focused L1 and compact progress at each slice, plus a continuation
-  check at transitions and context/session resume. It must allow aligned implementation to continue without
-  another user approval, L2/L3 reviewer, status, or receipt while routing a material mismatch to Scope Stop
-  before dependent work. Large/extra-large slices additionally require an inspectable exit, next consumer, and
-  smallest focused evidence. A sequence divided only by tiers/files/tests/time, a plan/tasks mismatch, or no
-  inspectable point before endpoint review is a fail. A missing or incomplete Delivery Shape Baseline is a fail;
-  Scope, Constraints, or Module Impact do not substitute for it.
+  broad delivery with concrete inseparable coupling and accepted risk = pass or borderline according to the
+  remaining coordination risk, never an automatic fail by size alone. Broad work should use
+  dependency-ordered, independently verifiable phases when this exposes failures before dependent
+  work. Each meaningful phase needs an inspectable result and smallest relevant evidence. A plan divided only by
+  tiers/files/tests/time, or with no inspectable point before endpoint review where dependent risk is material,
+  is a fail.
 
 Report the reconciliation status, reviewed items, skipped items with reasons, blocking ambiguity, citations,
 and concise rewrites. Use a pass/borderline/fail matrix only when several items fail. A mostly empty artifact

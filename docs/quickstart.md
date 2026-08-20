@@ -12,7 +12,7 @@
 一次项目接入(project-init / project-personalize 二选一)
   → 小改直接做;需要追踪或显式评估路由时 feature-init(先 Impact/Necessity + Scope Viability;DIRECT / LIGHT / FULL;PREVIEW 只读,仅 LIGHT/FULL 的 APPLY 创建 artifact)
   → high-impact unknown 先问清,full lane 再 materialize/补完草稿并跑 spec-quality-check
-  → 实施(full 多边界:当前 slice 实现 → focused L1 → tasks → 简洁进度 → 对账 → 下一 slice)
+  → 实施(按需要分成可验证阶段:实现 → focused check → 记录到现有 task → 依赖工作)
       ├─ 当前任务立即收尾:feature-done → feature-archive → commit / PR / merge
       └─ 延后批量收尾:提交实现并记录稳定 commit SHA(可来自 PR head)
                          → feature-done → 提交 endpoint outputs
@@ -47,12 +47,12 @@
 
 ## 2. 判断是否需要 feature artifact
 
-小 bugfix、文案、样式、局部测试修复、低风险文档编辑、未被 current truth 声明且局部/可逆/无契约/可在当前任务完成的行为小改,不要启动 artifact;直接做,遵守适用的 `AGENTS.md` 和当前宿主提供的项目约定,最后说明改动和验证结果。已确认 spec 下的实施任务同样不新建 artifact，但继续使用原 feature 的 tasks、切片和 `feature-done`，不降级成 untracked direct checks。
+小 bugfix、文案、样式、局部测试修复、低风险文档编辑、未被 current truth 声明且局部/可逆/无契约/可在当前任务完成的行为小改,不要启动 artifact;直接做,遵守适用的 `AGENTS.md` 和当前宿主提供的项目约定,最后说明改动和验证结果。已确认 spec 下的实施任务同样不新建 artifact，但继续使用原 feature 的 tasks 和 `feature-done`，不降级成 untracked direct checks。
 
-如果用户明确询问“这个改动是否需要 feature”,`feature-init` 仍应触发,但只返回 `PREVIEW`,不创建文件。普通讨论、诊断或合理性检查没有提出 feature 路由问题时不触发。对实施请求判为 `DIRECT/APPLY` 后立即继续原实施;判为 `LIGHT/APPLY` 时创建 `tasks.md` 后继续,无需再次确认。若 `DIRECT` 是因为复用已有 active feature，后续门禁按该 artifact 的 lane/status 继续：accepted full 先复查当前 mechanical artifact shape，通过后继续实施并最终走 `feature-done`；不通过则修复/revise 后走 `spec-quality-check`。draft full 先走 `spec-quality-check`。只要求初始化 artifact 时则创建后停止,不自动实施。
+如果用户明确询问“这个改动是否需要 feature”,`feature-init` 仍应触发,但只返回 `PREVIEW`,不创建文件。普通讨论、诊断或合理性检查没有提出 feature 路由问题时不触发。对实施请求判为 `DIRECT/APPLY` 后继续原实施;判为 `LIGHT/APPLY` 时创建 `tasks.md` 后继续。若 `DIRECT` 是因为复用已有 active feature，后续门禁按该 artifact 的 lane/status 继续：accepted full 先复查语义实施就绪度，通过后继续实施并最终走 `feature-done`；不通过则修复/revise 后走 `spec-quality-check`。draft full 先走 `spec-quality-check`。只要求初始化 artifact 时则创建后停止,不自动实施。
 
 `feature-init` 是 Impact/Necessity、scope viability 和 DIRECT/LIGHT/FULL 的唯一规则源。它会在
-materialization 前关闭足以改变范围、归属、授权、数据处置或发布方式的未知项,一次只问一个决定性
+materialization 前关闭足以改变范围、归属、授权、数据处置或发布方式的未知项,只询问决定方向所需的
 问题;没有当前 consumer 的未来能力不进入当前 feature。精确触发和输出见
 [`feature-init`](actions/feature-init.md),不要从本快速开始维护第二份判定表。
 
@@ -83,9 +83,9 @@ full lane 写代码前先跑:
 
 ## 3. 按 spec 边界实施
 
-full lane 让 AI 基于 `spec.md` + `plan.md` + `tasks.md` 写代码。多边界 FULL 的 plan/tasks 使用同一组
-slice ID，一次只做当前片：实现 → focused L1 → 勾选本片 tasks → 简洁报告已关闭边界/证据/下一片 →
-Continuation Check。一致则继续；切片内不运行 L2/L3 或写 Proof Bundle。单边界 FULL 不为形式硬拆。
+full lane 让 AI 基于 `spec.md` + `plan.md` + `tasks.md` 写代码。存在真实依赖或风险边界时，按少量可验证
+阶段推进：完成一个可检查的责任、契约、状态或 actor-to-result 结果后，立即跑最小相关检查并把结果
+记在现有 task 上，再进入依赖工作。L2/L3 与 Proof Bundle 由 `feature-done` 执行。
 轻车道基于 `tasks.md` 写代码。未启动 project-workflow 的小任务直接按当前上下文实施。
 
 所有 lane 都继承 `feature-init` 的 Implementation Scope Stop:出现未声明的高影响边界、第二个独立
@@ -108,9 +108,8 @@ outcome 或没有当前 consumer 的能力时,在继续扩展前暂停;普通必
 
 `feature-done` 统一拥有 completion preflight、L1/L2/L3、current-truth 判断和 `## Proof Bundle`。
 它用低成本 preflight 拒绝未完成工作、混杂 diff、明确范围膨胀、缺失的 Codify 承诺和失败的
-Primary flow;测试价值和 guidance 语义分别由既有 Q3/L2/L3 判断,不在 preflight 再做一轮主观 review。
-每次显式调用最多一轮适用 L2/L3，并在首次 terminal verdict 结束；修复后必须再次显式调用，
-不会在同一调用内形成修复—复审循环。文件、测试或代码行数量本身不触发审查。精确证据复用、重跑、Receipt 和触发规则只见
+最短 actor-to-result 路径;测试价值和 guidance 语义分别由既有 Q3/L2/L3 判断,不在 preflight 再做一轮主观 review。
+每次交付审查一个稳定最终快照并在首个终态结束；非 READY 不会在原请求内自动进入修复—L2/L3 循环。修复后只有用户再次明确要求验收才用新快照复审，并只复用输入未变化的 L1 证据。文件、测试或代码行数量本身不触发审查。精确证据复用、重跑、Receipt 和触发规则只见
 [`feature-done`](actions/feature-done.md)。
 
 立即归档可复用同任务的 READY;延后清扫需要指向精确 commit SHA 的 READY receipt:

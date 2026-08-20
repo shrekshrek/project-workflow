@@ -42,7 +42,7 @@
     "mustRetainTodoMarker": false,
     "forbiddenPlantPatterns": [],
     "sentinel": "docs/specs/changes/001-approved-feature/spec.md",
-    "expectedBehavior": "不得新建 artifact；报告 Feature: reuse=<001-approved-feature path>，先复查当前 mechanical artifact shape，通过后按已有 full-lane/已确认状态继续 implementation → feature-done；不通过则 repair/spec-revise → spec-quality-check。不得把 DIRECT no-creation 误解释为跳过 tracked endpoint。"
+    "expectedBehavior": "不得新建 artifact；报告 Feature: reuse=<001-approved-feature path>，从已接受边界与可执行 Verification/tasks 复查语义实施就绪度，通过后按已有 full-lane/已确认状态继续 implementation → feature-done；不通过则 repair/spec-revise → spec-quality-check。不得把 DIRECT no-creation 误解释为跳过 tracked endpoint。"
   },
   "no-artifact-multifile-refactor": {
     "base": "base-numbered",
@@ -141,7 +141,7 @@
     "base": "base-numbered",
     "prompt": "feature-init people-operations-platform: 开始建设人员运营平台，包括批量导入与核对、员工手工增改、组织结构投影、外部合作方授权和数据问题处理。先把这个项目整体开起来。",
     "interactionOnly": true,
-    "expectedBehavior": "即使 prompt 没有说可独立交付，也必须从多个可观察结果中识别候选拆分，在创建产物前报告 clarification-required，并用一个问题确认它们能否独立发布/回滚；阻塞期间不得预读 lane-specific、materializer、architecture 或 reviewer 资料，不得直接断言可拆、生成总 feature 或进入车道分类。",
+    "expectedBehavior": "即使 prompt 没有说可独立交付，也必须从多个可观察结果中识别候选拆分，在创建产物前报告 clarification-required，并只询问确认独立发布/回滚所需的最小问题集；阻塞期间不得预读 lane-specific、materializer、architecture 或 reviewer 资料，不得直接断言可拆、生成总 feature 或进入车道分类。",
     "sentinel": "docs/specs/changes/002-existing-thing/tasks.md"
   },
   "scope-viability-coupled-migration": {
@@ -172,7 +172,7 @@
     "base": "base-numbered",
     "prompt": "feature-init people-import: 已确认把人员运营拆开,本次先做全量导入核对;手工增改和组织投影以后再做,但它们尚未记录到 PMO、Issue 或其他持久化位置。",
     "interactionOnly": true,
-    "expectedBehavior": "必须在创建产物前报告 split-required 和 pending-handoff，并要求为每个暂缓结果提供稳定的 Issue/PM 引用；不得依赖聊天记忆、创建 repo backlog 或先生成当前 feature。",
+    "expectedBehavior": "应创建当前已经选定的全量导入核对 child，并简要说明手工增改和组织投影属于 deferred/out-of-scope；已有 Issue/PM 引用可复用，但外部 tracking 不是创建当前 feature 的前置条件。",
     "sentinel": "docs/specs/changes/002-existing-thing/tasks.md"
   },
   "light-split-with-explicit-untracked-deferred": {
@@ -196,24 +196,24 @@
     "shape": null,
     "mustRetainTodoMarker": true,
     "forbiddenPlantPatterns": ["/api/"],
-    "requiredArtifactPatterns": ["PMO-300", "PMO-301", "PMO-302", "Tracking:"],
+    "requiredArtifactPatterns": ["PMO-300", "PMO-301", "PMO-302"],
     "sentinel": "docs/specs/changes/002-existing-thing/tasks.md"
   },
   "impact-unknown-data-disposition-ask": {
     "base": "base-numbered",
     "prompt": "feature-init migrate-knowledge-owner: 删除旧 scope 并切到组织归属；有一批记录无法确认 owner，但还没决定这些记录应该共享、隐藏、拒绝迁移还是留空。",
     "interactionOnly": true,
-    "expectedBehavior": "必须在创建产物前报告 material impact/unknown data disposition，保持 Route pending，并一次只问一个决定性问题；不得自行发明 PENDING 状态、共享规则或 fail-closed 策略。",
+    "expectedBehavior": "必须在创建产物前报告 material impact/unknown data disposition，保持 Route pending，并询问改变方向所需的最小问题集；不得自行发明 PENDING 状态、共享规则或 fail-closed 策略。",
     "sentinel": "docs/specs/changes/002-existing-thing/tasks.md"
   },
   "scope-necessity-speculative-admin-ask": {
     "base": "base-numbered",
     "prompt": "feature-init remove-legacy-scope: 当前只需要删除旧 scope，让无法归属的测试数据保持可用；以后也许会需要 Pending Owner 管理台、CAS 认领和批量处置，但现在没有用户。",
     "interactionOnly": true,
-    "expectedBehavior": "必须识别 Pending 管理台/CAS/批量处置没有当前 consumer，不能把它们写入当前 feature；当前 outcome 明确时应排除这些 speculative capabilities，并只在用户要求持久跟踪延期结果时询问 handoff。",
+    "expectedBehavior": "必须识别 Pending 管理台/CAS/批量处置没有当前 consumer，不能把它们写入当前 feature；当前 outcome 明确时应直接排除这些 speculative capabilities，除非用户明确要求持久跟踪，否则不追加 handoff 问题。",
     "sentinel": "docs/specs/changes/002-existing-thing/tasks.md"
   },
-  "impact-large-coupled-cutover": {
+  "impact-coupled-cutover": {
     "base": "base-numbered",
     "prompt": "feature-init tenant-claim-cutover: 将共享 tenant claim、数据库授权列和三个调用服务在同一个兼容窗口切换；任一部分单独发布都会让授权失败，当前用户明确要求作为一次协调切换。",
     "prescribedAnswers": {},
@@ -222,15 +222,15 @@
     "shape": "brownfield",
     "mustRetainTodoMarker": true,
     "forbiddenPlantPatterns": ["/api/", "Kafka", "tenant_id_v2"],
-    "requiredArtifactPatterns": ["Delivery Shape Baseline"],
-    "expectedBehavior": "必须先完成 bounded impact/necessity preflight，将 contract/data/authorization/migration/release 标为 large 或 extra-large，并在回复中给出 Impact 与不可拆 coupling；不得仅因模块多而拆分。",
+    "requiredArtifactPatterns": ["Coupling / rollback risk", "Scope growth triggers"],
+    "expectedBehavior": "必须先完成 bounded impact/necessity preflight，在需要说明 route 时给出具体 contract/data/authorization/migration/release 信号与不可拆 coupling/rollback 风险；不得输出风险尺寸标签，也不得仅因模块多而拆分。",
     "sentinel": "docs/specs/changes/002-existing-thing/tasks.md"
   },
   "scope-split-provider-rollout-ask": {
     "base": "base-numbered",
     "prompt": "feature-init provider-scope-cleanup: 删除共享旧字段后，还计划分别改文档、人员、项目、资讯和产品 Provider；每个 Provider 都能在共享契约兼容期内独立验收、启用和回退。",
     "interactionOnly": true,
-    "expectedBehavior": "必须展示 large/extra-large Impact，识别共享契约切换与各 Provider rollout 中可独立交付的结果，在创建产物前报告 split-required/pending-selection 并询问先做哪个 child；不得直接创建一个总 feature。",
+    "expectedBehavior": "必须识别共享契约切换与各 Provider rollout 中可独立交付的结果，在创建产物前报告 split-required/pending-selection 并询问先做哪个 child；不得直接创建一个总 feature。",
     "sentinel": "docs/specs/changes/002-existing-thing/tasks.md"
   }
 }

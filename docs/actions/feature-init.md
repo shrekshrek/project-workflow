@@ -48,7 +48,7 @@ Also classify execution authorization independently:
 
 Keep the action boundary separate from the enclosing task's continuation. An artifact-initialization-only request stops after this action reports/materializes its route. For an original implementation/change request, completion returns control to that request without another confirmation: `DIRECT/APPLY` continues implementation immediately, `LIGHT/APPLY` continues after `tasks.md` is created, and `FULL/APPLY` proceeds through `spec-quality-check` before implementation under that gate's authorization rules. The feature-init action itself never edits implementation code.
 
-A blocking impact/necessity, scope-viability, selection, or required-handoff decision remains `Route: pending` until the required answer, selection, acceptance, or reference exists; `pending` is not a fourth completed route and never authorizes materialization. Resolve an existing active feature that covers the same outcome before allocating a number. Reuse it when compatible, route accepted-spec implementation as `DIRECT`, and never create a duplicate merely because `feature-init` was invoked.
+A blocking impact/necessity, scope-viability, or selection decision remains `Route: pending` until the required answer, selection, or acceptance exists; `pending` is not a fourth completed route and never authorizes materialization. Resolve an existing active feature that covers the same outcome before allocating a number. Reuse it when compatible, route accepted-spec implementation as `DIRECT`, and never create a duplicate merely because `feature-init` was invoked.
 
 ## Lane Classification
 
@@ -79,24 +79,19 @@ decision aid, not an implementation plan. Establish:
 - known dirty-worktree overlap that may belong to another change
 - every material unknown in business behavior, ownership, authorization, data disposition, or release
   coupling
-- a qualitative delivery-risk signal: small, medium, large, or extra-large
 
-Every proposed persistent state, API, role, workflow, management surface, queue, or runtime component must
-name a current consumer and explain why the selected outcome cannot be completed safely without it.
-Speculative future capability is removed from the selected outcome or treated as a candidate deferred
-outcome; it is never added merely to make the design look complete.
-
-Large or extra-large impact is a mandatory closer-review signal, not an automatic split and not permission
-to bundle. State the concrete coupling when the outcome is still indivisible. When the impact contains
-separable results, route them through the scope-viability decision below. Module count, path count, and
-estimated effort remain signals rather than substitutes for outcome/coupling analysis.
+Judge necessity at the outcome and responsibility level: persistent state, APIs, roles, workflows,
+management surfaces, queues, or runtime components need a present consumer and a concrete reason to exist.
+Do not require a ledger row for every implementation element. Remove speculative future capability from the
+selected outcome or treat it as a candidate deferred outcome. Breadth, module count, and estimated effort are
+signals for closer review, never substitutes for outcome and coupling analysis.
 
 If a material unknown can change scope, ownership, authorization, data handling, or delivery shape, keep
-the route pending and ask one material question at a time across turns. Do not materialize a speculative
+the route pending and ask the smallest useful set of material questions. Ask dependent decisions in sequence;
+closely related independent decisions may be grouped. Do not materialize a speculative
 spec and fill these decisions afterward. Low-level implementation details that do not change the contract
-may remain as placeholders during artifact fill, but no `{{TODO}}` enters implementation: before
-`spec-quality-check`, resolve it or convert it into a concrete bounded implementation-time task/decision with
-an owner, boundary, and evidence expectation.
+may remain explicit implementation-time decisions. Bound each one by owner, affected responsibility, and
+expected evidence; do not force a material decision into implementation merely to finish artifact fill.
 
 Bundle related small changes into one tracked feature when they share a user goal and must ship together; do not create fragmentary specs for button state, table columns, and details drawer separately. Before materializing an artifact, run a **scope-viability check**:
 
@@ -106,15 +101,18 @@ Bundle related small changes into one tracked feature when they share a user goa
 
 Infer candidate outcomes from the requested actors, observable results, release boundaries, migrations, and responsibility areas even when the user does not say "independently shippable." Do not split merely because work spans several modules, contains many tasks, or is large. Keep an evident single-outcome decision internal and continue without extra gate narration, even when supplied coupling evidence explains why it stays together. Never report a nonblocking Scope Viability result.
 
-When separability is materially unclear, several independent outcomes need a selection, or the user must accept bundled-delivery risk, surface a compact Scope Viability result with the current outcome, candidate outcomes, coupling evidence or uncertainty, and `clarification-required`, `split-required`, or `bundled-risk-accepted`. Ask at most one question that resolves the decision. Use `pending-selection` or `pending-handoff` only when that state applies; do not emit empty fields or an N/A result for the normal single-outcome or no-artifact path. Block materialization until the required decision, selection, and handoff are complete.
+When separability is materially unclear, several independent outcomes need a selection, or the user must accept bundled-delivery risk, surface a compact Scope Viability result with the current outcome, candidate outcomes, coupling evidence or uncertainty, and `clarification-required`, `split-required`, or `bundled-risk-accepted`. Ask only the question set needed to resolve that decision. Use `pending-selection` only when that state applies; do not emit empty fields or an N/A result for the normal single-outcome or no-artifact path. Block materialization until the required decision or selection is complete.
 
 Broad responsibility, migration, or external-contract surfaces prompt closer scope review, but size alone never requires a split. A large indivisible vertical slice may stay together when its coupling is explicit.
 
 Two or more independently shippable outcomes without such coupling require a decomposition decision before materialization. Default to ordinary light/full child features and keep any parent initiative in the team's issue/PM system. If the user accepts one bundled delivery instead, use the full lane and record its coordination/rollback risk and decision source in the existing `plan.md` prior-decisions or risks section. Do not introduce an epic lane or epic artifact.
 
-When the user chooses decomposition, create only the selected child in this invocation. Require a **durable decomposition handoff** only for deferred outcomes the user expects the workflow to preserve across sessions or people: each such outcome needs a stable reference in an existing issue/PM system, either as its own item or as an addressable child entry under one parent. If the user explicitly narrows the current scope and accepts other outcomes as untracked and out of scope, report that consequence and proceed without references. Do not name or summarize untracked outcomes anywhere in the selected artifact, including its out-of-scope sections. Do not create a repository backlog. When preservation intent is unclear, ask one question instead of guessing. Creating or updating external items remains a separate external write that requires the user's explicit authorization and an available integration.
-
-Record an applicable handoff without adding a new artifact schema: full-lane work uses `plan.md` Prior decisions; light-lane work adds a `Tracking:` entry under `目标 / 边界`. Include the parent/current references when available and every preserved deferred reference. These are stable pointers plus the selected-scope snapshot, not a live requirements feed: later tracker edits never mutate an active feature automatically. Explicitly untracked outcomes stay out of the artifact. Use `spec-revise` only when an explicit tracker change is accepted as a change to the active feature contract.
+When the user chooses decomposition, create only the selected child in this invocation. State the selected
+outcome and briefly identify deferred outcomes when that helps preserve the decision boundary. Reuse an
+existing issue/PM reference when one is already available or the user explicitly asks to preserve the deferred
+work there. Creating or updating an external item remains a separate write requiring explicit authorization and
+an available integration; it is not a prerequisite for starting the selected child. A later tracker change affects
+the active feature only after the user accepts it through `spec-revise`.
 
 When the selected outcome creates/changes a tier or module boundary, introduces a durable local exception,
 or chooses `Codify` in Sibling Alignment, resolve **Guidance Placement** inside the existing plan/tasks:
@@ -153,8 +151,8 @@ Classify the discovery before resuming:
 - A simpler implementation that preserves the accepted contract: remove the unnecessary work and continue;
   do not create a revision or follow-up merely to preserve it.
 - A material contract correction or inseparable wider boundary: present a compact `Scope stop` containing
-  the discovered delta, baseline mismatch, present necessity, and recommended direction. Ask at most one
-  decision question and wait; use `spec-revise` after the user chooses the changed direction.
+  the discovered delta, boundary mismatch, present necessity, and recommended direction. Ask the smallest
+  useful set of questions; use `spec-revise` after the user chooses the changed direction.
 - A separable outcome or speculative capability: recommend excluding/removing it or routing it to a child
   only when the user wants it preserved. Do not silently implement it or create a backlog.
 
@@ -163,50 +161,23 @@ to stay busy when they could deepen rework. User acceptance of a material change
 in the existing Prior decisions/revision trace. Do not emit a `Scope stop` report for ordinary details that
 are clearly inside the accepted boundary.
 
-### Implementation Continuation Check
+Use a dependency-ordered phase at a real dependency or risk checkpoint. Each phase closes an inspectable
+responsibility, contract/state transition, or actor-to-result segment.
 
-This is a lightweight execution discipline inside the accepted route, not another feature, action, lane, gate,
-reviewer, status, approval, or receipt. Every multi-boundary full-lane feature uses a small dependency-ordered
-sequence of **contract-bearing slices** in `plan.md`. A slice closes one inspectable responsibility, public
-contract/state transition, or actor-to-result segment; `tasks.md` uses the same slice IDs and places setup,
-implementation, and focused L1 work under the slice that owns them. A genuinely one-boundary full-lane feature
-stays as one responsibility and is not split merely to satisfy this discipline. For large/extra-large delivery,
-each slice additionally names an inspectable exit, the next consumer, and the smallest focused evidence needed
-before dependent work starts.
-
-Execute one slice at a time: implement the current slice, run its smallest focused L1 evidence, update that
-slice's task checklist, and give a compact progress update that names the closed boundary/evidence and next
-slice. Then perform the alignment check below and continue when aligned. The progress update is not an approval
-request or a new lifecycle state. Do not dispatch L2/L3, run endpoint-wide review, or write a Proof Bundle until
-all slices are complete and `feature-done` is explicitly invoked. A focused L1 failure stays inside the current
-slice: fix it and rerun only affected evidence. If the same failure repeats without new diagnostic evidence,
-stop and report the concrete blocker instead of cycling or expanding into endpoint review.
-
-Before beginning the next contract-bearing slice, and whenever implementation resumes after context
-compaction or a later session, re-read the current spec Verification, the plan Delivery Shape Baseline and
-implementation order, and incomplete tasks. Compare the completed slice and the next proposed work against
-the relevant accepted behavior, public contracts/state, exclusions, and scope-growth triggers:
-
-- When they still align, continue without reconfirmation. Do not announce a new gate, dispatch L2/L3, or create
-  slice-level evidence artifacts/receipts; the compact progress update above is sufficient visibility.
-- When the comparison exposes a contract mismatch, undeclared high-impact surface, second outcome, or
-  capability without a current consumer, invoke Implementation Scope Stop before adding dependent code,
-  tests, migrations, compatibility, or documentation.
-
-Ordinary necessary details and simpler contract-preserving implementations continue under the Scope Stop
-rules above without ceremony.
-
-Do not define slices by tier, directory, file count, test layer/case, or estimated duration. If a proposed
-slice is independently acceptable, enableable, and revertible, recheck whether it is actually a separable
-feature; concrete contract/transaction/release coupling may still justify keeping it inside one feature.
-This constrains slice boundaries, not coding order inside a slice: implementation may follow its real internal
-dependency order while the slice still closes one named contract or consumer outcome.
+After a meaningful phase is implemented, run the smallest relevant check and record the result on its existing
+task before starting work that depends on it. Fix a failure in that phase and rerun only affected evidence; if
+the same failure repeats without new diagnostic evidence, stop and report the concrete blocker. At a phase
+boundary or after context/session resume, re-read the accepted behavior, applicable delivery boundary, Verification,
+and remaining tasks. A material mismatch invokes Implementation Scope Stop before dependent work; aligned
+ordinary details continue. L2/L3 dispatch, lifecycle status, and receipts remain endpoint concerns. A small or
+direct result proceeds under its existing task and final evidence.
 
 ## Outputs
 
-Always return a compact route decision after classification:
+Return a compact route decision after classification. It must make the route, authorization mode, reason,
+artifact disposition, and actual next step unambiguous; a fixed report layout is not required.
 
-- `Route`: `DIRECT` / `LIGHT` / `FULL`, or `pending` while a blocking impact/necessity, scope-viability, selection, or required-handoff decision remains unresolved.
+- `Route`: `DIRECT` / `LIGHT` / `FULL`, or `pending` while a blocking impact/necessity, scope-viability, or selection decision remains unresolved.
 - `Execution`: `PREVIEW` / `APPLY`.
 - `Reason`: concrete evidence for why `DIRECT` is sufficient, which durable consumer prevents `DIRECT` and triggers `LIGHT`, or which contract/high-risk condition triggers `FULL`. Do not use an unexplained label such as "durable change".
 - `Feature`: `none`, `create=<path>`, or `reuse=<path>`.
@@ -214,15 +185,15 @@ Always return a compact route decision after classification:
   request continues to implementation → proportionate direct checks. For `Feature: create=<path>`, light uses
   implementation → `feature-done`, while full uses `spec-quality-check` → implementation → `feature-done`.
   For `Feature: reuse=<path>`, derive the sequence from that artifact's lane and lifecycle instead of from the
-  `DIRECT` no-creation label: draft full begins with `spec-quality-check`; accepted full first rechecks the
-  current mechanical artifact-shape prerequisites from `spec-quality-check`, then uses implementation →
-  `feature-done` when they pass; light uses implementation → `feature-done`. A reused accepted artifact that
-  fails those prerequisites returns to artifact repair/`spec-revise` and `spec-quality-check` instead of
-  bypassing the current contract. Passing this bounded recheck does not repeat subjective review. For an
+  `DIRECT` no-creation label: draft full begins with `spec-quality-check`; accepted full first rechecks that
+  its accepted outcome/boundary remain current and its Verification/tasks are actionable, then uses
+  implementation → `feature-done`; light uses implementation → `feature-done`. Repair or revise a reused
+  artifact only when that semantic readiness check exposes a real gap; an actionable artifact continues from
+  its accepted boundary and tasks. For an
   artifact-initialization-only request, report the same handoff sequence without executing implementation.
 
-Add a compact `Impact` section only when a material unknown, large/extra-large signal, decomposition,
-or bundled-risk decision affected the route. List concrete responsibility and contract/data/security/
+Explain impact separately only when a material unknown, decomposition, or bundled-risk decision affected
+the route. List concrete responsibility and contract/data/security/
 migration/release signals plus unresolved decisions; do not report guessed file counts, durations, or
 empty categories.
 
@@ -238,7 +209,7 @@ Light lane:
 
 - `docs/specs/changes/<NNN>-<slug>/tasks.md`
 
-For either lane, write Verification as the smallest set of **proof obligations**, not a planned test-case inventory. Every obligation must trace to a stated outcome, boundary, constraint, material risk, or applicable project convention; do not derive generic edge, error, status-code, or unspecified-input cases from testing habit alone. State the behavior or material risk that must be proved and the minimum executable evidence; one command or assertion may satisfy several related obligations. For a user-visible full-lane outcome, mark exactly one obligation `Primary flow` in `spec.md` Verification; `tasks.md` maps its execution without repeating the marker. For a user-visible light-lane outcome, mark exactly one obligation in `tasks.md` `## 验证`. This selects preflight ordering and does not add a second smoke. Non-user-visible work has no such marker. Choose unit, integration, e2e, CLI, data assertions, or manual release evidence only when that source adds distinct confidence. Use a matrix only when interacting dimensions can change the result (for example role × state, supported platform × packaging mode, or migration source × target), the project already owns a relevant regression matrix, or an explicit release/compliance contract requires it. Do not create a test-layer, endpoint, status-code, or happy/boundary/error matrix for symmetry.
+For either lane, write Verification as the smallest set of **proof obligations**, not a planned test-case inventory. Every obligation must trace to a stated outcome, boundary, constraint, material risk, or applicable project convention; do not derive generic edge, error, status-code, or unspecified-input cases from testing habit alone. State the behavior or material risk that must be proved and the minimum executable evidence; one command or assertion may satisfy several related obligations. For user-visible work, order the shortest meaningful actor-to-result verification first, followed by broader or lower-level evidence. Choose unit, integration, e2e, CLI, data assertions, or manual release evidence only when that source adds distinct confidence. Use a matrix only when interacting dimensions can change the result (for example role × state, supported platform × packaging mode, or migration source × target), the project already owns a relevant regression matrix, or an explicit release/compliance contract requires it. Do not create a test-layer, endpoint, status-code, or happy/boundary/error matrix for symmetry.
 
 During implementation, add or retain a distinct test layer/case only when it proves a material obligation or
 risk not already covered by cheaper existing evidence, or an applicable project/release convention requires
@@ -259,31 +230,36 @@ Adapters materialize the selected template through the packaged `scripts/materia
    only domain documents and bounded implementation surfaces relevant to the feature; exclude archived and
    unrelated artifacts. Inspect current Git overlap when available without treating a dirty path as owned
    by the proposed feature.
-3. Apply the Impact, necessity, and questioning rules above proportionately. Keep bounded local discovery
-   bounded; remove speculation and leave the route pending while a material decision is unresolved.
-4. Decide whether a new artifact has a durable consumer and whether an active feature already covers the outcome. If not, return `DIRECT`; if an accepted feature covers implementation, report `Feature: reuse=<path>` and do not create a duplicate. Before implementing a reused accepted full artifact, run only the current mechanical artifact-shape prerequisites from `spec-quality-check`; repair/revise and gate it when they fail, or continue without another subjective review when they pass. Stop this action's artifact work, then return control to an enclosing implementation/change request when one exists.
-5. Apply Scope Viability and decomposition handoff above. Continue silently for one evident outcome; while a
-   required decision, selection, or handoff is pending, create nothing and stop after the compact result and
-   one blocking question. Defer lane-only reads until the outcome and owning boundary are selected.
+3. Run the impact and necessity preflight proportionately. For an evidently local, reversible change, use the
+   bounded evidence already opened rather than expanding discovery. Remove speculative capability, surface
+   only decision-relevant impact, and keep the route pending while a material business, ownership,
+   authorization, data-disposition, or release-coupling question remains. Ask the smallest useful set of material questions.
+4. Decide whether a new artifact has a durable consumer and whether an active feature already covers the outcome. If not, return `DIRECT`; if an accepted feature covers implementation, report `Feature: reuse=<path>` and do not create a duplicate. Recheck its accepted boundary and actionable Verification/tasks for semantic implementation readiness. Stop this action's artifact work, then return control to an enclosing implementation/change request when one exists.
+5. Run the scope-viability check. An evident single outcome needs no user-facing gate result. If separable
+   outcomes would be bundled, report the compact decision and ask the user to choose a child or accept the
+   bundled-delivery risk. Create nothing while a required direction or selection decision is pending, and ask
+   only the questions needed to resolve it. External tracking is never a prerequisite for starting the selected
+   child. Defer lane-only reads until the outcome and owning boundary are selected.
 6. Choose `LIGHT` or `FULL` for the selected outcome and record the concrete trigger. Ask only when the business goal, ownership, impact boundary, or decomposition is unclear.
 7. If execution is `PREVIEW`, report the route decision and stop before reading lane templates or conditional architecture guidance, computing a number, invoking the materializer, or dispatching an auditor.
 8. For `FULL`, choose brownfield only when a substantive domain document exists; otherwise use greenfield.
    When the selected change establishes or materially changes project-wide application architecture, read
    the conditional [`architecture-design` guidance](../architecture-design.md) and use only its applicable
    topics. Complete any remaining high-impact conversational fill before materialization, one material
-   question per turn. Use the existing spec/plan sections; do not create a new artifact schema. Low-level
-   implementation placeholders may remain during materialization, but must be resolved or converted to a
-   concrete bounded implementation-time task/decision before the quality gate. Multiple components alone do not establish multiple tiers. Only when
+   decision set, asking dependent questions in sequence and optionally grouping closely related independent
+   questions. Use the existing spec/plan sections; do not create a new artifact schema. Low-level
+   details that do not change the contract may remain as bounded implementation-time decisions. Multiple
+   components alone do not establish multiple tiers. Only when
    explicit user or repository evidence establishes durable separate runtime tiers, read the tier concepts
    in [`workflow.md §0.3`](../workflow.md#03-概念区分钉死再读后续), the nested-guidance rules in
    [`§1.4`](../workflow.md#14-agentsmd--claudemd-嵌套层次子级覆盖父级), and the conditional
    [`_multi_tier_examples`](../../template/_multi_tier_examples/README.md). Single-tier or tier-undecided
    work skips tier files and examples.
 9. Compute the next number across active and archived directories and invoke the packaged materializer with atomic no-clobber behavior.
-10. Populate the selected templates under the Outputs, source-ownership, Guidance Placement, and Continuation
-    Check rules above. Use only traceable facts; keep unsupported low-level TODOs until they can be resolved or
-    converted to bounded implementation-time decisions/tasks. Matching slice IDs and large-slice metadata go
-    in the existing plan/tasks sections; no new artifact type is added. Keep outcomes, scope, constraints, and
+10. Populate the selected templates under the Outputs, source-ownership, Guidance Placement, and implementation-
+    phase rules above. Use only traceable facts; keep unsupported low-level details as bounded implementation-
+    time decisions/tasks. Organize implementation order by real dependencies and independently verifiable
+    results, recording useful phase results in the existing plan/tasks sections. Keep outcomes, scope, constraints, and
     exclusions in `spec.md`; do not copy them into plan Prior decisions. That table holds only non-obvious
     choices needing durable why/source trace, not a raw transcript.
 11. Use an inline value-to-source trace for repository- or user-sourced prefill and make only the non-obvious,
@@ -293,13 +269,13 @@ Adapters materialize the selected template through the packaged `scripts/materia
    architecture, ownership, infrastructure, port, package/API, or ADR choices, or conflicting/weak evidence.
    Directly traceable values and ordinary full-lane work without such choices are `N/A`; do not dispatch merely
    because the route is `FULL`.
-12. Validate the created population. When the user named explicitly untracked outcomes, check the selected artifact for those names or descriptions, remove any occurrence, and validate again before reporting route, execution, feature action, shape, ownership, impact when applicable, unresolved placeholders, evidence, and next gates.
-13. If the original request was implementation/change rather than artifact initialization alone, finish the
-   post-materialization fill needed for the selected gate without routine section-by-section confirmation.
-   Resolve every `{{TODO}}` required by the quality gate; convert genuinely implementation-time choices into
-   concrete bounded tasks/decisions rather than placeholders. Then return control without another confirmation:
+12. Validate the created population before reporting route, execution, feature action, shape, ownership, impact
+    when applicable, unresolved placeholders, evidence, and next gates.
+13. If the original request was implementation/change rather than artifact initialization alone, complete the
+   contract-level fill needed for the selected gate and keep genuine low-level choices as bounded implementation-
+   time decisions/tasks. Then return control to the enclosing request:
    continue after `DIRECT`, continue after light-lane materialization, or invoke `spec-quality-check` for full
-   lane. A reused artifact follows its own lane/lifecycle gates and the bounded current-shape recheck in step 4.
+   lane. A reused artifact follows its own lane/lifecycle gates and the semantic readiness recheck in step 4.
    This action owns only routing and artifact work,
    so implementation edits occur after it exits.
 
@@ -313,15 +289,15 @@ When the auditor boundary applies, follow the canonical [reviewer execution cont
 - Read-only discussion, assessment, diagnosis, status review, and route preview never write. An explicit routing
   assessment uses `PREVIEW`; artifact initialization or implementation/change intent is required for `APPLY`.
 - Completed route labels are stable: `DIRECT` creates nothing, `LIGHT` creates only `tasks.md`, and `FULL` creates `spec.md` / `plan.md` / `tasks.md`. Invocation itself never changes the route or forces creation.
-- Finishing this action does not silently cancel an enclosing implementation/change request. Continue according to the selected route and gate sequence; stop after the route/artifact report only when that was the whole request or a blocking decision remains.
-- Preserve unknowns as TODOs during materialization and never plant unsupported endpoints, entities, fields,
-  codes, paths, technologies, ownership, or coupling. Before implementation, resolve gate-required placeholders
-  or convert genuine implementation-time choices to bounded decisions/tasks; briefly trace sourced prefill.
+- Finishing this action preserves an enclosing implementation/change request. Continue according to the selected route and gate sequence; stop after the route/artifact report only when that was the whole request or a blocking decision remains.
+- Never plant unsupported endpoints, entities, fields, codes, paths, technologies, ownership, or coupling.
+  Resolve material unknowns before implementation; keep genuine low-level choices as bounded implementation-
+  time decisions/tasks and briefly trace sourced prefill.
 - Verification breadth follows traceable behavior and distinct risk, not derived edge-case habit, document size, test-layer count, or case-count symmetry. Consolidate obligations when the same evidence proves them; retain a matrix only with an explicit interaction, regression, release, or compliance reason.
 - Scope Stop applies to every route. Materialization requires closed high-impact decisions, and every new durable
   surface has a current consumer/necessity trace; FULL is not permission for adjacent or speculative expansion.
-- Scope viability uses outcome and coupling, never size proxies. Only clarification, decomposition/handoff, or
-  bundled-risk decisions are surfaced; preserve only deferred outcomes the user expects tracked.
+- Scope viability uses outcome and coupling, never size proxies. Only clarification, decomposition, or
+  bundled-risk decisions are surfaced; existing tracking references are reused when relevant.
 - The full-lane handoff tells the main session to create an ADR during conversational fill only when `ADR_REQUIRED` is satisfied; feature-init does not create speculative ADRs before the decision exists.
 - Architecture-shaped work remains ordinary FULL; do not force foundation artifacts, tiers, local architecture
   docs, or nested guidance. Nested `AGENTS.md` is optional convention placement, never an ADR/spec substitute.
@@ -330,4 +306,4 @@ When the auditor boundary applies, follow the canonical [reviewer execution cont
 ## Validation
 
 - Confirm created files match the selected lane.
-- Report lane, module decision, literal unresolved template placeholders, and next action. For the normal single-outcome path, omit the Scope Viability field completely; add that decision, a required decomposition handoff, an explicit untracked-outcome decision, or a bundled-risk decision only when one affected the flow.
+- Report lane, module decision, literal unresolved template placeholders, and next action. For the normal single-outcome path, omit the Scope Viability field completely; add a decomposition or bundled-risk decision only when one affected the flow.

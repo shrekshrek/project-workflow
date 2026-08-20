@@ -115,7 +115,7 @@ codex plugin add project-workflow@project-workflow
 Start a new Codex task after installing or updating so the refreshed skills are loaded.
 
 Before archiving, require the current `## Proof Bundle` fields from `feature-done`: READY verdict, reviewed-state
-identity and endpoint outputs, Checks, Review execution and applicable L2/L3 states, and Current truth. A
+identity and endpoint outputs, Checks, applicable L2/L3 review outcomes, and Current truth. A
 missing or invalid required field is ineligible; rerun `feature-done`. `feature-archive` never interprets
 historical receipt fields as READY evidence.
 
@@ -200,9 +200,9 @@ Most work does **not** use all nine actions. Initialize once, then use the daily
 |---|---|---|
 | Once, baseline-compatible target | `project-init` | Create the neutral six-file project baseline without disturbing incidental content. |
 | Once, project evidence or partial/custom baseline exists | `project-personalize` | Establish or adapt the evidence-backed project agreement; when structure/guidance scope is selected, propose evidence-backed root/tier/module placement without creating files for symmetry. |
-| Per proposed change | `feature-init` | Assess impact and uncertainty, then choose DIRECT, LIGHT, or FULL. Material unknowns pause before artifact creation; undeclared direction changes pause during implementation. Reused accepted FULL artifacts first pass the current mechanical-shape recheck, then retain their lane/lifecycle gates. |
+| Per proposed change | `feature-init` | Assess impact and uncertainty, then choose DIRECT, LIGHT, or FULL. Material unknowns pause before artifact creation; undeclared direction changes pause during implementation. Reused accepted FULL artifacts first pass a semantic implementation-readiness recheck, then retain their lane/lifecycle gates. |
 | Full lane only | `spec-quality-check` | Reconcile accepted requirements and gate the completed artifact before implementation. |
-| End of tracked change | `feature-done` | Validate the actual delivery, run proportionate L1 and at most one applicable L2/L3 cycle per explicit invocation, then write one compact receipt. |
+| End of tracked change | `feature-done` | Validate the actual delivery, run proportionate L1 and applicable L2/L3 against one stable final snapshot, then write one compact receipt. |
 | Periodic sweep | `feature-archive` | Merge pending current truth and move delivered changes out of the active tree. |
 
 Choose lifecycle ordering by archive timing. For immediate closure, run `feature-done` on the current worktree, then `feature-archive` in the same task before committing. For a deferred sweep, first create the implementation commit (or capture the exact commit SHA at the PR head), run `feature-done` against that immutable SHA, and commit its receipt/status outputs. The stable receipt remains historical delivery evidence when the branch later advances; `feature-archive` separately validates pending current-truth facts against the present state. A dirty-worktree receipt is never made reusable merely by committing it later.
@@ -225,7 +225,7 @@ not add gates, reviewers, artifacts, or trigger conditions.
 
 ## Reviewer methodology
 
-[`docs/reviewers/`](docs/reviewers/) is canonical for the six reviewer, auditor, and research roles. The owning action decides applicability. Independent applicable reviewers share one action-owned review-cycle snapshot and run in parallel when capacity permits; otherwise they use sequential fresh dispatch. Same-task focused re-review requires a later explicit `feature-done` invocation and may cross user turns only while retained full-population evidence and every unaffected input remain unchanged. Reviewers consume rather than rerun L1 evidence. Result reuse never reuses an agent instance, and fallback requires explicit execution evidence. See the [reviewer index](docs/reviewers/README.md).
+[`docs/reviewers/`](docs/reviewers/) is canonical for the six reviewer, auditor, and research roles. The owning action decides applicability. Independent applicable reviewers share one stable action-owned snapshot and run in parallel when capacity permits; otherwise they use sequential fresh dispatch. Reviewers consume rather than rerun L1 evidence. Each gate invocation ends on its terminal verdict; after a fix, only a later explicit user request creates a fresh reviewer snapshot, while unchanged L1 evidence may be reused. Fallback requires explicit execution evidence. See the [reviewer index](docs/reviewers/README.md).
 
 ## Maintaining generated plugin packages
 

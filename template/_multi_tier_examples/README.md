@@ -58,7 +58,7 @@ AI 据真实配置填 placeholder + 只写 tier 相对根规则的差量:
   - backend/AGENTS.md    填 FastAPI + SQLAlchemy 2.0 + Pydantic v2 等
   - worker/AGENTS.md     填 Celery 任务 + 幂等性 + retry 策略 等
         ↓
-用户在 consolidated preview 中确认后,再一次性写入 3 组文件
+先汇总并预检 3 组文件；当前请求已授权时一次性写入，新增政策选择才另行确认
 ```
 
 ## 差量原则

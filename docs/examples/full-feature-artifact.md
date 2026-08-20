@@ -37,7 +37,7 @@
 
 - token 生命周期与滥用风险:`invitation service` test 覆盖过期、重复使用、伪造和速率限制
 - API / 邮件契约风险:一条 integration test 覆盖 POST、邮件 payload 和 GET token 解码
-- `Primary flow` — 受邀注册主流程:管理员发出邀请后,受邀者通过落地页完成注册入队
+- 受邀注册主流程:管理员发出邀请后,受邀者通过落地页完成注册入队
 - provider/config 发生变化时:staging delivery smoke 验证真实邮件链路
 - 上线指标:发送成功率 ≥ 99%
 ```
@@ -64,13 +64,11 @@
 | `backend/src/users/` | Align | 沿用现有 service/transaction 边界 |
 | `frontend/layers/teams/` | Deviate | 邀请落地页独立成 invitations layer,避免把注册流塞进 teams |
 
-### 1.2 Delivery Shape Baseline
+### 1.2 多边界交付边界（本例适用）
 
 - 当前 outcome / consumer:团队管理员发送/撤销邀请,被邀请成员完成注册入队
-- Delivery risk signal:large —— 新 schema/API、邮件 provider 和前后端协调发布,但邀请闭环不能缺少任一环
-- 预期责任区域:invitations、users、email、frontend invitations/teams
-- Contract / data / authorization / migration / release signals:新增 invitation schema/API、管理员授权、邮件 provider 与前后端协调发布
-- 明确排除:批量邀请、多渠道、配额与追踪 UI
+- Responsibility / contract boundary:invitations 拥有邀请状态与 token 契约；users、email 和 frontend 只消费该契约完成同一邀请闭环
+- Coupling / rollback risk:schema/API、邮件 provider 与前后端必须在兼容窗口内协调；回滚时需同时恢复旧入口与 invitation 状态处理
 - Scope growth triggers:新增邀请工作流状态、渠道、角色、队列、模块或独立运营能力时先停并重做 scope viability
 
 ## 2. 架构决策
@@ -111,9 +109,9 @@
 
 ## 5. 实施顺序
 
-1. `S1` 关闭邀请生命周期契约——退出:过期/重放/伪造不变量可验证;下一个 consumer:API 与邮件流;最小证据:invitation service focused test。
-2. `S2` 关闭管理员发送与撤销契约——退出:API、授权和邮件 payload 一致;下一个 consumer:管理页;最小证据:API/邮件 integration test。
-3. `S3` 关闭被邀请成员注册入队路径——退出:管理页与落地页完成主流程;下一个 consumer:发布验收;最小证据:Primary flow 与剩余发布风险检查。
+1. 关闭邀请生命周期契约——退出:过期/重放/伪造不变量可验证;下一个 consumer:API 与邮件流;最小证据:invitation service focused test。
+2. 关闭管理员发送与撤销契约——退出:API、授权和邮件 payload 一致;下一个 consumer:管理页;最小证据:API/邮件 integration test。
+3. 关闭被邀请成员注册入队路径——退出:管理页与落地页完成主流程;下一个 consumer:发布验收;最小证据:actor-to-result 集成路径与剩余发布风险检查。
 ```
 
 ## `docs/specs/changes/002-invitation/tasks.md`
@@ -125,27 +123,27 @@
 
 ## 1. 任务清单
 
-### `S1` 邀请生命周期契约
+### 邀请生命周期契约
 
 - [ ] 建 `backend/src/invitations/` 与最小入口文件
 - [ ] 接入 backend composition point
 - [ ] 添加并验证 invitations migration
 - [ ] 实现 invitation service 与 token 过期/重放/伪造不变量
-- [ ] Focused L1:运行 invitation service tests → 映射 spec §4 token 生命周期与滥用风险
+- [ ] Focused check:运行 invitation service tests → 映射 spec §4 token 生命周期与滥用风险
 
-### `S2` 管理员发送与撤销契约
+### 管理员发送与撤销契约
 
 - [ ] 接入 POST `/invitations` 与 Resend 契约
 - [ ] 接入 DELETE `/invitations/<id>` 撤销行为
 - [ ] 接入团队设置页邀请表单
 - [ ] 接入邀请管理页的列表与撤销行为
-- [ ] Focused L1:运行 API / 邮件 integration test → 映射 spec §4 API / 邮件契约风险
+- [ ] Focused check:运行 API / 邮件 integration test → 映射 spec §4 API / 邮件契约风险
 
-### `S3` 被邀请成员注册入队路径
+### 被邀请成员注册入队路径
 
 - [ ] 接入 GET `/invitations/<token>` 与注册校验
 - [ ] 接入邀请落地页的接受与注册流
-- [ ] Focused L1:运行邀请注册主流程 → 映射 spec §4 邀请注册主流程
+- [ ] Focused check:运行邀请注册主流程 → 映射 spec §4 邀请注册主流程
 
 ### Verification
 
@@ -160,8 +158,6 @@
 - Verdict:
 - Change:`git=[base=<commit SHA>; reviewed=<commit SHA>; dirty=no]` 或 `git=[base=<commit SHA>; reviewed=worktree; dirty=yes]`; `endpoint-outputs=[tasks receipt, READY status]`
 - Checks:`<command; mode=run|same-task reuse; result; totals; reused evidence reference when applicable>`
-- Review execution:`L2=<state=completed|not-run(completion preflight)|not-run(L1 prerequisite)|not-run(review-package incomplete)|invalidated(review-input drift); reviewer/mode/completion/fallback-reason when dispatched>; L3=<same shape>`
-- L2:`verdict; baseline=[AGENTS.md + applicable convention paths]; add non-empty exceptions only` 或 `not-run(completion preflight)` 或 `not-run(L1 prerequisite)` 或 `not-run(review-package incomplete)` 或 `invalidated(review-input drift)`
-- L3:`verdict; baseline=[spec.md + applicable sections]; add non-empty exceptions only` 或 `not-run(completion preflight)` 或 `not-run(L1 prerequisite)` 或 `not-run(review-package incomplete)` 或 `invalidated(review-input drift)`
+- Reviews:`L2=<completed + verdict/baseline/exceptions | N/A/not-run/invalidated + reason>; L3=<same shape>`
 - Current truth:
 ```

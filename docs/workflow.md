@@ -80,7 +80,7 @@ AI 协作开发有**三个 Tier 1 工程痛点**,本手册的 5 阶段、4 支�
 ├─────────────────────────────────────────────────────────────┤
 │ P4: Drift Refresh(信号触发)                               │
 │ ─ /agents-md-revise 用户在发现客观 drift 时主动调用      │
-│ ─ Q&A → 建议 diff → 用户审批 → 应用                          │
+│ ─ Q&A → 建议 diff → 当前请求内应用；新政策才确认              │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -233,7 +233,7 @@ Core docs 只定义"应该发生什么";adapter docs 定义"在某个工具里�
    - **Scaffold** ── 空项目只起中立六文件 baseline;feature 按需起 light/full artifact;现有代码用 personalize 补真实约定
    - **条件性框架 Q&A** ── 只问 user **当下能答 + audit 无法替代 + 延后成本极高** 的 branch 决策(如 slug / module 边界 / tier 归属);这些 once-and-done,不属"反复提醒"
    - **Reminders** ── 把 mission-critical checkpoint(如 Scope "不做" / Sibling Alignment)前置作提醒,让 user 在 conversational fill 时主动注意,不预问
-   - **Adaptive hooks** ── 被动触发(user 提到选型不确定 → dispatch tech-researcher;要查外部库 → context7),不预设题
+   - **Adaptive hooks** ── 被动触发(user 提到选型不确定 → 按需研究;外部库行为不确定 → 查当前权威文档),不预设题
    - **Audit safety net** ── decision-completeness-auditor catch plant,`/spec-quality-check` gate 把关质量
 
    Plugin **不该做**的:
@@ -324,12 +324,11 @@ A 类约定的 portable core 载体是 **AGENTS.md**(根 / tier / module 嵌套)
 
 #### AGENTS.md 内容标准
 
-**Anthropic 官方没有固定模板**。下表区分当前官方建议与 project-workflow 自身的预算纪律:
+**没有固定模板**。核心是让每条内容都值得在相关 session 中进入上下文:
 
 | 标准 | 数值/做法 |
 |---|---|
-| 官方大小目标 | < 200 lines;更长仍完整加载,但增加 context 并降低遵循度 |
-| 项目理想目标 | ~100 lines,为方法论预算目标,不是 runtime 硬限制 |
+| 上下文预算 | 保持短而有用；出现重复、可推断内容或长教程时按职责拆分/链接，不设机械行数门槛 |
 | 指令数量 | 无官方固定数字;只保留每次 session 都必须知道的事实 |
 | 结构 | markdown headers + bullets,自由组织 |
 | 具体性 | "Use 2-space indentation" > "Format code properly" |
@@ -352,7 +351,7 @@ A 类约定的 portable core 载体是 **AGENTS.md**(根 / tier / module 嵌套)
 >
 > **正确做法**:`AGENTS.md` 是唯一 source of truth,`CLAUDE.md` 永远只有一行 `@AGENTS.md`(详见 §1.4 / §1.5)。其他工具(Cursor / Codex / OpenCode)用各自约定时也指向 `AGENTS.md` 而不是复制。
 >
-> 检查:`AGENTS.md` 和 `CLAUDE.md` 大小差 > 100 bytes 就要警惕——后者应该几乎是空的。
+> 检查:`CLAUDE.md` 应保持为指向 `AGENTS.md` 的 alias，而不是第二份独立说明。
 
 #### Path-scoped rules 内容标准(Claude materialization: `.claude/rules/<topic>.md`)
 
@@ -360,8 +359,7 @@ A 类约定的 portable core 载体是 **AGENTS.md**(根 / tier / module 嵌套)
 
 | 标准 | 数值/做法 |
 |---|---|
-| 大小上限 | < 300 行(比 AGENTS.md 宽,因为按需加载) |
-| 拆分时机 | 一个 topic > 200 行 → 拆 sub-topic;一个 file 涉多 framework → 按 framework 拆 |
+| 内容预算 | 保留该 scope 命中时真正需要的差量；主题或适用路径分叉时再拆 |
 | 结构 | markdown headers + bullets;顶部一行注释指向 ADR / 社区 source(可追溯) |
 | frontmatter | `paths:` YAML 列表;每个 pattern 一个 quoted list item(见 §1.6);无 `paths:` 表示全局规则 |
 
@@ -380,7 +378,7 @@ A 类约定的 portable core 载体是 **AGENTS.md**(根 / tier / module 嵌套)
 |---|---|---|
 | **加载** | session 启动全文载 | 文件命中 `paths:` 时按需载;无 `paths:` 的 rule 全局载入 |
 | **适合内容** | 项目级 always-on 心智(commands / boundaries / 项目结构 / 跨 tier 通用约定) | 路径级 / topic-级长尾(code-style / testing / security / framework-specific 约定) |
-| **大小约束** | 严(< 200 行) | 宽(< 300 行) |
+| **内容预算** | 最严，只留全局常驻事实 | 可容纳路径级差量，但仍避免教程和重复 |
 | **决策口诀** | 任何文件都要看的 → AGENTS.md | 只有某类文件要看的 → path-scoped rules |
 
 **典型分工**:
@@ -401,7 +399,7 @@ path-scoped rules(Claude materialization: .claude/rules/ 按需加载):
 
 **A 类反模式**:
 - "任何文件都要看的项目级约定"塞进 path-scoped rules —— 只有匹配路径的文件触发时才加载,其他时候 AI 看不到 → 漂移
-- framework-specific 详规则全塞 AGENTS.md → 突破 < 200 行,所有 session 全部加载 → context budget 爆炸
+- framework-specific 详规则全塞 AGENTS.md → 所有 session 都加载无关长尾，消耗 context budget
 - 同一规则在 AGENTS.md + 宿主私有 path-scoped rules 两边无意重复 → 先判断 portability:跨工具约定保留在 AGENTS.md(宿主规则只放增量);仅约束该宿主的规则保留在 rules 并明确 host-specific 范围
 - 新建 path-scoped rule 但忘设 `paths:` → 失去 path-scoped 优势,等于扁平 always-on
 
@@ -611,7 +609,7 @@ docs/adr/
 #### 实际问什么(对齐 `project-init` / `project-personalize` action)
 
 `project-init` 不问栈问题。`project-personalize` 先读 manifests、lockfiles、目录和现有配置,再把适用内容分为
-“已观察 / 建议调整 / 待确认”；待确认项一次只问一个会实质改变 working agreement 的问题,回答后即时更新
+“已观察 / 建议调整 / 待确认”；待确认项只询问会实质改变 working agreement 的问题,依赖问题按顺序推进，相关独立问题可合并；回答后即时更新
 待应用方案,不复述已确认内容。tech-researcher、codebase-explorer、decision-completeness-auditor 仍按复杂度
 条件调用,而不是每次初始化固定运行。
 
@@ -635,8 +633,8 @@ docs/adr/
 #### 关键纪律
 
 - 只把仓库无法证明、不能安全 deferred、且会改变命令/路径/规则/归属的事项放入“待确认”
-- 一次只问一个,二选一/填空优先;技术选型需外部证据时才运行 [`tech-researcher`](reviewers/tech-researcher.md)
-- 所有目标文件先在 staging/内存形成一个 consolidated preview,用户审批后一次应用
+- 问题集保持最小，二选一/填空优先;技术选型需外部证据时才运行 [`tech-researcher`](reviewers/tech-researcher.md)
+- 所有目标文件先在 staging/内存形成一个变更摘要并预检；当前请求已授权的范围直接应用，新增政策或外部写入再确认
 
 ### 1.11 校验
 
@@ -828,13 +826,13 @@ project-workflow 对模块**长什么样**有 opinionated 偏好(不强制):
 [项目约定已建立]
    ├─ 无需持久 artifact → 直接实施并验证
    └─ 需要追踪 → feature-init(Impact/Necessity + Scope Viability → no artifact / light / full)
-          ├─ reuse accepted full → current mechanical shape 复查
-          │      ├─ pass → 沿用现有 tasks/切片
+          ├─ reuse accepted full → semantic readiness 复查
+          │      ├─ pass → 沿用现有 tasks
           │      └─ fail → repair/spec-revise → spec-quality-check
           ├─ light → materialize tasks
           └─ new/draft full → 先关闭高影响未知项 → materialize/fill spec/plan/tasks → spec-quality-check
                          ↓
-             实施(FULL 合同切片 / LIGHT 任务清单)+ focused 验证
+             实施(FULL 按需可验证阶段 / LIGHT 任务清单)+ focused 验证
              (契约真错才 spec-revise)
                          ↓
               ┌─ 同任务:feature-done → feature-archive → PR/merge
@@ -855,20 +853,16 @@ Artifact 写法和 7 问自检见 [`spec-driven.md`](spec-driven.md);运行时�
 
 ### 3.1 规划阶段
 
-规划阶段由 [`feature-init`](actions/feature-init.md) 统一负责 Impact/Necessity Preflight、scope viability、
-DIRECT/LIGHT/FULL 和 Implementation Scope Stop。足以改变业务范围、所有权、授权、数据处置或发布
-方式的未知项先关闭,不先生成 speculative spec;普通实现细节可在 materialization/fill 期间保留 TODO，
-但进入实施前必须解析或改成有边界、owner 和证据的具体实施时任务/决定。需要 artifact 时再确认一个
-可独立验收和回退的交付结果,把 WHAT、HOW、STEPS 分别写进 spec、plan、tasks,并用 Delivery Shape
-Baseline 保存已接受边界。Prior decisions 只保存需要 why/source 的非显然选择、外部解释、冲突/
-bundled-risk 裁决和 supersede,不复制 spec。复用 accepted FULL 时只重跑当前 mechanical artifact-shape
-前置条件；通过后不重复主观 review，不通过则 repair/spec-revise 后重新过 quality gate。精确判定表只在 action 中维护。
+[`feature-init`](actions/feature-init.md) 统一负责 Impact/Necessity、scope viability、DIRECT/LIGHT/FULL
+和 Implementation Scope Stop。先关闭会改变方向的未知项，再按需建立一个可独立验收和回退的
+artifact；普通低层选择可以留作有边界的实施时决定。spec/plan/tasks 分别拥有 WHAT/HOW/STEPS，
+Prior decisions 只保存需要 why/source 的非显然选择，不复制 spec。复用 accepted FULL 只做语义实施
+就绪度复查；精确判定留在 action。
 
 应用基础或架构设计不另起 action / lane / 保留 slug:它按普通 change 分类。建立或实质改变项目级 runtime tier、模块边界、数据/API 契约等架构,且确有持久 artifact 消费者时走 full lane;最小结构与第一个功能不可分时留在同一个 feature,只有架构决定本身会约束多个后续功能时才单独追踪。只有命中的 architecture-shaped change 条件读取 [`architecture-design.md`](architecture-design.md),把适用结论写回既有 spec/plan/tasks;普通 feature 与 `project-personalize` 跳过。多 tier 真正适用时才读取 §0.3 / §1.4 与 plugin 的 tier examples;单 tier 不生成 tier 文件。
 
-不要用 plan.md 代替 spec.md。spec.md 写“做什么、为什么”,plan.md 写“怎么做、影响哪些模块”。Full
-lane 填完后运行 [`spec-quality-check`](actions/spec-quality-check.md);它统一拥有需求双向对账、质量问题、
-verdict 和状态转换规则,本文不复制其判定表。
+Full lane 填完后运行 [`spec-quality-check`](actions/spec-quality-check.md)；它拥有需求对账、质量、verdict
+和状态转换规则，本文不复制判定表。
 
 ### 3.2 实现阶段:机械细节不中断,方向漂移立即停
 
@@ -878,39 +872,17 @@ verdict 和状态转换规则,本文不复制其判定表。
 | **AI** | 写代码 / 跑测试 / 跑 hook / 自纠 lint 错误 / 主动列开放问题 |
 | **环境(hook + LSP)** | 自动监督代码符合规范 |
 
-**关键纪律**:不要每个文件改完都看一眼,但也不要让 AI 把边界外工作一直做到 `feature-done` 才发现。
-普通必要细节在已接受 outcome/impact 内自行完成;方向可能变化时执行 Implementation Scope Stop。
+不要逐文件打断，也不要把方向漂移拖到 `feature-done`。多边界 FULL 仅在真实依赖或风险检查点使用
+少量可验证阶段：关闭一个可检查结果，运行最小 focused check，再进入依赖工作；同一失败无新诊断
+证据地重复时报告 blocker。L2/L3 与 Proof Bundle 仍由 `feature-done` 执行。
 
-多边界 full-lane feature 用少量、按依赖排序的**合同切片**推进，plan/tasks 使用相同 slice ID。
-切片关闭可检查的责任、公共契约/状态转换或 actor-to-result 片段，而不是按 tier、文件、测试或工时
-分桶。一次只做当前片：实现 → 最小 focused L1 → 勾选本片 tasks → 简洁报告已关闭边界/证据/下一片 →
-[`feature-init`](actions/feature-init.md#implementation-continuation-check) 对账。一致无需确认并继续，
-material delta 才在依赖工作前 Scope Stop。切片内不运行 L2/L3 或写 Proof Bundle；focused L1 失败留在
-当前片修复，同一失败无新诊断证据地重复时停止并报告 blocker。单边界 FULL 不为形式硬拆；large/
-extra-large 每片额外写退出条件、下一个 consumer 和最小 focused evidence。可独立验收、启用、回退的
-切片重新判断是否应成为 child feature。合同切片只约束可检查边界，不限制片内真实依赖顺序。
-
-**什么时候应该打断 AI**:
-- 跑偏方向(本来改 backend,跑去改 frontend)
-- 陷入循环(同一失败重复且没有新诊断证据)
-- 要做的事超出 spec/plan 边界
-- 发现 Delivery Shape Baseline 未声明的新持久状态/API/角色/工作流/管理面/队列/runtime/Provider/
-  迁移/授权或发布边界
-- 发现第二个可独立验收 outcome、没有当前 consumer 的能力,或为了“完整”准备增加额外兼容层/管理能力
-
-**什么时候不该打断**:
-- "我看看它写的对不对" → 让它自己跑测试
-- "这个变量名不太好" → active hook/L1 或 PR review 阶段统一改
-- "这里我有个想法" → 记下来,等它跑完一段再说
-
-Scope Stop 的精确分类和输出由 [`feature-init`](actions/feature-init.md) 维护:方向未决时停止扩展,
-同一已接受边界内的必要细节继续,保持契约的更简单实现直接删繁就简。测试服从同一最小充分原则:
-每个新增层、矩阵、fixture 或 case 必须覆盖不同实质风险或明确项目/发布要求;数量和结构对称不是质量
-信号。开发和交付验证的精确路由留给项目约定与 owning action。
+只在跑偏、陷入无新证据的循环、越出已接受边界、出现第二个独立 outcome 或无当前 consumer 的能力时
+打断。变量命名、普通实现细节和已接受边界内的简化由 AI + hook/L1 自行收敛。Scope Stop 的分类与
+输出只见 [`feature-init`](actions/feature-init.md)；测试层、矩阵和 case 也只在证明不同实质风险时增加。
 
 **底层逻辑**:机械细节上的中途打断会制造反复解释;方向漂移上的延迟打断会制造大量返工和冗余。
-环境层(§6.3)接管机械合规,每片 focused L1 提前暴露局部失败,Implementation Continuation Check 在合同切片间前移对账,
-Implementation Scope Stop 管方向,端点 review(§3.3)只是最后安全网。
+环境层(§6.3)接管机械合规,阶段 focused check 提前暴露局部失败,Implementation Scope Stop 管方向,
+端点 review(§3.3)作为最后安全网。
 
 ### 3.3 交付阶段:delivery receipt
 
@@ -933,20 +905,13 @@ Implementation Scope Stop 管方向,端点 review(§3.3)只是最后安全网。
 
 ### 3.5 开发中发现 spec/plan 错怎么办
 
-实施已经依据 spec 开始后,发现 scope、outcome、constraint、verification、契约或模块边界本身
-错误,或出现 Delivery Shape Baseline 未声明的新持久状态/API/角色/工作流/管理面/队列/runtime/
-Provider/迁移/授权/发布边界时,先停实现并分类 Scope Delta:`necessary-detail` 留在同一 outcome;
-`contract-correction` 运行 [`spec-revise`](actions/spec-revise.md);`separable-outcome` 拆 child;
-`speculative-capability` 删除或延期;`bundled-risk` 只有在具体 coupling 和用户明确接受后才能收编。
-已经写出的代码不构成收编理由。交付门禁曾 READY 但尚未归档、随后发现这类重大 artifact 遗漏时
-也走同一动作:保留旧收据为 superseded evidence,把 `已实现` 退回 `已确认`,补齐任务与验证后重新
-运行 `feature-done`。已归档 feature 不重写历史,另起 successor change。
+实施后发现契约或边界错误，先按 Scope Delta 分类：`necessary-detail` 留在原 outcome，
+`contract-correction` 走 [`spec-revise`](actions/spec-revise.md)，`separable-outcome` 拆 child，
+`speculative-capability` 删除/延期，`bundled-risk` 需具体 coupling 和用户接受。方向未决时发紧凑
+`Scope stop` 并暂停会加深返工的工作；已写代码不构成收编理由。
 
-需要用户决定时先发一个紧凑 `Scope stop`,一次只问一个方向问题,等确认后再运行 `spec-revise`;
-不得在等待期间继续扩展同一 delta 或做会加深返工的同 feature 工作。`necessary-detail` 与保持契约的
-更简单实现不需要请示;后者直接删除多余工作。full lane 也必须遵守,它不是相邻能力的通行证。
-
-不改变契约的措辞澄清写入 plan prior decision;实现困难或实现回归但契约仍正确时修代码并显式重跑 `feature-done`,由它替换 delivery verdict 和处理状态回退,不要为此运行 `spec-revise`。不要偷偷修改冻结 spec、边改契约边改代码,或在交付时补写一份事后合理化记录。
+实现回归但契约正确时修代码并显式重跑 `feature-done`；已交付未归档的重大 artifact 遗漏才由
+`spec-revise` 正式重开，已归档则起 successor change。精确修订和 receipt 历史规则只见 action。
 
 预防比修订便宜:full lane 实施前先跑 [`spec-driven.md §3.7`](spec-driven.md#37-specplan-写完后的质量自检7-问-checklist)。
 
@@ -971,16 +936,15 @@ Provider/迁移/授权/发布边界时,先停实现并分类 Scope Delta:`necess
 **Hook 不是布尔开关,是层叠**:
 
 ```
-时间尺度    动作                  工具
+反馈层级    动作                  例子
 ─────────────────────────────────────
-< 5 秒      文件保存后立即检查     Hook(eslint / ruff / 单文件 tsc)
-< 1 分钟    文件级深度反馈         LSP 实时(Volar / Pyright)
-< 5 分钟    模块/feature 完成后    Agent(reviewer / mypy 全量 / 单测)
-< 30 分钟   交付前最后一道         Agent(security review / e2e)
-PR 阶段     人 + 自动化           CI(覆盖率、lint 全量、e2e)
+即时        文件级确定性反馈       formatter / lint / LSP
+阶段        当前责任或契约检查     focused test / typecheck
+交付        feature 风险与契约检查 reviewer / integration / e2e
+PR / 发布   人审与发布级自动化     CI / release checks
 ```
 
-**四层错位,不要让一层做另一层的事**。
+每层只承担与成本和风险匹配的检查，不要把发布级套件塞进保存时 hook，也不要让人工 review 代替机械检查。
 
 **关键判据:hook 该不该加?**
 
@@ -1011,8 +975,8 @@ P3.3 的 proof bundle 内含的 review 在这里跑:
 
 | 信息类型 | 位置 |
 |---|---|
-| 未决提案(< 50 行能讲清楚) | GitHub Issue + label `proposal` 或 GitHub Discussions |
-| 详细设计(> 200 行,要 review) | GitHub Issue / Discussion 草案;接受后沉淀到 `docs/actions/` / `docs/reviewers/` / `workflow.md` / ADR,不长期保留草案文件 |
+| 未决提案 / 讨论 | GitHub Issue + label `proposal` 或 GitHub Discussions |
+| 需要长期执行的已接受设计 | 按职责沉淀到 spec / plan / ADR / action；讨论草案不与正式文档并存 |
 | Bug / Feature 请求 | Issues |
 | 公开讨论 / Q&A | Discussions |
 | 架构决策 | ADR `docs/adr/`(留 repo,因为是历史记录) |
@@ -1071,7 +1035,7 @@ P2/P4 分工。这里的梯度表示作用域和触发方式不同,**不是层�
 
 | 模式 | 触发 | 工具 |
 |---|---|---|
-| **A. 主动 refresh** | 用户感知到 drift / 发现客观不一致 / 大依赖升级后 | [`agents-md-revise`](actions/agents-md-revise.md) —— 扫客观 drift + Guidance Placement,在 consolidated preview 中标记 keep/move/create/delete/mechanize 与 apply/skip/stop,一次批准后应用 |
+| **A. 主动 refresh** | 用户感知到 drift / 发现客观不一致 / 大依赖升级后 | [`agents-md-revise`](actions/agents-md-revise.md) —— 扫客观 drift + Guidance Placement,标记 keep/move/create/delete/mechanize；当前请求内应用已授权项，新政策另行确认 |
 | **B. 端点反思**(顺手) | feature 完成时 | `feature-done` 阻断未兑现的显式 Codify;有证据但未选择的局部约定机会只写 receipt 可选 `Drift`,要持久修订时由用户调用 `agents-md-revise` |
 
 > 历史上还有 "模式 C 信号触发 hook" —— **project-workflow 不实施**,理由见 §5.1 注。
@@ -1080,7 +1044,7 @@ P2/P4 分工。这里的梯度表示作用域和触发方式不同,**不是层�
 
 精确流程见 canonical [`agents-md-revise` action](actions/agents-md-revise.md):比较 A 类约定与客观仓库
 状态,检查 root/tier/module 放置、父子重复、一行 alias、孤立 guidance 和可机械化出口,只提出有证据的
-窄 patch;物质歧义先澄清,其余改动集中预览并经一次批准后应用。它不评价架构是否正确。
+窄 patch;物质歧义先澄清,其余改动在当前请求授权范围内应用。它不评价架构是否正确。
 
 ### 5.4 与平台流程的协作
 
@@ -1159,17 +1123,17 @@ AI 输出质量 ≈ AI 能力 × 输入清晰度。AI 能力是常量(模型版�
 
 | 场景 | 动作 |
 |---|---|
-| 跨模块 / 跨职责边界 OR 数据模型 OR API/schema 契约 OR 迁移 / 权限 / 安全 / 不变量路径 | 必写 spec(`docs/specs/changes/<NNN>-<slug>/spec.md`)|
+| Full lane | API/schema/迁移/权限/安全/架构/跨模块契约、新模块或其他高风险边界；模块数量本身不决定车道 |
 | 六要素分布 | spec.md = Outcomes / Scope / Constraints / Verification;plan.md = Prior decisions / 模块影响 / 架构 / 风险 |
 | Scope 必写"不做" | 不写"不做",AI 会自动加 → scope creep 最大单一来源 |
-| Prior decisions 选择性写回 | 非显然选择、外部解释、冲突/bundled-risk 裁决和 supersede 决定才追加到 plan.md §3,带原因和稳定来源;普通 spec 契约不复制,没有此类决定时显式 N/A |
-| 涉及多模块时做 Sibling Alignment | plan.md §1.1 对每个"同型决策" 3 选 1:Align / Deviate / Codify(spec 阶段截住空间漂移)|
+| Prior decisions 选择性写回 | 非显然选择、外部解释、冲突/bundled-risk 裁决和 supersede 决定才追加到 plan.md §3，带原因和稳定来源；没有此类决定时可省略或自然说明无 |
+| Sibling Alignment 条件启用 | 只有真正存在 sibling-convention 选择时才用 Align / Deviate / Codify；多模块本身不触发 |
 
 #### 失效情形(Boundary Conditions)
 
 通用跳过场景(tiny/local 低风险、探索性 spike、玩具)见 [§9 何时偏离](#9-何时偏离手册)。本原则特有的:
 
-- **spec 自身过大**(> 1 屏) → 拆功能;一个 spec 写不下说明 scope 太大
+- **存在多个可独立验收、启用和回滚且无强耦合的 outcome** → 拆 child feature；文档长度本身不是拆分阈值
 
 ---
 
@@ -1192,27 +1156,26 @@ LLM 的 attention 是 quadratic 或 sub-linear cost over context length。当 co
 | 类型 | 内容 |
 |---|---|
 | 业界共识 | Aurimas Griciūnas《State of Context Engineering 2026》;Manus 把 prompt cache hit rate 列为最重要生产指标 |
-| 官方建议 | CLAUDE.md 目标保持在 200 行以内;更长仍会完整加载,但增加上下文占用并降低遵循度 |
-| 官方建议 | `/clear` / `/compact` / `--add-dir` / `.claude/rules/` path-scoped 是 Anthropic 给的 context 管理工具;`@imports` 是官方支持的组织与引用机制,但 import 内容加载后仍占 context |
+| 工具事实 | 常驻说明、imports 和按需规则最终都会占用被加载 session 的 context；具体加载机制以当前宿主文档为准 |
 
 #### 怎么用
 
 | 场景 | 动作 |
 |---|---|
 | 长 session 跨多任务 | `/clear` 频繁,**一会话一任务** |
-| CLAUDE.md / AGENTS.md | 主体 < 200 行;共享长尾可用 `@imports` 组织,路径相关长尾优先放 path-scoped rules 做按需加载(Claude: `.claude/rules/`) |
+| CLAUDE.md / AGENTS.md | 只保留常驻事实；共享长尾用引用组织，路径相关长尾优先放宿主支持的 scoped rules |
 | 多模块项目 | sub-agent 隔离上下文(每个 sub-agent 独立窗口) |
 | 长文档参考 | progressive disclosure —— 用 `@` 按需拉,不全塞 |
 | 长任务中段 | `/compact` 在逻辑节点(不是窗口爆掉时) |
 
-> **数值是 model-sensitive tactic**:本节与 §1.3 的具体数字(行数目标 / `/clear`、`/compact` 时机 / sub-agent 拆分阈值)随模型代际、窗口大小与工具版本老化最快,以官方当前文档为校准来源;核心主张(context 是有限预算,装什么/何时清是工程决策)不随之变化。
+> 清理、压缩和任务拆分的时机随模型、窗口和宿主变化；核心判断始终是当前上下文是否仍服务当前任务。
 
 #### 失效情形
 
 - **探索性深度对话** → 上下文累积本身是价值,不该清
 - **跨多轮的链式推理** → 提前清会断思路
 - **`/compact` 过度** → 关键细节被压成摘要,后续需要时丢失
-- **过度拆分 sub-agent** → 调度成本 > context 节省;< 3 个调用不值得
+- **过度拆分 sub-agent** → 调度成本大于上下文隔离或并行收益
 
 ---
 
@@ -1236,7 +1199,7 @@ LLM 的 attention 是 quadratic 或 sub-linear cost over context length。当 co
 | 类型 | 内容 |
 |---|---|
 | 官方原文 | Anthropic best-practices:*"If Claude already does something correctly without the instruction, delete it or convert it to a hook."* |
-| 官方建议 | CLAUDE.md 目标保持在 200 行以内;更长仍会完整加载,但增加上下文占用并降低遵循度 |
+| 上下文纪律 | 常驻指令只保留环境无法可靠推断或强制的项目事实；重复说明和长教程改为按需引用 |
 | 社区实践 | ECC 等大型能力包广泛使用 hooks,说明环境强制是常见落地路径;具体事件数随版本变化,不作为本方法论依据 |
 
 #### 怎么用
@@ -1275,23 +1238,8 @@ LLM 的 attention 是 quadratic 或 sub-linear cost over context length。当 co
 | **L2** 项目约定 | `AGENTS.md` + 路径级项目规则(Claude adapter 为 `.claude/rules/`) | 长得像这个项目吗? | 风格/结构错 |
 | **L3** 功能规约 | `docs/specs/changes/<NNN>/spec.md` | 做了说要做的事吗? | 行为/范围错 |
 
-#### 底层逻辑
-
-三层的失败模式**正交** —— 一层错(代码不规范)、另一层错(不像本项目代码)、第三层错(没实现需求)。混合 review 会:
-
-1. reviewer prompt 过长 → 判断弱化
-2. 一层错被另一层"通过"掩盖 → 漏检
-3. 无法精准修复 → 不知道是结构问题还是行为问题
-
-→ **正交问题用正交工具,各管各**。
-
-#### 依据
-
-| 类型 | 内容 |
-|---|---|
-| 官方结构 | Claude Code 可用 `~/.claude/rules/`(用户级)、项目 `.claude/rules/` 和 `CLAUDE.md`;project-workflow 的 portable convention source 收敛到 root/nested `AGENTS.md`,宿主私有 rules 只增强对应宿主 |
-| 业界对照 | Spec Kit 用 `spec.md` + `plan.md` + `tasks.md` 三文件;mcpmarket "Drift Detection" / "Drift Analysis" / Cavekit `/ck:check` 都偏向 spec-vs-code drift(L3);项目约定合规(L2)通常由项目规则、review prompt 或人工 review 承担 → 印证 L2/L3 是不同问题 |
-| 综合命名 | 三层分类是我的综合命名,但底层事实(三种规则源)是官方分层的具体化 |
+三层失败模式正交：通用工程错误、项目约定偏离、功能契约偏离不能互相证明通过。分层能缩短
+review context、避免一层结果掩盖另一层，并让修复指向明确规则源。
 
 #### 怎么用
 
@@ -1301,15 +1249,11 @@ LLM 的 attention 是 quadratic 或 sub-linear cost over context length。当 co
 | L2 | reviewer agent + AGENTS.md 作 context | 端点(P3 proof bundle) |
 | L3 | reviewer agent + spec.md 作 context + 测试 | 端点(P3 proof bundle) |
 
-**组合在端点 action**:`feature-done` 是唯一端点组合点。先完成所有必要且可独立执行的 L1;必要 L1 通过后固定一次 review-cycle snapshot,自检完整 owner-supplied review package 后,适用的 L2/L3 使用同一 changed-path population 和 L1 evidence map 独立执行。full lane 的 L2/L3 在容量允许时并行 fresh dispatch,容量不足时顺序执行,聚合前重新核对 snapshot 未漂移。每次显式调用最多 dispatch 一轮适用 L2/L3 population，并在首次 terminal verdict 结束；不在调用内修复后重派。必要 L1 失败或 package 不完整时不启动新的 L2/L3,但仍完成 current-truth 与 receipt。reviewer 发现必要输入缺失时按 canonical role 的失败形式终止(L2/L3 为 terminal `UNRELIABLE`),不在 active invocation 中追问补件。dispatch 后输入漂移则本次 endpoint `BLOCKED`,不自动重开 cycle。输入稳定或独立修复完成后，只有后续显式调用才能重开完整 cycle 或在同一任务内用未漂移证据做 focused re-review；跨任务时重开完整 cycle,不设第二套 helper 命令。
-
-#### L2 / L3 Reviewer 承诺
-
-L2/L3 都遵守 cite-or-skip、fresh read、完整 applicable population 和 ambiguity feedback:没有规则引用或没有完整验证就不能给 clean pass。精确输入、输出与阻断条件只在 canonical [`agents-md-reviewer`](reviewers/agents-md-reviewer.md)和 [`spec-reviewer`](reviewers/spec-reviewer.md)定义,避免三处复制同一契约。
-
-#### L2/L3 Finding 重叠时的去重规则
-
-L2 / L3 reviewer 独立看各自规则源,不互相感知。同一行同根因时由 `feature-done` 装配层保留更强的 L3 finding;不同根因则都保留。去重只发生在 aggregator,不下沉到 reviewer;精确规则以 canonical [`feature-done` action](actions/feature-done.md)为准。
+`feature-done` 是唯一端点组合点：先完成必要 L1，再让适用的 L2/L3 基于同一稳定快照独立执行；
+每次调用在首个终态结束，不自动形成修复—复审循环。Reviewers 遵守 cite-or-skip、fresh read、完整
+适用范围和 ambiguity feedback；精确调度、证据、漂移、去重及复审规则只见
+[`feature-done`](actions/feature-done.md)、[`agents-md-reviewer`](reviewers/agents-md-reviewer.md) 和
+[`spec-reviewer`](reviewers/spec-reviewer.md)。
 
 #### 失效情形
 
@@ -1354,7 +1298,7 @@ L2 / L3 reviewer 独立看各自规则源,不互相感知。同一行同根因�
 ### 7.8 不要把 backlog 塞进 repo 文件
 **症状**:`docs/backlog.md` / `TODO.md` 跟踪未决事项
 **后果**:重复维护(Issues + 文件),搜索 / 排序 / 通知都退化
-**修正**:backlog 走 GitHub/GitLab Issues + labels;只有"详细设计 > 200 行"才单独成文件
+**修正**:backlog 走 GitHub/GitLab Issues + labels；只有被接受且需要长期执行的设计才按职责沉淀到 repo
 
 ### 7.9 不要让 review 门空转(太安静)
 **症状**:门只输出模板套话,没有 exact scope、applicable population、unverified items、ambiguities 或引用证据
@@ -1368,54 +1312,11 @@ L2 / L3 reviewer 独立看各自规则源,不互相感知。同一行同根因�
 
 ---
 
-## 8. 栈适配示范(以 Nuxt 4 + FastAPI 为例)
+## 8. 栈适配原则
 
-> **栈适配层** —— 本节是把 P0-P4 落到具体工具命令的映射。**换栈只需重写本节**,前面的方法论(§0-7、§9、§10)不变。
->
-> **栈级陷阱**:[`docs/gotchas.md`](gotchas.md) —— 从真实搭建过程沉淀的踩坑示范 ledger(完整历史条目在 git history)。
+P0-P4 不绑定语言或框架。项目个性化时从仓库事实识别 formatter、lint、typecheck、test、build 和发布命令，再把它们放到成本匹配的层级：快速确定性检查可进入 hook，模块或 feature 检查进入实施阶段/交付端点，发布级检查按风险触发。不要仅因某个框架常见就新增依赖或命令。
 
-### 8.1 Vue 3 / Nuxt 4 前端
-
-| 层 | 工具 | 用法 |
-|---|---|---|
-| 实时(P3) | Volar / Vue LSP | 类型错即写即知 |
-| Hook(P3) | `eslint --fix` on .vue/.ts/.tsx | `.claude/hooks/lint-on-edit.cjs` 中 case 分支 |
-| Hook | `vue-tsc --noEmit`(可选) | 抓类型错 |
-| 测试 | Vitest + @vue/test-utils + Playwright(e2e) | spec.md verification 引用 |
-
-### 8.2 FastAPI 后端
-
-| 层 | 工具 | 用法 |
-|---|---|---|
-| 实时(P3) | Pyright / Pylance LSP | 实时类型检查 |
-| Hook(P3) | `ruff check --fix` on .py | 同时管 lint + format |
-| Hook | `mypy`(全量慢,启动跑) | 严格类型,中途靠 LSP |
-| 测试 | pytest + httpx + pytest-asyncio | spec.md 引用 |
-| Schema | Pydantic v2 严格模式 | "职责分离"具体落地 |
-
-### 8.3 Go / Rust(次要语言)
-
-| 层 | Go | Rust |
-|---|---|---|
-| 实时 | gopls | rust-analyzer |
-| Hook | `gofmt -w` + `go vet ./...` | `cargo fmt` + `cargo clippy` |
-| 测试 | 标准 `testing` + table-driven | `cargo test` |
-
-### 8.4 跨语言通用工具
-
-- **Agent review(P2.3 / P3)**:Claude adapter 可用 `pr-review-toolkit:review-pr`;其他 adapter 用等价 reviewer → 交付时跑
-- **安全(P2.3)**:`/security-review` 原生 → 涉及认证/输入/密钥时
-- **文档拉取**:`context7` MCP → 外部库版本相关问题
-- **提交**:`commit-commands` skill
-
-### 8.5 本地开发 + 同步发布
-
-栈适配 tactic(具体配置看你用的脚手架仓库自身的 `DEPLOYMENT.md`):
-
-- 本地容器化后端 + 原生前端
-- 三档 env(dev / 本地验证生产 / 生产)
-- 三阶段:dev → 本地验证生产镜像 → 服务器
-- 反模式:venv 跑本地 + Docker 跑生产 → 环境漂移
+具体命令以仓库配置、`AGENTS.md` 和部署文档为准；真实踩坑可记录到 [`docs/gotchas.md`](gotchas.md)，不在通用手册维护容易过期的工具清单。外部文档、专项安全审查或额外 reviewer 只在当前风险需要且宿主具备相应能力时使用。
 
 ### 8.6 全栈项目的契约先行(Contract-First Tactic)
 
@@ -1442,7 +1343,7 @@ L2 / L3 reviewer 独立看各自规则源,不互相感知。同一行同根因�
 | tiny/local、低风险且未改变已声明 current truth | 不建 feature artifact,直接做并跑相关检查;hook 仅在 active 时提供增量反馈 |
 | 探索性 spike | worktree + vibe coding;只有留下持久架构/跨功能技术决定时才补 ADR |
 | 紧急生产 hotfix | 直接修,事后补 spec 和测试,记 tech debt |
-| 架构变更 | **不要偏离**:必须写 spec + ADR,worktree 隔离试 |
+| 架构变更 | **不要偏离**:使用 full lane；只有命中 `ADR_REQUIRED` 才写 ADR，隔离方式按仓库与风险选择 |
 | 低风险文档编辑 | 不建 feature artifact,检查 diff 与本地 links;契约/流程语义变更仍按风险选 light/full |
 | 别人代码的小修 | 遵守对方风格,不强加本手册 |
 | 玩具 / 一次性脚本 | 跳过整个 P0 工程化,直接 vibe coding |
@@ -1483,9 +1384,9 @@ L2 / L3 reviewer 独立看各自规则源,不互相感知。同一行同根因�
 
 | 失败模式 | 信号 | 应对 |
 |---|---|---|
-| **过度工程化** | P0 配了一堆 hook / rules / ADR 模板,实际 feature 还没开发 | 把 P0 砍到 30 分钟内能完成的最小集 |
-| **spec 变 todo list** | spec.md §1-4 模糊,§5 task 详细 | 严格按 1→6 顺序,§5 在 §1-4 写完之后 |
-| **CLAUDE.md 膨胀** | 项目 6 月后 CLAUDE.md > 300 行,AI 依从度肉眼下降 | P4 refresh,把可机械化的搬 hooks(§6.3) |
+| **过度工程化** | P0 配了一堆 hook / rules / ADR 模板,实际 feature 还没开发 | 收敛到首个 feature 真正需要的最小基线，其余按证据增补 |
+| **spec 变 todo list** | Outcomes / Scope / Constraints / Verification 模糊，tasks 却很详细 | 先关闭契约与验收未知项，再拆实施任务 |
+| **项目说明膨胀** | 同一规则在多个文件重复，旧例子开始压过当前约定 | P4 refresh；保留最接近执行点的权威规则，外围文档改为摘要和链接，可机械规则交给 lint/hook/test |
 | **hook 不稳定** | hook 频繁失败但不影响开发(因为没读 stderr) | 失败用 `exit 2`,把信息回喂 AI |
 | **三层 review 重叠** | reviewer 一个 review 把 L1/L2/L3 全跑了,prompt 1000+ tokens | 拆 reviewer 调用,各自只给对应 context |
 
@@ -1493,7 +1394,7 @@ L2 / L3 reviewer 独立看各自规则源,不互相感知。同一行同根因�
 
 本手册不是终版。明确的演化触发点:
 
-- **半年内**(2026-11 之前):Phase 2 在真实项目跑通后,如发现失败模式 → 修订
+- **真实项目出现可复现失败模式** → 修订对应流程与回归检查
 - **AGENTS.md 渗透率变化** → §1.3-1.4 内容跟进
 - **宿主 plugin/skill/hook 接口发生兼容性变化** → adapter 与安装文档同步
 - **跨工具实测发现差异** → §6.3 失效情形扩充
@@ -1505,8 +1406,6 @@ L2 / L3 reviewer 独立看各自规则源,不互相感知。同一行同根因�
 
 - **`~/.claude/rules/`**(Claude Code 官方支持):Claude 用户级规则载体;不属于项目 baseline,是否使用由用户自行决定
 - **project-workflow v3**:本手册是它的核心文档;`template/` 存放 P0 starter assets 与 feature 模板,`adapters/` 承载 host-native actions,`scripts/` 负责 release checks 与 package build
-- **`pr-review-toolkit`**:Claude adapter 可用的 P2.3 / P3 端点 reviewer;其他 adapter 应提供等价 reviewer
-- **`context7` MCP**:P2 实施期间外部库文档拉取
 - **GitHub Spec Kit `/speckit.clarify`**:P2 spec 不完整时的 Q&A 工具(可选)
 
 ---

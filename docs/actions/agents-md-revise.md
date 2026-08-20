@@ -17,15 +17,15 @@ Do not use to rewrite historical feature specs, create backlog items, or make su
 - Root and nested `AGENTS.md`.
 - Host-specific convention files selected for this run, if any.
 - Objective project state: manifests, commands, directory layout, config files, and recent relevant changes.
-- User decisions for each proposed convention change.
+- User decisions that establish new policy or resolve material ambiguity.
 
 ## Outputs
 
 - Drift report with objective evidence.
-- User-approved edits to project conventions.
+- Convention edits authorized by the current request or an explicit follow-up decision.
 - Summary of applied changes and follow-up manual review.
-- A Guidance Placement audit with evidence-backed keep/move/create/delete/mechanize proposals; no proposal
-  is applied without the same user-approved consolidated diff.
+- A Guidance Placement audit with evidence-backed keep/move/create/delete/mechanize proposals; apply only
+  changes authorized by the current request or an explicit follow-up decision.
 
 ## Workflow
 
@@ -46,9 +46,10 @@ Do not use to rewrite historical feature specs, create backlog items, or make su
    file merely to reduce line count or mirror directory symmetry.
 5. For each mismatch, record the old text, observed state, evidence source, exact affected subtree, and a
    narrow keep/move/create/delete/mechanize patch. Exclude preferences and weak pattern guesses.
-6. Ask only about material ambiguity or genuinely new policy, at most five decisions per batch. Objective stale-value synchronization proceeds to the consolidated preview without a separate decision round.
-7. Draft approved patches without editing the worktree. Use an inline trace for repository- or user-sourced synchronization and the decision-completeness auditor only for unconfirmed high-impact policy or conflicting/weak evidence.
-8. Show one consolidated diff, apply only approved patches, then validate the changed commands, paths, placeholders,
+6. Ask only about material ambiguity or genuinely new policy. Objective stale-value synchronization proceeds
+   under the current request without a separate decision round.
+7. Draft the proposed patches without editing the worktree. Use an inline trace for repository- or user-sourced synchronization and the decision-completeness auditor only for unconfirmed high-impact policy or conflicting/weak evidence.
+8. Summarize the patch, apply only authorized convention changes, then validate the changed commands, paths, placeholders,
    nested inheritance, alias content, and absence of parent duplication.
 
 ## Reviewer Execution
@@ -59,8 +60,8 @@ When the auditor boundary applies, follow the canonical [reviewer execution cont
 
 - Only project conventions are in scope.
 - Critical objective drift is prioritized over nice-to-have style opinions.
-- Show one consolidated diff and apply only its approved convention changes.
-- Specific new convention text must be traceable to observed project state or user approval.
+- Apply only convention changes authorized by the current request or an explicit follow-up decision.
+- Specific new convention text must be traceable to observed project state or an explicit user decision.
 - Moving text out of root requires evidence that no remaining consumer exists outside the target subtree.
 - `AGENTS.md` remains canonical; nested `CLAUDE.md` is only an optional project-adopted one-line alias, never
   a second convention source.

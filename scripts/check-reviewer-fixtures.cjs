@@ -153,4 +153,4 @@ if (problems.length) {
   process.exit(1);
 }
 
-console.log("Endpoint fixture inputs OK: current full preflight shape, full/light mutations, required finding concepts, and deterministic verdict truth table are coherent (model reviewers not executed)." );
+console.log("Endpoint fixture inputs OK: full semantic preflight, full/light mutations, required finding concepts, and deterministic verdict truth table are coherent (model reviewers not executed)." );

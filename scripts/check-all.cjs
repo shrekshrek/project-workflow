@@ -7,7 +7,7 @@ const repoRoot = path.resolve(__dirname, "..");
 const checks = [
   ["Generated plugin packages", ["scripts/build-plugin-packages.cjs", "--check"]],
   ["Claude/Codex adapter parity", ["scripts/check-adapter-parity.js"]],
-  ["Workflow semantic contracts", ["scripts/check-workflow-contracts.cjs"]],
+  ["Workflow structural contracts", ["scripts/check-workflow-contracts.cjs"]],
   ["Reviewer fixtures", ["scripts/check-reviewer-fixtures.cjs"]],
   ["Feature-init fixtures", ["scripts/check-feature-init-fixtures.cjs"]],
   ["Template contracts", ["scripts/check-template-contracts.js"]],

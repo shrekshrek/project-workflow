@@ -10,11 +10,11 @@ subdirectory, NNN numbering over the shared active+archive sequence, brownfield/
 exact lane file sets, no-artifact whole-tree preservation, `{{TODO}}` retention, plant refusal, and
 module-ownership non-guessing, pre-materialization decomposition of several independently shippable
 outcomes, implicit decomposition when the user does not name separability, explicit `pending-selection` /
-`pending-handoff` tracking while a required split is blocked, preservation of large coupled migrations and
-cross-module vertical outcomes, refusal when deferred children lack durable issue/PM references,
-and preservation of supplied tracking references in a selected light-lane child. They additionally cover
+selection of the current child without making external tracking a prerequisite, preservation of coupled migrations and
+cross-module vertical outcomes, optional reuse of supplied issue/PM references without requiring a fixed tracking field,
+and exclusion of untracked deferred outcomes from the selected child. They additionally cover
 pre-materialization clarification of unknown data disposition, exclusion of speculative capability without
-a current consumer, large coupled impact reporting, and decomposition of independently releasable Provider
+a current consumer, concrete coupled-impact reporting, and decomposition of independently releasable Provider
 rollouts. The deterministic check separately covers no-clobber, failed-copy rollback,
 and symlink safety; it does not claim model behavior.
 
@@ -41,12 +41,12 @@ Run these transcript-level cases on both hosts without grading fixture files as 
 - Ask only to initialize an otherwise identical light/full feature artifact. Expect materialization and a route report, but no implementation continuation because artifact initialization was the whole request.
 - Repeat a covered request when a compatible active or accepted feature already exists. Expect
   `Feature: reuse=<path>` and no new number. Confirm `Next gates` come from the reused artifact's lane/status,
-  not the `DIRECT` no-creation label: accepted full first passes the current mechanical artifact-shape recheck,
+  not the `DIRECT` no-creation label: accepted full first passes the semantic implementation-readiness recheck,
   then continues implementation → `feature-done` without another subjective review; a failure routes through
   repair/`spec-revise` plus `spec-quality-check`. Draft full begins with `spec-quality-check`, and light continues implementation → `feature-done`. Discussion, diagnosis,
   reasonableness review, and implementation-status inspection remain read-only even if their preview route is
   `LIGHT` or `FULL`.
-- Give a multi-outcome request whose scope viability is unresolved. Expect `Route: pending`, `Execution: PREVIEW`, no files, and the existing single clarification question; `pending` must not be treated as a fourth completed route.
+- Give a multi-outcome request whose scope viability is unresolved. Expect `Route: pending`, `Execution: PREVIEW`, no files, and only the smallest useful question set needed for direction/selection; `pending` must not be treated as a fourth completed route.
 
 ## Equivalence interpretation
 

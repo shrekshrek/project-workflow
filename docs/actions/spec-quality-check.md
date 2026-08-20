@@ -15,12 +15,13 @@ Do not use as the main gate for light-lane features; `feature-done` checks their
 - `plan.md`
 - `tasks.md`
 - The existing `plan.md` prior-decisions or risks entry when a bundled-delivery decision exists.
-- The accepted impact boundary and current-consumer/necessity trace recorded in existing spec/plan sections,
-  including a complete `Delivery Shape Baseline`.
+- The accepted impact boundary and current-consumer/necessity trace recorded in existing spec/plan sections.
+  Multi-boundary, architecture-shaped, or materially high-risk work also records its delivery coupling and
+  rollback boundary; ordinary full-lane work uses Scope, Constraints, Module Impact, and Verification directly.
 - For an architecture-shaped artifact, the applicable responsibility, cross-boundary contract/state,
   durable trust/authorization ownership, deployment, failure/recovery, and quality-constraint decisions
-  already recorded in the ordinary spec/plan/tasks. Infer applicability from the accepted Delivery Shape
-  Baseline; do not add an architecture flag or artifact field.
+  already recorded in the ordinary spec/plan/tasks. Infer applicability from those accepted boundaries; do not
+  add an architecture flag or artifact field.
 - A transient Requirements Source Map assembled from the current accepted user decisions, applicable
   current-truth/ADR/issue sources, and the durable source trace in `plan.md` Prior decisions or revision
   records. Each entry that needs provenance states the normalized decision, its source, and any decision it
@@ -33,11 +34,10 @@ Do not rely on remembered chat as the only source across sessions. Before this g
 non-obvious material choice that interprets an external source, resolves a conflict, accepts bundled risk, or
 supersedes an older decision needs a durable why/source trace. Repository sources use a path and section; user
 decisions use a dated/current-feature reference. Outcomes, scope, constraints, and exclusions remain owned by
-`spec.md` and are not duplicated in Prior decisions. Every required Prior decisions entry uses three semantic
-columns—decision, why, and source—and records its stable source in that row. The bundled Chinese template labels
-them `决策 | 为什么 | 来源`; an equivalent localized header is valid. When no such decision exists, use the
-explicit `N/A(no durable why/source decision)`. A missing semantic column, row source, or explicit N/A is a
-mechanical failure and must be repaired before subjective review.
+`spec.md` and are not duplicated in Prior decisions. When no decision needs a durable why/source trace, the
+section may be absent, empty, or say so naturally. For an older accepted artifact, an equivalent stable source
+in the same decision entry, adjacent revision record, or cited current-truth section satisfies this evidence
+requirement.
 Use `SOURCE GAP` only when missing authority prevents resolution of a material external claim, contradiction,
 or supersede decision—not merely because ordinary contract prose has no duplicate plan row.
 
@@ -73,37 +73,36 @@ normal artifact-edit or `spec-revise` path; they do not create another gate, rev
 
 Required checks: seven core quality questions, plus conditional current-truth checks:
 
-1. The spec/plan minimum set exists: Outcomes, Scope, Constraints, Verification, prior decisions, module
-   impact, and the Delivery Shape Baseline.
+1. The spec/plan minimum set exists: Outcomes, Scope, Constraints, Verification, and module impact. Any
+   non-obvious external interpretation, conflict, bundled-risk acceptance, or supersede decision has a durable
+   why/source trace. Multi-boundary, architecture-shaped, or materially high-risk work also records delivery coupling,
+   rollback risk, and scope-growth triggers in the plan.
 2. Scope includes explicit "do" and "do not" items.
-3. Verification contains the smallest non-redundant proof obligations that trace stated behavior and material risks to executable evidence. Generic derived edge/error cases and unspecified inputs are removed unless a contract, project convention, or concrete risk requires them. One evidence source may cover several related obligations; an artifact that requires an additional test layer or matrix without distinct risk coverage, an existing regression contract, or an explicit release/compliance requirement fails Q3 and should be consolidated before implementation. A user-visible outcome marks exactly one existing obligation `Primary flow` in `spec.md` Verification; `tasks.md` may map that obligation but must not repeat the marker. Non-user-visible work has no marker. The marker selects preflight order and never creates another obligation.
+3. Verification contains the smallest non-redundant proof obligations that trace stated behavior and material risks to executable evidence. Generic derived edge/error cases and unspecified inputs are removed unless a contract, project convention, or concrete risk requires them. One evidence source may cover several related obligations; an artifact that requires an additional test layer or matrix without distinct risk coverage, an existing regression contract, or an explicit release/compliance requirement fails Q3 and should be consolidated before implementation. Order user-visible verification from the shortest meaningful actor-to-result flow to broader or lower-level evidence; no additional label is required.
 4. Outcomes describe concrete user/system behavior, not generic intent.
 5. Constraints are concrete enough to constrain implementation. For architecture-shaped work, applicable
    responsibilities, contracts/state, durable trust/authorization ownership, deployment, and failure/recovery
    decisions show how the proposed architecture satisfies those constraints; this is folded into Q5/Q7c/Q7d,
    not a separate quality question.
-6. Multi-module work has sibling alignment: align, deviate with reason, or codify. A `Codify` choice names
+6. When the work makes or changes a sibling-convention choice, the plan records alignment, justified
+   deviation, or codification. Merely touching several modules does not require an alignment table. A `Codify` choice names
    the durable difference, source, and exact enforcement/placement: root guidance for cross-project rules,
    tier guidance for a shared runtime-local difference, module guidance only for a real parent exception,
    or a mechanical lint/hook/test when that is the better owner. Nested guidance repeats no parent text;
    feature/product semantics remain in spec/plan/ADR. If the project uses nested Claude compatibility,
    the planned `CLAUDE.md` is exactly a one-line `@AGENTS.md` alias.
 7. Delivery shape is viable:
-   - Q7a: tasks are independently actionable or reviewable where splitting helps, without time-box or one-test-case-per-task quotas, and include the necessary validation/proof work. Every multi-boundary full-lane implementation uses matching contract-bearing slice IDs in plan/tasks instead of tier/file/test/time partitions; each slice owns focused L1 evidence. A one-boundary full-lane feature is not artificially split. Large/extra-large slices also name inspectable exits, next consumers, and focused evidence. This constrains slice boundaries, not the real dependency order inside a slice.
+   - Q7a: tasks expose independently actionable or reviewable results where separate decisions or dependency risk warrant it, and include the necessary validation/proof work. Each real dependency or risk checkpoint closes an inspectable result and records its smallest relevant check before dependent work.
    - Q7b: the artifact represents one independently demonstrable, acceptable, and revertible outcome. Size alone never changes the verdict. Separable outcomes are split unless concrete coupling requires one delivery or the plan records an explicit bundled-risk decision and source.
    - Q7c: every proposed persistent state, API, role, workflow, management surface, queue, runtime component,
      or architecture responsibility has a traceable current consumer and is necessary for the selected
      outcome; speculative future capability is excluded or durably deferred.
-   - Q7d: the artifact records the accepted delivery-shape baseline: current outcome/consumer, qualitative
-     delivery-risk signal, expected responsibility areas, contract/data/authorization/migration/release
-     signals, explicit exclusions,
-     and scope-growth triggers. Large/extra-large impact has either separable child outcomes or concrete
-     indivisible coupling; any unresolved coordination/rollback risk is explicitly accepted. Every
-     multi-boundary full-lane plan also provides a dependency-ordered contract-bearing implementation sequence
-     whose slice IDs map directly to tasks, with focused L1 and compact progress before dependent work. Slice
-     transitions use continuation checks without adding gates, approvals, L2/L3 reviewers, statuses, or receipts.
-     A missing or incomplete `Delivery Shape Baseline` fails Q7d and must be repaired before `READY`; Scope,
-     Constraints, or Module Impact do not substitute for it.
+   - Q7d: multi-boundary, architecture-shaped, or materially high-risk work records its current outcome/consumer,
+     responsibility and contract boundary, concrete coupling/rollback risk, and scope-growth triggers.
+     Broad work has either separable child outcomes or concrete indivisible coupling; any unresolved
+     coordination/rollback risk is explicitly accepted. It uses a dependency-ordered set of independently
+     verifiable implementation phases when this exposes
+     failures before dependent work; each meaningful phase names an inspectable result and focused evidence.
 8. Only when the touched area has a `docs/specs/<area>.md`: the spec cites it and does not contradict it, or explicitly records why it deviates. Projects without current-truth documents skip this check.
 9. When check 8 applies: the spec includes a `## Delta` section with `Added`, `Modified`, and `Removed` subsections; at least one subsection has concrete content (not placeholders or bare N/A).
 
@@ -119,10 +118,10 @@ Greenfield shape:
 
 | # | Check |
 |---|---|
-| M1 | Required elements present (spec §1–§4 + plan Prior decisions using decision/why/source semantic columns—`决策 / 为什么 / 来源` in the bundled template—with a source in every required row, or explicit `N/A(no durable why/source decision)` + module impact + Delivery Shape Baseline) |
+| M1 | Required elements present (spec §1–§4 + module impact); non-obvious external/conflict/bundled-risk/supersede decisions have a durable why/source trace; conditional delivery-boundary evidence is judged by Q7d |
 | M2 | Scope has explicit `做` and `不做` lists, each with ≥1 non-TODO item |
 | M3 | Verification is non-empty, contains no unresolved TODO, and identifies proof obligations plus executable evidence; coverage, redundancy, and any matrix justification are judged by Q3 |
-| M4 | plan §1.1 Sibling Alignment filled (multi-module work only); each `Codify` row names a durable rule, source, exact root/tier/module/mechanical target, and difference-only/alias work when applicable |
+| M4 | When a sibling-convention decision exists, its alignment/deviation/codification is explicit; each `Codify` choice names a durable rule, source, exact root/tier/module/mechanical target, and difference-only/alias work when applicable |
 | M5 | tasks.md has a non-empty implementation/validation checklist with no unresolved TODO; independently useful task boundaries, aggregate delivery coherence, necessity, and impact completeness are judged by Q7a–Q7d |
 | M6 / M7 | N/A (first archive creates/updates the domain doc) |
 
@@ -130,7 +129,7 @@ Brownfield shape (M1/M2 replaced by M1b/M2b; M4/M5 shared):
 
 | # | Check |
 |---|---|
-| M1b | Motivation + Domain References + Delta + Constraints + Verification + plan Prior decisions using the same semantic columns/source rule or explicit N/A + module impact + Delivery Shape Baseline |
+| M1b | Motivation + Domain References + Delta + Constraints + Verification + module impact; non-obvious decisions use the same semantic source rule; conditional delivery-boundary evidence is judged by Q7d |
 | M2b | Delta has Added/Modified/Removed subsections, ≥1 non-TODO |
 | M3b | Verification is non-empty, contains no unresolved TODO, and identifies proof obligations plus executable evidence; Delta/risk coverage, redundancy, and any matrix justification are judged by Q3 |
 | M6 | Spec cites `docs/specs/<area>.md` without contradiction, or records an explicit deviation |
@@ -158,7 +157,7 @@ A Requirements Reconciliation result of `MISMATCH` or `SOURCE GAP` always makes 
 
 ## Reviewer Execution
 
-Run the canonical subjective reviewer under the shared [reviewer execution contract](../reviewers/README.md#reviewer-execution-contract) only after every applicable mechanical prerequisite passes. If one fails, return `BLOCKED` and record `Reviewer execution: N/A(mechanical prerequisites failed)`; no reviewer-dispatch evidence is required. Once dispatch is applicable, record reviewer, mode, status, and fallback reason; missing required execution evidence returns `BLOCKED`.
+Run the canonical subjective reviewer under the shared [reviewer execution contract](../reviewers/README.md#reviewer-execution-contract) only after every applicable mechanical prerequisite passes. If one fails, return `BLOCKED`; no reviewer dispatch is required. Once review is applicable, record whether it completed and any reason it could not. Dispatch mechanism is diagnostic evidence, not a verdict condition.
 
 ## Workflow
 
@@ -174,7 +173,7 @@ Run the canonical subjective reviewer under the shared [reviewer execution contr
    source map and spec/plan/tasks population
    under the reviewer-execution contract. The same invocation performs Requirements Reconciliation first,
    then Q3-Q7 including Q6 guidance placement and Q7b aggregate delivery coherence; never dispatch a second
-   reconciliation reviewer. When the accepted Delivery Shape Baseline is architecture-shaped, that same
+   reconciliation reviewer. When the accepted boundary is architecture-shaped, that same
    reviewer performs the bounded architecture-adequacy check inside Q5/Q7c/Q7d; do not add a reviewer,
    question number, verdict, receipt field, or repository-wide architecture review.
 6. Deduplicate reconciliation and quality findings by root cause, cite exact evidence, identify proof obligations that the same evidence can consolidate, and apply the verdict contract above. An artifact that requires duplicate layers or matrix cells without distinct risk coverage fails Q3; optional implementation ideas not required by the artifact may be reported as nonblocking simplification suggestions and do not expand the contract.
@@ -195,9 +194,8 @@ Run the canonical subjective reviewer under the shared [reviewer execution contr
   same reviewer invocation. Ordinary same-boundary permission behavior and internal refactors skip it.
 - Review findings cite the file/section they refer to.
 - More test layers, cases, or matrix cells never improve the verdict by themselves; distinct risk coverage does.
-- For multi-boundary full-lane work, `READY` carries matching plan/tasks slices, focused L1/progress,
-  Implementation Scope Stop and Implementation Continuation Check into execution. Aligned work continues without reconfirmation;
-  a material mismatch stops dependent work. Large/extra-large slices retain their additional exit/consumer/evidence detail.
+- `READY` carries Implementation Scope Stop and phase-focused validation into execution. Meaningful phases run
+  their smallest relevant checks before dependent work; a material mismatch stops dependent work.
 - Codify is fail-closed only when the artifact selected it or the accepted outcome depends on a durable local
   convention. This gate never demands nested guidance for an ordinary module merely to make the tree symmetric.
 - Reviewer execution is fail-closed: an unexplained main-session run cannot satisfy this gate when host-native dispatch was available.
