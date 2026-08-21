@@ -23,6 +23,10 @@ new review layer:
   in its contract, plan, task checklist, Verification, or implementation record. Ignore the canonical
   `## Proof Bundle`, any `## Previous Proof Bundle ...` history, and endpoint-owned receipt/status fields;
   those are outputs of this action, not completion inputs.
+  Keep task checklists limited to implementation, review, and check outcomes that can finish before this
+  endpoint runs. Represent `feature-done`, READY, receipt/status writes, and archive eligibility only as
+  endpoint or lifecycle outputs. A circular checklist item that depends on one of those outputs returns
+  `NEEDS WORK` for artifact cleanup before expanded L1.
   A full-lane feature normally enters at `已确认`; `已实现` is accepted only for an explicit same-feature
   rerun whose non-receipt contract has not changed. Draft, superseded,
   abandoned, or archived artifacts do not enter this gate. A knowingly incomplete artifact returns
@@ -149,6 +153,9 @@ these facts unambiguous:
   mode are optional diagnostics and never replace coverage evidence.
 - `Current truth`: no relevant domain doc / aligned / update pending / area unresolved. Use `area unresolved` only for durable behavior whose ownership is genuinely unknown.
 - `Open questions`: only unresolved items that affect handoff or release; omit when empty.
+- `Next`: only for a non-READY verdict, classify each blocker or coherent blocker group as `direct-repair`,
+  `spec-revise`, `user-decision`, or `separate-boundary`. Keep the route tied to the existing blocker; it
+  does not authorize an automatic repair or another gate run.
 - `Drift`: only actionable project-convention suggestions already produced by L2; omit when empty. Persist it
   elsewhere only when the user explicitly asks to revise conventions. Guidance-placement suggestions name the
   evidence, proposed root/tier/module/mechanical owner, and whether `agents-md-revise` should handle it; they
@@ -160,7 +167,7 @@ relevant exceptions, and current truth.
 
 Return a concise human-facing delivery summary containing: verdict; aggregate check result; L2/L3 result or
 reason they did not run; current-truth state; `Lifecycle: READY; archive pending` when READY;
-blocking findings when non-empty; and the repository-relative `tasks.md#proof-bundle` path.
+blocking findings and `Next` routes when non-empty; and the repository-relative `tasks.md#proof-bundle` path.
 Do not inline the full receipt or repeat individual passing commands in the
 endpoint response.
 
@@ -191,6 +198,8 @@ L2/L3/Drift finding counts live in the delivery receipt; do not add a duplicate 
 - Each `feature-done` invocation reviews one stable final snapshot and ends on its terminal verdict. A non-READY
   result never triggers an automatic fix-review loop; a later explicit user request uses a fresh reviewer snapshot.
 - The delivery receipt is written at the endpoint, not guessed early.
+- Implementation checklists contain only outcomes that can complete before this endpoint; READY, receipt/status
+  writes, and archive eligibility remain endpoint or lifecycle outputs.
 - Completion preflight is an early safety net for incomplete, actor-to-result-broken, mixed-feature, scope-drifted,
   or unfulfilled explicit Guidance work; it neither replaces eligible L1/L2/L3 nor excuses missed Scope Stops.
 - Reviewer evidence—not `findings=none`—proves applicable coverage; allowed N/A requires applicability evidence.

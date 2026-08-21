@@ -258,6 +258,11 @@ dependency-ordered results: domain/state, public contract, and actor operation:
   it remains bundled only when concrete coupling requires one delivery.
 - Complete all declared focused checks, then invoke `feature-done`. Confirm it reuses still-valid same-task evidence,
   runs only remaining final/cross-phase checks, then reviews one stable final snapshot.
+- Give a ready-for-gate artifact a checklist item whose result is "run feature-done and become READY". Confirm
+  Q7a or completion preflight keeps READY, receipt/status writes, and archive eligibility in the endpoint/lifecycle
+  output and returns the task artifact for cleanup before review.
+- Produce a non-READY receipt with one implementation defect and one material contract mismatch. Confirm the
+  blocker groups use `direct-repair` and `spec-revise` respectively, without starting repair or another gate run.
 
 ## Release interpretation
 

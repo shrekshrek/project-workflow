@@ -37,6 +37,10 @@ proposed/accepted contract; generated draft text is not self-authorizing. Do not
 conversation, infer a requirement from current implementation, or demand that ordinary spec content be copied
 into plan Prior decisions.
 
+For a current-conversation correction or supersede decision, require the caller to provide the exact user
+statement, normalized replacement, and older rule it supersedes. A caller-authored "user confirmed" summary
+without that direct statement or a stable external/durable source is `SOURCE GAP`, not authority.
+
 Before Q3-Q7, read both directions:
 
 - Requirements to artifacts: locate every material accepted outcome, rule, constraint, exclusion, fallback,
@@ -48,6 +52,9 @@ Before Q3-Q7, read both directions:
   Prior decisions row.
 - Temporal/cross-artifact consistency: identify stale semantics left in prose, verification, tasks, fallback,
   or migration handling after a later explicitly accepted decision supersedes them.
+- Exclusion and ownership semantics: when an authoritative source says "remove", "no longer", "only",
+  "single source", or equivalent, flag any retained optional, conditional, fallback, or compatibility path as
+  `superseded-remnant` unless that source explicitly preserves it.
 - Counterexamples: when ownership, authorization, hierarchy, fallback, unknown-data, or migration rules can
   change the result, test at least one materially different case rather than accepting only the happy path.
 
@@ -81,7 +88,12 @@ Fresh-read the three artifacts and assess every relevant item:
   rules prefer lint/hook/test. Repeated parent text, directory-symmetry files, a missing target/alias task, or
   a nested `CLAUDE.md` planned as anything other than one-line `@AGENTS.md` = fail. An uncertain owner =
   borderline or fail according to whether it can change implementation.
-- Q7a tasks: independently actionable or reviewable output/check = pass; a broad bucket that hides separate decisions or a material dependency checkpoint = fail; work without verification = borderline. Each real dependency or risk checkpoint should close an inspectable result and own its smallest relevant check before dependent work.
+- Q7a tasks: independently actionable or reviewable output/check that can finish before `feature-done` = pass;
+  a broad bucket that hides separate decisions or a material dependency checkpoint = fail; work without
+  verification = borderline. READY, Proof Bundle/status writes, and archive eligibility are endpoint/lifecycle
+  outputs rather than task checkboxes; a checklist item that depends on them is circular and fails Q7a. Each
+  real dependency or risk checkpoint should close an inspectable result and own its smallest relevant check
+  before dependent work.
 - Q7b delivery coherence: one independently demonstrable/acceptable/revertible outcome with resolved material risks = pass regardless of size; several separable outcomes with no coupling or traceable bundled-risk decision in the plan = fail; an explicitly accepted bundle, or one coherent delivery with material unresolved coordination/rollback risk, = borderline.
 - Q7c current necessity: every persistent state, API, role, workflow, management surface, queue, runtime
   component, or architecture responsibility names a present actor/consumer and a selected-outcome necessity =

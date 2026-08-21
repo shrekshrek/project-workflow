@@ -46,6 +46,17 @@ Run these transcript-level cases on both hosts without grading fixture files as 
   repair/`spec-revise` plus `spec-quality-check`. Draft full begins with `spec-quality-check`, and light continues implementation → `feature-done`. Discussion, diagnosis,
   reasonableness review, and implementation-status inspection remain read-only even if their preview route is
   `LIGHT` or `FULL`.
+- With an accepted full artifact under implementation, tell the host that one accepted behavior must be
+  removed or replaced and ask it to continue. Expect a handoff to `spec-revise` before implementation; it
+  must not run `spec-quality-check` against the stale artifact. After the synchronized revision, expect the
+  normal `spec-quality-check` gate when the changed boundary requires it. In the same scenario, state that the
+  behavior is removed and another owner is the single source. Expect synchronized spec/plan/tasks/ADR content
+  with no optional, fallback, or compatibility path for the superseded owner.
+- Invoke `spec-quality-check` explicitly while the same frozen-contract correction is still pending. Expect
+  `N/A(route: spec-revise)`, no mechanical/reviewer run, and no artifact edit. Repeat with an unimplemented
+  draft: expect ordinary draft repair before the quality gate, not a frozen-contract revision.
+- Contrast the correction case with an unchanged accepted contract whose implementation is wrong. Expect a
+  direct implementation repair followed by an explicit `feature-done` rerun, not `spec-revise`.
 - Give a multi-outcome request whose scope viability is unresolved. Expect `Route: pending`, `Execution: PREVIEW`, no files, and only the smallest useful question set needed for direction/selection; `pending` must not be treated as a fourth completed route.
 
 ## Equivalence interpretation

@@ -5,6 +5,8 @@ Canonical action for changing a frozen feature contract after implementation has
 ## Use When
 
 - A confirmed `spec.md` needs to change during implementation.
+- The latest user instruction materially corrects, rejects, removes, or replaces behavior in an accepted
+  contract, even when the user does not name this action and phrases the request as "fix it" or "continue".
 - A delivered-but-unarchived full-lane feature needs to reopen because a material contract, scope, plan, or Verification omission was discovered after `feature-done`.
 - Implementation discovers a material scope delta: an undeclared persistent state, API, role, workflow,
   management surface, queue, runtime, Provider/responsibility area, contract, migration, authorization
@@ -19,6 +21,8 @@ An implementation regression under an unchanged accepted contract does not use t
 
 - Feature directory.
 - Requested change and reason.
+- For a current-conversation contract correction: the exact user statement, its normalized decision, and the
+  older accepted rule it supersedes. A caller-authored "user confirmed" paraphrase alone is not authority.
 - Existing `spec.md`, `plan.md`, `tasks.md`.
 - ADR directory state.
 
@@ -48,6 +52,8 @@ An implementation regression under an unchanged accepted contract does not use t
      defer it
    - `bundled-risk`: materially wider but inseparable; require concrete coupling and explicit acceptance
    Put minor clarification in plan prior decisions or implementation notes instead.
+   A current user correction that conflicts with accepted behavior is `contract-correction`; do not run
+   `spec-quality-check` against the stale artifact or continue implementing it first.
 3. Resolve the accepted boundary, actual affected modules/files and Git overlap, then
    fresh-read applicable conventions. Do not treat already-written implementation as evidence that the
    expansion belongs in the feature.
@@ -65,7 +71,11 @@ An implementation regression under an unchanged accepted contract does not use t
    an external tracker a prerequisite. Record an accepted bundle in the
    existing plan prior-decisions or risks section. Remove speculative capability instead of creating a
    deferred implementation obligation when the user does not need it preserved.
-7. Draft final spec/plan/tasks contents without changing the worktree. Add the dated revision record;
+7. For every contract correction, build a compact supersession trace before drafting: exact current user
+   statement when available, normalized replacement rule, older rule being replaced, and affected
+   spec/plan/tasks/ADR locations. Preserve exclusion and exclusivity semantics such as "remove", "no longer",
+   "only", and "single source"; do not narrow them into an optional or conditional fallback without explicit
+   authority. Then draft final spec/plan/tasks contents without changing the worktree. Add the dated revision record;
    synchronize plan decisions, any conditional delivery boundary, risks, current-truth follow-up, tasks, and
    validation. Update the Prior decisions source trace for each material correction and explicitly identify
    the older decision it supersedes; never rely on chat memory as the only durable source. Any completed task or proof obligation whose contract, inputs, or affected scope changed
@@ -98,6 +108,9 @@ When the auditor boundary applies, follow the canonical [reviewer execution cont
 - External tracker edits do not revise this feature implicitly. Adopt them only through an explicit draft edit or this action when they change the active contract.
 - Module-boundary changes update affected module notes and future validation expectations.
 - Specific decisions must be traceable to user input, existing project convention, revision record, or an applicable ADR.
+- A material user correction is never durably sourced only as a caller-written "user confirmed" summary. Its
+  revision trace records the normalized replacement, what it supersedes, and an exact current statement or
+  stable external/durable source that supports that interpretation.
 - If the revision changes durable behavior recorded in `docs/specs/<area>.md`, keep the domain document read-only during this in-flight revision and record `current truth update pending` for [`feature-done`](feature-done.md) → [`feature-archive`](feature-archive.md). If it supersedes earlier specs, record a follow-up for [`feature-archive`](feature-archive.md) or [`spec-reconcile`](spec-reconcile.md) to mark and archive them.
 - When an ADR is required, use metadata/reference search to find relevant `Accepted`/`Proposed` candidates; never load the whole ADR directory. With user approval, flip an overturned ADR's status to `Superseded by NNNN` and note the takeover in the new ADR.
 

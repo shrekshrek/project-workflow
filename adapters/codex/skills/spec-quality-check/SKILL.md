@@ -1,6 +1,6 @@
 ---
 name: spec-quality-check
-description: "Run the Codex-native pre-implementation requirements-reconciliation and quality gate for a full-lane feature artifact."
+description: "Run the Codex-native pre-implementation requirements-reconciliation and quality gate for a synchronized full-lane feature artifact. Do not use for a material correction to an accepted contract; use spec-revise first."
 ---
 
 # Spec Quality Check (Codex)
@@ -8,9 +8,14 @@ description: "Run the Codex-native pre-implementation requirements-reconciliatio
 Match the user's language. Read [`../../../../docs/actions/spec-quality-check.md`](../../../../docs/actions/spec-quality-check.md) completely before reviewing. The fresh subagent reads the canonical reviewer spec; read it in the main session only for an allowed fallback.
 
 - Resolve an active feature through shared runtime rules; light lane is N/A.
+- Before mechanical checks, reject a pending material correction to an accepted or delivered-but-unarchived
+  contract as `N/A(route: spec-revise)`. Do not dispatch review or validate the stale artifact. Draft
+  pre-implementation corrections are edited normally before this gate.
 - Run the canonical mechanical table directly; do not reproduce or alter it here.
 - If any required mechanical prerequisite fails, return `BLOCKED` and do not dispatch subjective review.
-- Otherwise assemble the canonical transient Requirements Source Map, then dispatch one fresh general
+- Otherwise assemble the canonical transient Requirements Source Map. A current-conversation correction or
+  supersede entry includes the exact user statement, normalized replacement, and older rule; a caller-authored
+  "user confirmed" paraphrase alone is not authority. Then dispatch one fresh general
   subagent to run [`spec-quality-reviewer`](../../../../docs/reviewers/spec-quality-reviewer.md) with that
   exact map, artifact paths, and shape under the canonical execution contract. The same reviewer performs
   Requirements Reconciliation first and Q3-Q7 second; never dispatch a separate reconciliation reviewer.

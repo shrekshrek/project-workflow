@@ -1,6 +1,6 @@
 ---
 name: spec-quality-check
-description: Run the canonical pre-implementation requirements-reconciliation and quality gate for a full-lane feature spec, plan, and tasks.
+description: Run the canonical pre-implementation requirements-reconciliation and quality gate for synchronized full-lane feature artifacts. Do not use for a material correction to an accepted contract; use spec-revise first.
 ---
 
 # Spec Quality Check
@@ -10,9 +10,14 @@ Match the user's language. Read `${CLAUDE_PLUGIN_ROOT}/docs/actions/spec-quality
 Claude execution details:
 
 - Resolve `$ARGUMENTS` using the shared active-feature rules; exclude `archive/`. A missing `spec.md` is light-lane N/A, not a failed full-lane gate.
+- Before mechanical checks, reject a pending material correction to an accepted or delivered-but-unarchived
+  contract as `N/A(route: spec-revise)`. Do not dispatch review or validate the stale artifact. Draft
+  pre-implementation corrections are edited normally before this gate.
 - Run the canonical mechanical table directly; do not reproduce or modify it here.
 - If any required mechanical prerequisite fails, return `BLOCKED` and do not dispatch subjective review.
-- Otherwise assemble the canonical transient Requirements Source Map, then dispatch one fresh
+- Otherwise assemble the canonical transient Requirements Source Map. A current-conversation correction or
+  supersede entry includes the exact user statement, normalized replacement, and older rule; a caller-authored
+  "user confirmed" paraphrase alone is not authority. Then dispatch one fresh
   `spec-quality-reviewer` with that exact map and artifact paths. Follow the canonical execution contract.
   The same reviewer performs Requirements Reconciliation first and Q3-Q7 second; never dispatch
   a separate reconciliation reviewer. `MISMATCH` or `SOURCE GAP` is `BLOCKED`.

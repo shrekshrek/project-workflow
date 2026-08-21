@@ -13,7 +13,8 @@ Match the user's language. Read [`../../../../docs/actions/feature-done.md`](../
   Git/scope boundaries, and explicit Guidance Placement
   commitments. A stop still writes the canonical receipt.
   The preflight evaluates only phases, proof obligations, and guidance already declared by the accepted
-  artifact and project conventions.
+  artifact and project conventions. Keep checklist work to implementation/review/check outcomes that finish
+  before this endpoint; record READY, receipt/status writes, and archive eligibility as endpoint/lifecycle outputs.
 - Apply the action's L1 scope, reuse, sequencing, prerequisite, and evidence rules exactly. Do not expand checks
   or dispatch reviewers beyond those rules. Review one stable final snapshot and end on its terminal verdict.
   After an in-scope fix, only a later explicit user request runs a fresh reviewer snapshot; reuse only still-valid
@@ -27,6 +28,6 @@ Match the user's language. Read [`../../../../docs/actions/feature-done.md`](../
 - Reviewers are read-only. After this endpoint returns, the enclosing implementation may apply an unambiguous
   in-scope fix, but it must not re-enter this skill automatically. Reviewer agents never edit code or commit;
   material product or scope decisions return to the user.
-- Capture the reviewed Git identity before endpoint-owned writes, then persist and structurally re-read the canonical `## Proof Bundle` receipt. Return the action's concise human summary with `Lifecycle: READY; archive pending` when applicable and a repository-relative link to `tasks.md#proof-bundle`; do not inline the full receipt.
+- Capture the reviewed Git identity before endpoint-owned writes, then persist and structurally re-read the canonical `## Proof Bundle` receipt. For a non-READY verdict, map each blocker or blocker group to the canonical `Next` route without starting repair or another gate run. Return the action's concise human summary with `Lifecycle: READY; archive pending` when applicable and a repository-relative link to `tasks.md#proof-bundle`; do not inline the full receipt.
 
 Apply the canonical verdict contract. `READY` is delivery readiness; lifecycle closure remains `$feature-archive`.

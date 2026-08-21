@@ -48,10 +48,24 @@ requirePatterns("docs/actions/spec-quality-check.md", [
   ["reconciliation statuses", /`ALIGNED`[\s\S]*`MISMATCH`[\s\S]*`SOURCE GAP`/],
   ["conditional sibling alignment", /Merely touching several modules does not require an alignment table/i],
   ["smallest proof obligations", /smallest non-redundant proof obligations/i],
+  ["frozen correction handoff", /`N\/A\(route: spec-revise\)`[\s\S]*before mechanical checks or reviewer dispatch/i],
+  ["direct correction evidence", /exact user statement[\s\S]*normalized[\s\S]*supersedes/i],
 ]);
 forbidPatterns("docs/actions/spec-quality-check.md", [
   ["forced empty decision token", /N\/A\(no durable why\/source decision\)/i],
   ["mandatory risk-size classes", /Large\/extra-large/i],
+]);
+
+requirePatterns("docs/actions/spec-revise.md", [
+  ["implicit latest-user correction trigger", /latest user instruction materially corrects, rejects, removes, or replaces/i],
+  ["stale quality gate forbidden", /do not run[\s\S]*`spec-quality-check` against the stale artifact/i],
+  ["supersession trace", /exact current user[\s\S]*normalized replacement rule[\s\S]*older rule/i],
+]);
+
+requirePatterns("docs/reviewers/spec-quality-reviewer.md", [
+  ["correction source gap", /caller-authored "user confirmed"[\s\S]*`SOURCE GAP`/i],
+  ["exclusion semantic remnant", /"remove"[\s\S]*optional, conditional, fallback, or compatibility path[\s\S]*`superseded-remnant`/i],
+  ["endpoint-owned task rejection", /READY[\s\S]*endpoint\/lifecycle[\s\S]*circular[\s\S]*fails Q7a/i],
 ]);
 
 requirePatterns("docs/actions/feature-done.md", [
@@ -65,6 +79,8 @@ requirePatterns("docs/actions/feature-done.md", [
   ["review drift", /review-input drift/i],
   ["compact reviews", /`Reviews`:[\s\S]*`completed`[\s\S]*`invalidated`/],
   ["current truth", /`Current truth`:/],
+  ["endpoint-owned checklist boundary", /checklists limited to implementation, review, and check outcomes[\s\S]*archive eligibility[\s\S]*circular checklist item/i],
+  ["non-ready next route", /`Next`:[\s\S]*`direct-repair`[\s\S]*`spec-revise`[\s\S]*`user-decision`[\s\S]*`separate-boundary`/i],
 ]);
 forbidPatterns("docs/actions/feature-done.md", [
   ["forced primary-flow summary", /primary-flow result/i],
@@ -213,8 +229,37 @@ for (const host of ["claude", "codex"]) {
   requirePatterns(`adapters/${host}/skills/spec-quality-check/SKILL.md`, [
     ["single quality reviewer", /spec-quality-reviewer/],
     ["requirements reconciliation", /Requirements Reconciliation/],
+    ["frozen correction rejection", /N\/A\(route: spec-revise\)/],
+    ["direct correction source", /exact user statement[\s\S]*normalized replacement[\s\S]*older rule/i],
+  ]);
+  requirePatterns(`adapters/${host}/skills/spec-revise/SKILL.md`, [
+    ["latest-user correction trigger", /latest-user correction[\s\S]*contract-correction/i],
+    ["stale quality gate forbidden", /never route the stale artifact through[\s\S]*spec-quality-check/i],
+  ]);
+  requirePatterns(`adapters/${host}/skills/feature-done/SKILL.md`, [
+    ["endpoint-owned task boundary", /checklist work[\s\S]*finish[\s\S]*before this endpoint[\s\S]*endpoint\/lifecycle outputs/i],
+    ["non-ready next route", /non-READY verdict[\s\S]*canonical `Next` route[\s\S]*without starting repair or another gate run/i],
   ]);
 }
+
+for (const relative of [
+  "template/docs/specs/changes/_template/tasks.md",
+  "template/docs/specs/changes/_template/tasks-light.md",
+]) {
+  requirePatterns(relative, [
+    ["endpoint-owned task boundary", /READY[\s\S]*Proof Bundle[\s\S]*不写成 checkbox/i],
+    ["non-ready next route", /Next:[\s\S]*direct-repair[\s\S]*spec-revise[\s\S]*user-decision[\s\S]*separate-boundary/i],
+  ]);
+}
+
+requirePatterns("docs/examples/reviewer-mutation-smoke.md", [
+  ["endpoint-owned task smoke", /run feature-done and become READY[\s\S]*endpoint\/lifecycle[\s\S]*cleanup before review/i],
+  ["non-ready route smoke", /non-READY receipt[\s\S]*`direct-repair`[\s\S]*`spec-revise`[\s\S]*without starting repair or another gate run/i],
+]);
+
+requirePatterns("adapters/codex/.codex-plugin/plugin.json", [
+  ["default correction route", /materially corrects accepted feature behavior[\s\S]*\$spec-revise[\s\S]*\$spec-quality-check/i],
+]);
 
 for (const relative of ["scripts/materialize-feature-artifact.cjs", "scripts/materialize-project-baseline.cjs"]) {
   requirePatterns(relative, [

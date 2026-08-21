@@ -6,8 +6,14 @@ Canonical pre-implementation gate for full-lane feature artifacts.
 
 - `docs/specs/changes/<NNN>-<slug>/{spec,plan,tasks}.md` exists.
 - The user believes the spec is ready for implementation.
+- The artifact already incorporates every material current user decision; no accepted or delivered-but-
+  unarchived contract correction is pending.
 
 Do not use as the main gate for light-lane features; `feature-done` checks their `tasks.md` goal/boundary, executes each verification item, and writes the delivery receipt directly.
+Do not use to validate a stale frozen contract after the user corrects, rejects, removes, or replaces one of
+its material rules. Return `N/A(route: spec-revise)` before mechanical checks or reviewer dispatch; the
+revision must synchronize the artifacts first. A draft that has not entered implementation is edited normally
+before this gate instead of using `spec-revise`.
 
 ## Inputs
 
@@ -28,6 +34,9 @@ Do not use as the main gate for light-lane features; `feature-done` checks their
   explicitly supersedes. An artifact explicitly supplied or confirmed by the user may be referenced by its
   existing section as the user's proposed/accepted contract; do not copy ordinary spec content into plan merely
   to make a second source ledger. Generated artifact text without user acceptance is never self-authorizing.
+  For a current-conversation correction or supersede decision, include the exact user statement, normalized
+  replacement, and older rule it supersedes. A caller-authored "user confirmed" paraphrase alone is not an
+  authoritative source.
 - Whether the current user request explicitly authorizes implementation after this gate passes.
 
 Do not rely on remembered chat as the only source across sessions. Before this gate can return `READY`, every
@@ -55,6 +64,9 @@ Requirements Source Map:
    decisions row for content already owned by the accepted spec.
 3. Cross-artifact and temporal consistency: spec, plan, and tasks agree, and an explicitly superseded older
    semantic does not survive in prose, verification, tasks, fallback behavior, or migration handling.
+   When the authoritative source says "remove", "no longer", "only", "single source", or an equivalent
+   exclusion, retaining an optional, conditional, fallback, or compatibility path is a `superseded-remnant`
+   unless the source explicitly preserves it.
 4. Counterexamples: test ownership, authorization, hierarchy, fallback, unknown-data, and migration rules
    against at least one materially different case whenever the rule changes the result.
 
@@ -161,7 +173,11 @@ Run the canonical subjective reviewer under the shared [reviewer execution contr
 
 ## Workflow
 
-1. Resolve an active feature and stop as N/A when it is light lane.
+1. Resolve an active feature and stop as N/A when it is light lane. Before any mechanical check, compare the
+   current request and accepted current-conversation decisions with the artifact lifecycle and contract. If an
+   accepted or delivered-but-unarchived contract has a pending material correction, return
+   `N/A(route: spec-revise)` and do not dispatch a reviewer. This is a defensive handoff; `spec-revise` remains
+   the sole owner of frozen-contract correction.
 2. Detect greenfield or brownfield shape from the canonical section markers.
 3. Run the applicable mechanical table above without maintaining an adapter-local copy. If any required mechanical check fails, report `BLOCKED` and stop before subjective review.
 4. Only when mechanical prerequisites pass, assemble the exact Requirements Source Map without editing the
@@ -182,6 +198,8 @@ Run the canonical subjective reviewer under the shared [reviewer execution contr
 ## Invariants
 
 - This gate validates the artifact, not the implementation.
+- This gate never validates or repairs an artifact known to be stale against a current material correction;
+  it hands that case to `spec-revise` before checks or reviewer dispatch.
 - Conditional implementation authorization permits only the status transition owned by this gate; it does not authorize spec/plan/tasks content repair.
 - Failed checks block full-lane implementation.
 - Requirements reconciliation is bidirectional and fail-closed; current implementation is evidence of
