@@ -19,6 +19,9 @@ Claude execution details:
   conflicting/weak evidence; ordinary full-lane work with directly traceable values is `N/A`. Use
   main-session fallback only when canonical dispatch is unavailable or fails, and record the observed reason.
   Report canonical Reviewer execution evidence whenever this audit boundary applies.
+- Before full-lane drafting, close only material current-conversation decisions under the canonical rule:
+  proceed without reconfirmation when they are consistent, and ask the smallest useful question only when an
+  unresolved interpretation can change the contract.
 - Create no implementation code and never commit. Return control to the enclosing request as directed by the
   canonical action.
 - If materialization reports an occupied directory, leave it untouched and rerun feature-init to recompute the number.

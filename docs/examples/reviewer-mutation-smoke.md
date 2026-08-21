@@ -122,6 +122,9 @@ one fresh reviewer performs reconciliation first and Q3-Q7 second; there is no s
   returns `BLOCKED` before implementation. When no decision requires a durable source trace, the section may be omitted.
 - Add a material accepted owner/fallback rule to the source map but omit it from the artifacts; expect
   `MISMATCH: missing-from-artifact` with both source-map and artifact citations.
+- Supply a resolved multi-turn decision closure in the Requirements Source Map and confirm reconciliation
+  checks artifact coverage without reopening the choice or asking for confirmation. Remove the authoritative
+  resolution while retaining conflicting alternatives and expect `SOURCE GAP`, not a guessed latest-wins rule.
 - Add a Pending state, management console, or permission workflow to the artifacts without a current accepted
   source/consumer; expect `MISMATCH: unsupported-artifact`, independent of how complete its tasks are.
 - Record a later accepted decision that removes `PENDING_OWNER` and makes unknown ownership explicitly shared,

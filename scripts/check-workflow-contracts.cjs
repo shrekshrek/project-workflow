@@ -37,6 +37,7 @@ requirePatterns("docs/actions/feature-init.md", [
   ["scope stop", /Implementation Scope Stop/],
   ["phase check", /dependency or risk checkpoint[\s\S]*smallest relevant check/i],
   ["tracking is not a child prerequisite", /External tracking is never a prerequisite/i],
+  ["pre-draft decision closure", /Before drafting a full-lane artifact[\s\S]*ceremonial reconfirmation/i],
 ]);
 forbidPatterns("docs/actions/feature-init.md", [
   ["mandatory risk-size labels", /small, medium, large, or extra-large/i],
@@ -50,6 +51,7 @@ requirePatterns("docs/actions/spec-quality-check.md", [
   ["smallest proof obligations", /smallest non-redundant proof obligations/i],
   ["frozen correction handoff", /`N\/A\(route: spec-revise\)`[\s\S]*before mechanical checks or reviewer dispatch/i],
   ["direct correction evidence", /exact user statement[\s\S]*normalized[\s\S]*supersedes/i],
+  ["quality consumes decision closure", /decision closure[\s\S]*does not replay product[\s\S]*reopen a settled choice/i],
 ]);
 forbidPatterns("docs/actions/spec-quality-check.md", [
   ["forced empty decision token", /N\/A\(no durable why\/source decision\)/i],
@@ -60,12 +62,14 @@ requirePatterns("docs/actions/spec-revise.md", [
   ["implicit latest-user correction trigger", /latest user instruction materially corrects, rejects, removes, or replaces/i],
   ["stale quality gate forbidden", /do not run[\s\S]*`spec-quality-check` against the stale artifact/i],
   ["supersession trace", /exact current user[\s\S]*normalized replacement rule[\s\S]*older rule/i],
+  ["revision decision closure", /close the material correction set[\s\S]*ceremonial reconfirmation/i],
 ]);
 
 requirePatterns("docs/reviewers/spec-quality-reviewer.md", [
   ["correction source gap", /caller-authored "user confirmed"[\s\S]*`SOURCE GAP`/i],
   ["exclusion semantic remnant", /"remove"[\s\S]*optional, conditional, fallback, or compatibility path[\s\S]*`superseded-remnant`/i],
   ["endpoint-owned task rejection", /READY[\s\S]*endpoint\/lifecycle[\s\S]*circular[\s\S]*fails Q7a/i],
+  ["reviewer does not reopen closure", /decision-closure result[\s\S]*Do not reopen a resolved product choice/i],
 ]);
 
 requirePatterns("docs/actions/feature-done.md", [
@@ -81,6 +85,7 @@ requirePatterns("docs/actions/feature-done.md", [
   ["current truth", /`Current truth`:/],
   ["endpoint-owned checklist boundary", /checklists limited to implementation, review, and check outcomes[\s\S]*archive eligibility[\s\S]*circular checklist item/i],
   ["non-ready next route", /`Next`:[\s\S]*`direct-repair`[\s\S]*`spec-revise`[\s\S]*`user-decision`[\s\S]*`separate-boundary`/i],
+  ["delivery artifact baseline", /accepted feature artifact as the requirements baseline[\s\S]*Do not reconstruct or reinterpret the full\s+conversation/i],
 ]);
 forbidPatterns("docs/actions/feature-done.md", [
   ["forced primary-flow summary", /primary-flow result/i],
@@ -219,6 +224,7 @@ requirePatterns("adapters/claude/skills/feature-init/SKILL.md", [
 ]);
 requirePatterns("adapters/codex/skills/feature-init/SKILL.md", [
   ["Codex plugin root and materializer", /\.codex-plugin\/plugin\.json[\s\S]*materialize-feature-artifact\.cjs/],
+  ["Codex decision closure", /Before full-lane drafting[\s\S]*without reconfirmation/i],
 ]);
 for (const host of ["claude", "codex"]) {
   requirePatterns(`adapters/${host}/skills/feature-done/SKILL.md`, [
@@ -231,16 +237,23 @@ for (const host of ["claude", "codex"]) {
     ["requirements reconciliation", /Requirements Reconciliation/],
     ["frozen correction rejection", /N\/A\(route: spec-revise\)/],
     ["direct correction source", /exact user statement[\s\S]*normalized replacement[\s\S]*older rule/i],
+    ["quality does not reopen closure", /multi-turn decision closure[\s\S]*without[\s\S]*reopening a resolved choice/i],
   ]);
   requirePatterns(`adapters/${host}/skills/spec-revise/SKILL.md`, [
     ["latest-user correction trigger", /latest-user correction[\s\S]*contract-correction/i],
     ["stale quality gate forbidden", /never route the stale artifact through[\s\S]*spec-quality-check/i],
+    ["revision decision closure", /close the material current-conversation correction set[\s\S]*without reconfirmation/i],
   ]);
   requirePatterns(`adapters/${host}/skills/feature-done/SKILL.md`, [
     ["endpoint-owned task boundary", /checklist work[\s\S]*finish[\s\S]*before this endpoint[\s\S]*endpoint\/lifecycle outputs/i],
     ["non-ready next route", /non-READY verdict[\s\S]*canonical `Next` route[\s\S]*without starting repair or another gate run/i],
+    ["delivery does not replay conversation", /accepted artifact as the requirements baseline[\s\S]*rather than replaying the conversation/i],
   ]);
 }
+
+requirePatterns("adapters/claude/skills/feature-init/SKILL.md", [
+  ["Claude decision closure", /Before full-lane drafting[\s\S]*without reconfirmation/i],
+]);
 
 for (const relative of [
   "template/docs/specs/changes/_template/tasks.md",
@@ -255,6 +268,11 @@ for (const relative of [
 requirePatterns("docs/examples/reviewer-mutation-smoke.md", [
   ["endpoint-owned task smoke", /run feature-done and become READY[\s\S]*endpoint\/lifecycle[\s\S]*cleanup before review/i],
   ["non-ready route smoke", /non-READY receipt[\s\S]*`direct-repair`[\s\S]*`spec-revise`[\s\S]*without starting repair or another gate run/i],
+  ["decision closure reviewer smoke", /resolved multi-turn decision closure[\s\S]*without reopening the choice[\s\S]*`SOURCE GAP`/i],
+]);
+
+requirePatterns("docs/examples/feature-init-scenario-matrix.md", [
+  ["decision closure interaction", /multi-turn full-feature conversation[\s\S]*no duplicate confirmation[\s\S]*before any artifact is materialized/i],
 ]);
 
 requirePatterns("adapters/codex/.codex-plugin/plugin.json", [

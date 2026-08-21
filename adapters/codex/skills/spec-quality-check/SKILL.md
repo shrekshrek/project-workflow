@@ -20,6 +20,8 @@ Match the user's language. Read [`../../../../docs/actions/spec-quality-check.md
   exact map, artifact paths, and shape under the canonical execution contract. The same reviewer performs
   Requirements Reconciliation first and Q3-Q7 second; never dispatch a separate reconciliation reviewer.
   `MISMATCH` or `SOURCE GAP` is `BLOCKED`.
+- Treat any supplied multi-turn decision closure as source-map input: verify faithful artifact coverage without
+  reopening a resolved choice or asking the user to confirm it again.
 - Reference user-supplied/confirmed spec sections directly and never require ordinary spec content to be
   copied into plan Prior decisions. Ordinary work uses Scope, Constraints, Module Impact, and Verification;
   multi-boundary or materially high-risk work also records its relevant coupling and rollback boundary.

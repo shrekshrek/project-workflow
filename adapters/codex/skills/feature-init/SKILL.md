@@ -14,6 +14,9 @@ Match the user's language. Read [`../../../../docs/actions/feature-init.md`](../
   guidance. Under the shared execution contract, dispatch a fresh subagent for
   [`decision-completeness-auditor`](../../../../docs/reviewers/decision-completeness-auditor.md) only at the
   canonical high-impact/weak-evidence boundary. Record an allowed fallback reason and canonical Reviewer execution evidence.
+- Before full-lane drafting, close only material current-conversation decisions under the canonical rule:
+  proceed without reconfirmation when they are consistent, and ask the smallest useful question only when an
+  unresolved interpretation can change the contract.
 - Create no implementation code and never commit. Return control to the enclosing request as directed by the
   canonical action.
 

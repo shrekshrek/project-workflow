@@ -114,6 +114,11 @@ enclosing implementation request may apply an unambiguous in-scope fix, but it m
 automatically. Material scope or product decisions return to the user; a later explicit user request starts a
 new gate run.
 
+Treat the accepted feature artifact as the requirements baseline. Do not reconstruct or reinterpret the full
+conversation at delivery time. If the current request itself supplies a later material decision that conflicts
+with that baseline, stop the stale delivery review and route the blocker to `spec-revise`; otherwise verify
+implementation fidelity without reopening requirements discovery.
+
 After required L1 passes and before reviewer dispatch, create one transient review snapshot containing the
 reviewed repository identity, authoritative Git/non-Git changed paths, L1 evidence map, applicable convention
 sources, and applicable spec/artifact paths. Supply the same snapshot to every reviewer. Inability to assess a
@@ -202,6 +207,8 @@ L2/L3/Drift finding counts live in the delivery receipt; do not add a duplicate 
   writes, and archive eligibility remain endpoint or lifecycle outputs.
 - Completion preflight is an early safety net for incomplete, actor-to-result-broken, mixed-feature, scope-drifted,
   or unfulfilled explicit Guidance work; it neither replaces eligible L1/L2/L3 nor excuses missed Scope Stops.
+- Delivery review uses the accepted artifact rather than replaying the conversation. Only a visible later
+  material correction makes the baseline stale and routes to `spec-revise`.
 - Reviewer evidence—not `findings=none`—proves applicable coverage; allowed N/A requires applicability evidence.
   Compact only after reviewed-scope and coverage validation.
 - Endpoint-owned receipt/history and status writes preserve otherwise valid same-task evidence. Other relevant

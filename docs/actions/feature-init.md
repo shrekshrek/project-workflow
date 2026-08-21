@@ -24,7 +24,8 @@ Do not use for mid-implementation frozen-spec changes; use [`spec-revise`](spec-
 - Target project root containing `AGENTS.md` and `docs/specs/`; all created files must be written under this root, not under an incidental cwd.
 - Existing project conventions from root and applicable nested `AGENTS.md`. A host adapter may also supply its own project-local convention files.
 - Existing substantive current-truth domain docs (`docs/specs/<area>.md`) when present; prefer over `docs/specs/changes/archive/` when pre-filling. Do not create an empty domain doc just to make a feature brownfield.
-- Explicit feature facts already provided in the current conversation.
+- Explicit feature facts already provided in the current conversation, including later accepted decisions and
+  the earlier alternatives they explicitly supersede.
 - A bounded read-only impact sketch from active current truth, relevant implementation surfaces, declared
   runtime/module boundaries, and the current Git worktree when available. This is not exhaustive
   implementation discovery or a time estimate.
@@ -92,6 +93,12 @@ closely related independent decisions may be grouped. Do not materialize a specu
 spec and fill these decisions afterward. Low-level implementation details that do not change the contract
 may remain explicit implementation-time decisions. Bound each one by owner, affected responsibility, and
 expected evidence; do not force a material decision into implementation merely to finish artifact fill.
+
+Before drafting a full-lane artifact, close the material decisions from the current conversation: normalize
+the latest explicitly accepted rule, retain the source and any explicit supersession or exclusion, and identify
+only contradictions or missing interpretations that could change the contract. Do not replay the conversation
+or ask for ceremonial reconfirmation. Consistent decisions proceed directly into the artifact; a materially
+ambiguous decision keeps the route pending until the smallest useful question is answered.
 
 Bundle related small changes into one tracked feature when they share a user goal and must ship together; do not create fragmentary specs for button state, table columns, and details drawer separately. Before materializing an artifact, run a **scope-viability check**:
 
@@ -243,6 +250,9 @@ Adapters materialize the selected template through the packaged `scripts/materia
 6. Choose `LIGHT` or `FULL` for the selected outcome and record the concrete trigger. Ask only when the business goal, ownership, impact boundary, or decomposition is unclear.
 7. If execution is `PREVIEW`, report the route decision and stop before reading lane templates or conditional architecture guidance, computing a number, invoking the materializer, or dispatching an auditor.
 8. For `FULL`, choose brownfield only when a substantive domain document exists; otherwise use greenfield.
+   First perform the compact decision closure above. If all material conversation decisions are consistent,
+   draft without another confirmation; if a contradiction or missing interpretation can change the contract,
+   ask the smallest useful question before materialization.
    When the selected change establishes or materially changes project-wide application architecture, read
    the conditional [`architecture-design` guidance](../architecture-design.md) and use only its applicable
    topics. Complete any remaining high-impact conversational fill before materialization, one material
@@ -293,6 +303,8 @@ When the auditor boundary applies, follow the canonical [reviewer execution cont
 - Never plant unsupported endpoints, entities, fields, codes, paths, technologies, ownership, or coupling.
   Resolve material unknowns before implementation; keep genuine low-level choices as bounded implementation-
   time decisions/tasks and briefly trace sourced prefill.
+- Decision closure is a pre-draft interpretation check, not a new approval gate: resolved decisions are not
+  re-asked, and unresolved material ambiguity blocks artifact creation rather than being guessed into the spec.
 - Verification breadth follows traceable behavior and distinct risk, not derived edge-case habit, document size, test-layer count, or case-count symmetry. Consolidate obligations when the same evidence proves them; retain a matrix only with an explicit interaction, regression, release, or compliance reason.
 - Scope Stop applies to every route. Materialization requires closed high-impact decisions, and every new durable
   surface has a current consumer/necessity trace; FULL is not permission for adjacent or speculative expansion.

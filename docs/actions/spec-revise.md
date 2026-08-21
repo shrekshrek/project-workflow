@@ -58,7 +58,11 @@ An implementation regression under an unchanged accepted contract does not use t
    fresh-read applicable conventions. Do not treat already-written implementation as evidence that the
    expansion belongs in the feature.
 4. Classify `ADR_REQUIRED`: yes only for architecture/module boundaries, durable cross-feature technical decisions, or superseding an ADR. When yes, search ADR filenames, titles, status fields, and existing references first, then open only candidates relevant to the affected area or decision.
-5. Ask only when the revision direction, affected scope, ADR decision, or supersede action remains ambiguous. An explicit user instruction already settles the stated decision.
+5. Before drafting, close the material correction set from the current conversation: normalize the latest
+   explicitly accepted replacement, preserve each explicit supersession/exclusion, and identify only conflicts
+   whose interpretation could change the revised contract. Ask only when the revision direction, affected
+   scope, ADR decision, or supersede action remains materially ambiguous. An explicit user instruction already
+   settles the stated decision; do not replay the conversation or ask for ceremonial reconfirmation.
    When a decision is required, report one compact `Scope stop`: discovered delta, mismatch with the
    accepted boundary, current necessity, recommended remove/narrow/child/revise direction, and the smallest
    useful decision set. Do not continue the delta until the user decides.
@@ -118,6 +122,8 @@ When the auditor boundary applies, follow the canonical [reviewer execution cont
 
 - Ask decision questions only for unresolved ambiguity. Draft and audit the synchronized contents before apply;
   do not add a second confirmation when the current request already authorizes the revision.
+- Decision closure reconciles material current-conversation corrections before drafting; it creates no new
+  approval state and never turns already settled decisions into another question set.
 - Confirm the next implementation step. Rerun [`spec-quality-check`](spec-quality-check.md) whenever scope
   viability, current necessity, impact baseline, or a high-impact rule changed; otherwise state why it is
   unnecessary.

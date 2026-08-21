@@ -26,6 +26,9 @@ Claude execution details:
   guidance for ordinary modules or product/temporary semantics.
 - Ask only about unresolved revision/ADR ambiguity. Apply changes when the current request authorizes them;
   request additional approval only for a materially different or external write.
+- Before drafting, close the material current-conversation correction set: keep explicit supersessions and
+  exclusions, proceed without reconfirmation when the replacement is settled, and ask only when an unresolved
+  interpretation can change the revised contract.
 - Use inline trace for sourced corrections; preserve exclusion semantics such as remove/no-longer/only instead
   of narrowing them into optional fallbacks. Dispatch a fresh `decision-completeness-auditor` only at its narrowed canonical boundary, with fallback under the shared execution contract. Blocking or unreliable audit evidence prevents apply.
 - Apply the authorized revision without restoring via checkout, rewriting unrelated history, or committing.

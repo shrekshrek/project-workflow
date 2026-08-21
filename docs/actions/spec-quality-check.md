@@ -37,6 +37,9 @@ before this gate instead of using `spec-revise`.
   For a current-conversation correction or supersede decision, include the exact user statement, normalized
   replacement, and older rule it supersedes. A caller-authored "user confirmed" paraphrase alone is not an
   authoritative source.
+- The result of pre-draft decision closure when the current conversation contained multiple material decisions.
+  This gate verifies that the artifact faithfully carries those resolved decisions; it does not replay product
+  discovery, reopen a settled choice, or ask the user to confirm it again.
 - Whether the current user request explicitly authorizes implementation after this gate passes.
 
 Do not rely on remembered chat as the only source across sessions. Before this gate can return `READY`, every
@@ -80,6 +83,8 @@ Return exactly one reconciliation status before the quality findings:
 
 `MISMATCH` and `SOURCE GAP` both return `BLOCKED` before implementation. They are repaired through the
 normal artifact-edit or `spec-revise` path; they do not create another gate, reviewer, or status model.
+Requirements Reconciliation checks faithful coverage and authority. It never substitutes a new interpretation
+for a resolved source decision or turns the quality gate into another requirements interview.
 
 ## Checks
 
@@ -200,6 +205,8 @@ Run the canonical subjective reviewer under the shared [reviewer execution contr
 - This gate validates the artifact, not the implementation.
 - This gate never validates or repairs an artifact known to be stale against a current material correction;
   it hands that case to `spec-revise` before checks or reviewer dispatch.
+- This gate consumes the decision-closure result through the Requirements Source Map; it does not repeat the
+  pre-draft user confirmation step.
 - Conditional implementation authorization permits only the status transition owned by this gate; it does not authorize spec/plan/tasks content repair.
 - Failed checks block full-lane implementation.
 - Requirements reconciliation is bidirectional and fail-closed; current implementation is evidence of

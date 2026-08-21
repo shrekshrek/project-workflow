@@ -80,6 +80,8 @@ full lane 写代码前先跑:
 该 gate 先做双向需求对账,再检查 artifact 质量、最小充分证据和已选择的 Guidance Placement;
 阻断项先修 artifact。精确 verdict、状态转换和 reviewer 规则只见
 [`spec-quality-check`](actions/spec-quality-check.md)。
+在首次写 full spec 或进行实质修订前，先收口当前多轮沟通中的实质决定；只有仍可能改变合同的
+歧义才询问用户，已经一致的决定直接写入。quality gate 核对合同是否忠实承载这些决定，不重复确认。
 若最新用户决定已经纠正、删除或取代已确认合同中的实质规则，不要先检查旧合同；先运行
 `spec-revise` 同步 spec/plan/tasks，再对修订结果运行 `spec-quality-check`。quality action 若误入该
 场景会在 mechanical/reviewer 之前返回 `N/A(route: spec-revise)`。

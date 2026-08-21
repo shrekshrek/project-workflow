@@ -17,6 +17,8 @@ Claude execution details:
   The preflight evaluates only phases, proof obligations, and guidance already declared by the accepted
   artifact and project conventions. Keep checklist work to implementation/review/check outcomes that finish
   before this endpoint; record READY, receipt/status writes, and archive eligibility as endpoint/lifecycle outputs.
+- Use the accepted artifact as the requirements baseline rather than replaying the conversation. Only when the
+  current request visibly supplies a later material correction, stop the stale review and route to `spec-revise`.
 - Apply the action's L1 scope, reuse, sequencing, prerequisite, and evidence rules exactly with Bash. Do not
   expand checks or dispatch reviewers beyond those rules. Review one stable final snapshot and end on its
   terminal verdict. After an in-scope fix, only a later explicit user request runs a fresh reviewer snapshot;

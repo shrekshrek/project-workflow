@@ -57,6 +57,11 @@ Run these transcript-level cases on both hosts without grading fixture files as 
   draft: expect ordinary draft repair before the quality gate, not a frozen-contract revision.
 - Contrast the correction case with an unchanged accepted contract whose implementation is wrong. Expect a
   direct implementation repair followed by an explicit `feature-done` rerun, not `spec-revise`.
+- Provide a multi-turn full-feature conversation whose final explicit decision replaces an earlier alternative,
+  with no remaining material ambiguity. Expect one compact decision closure, no duplicate confirmation, and a
+  spec/plan/tasks population that contains the final rule and explicit supersession without retaining the old
+  alternative as an optional or compatibility path. Repeat with two materially conflicting statements and no
+  authoritative resolution; expect the smallest useful question before any artifact is materialized.
 - Give a multi-outcome request whose scope viability is unresolved. Expect `Route: pending`, `Execution: PREVIEW`, no files, and only the smallest useful question set needed for direction/selection; `pending` must not be treated as a fourth completed route.
 
 ## Equivalence interpretation
