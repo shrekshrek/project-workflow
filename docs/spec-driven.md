@@ -353,7 +353,7 @@ spec.md 编辑规则**只看 1 个问题**:**是否已经开始依据它实施?*
 
 **关于 spec.md 状态字段**(`> 状态: 草稿 / 已确认 / 已实现`,template 默认有):是**业务流程标签**,跟本节编辑边界**正交**。**草稿** = 仍可自由迭代;**已确认** = 用户接受并开始实施,契约冻结;**已实现** = 契约已被代码兑现(spec 自身的兑现标记,不是部署状态)。部署 / 上线状态由 CI / 部署系统跟踪,不在 spec 上标(故无"已上线")。交付后的生命周期状态(已取代 / 已废弃)与物理归档见 [§5.1](#51-生命周期状态全集--物理归档)。
 
-> **谁翻**:`feature-done` 给 READY 时翻(契约兑现的判定点)。显式重跑按 endpoint 规则保留 superseded receipt、写入新 verdict，并在非 READY 时退回已确认；只动生命周期状态，不修改契约正文。
+> **谁翻**:`feature-done` 给 READY 时翻(契约兑现的判定点)。只有重跑活动 `已实现` Feature 才完整保留旧 READY receipt；普通非 READY 复验覆盖 canonical receipt，并在非 READY 时退回已确认。这里只动生命周期状态，不修改契约正文。
 
 <details>
 <summary>(细化命名,仅作工程参考——操作只看上面 1 条边界)</summary>
@@ -453,7 +453,7 @@ Draft / Filled / Validated **本质同档**(自由编辑);Frozen / Revised **本
 
 **物理归档是主机制,状态标记是辅助**:`docs/specs/changes/` 只放**进行中**的变更;交付收尾时用普通目录移动将整目录放进 `docs/specs/changes/archive/`(`/feature-archive` 默认清扫模式批量处理,full lane / light lane 一视同仁)。普通移动同时兼容 tracked/untracked artifact,Git 在提交时仍可识别 rename。理由:检索工具(grep / glob)尊重目录边界,不读文件顶部的状态行——只靠就地标记,agent 搜关键词照样命中旧 change 正文。目录隔离 + AGENTS.md 一行"检索现状排除 changes/archive/",才是机械可靠的注意力防线。
 
-**重开边界**:`已实现` 不是日常可编辑状态。只有 feature 仍在 active tree、尚未归档且发现会改变交付判断的重大契约、plan 或 Verification 遗漏时,才能运行 `/spec-revise`:保留旧 receipt、退回 `已确认`、修订后重新走交付门禁。若契约不变而实现回归,修复实现并显式重跑 `feature-done`;由端点保存旧 receipt、写新 verdict,非 READY 时退回 `已确认`。已进入 `archive/` 的 feature 永久只读,后续变化必须建立 successor change。
+**重开边界**:`已实现` 不是日常可编辑状态。只有 feature 仍在 active tree、尚未归档且发现会改变交付判断的重大契约、plan 或 Verification 遗漏时,才能运行 `/spec-revise`:保留旧 receipt、退回 `已确认`、修订后重新走交付门禁。若契约不变而实现回归,修复实现并 fresh-run `feature-done`;明确的做完/交付请求可在同一授权下完成最多一次直接修复与复验，纯检查请求需要再次明确调用。端点保存旧 receipt、写新 verdict,非 READY 时退回 `已确认`。已进入 `archive/` 的 feature 永久只读,后续变化必须建立 successor change。
 
 **标记规则**:改状态标记 + 在文件顶部加一行指向替代物(新 spec / ADR / `docs/specs/<area>.md`)的链接,**不改正文、不删目录**。没有"历史基础"这类中间状态——若旧 spec 里的数据模型 / API / 基础设施仍有效,把这些**事实提炼进 `docs/specs/<area>.md`**,spec 本身照常归档;把旧 spec 留在活动区当参考,正是历史污染的入口。
 

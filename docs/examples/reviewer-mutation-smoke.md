@@ -13,14 +13,17 @@ node scripts/check-reviewer-fixtures.cjs
 
 ## Endpoint expectations
 
-- `clean`: `feature-done 001-normalize-key` returns `READY`; the owning action supplies one stable review snapshot and both L2/L3 reports declare complete applicable coverage against it. The persisted receipt records Git base/reviewed/dirty identity and compresses each PASS review to its baseline plus non-empty exceptions.
-- `known-bad`: L1 remains green, but the endpoint returns `NEEDS WORK`; L2 cites the matching-test-name and no-throw conventions, while L3 cites empty-string behavior and missing empty-input verification.
-- `light-clean` / `light-known-bad`: L1 remains green and L2 is explicitly `N/A(low-risk light lane; no L2 trigger after convention-scope triage)` in both; only the explicit `tasks.md` verification distinguishes READY from NEEDS WORK, proving that conditional L2 never skips light-lane acceptance.
+- `clean`: `feature-done 001-normalize-key` returns `READY`; the owning action supplies one stable review snapshot, L3 declares complete spec coverage, then L2 passes on the same unchanged snapshot. The persisted receipt records Git base/reviewed/dirty identity and compresses each PASS review to its baseline plus non-empty exceptions.
+- `known-bad`: L1 remains green and L3 cites empty-string behavior plus missing empty-input verification, so the
+  ordinary endpoint returns `NEEDS WORK` with L2 `not-run(awaiting final L3 candidate)`. Separately run the L2
+  reviewer against the same snapshot and confirm it cites the matching-test-name and no-throw conventions; this
+  checks L2 sensitivity without contradicting endpoint scheduling.
+- `light-clean` / `light-known-bad`: L1 remains green and L2 is explicitly `N/A(low-risk light lane; no L2 trigger)` in both; only the explicit `tasks.md` verification distinguishes READY from NEEDS WORK, proving that conditional L2 never skips light-lane acceptance.
 - Run both Claude and Codex endpoint adapters when shared/canonical behavior changes. When only one adapter changes, run that adapter plus the deterministic fixture check.
 
 ## Completion-preflight smoke
 
-- Leave one required task unchecked and confirm the endpoint returns `NEEDS WORK` before expanded L1 or reviewer dispatch.
+- Leave one required task unchecked and confirm the endpoint returns `NEEDS WORK` before expanded L1 or reviewer dispatch, records current truth `not-run(non-READY prerequisite)`, and does not preserve the failed receipt as a full Previous Proof Bundle on the next ordinary rerun.
 - Reuse or invoke `feature-done` directly on an accepted full-lane artifact whose Prior decisions lacks the
   semantic source column (or its explicit N/A). Confirm implementation/expanded L1 does not start and the
   artifact routes through repair/`spec-revise` plus `spec-quality-check`.
@@ -41,12 +44,13 @@ node scripts/check-reviewer-fixtures.cjs
 
 ## Endpoint-summary smoke
 
-- Confirm the endpoint response contains verdict, `Lifecycle: READY; archive pending` when READY, the first declared actor-to-result result when applicable, aggregate checks, L2/L3, current truth, non-empty blockers, and a repository-relative `tasks.md#proof-bundle` link.
+- Confirm the endpoint response contains verdict, `Lifecycle: READY; archive pending` when READY, the first declared actor-to-result result when applicable, aggregate checks, L2/L3, current truth, non-empty blockers, and a repository-relative `tasks.md#proof-bundle` link. Under finish/delivery intent, confirm it stops at READY; under close/archive/submit intent, confirm READY continues to explicit-candidate archive without another question.
 - Confirm the full receipt remains on disk and the endpoint response does not inline it or repeat every passing command.
 
 ## Reopen smoke
 
 - Start from an active, unarchived full-lane READY feature. Run `spec-revise` for a material contract/plan/Verification omission and confirm status returns from `已实现` to `已确认`, the exact prior receipt moves under a uniquely named dated-or-numbered superseded heading, and exactly one empty canonical `## Proof Bundle` remains.
+- Start from an ordinary non-READY feature, rerun the gate, and confirm the canonical receipt is replaced without a full Previous Proof Bundle; at most one dated single-line attempt summary is added to the implementation record.
 - With the accepted contract unchanged, introduce a pure implementation regression, repair it, and explicitly rerun `feature-done`. Confirm the old receipt is preserved before replacement; a non-READY result returns status to `已确认`, while READY keeps `已实现`. A completion-preflight stop writes the new receipt with reviewers `not-run(completion preflight)` rather than leaving the old READY active.
 - Confirm `feature-archive` rejects the reopened feature until a new `feature-done` writes READY. Confirm an already archived feature requires a successor change instead of reopening history.
 - Remove Checks, applicable L2/L3 review outcomes, or Current truth from an otherwise READY receipt and
@@ -54,11 +58,20 @@ node scripts/check-reviewer-fixtures.cjs
 
 ## Runtime scheduling smoke
 
-Run the full-lane `clean` case with each adapter and record dispatch timing/mode:
+Run an ordinary full-lane `clean` case and a convention-risk case with each adapter and record dispatch timing/mode:
 
-- With capacity for both reviewers, L2 and L3 fresh dispatches start before either result returns; both retain independent reviewed-scope and coverage evidence.
-- With only one reviewer slot available, L2 and L3 run as sequential fresh dispatches. Do not record `main-session fallback` merely because the second slot was unavailable.
+- Ordinary full lane dispatches pure L3 first, then dispatches L2 once only when L3 passes and the snapshot remains unchanged; READY requires both PASS.
+- In the convention-risk case, with capacity for both reviewers, L2 and L3 fresh dispatches start before either result returns; both retain independent reviewed-scope and coverage evidence.
+- In the convention-risk case with only one reviewer slot available, L2 and L3 run as sequential fresh dispatches; reserve `main-session fallback` for execution failure.
 - A failure in one reviewer does not cancel or erase the independently executable result from the other reviewer.
+- Make one reviewer fail to return a terminal result for runtime/transport reasons after a bounded completion attempt; confirm the action makes exactly one fresh same-contract fallback. `NEEDS WORK` and `UNRELIABLE` remain terminal verdicts.
+- Omit a nested `AGENTS.md` from a caller-supplied source list while changing a path below it; confirm the mechanically resolved root-to-nearest ancestor chain matches the filesystem before dispatch.
+- In an isolated feature worktree, commit an earlier selected-feature change and leave a tracked edit plus an
+  untracked selected-feature file dirty. Confirm completion preflight uses the actual feature base to review the
+  complete committed-and-uncommitted worktree population, rather than reviewing only `HEAD` to worktree.
+- Mix another active feature or unrelated work into that population; confirm completion preflight returns
+  `BLOCKED` before L1 instead of subtracting paths or asking reviewers to infer ownership.
+- From a complete same-run reviewer report whose blockers all map to `direct-repair`, change only the named finding paths and verification evidence; confirm a fresh same-role reviewer reconciles the prior report plus repair delta and returns a verdict for the complete final snapshot. Change the accepted spec or feature boundary instead and confirm the standard fresh full review runs.
 
 If the host cannot expose or constrain reviewer capacity, record that limitation instead of claiming the scheduling branch passed.
 
@@ -66,13 +79,16 @@ If the host cannot expose or constrain reviewer capacity, record that limitation
 
 - Capture one changed-path population and reviewer-input snapshot after L1; confirm parallel and sequential L2/L3 dispatches receive the same stable snapshot.
 - Omit an owner-required review-package input before dispatch. Confirm the endpoint records every applicable slot as `not-run(review-package incomplete)`, returns `BLOCKED`, and dispatches no reviewer.
-- During an initial sequential run, mutate a non-receipt reviewed input after L2 returns but before L3 aggregation. Confirm the endpoint rejects the cycle for aggregation, records every applicable slot as `invalidated(review-input drift)`, returns `BLOCKED`, and does not auto-start another full-population cycle. A later explicit invocation may start the new cycle after inputs stabilize.
-- Complete the initial `known-bad` report and confirm the terminal verdict ends that gate run without automatic
-  repair or redispatch. Apply an unambiguous in-scope fix in the enclosing implementation, then issue a later
-  explicit user request to invoke `feature-done` again. Confirm the new invocation creates a fresh reviewer
-  snapshot, reruns affected L1 evidence, and reuses only unchanged evidence whose dependency closure remains valid.
-- Change an implementation path, convention source, spec artifact, or reviewer contract and confirm the later
-  invocation reviews the new complete snapshot rather than trying to preserve a focused-review state machine.
+- During a sequential or capacity-serialized run, mutate a non-receipt reviewed input after one reviewer returns but
+  before final aggregation. Confirm the endpoint rejects the cycle for aggregation, records every applicable slot
+  as `invalidated(review-input drift)`, returns `BLOCKED`, and does not auto-start another full-population cycle. A
+  later explicit invocation may start the new cycle after inputs stabilize.
+- Complete the initial `known-bad` report and confirm the terminal verdict returns control to the owning workflow.
+  Under a pure check request, stop. Under an enclosing finish/delivery request, apply an
+  unambiguous in-scope fix and start a fresh gate run without another user turn. Confirm the new run creates a fresh
+  reviewer snapshot, reruns affected L1 evidence, and reuses only unchanged evidence whose dependency closure remains valid. Confirm only one repair pass is attempted and a second non-READY verdict stops the workflow.
+- Outside eligible same-run repair-delta reconciliation, change the feature boundary, convention source, accepted
+  spec, or reviewer contract and confirm the later invocation runs the standard full review of the new snapshot.
 
 ## Reviewer execution-boundary smoke
 
@@ -270,5 +286,6 @@ dependency-ordered results: domain/state, public contract, and actor operation:
 ## Release interpretation
 
 - Record case, adapter, endpoint verdict, reviewed-scope identity, coverage gaps or ambiguities, actual cited findings, scheduling/status-transition evidence, and the Git-native compact persisted receipt in the release PR/task. A static CI pass is not endpoint evidence.
-- A clean result on the `known-bad` case is a release blocker: reviewer sensitivity or endpoint assembly is broken even if the output schema is complete.
+- A clean endpoint result on `known-bad`, or a clean isolated L2 result on its planted convention violations, is a
+  release blocker even when the output schema is complete.
 - This is a sensitivity smoke, not a benchmark. Repeated zero-finding production runs are only a cost signal and never substitute for a known-bad case.

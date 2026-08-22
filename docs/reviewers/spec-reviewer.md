@@ -11,6 +11,7 @@ Review implementation against the **change spec** (B class), not domain docs (E 
 - `plan.md` and `tasks.md` as context
 - current changed files or implementation scope
 - the owning action's structured L1 evidence map for change-spec Verification obligations
+- eligible same-run repair-delta inputs defined by the shared reviewer execution contract
 
 **Domain docs** (`docs/specs/<area>.md`): read only as context to interpret Delta items. Do **not** treat the domain doc as the L3 compliance baseline. Domain contradictions belong to `feature-done`'s separate domain check, not L3 missing/deviation against domain full text.
 

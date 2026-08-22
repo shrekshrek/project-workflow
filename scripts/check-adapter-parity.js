@@ -155,6 +155,9 @@ for (const name of expected) {
     if (!content.includes(`docs/actions/${name}.md`)) {
       problems.push(`${adapter} ${name}: canonical action reference missing`);
     }
+    if (!/Match the user's language/i.test(content)) {
+      problems.push(`${adapter} ${name}: user-language contract missing`);
+    }
     const lines = lineCount(content);
     if (lines >= 200) {
       problems.push(`${adapter} ${name}: SKILL.md is ${lines} lines (must be < 200)`);
@@ -169,6 +172,13 @@ for (const name of expected) {
     }
     if (/^\|\s*\*\*?(?:Verdict|Checks|L2|L3|Current truth)\*\*?\s*\|/mi.test(content)) {
       problems.push(`${adapter} ${name}: adapter duplicates the canonical delivery receipt schema`);
+    }
+    for (const [label, pattern] of [
+      ["unsafe checkout restore", /git checkout/i],
+      ["automatic commit", /\bgit commit\b/i],
+      ["continue silently choreography", /continue silently/i],
+    ]) {
+      if (pattern.test(content)) problems.push(`${adapter} ${name}: ${label}`);
     }
     if (adapter === "Codex") {
       const links = [...content.matchAll(/\]\(([^)#]+\.md)(?:#[^)]+)?\)/g)];

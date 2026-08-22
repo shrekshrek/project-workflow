@@ -11,7 +11,7 @@ Match the user's language and preserve file language. Read [`../../../../docs/ac
 - Require every canonical archive-eligibility receipt field. Invalid fields rerun `$feature-done`; never infer
   READY from history. Apply the action's exact Git/non-Git identity and freshness rules, independently validate
   pending current truth, and create no manual population/fingerprint/hash.
-- An explicit single-feature invocation needs no duplicate approval. Use Codex-native questions for sweep candidates and uncertain area, supersession, or ADR decisions.
+- An explicit single-feature invocation or enclosing close/archive/submit request needs no duplicate approval. Use Codex-native questions for sweep candidates and uncertain area, supersession, or ADR decisions.
 - Resolve the plugin root as the nearest ancestor of this skill containing `.codex-plugin/plugin.json`; use its domain template when canonical current-truth creation applies.
 - Move approved directories with an ordinary filesystem rename, then run the packaged `scripts/relocate-markdown-links.cjs <old-dir> <new-dir>`. If relocation fails, move the directory back before stopping; apply lifecycle/current-truth edits only after successful relocation.
 - Do not modify implementation code, delete history, or commit.

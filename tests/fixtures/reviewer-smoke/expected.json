@@ -3,6 +3,7 @@
     "base": "base",
     "case": "clean",
     "endpointVerdict": "READY",
+    "l2EndpointStatus": "completed",
     "requiredFindingConcepts": [],
     "l2Applicable": true
   },
@@ -10,6 +11,7 @@
     "base": "base",
     "case": "known-bad",
     "endpointVerdict": "NEEDS WORK",
+    "l2EndpointStatus": "not-run(awaiting final L3 candidate)",
     "requiredFindingConcepts": [
       "matching test filename",
       "empty string behavior",
@@ -21,6 +23,7 @@
     "base": "light-base",
     "case": "light-clean",
     "endpointVerdict": "READY",
+    "l2EndpointStatus": "N/A",
     "requiredFindingConcepts": [],
     "l2Applicable": false
   },
@@ -28,6 +31,7 @@
     "base": "light-base",
     "case": "light-known-bad",
     "endpointVerdict": "NEEDS WORK",
+    "l2EndpointStatus": "N/A",
     "requiredFindingConcepts": [
       "light-lane verification"
     ],

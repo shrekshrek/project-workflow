@@ -7,6 +7,8 @@ The active tree `docs/specs/changes/` holds **in-flight work only**. History lea
 ## Use When
 
 - `feature-done` returned `READY` (whether or not its current-truth check reported an update pending).
+- The enclosing request asked to close, archive, or submit the feature and `feature-done` just returned
+  `READY`; continue with the explicit candidate without another confirmation.
 - Periodically, as a sweep: close every delivered-but-unarchived feature in one pass.
 - After `spec-reconcile` resolved a messy area and left features ready to close.
 
@@ -39,7 +41,9 @@ fields.
 ## Workflow
 
 1. Resolve one explicit feature or sweep active change directories. Treat delivery evidence and current truth as separate freshness questions. A current-task dirty-worktree READY result remains usable while its reviewed state and endpoint outputs are unchanged. A receipt reused across tasks is valid delivery evidence only when its reviewed commit SHA resolves and its receipt/status outputs remain intact; later movement of a current branch or PR head does not by itself invalidate that historical delivery proof. Rerun `feature-done` when the receipt records a dirty worktree from another task, uses an invalid identity pairing, or its reviewed commit cannot be resolved. A commit containing a dirty receipt is not proof that the reviewed worktree was unchanged before commit. Outside Git, compare the explicit reviewed inputs. Do not create a manual population list, fingerprint, or population hash.
-2. An explicit single-feature invocation authorizes an unambiguous READY archive. In sweep mode, present and confirm the candidate set. Ask separately only for uncertain current-truth ownership, supersession, or ADR decisions.
+2. An explicit single-feature invocation or an enclosing close/archive/submit request authorizes an
+   unambiguous READY archive. In sweep mode, present and confirm the candidate set. Ask separately only for
+   uncertain current-truth ownership, supersession, or ADR decisions.
 3. For each candidate, draft the durable present-tense facts, lifecycle status changes, archive note, and optional index update without applying them. A stable READY receipt proves the historical delivery, not today's product behavior: validate every pending current-truth fact against present implementation evidence, current domain documents, and later active/successor changes. Do not merge a stale fact merely because the old receipt remains valid. Stop on unresolved supersession or contradiction with an Accepted ADR until the governing decision is resolved.
 4. Move the directory with an ordinary filesystem rename and run the link relocator. If relocation fails, move the directory back and stop before applying lifecycle or current-truth edits.
 5. Apply the prepared current-truth, final-status, archive-note, governing-ADR, and optional index updates.

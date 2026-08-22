@@ -74,8 +74,8 @@ AI 协作开发有**三个 Tier 1 工程痛点**,本手册的 5 阶段、4 支�
 │      ─ 仅"反常"时加 <module>/AGENTS.md(见 §2.3)             │
 ├─────────────────────────────────────────────────────────────┤
 │ P3: Continuous Maintenance(开发期间常驻)                    │
-│ ─ active hooks 增量校验;端点 L1/L2 始终存在               │
-│ ─ 端点 review:L3 spec 合规 + AGENTS.md drift 建议           │
+│ ─ active hooks 增量校验;端点 L1 + FULL 必需 L2/L3          │
+│ ─ 高风险并行;普通变更 L3 PASS 后再做一次最终 L2            │
 │ ─ backlog / discussions 走平台原生(Issues / Discussions)   │
 ├─────────────────────────────────────────────────────────────┤
 │ P4: Drift Refresh(信号触发)                               │
@@ -791,7 +791,8 @@ project-workflow 对模块**长什么样**有 opinionated 偏好(不强制):
              实施(FULL 按需可验证阶段 / LIGHT 任务清单)+ focused 验证
              (契约真错才 spec-revise)
                          ↓
-              ┌─ 同任务:feature-done → feature-archive → PR/merge
+              ├─ 明确要求做完:feature-done(机械 Feature 边界 + 最多一次范围内修复 + fresh final verdict) → READY,archive pending
+              ├─ 明确关闭/归档/提交:READY 后自动衔接 feature-archive → PR/merge
               └─ 延后:提交实现并记录 commit SHA(可来自 PR head) → feature-done
                        → 提交 endpoint outputs → feature-archive sweep
 
@@ -1205,9 +1206,9 @@ review context、避免一层结果掩盖另一层，并让修复指向明确规
 | L2 | reviewer agent + AGENTS.md 作 context | 端点(P3 proof bundle) |
 | L3 | reviewer agent + spec.md 作 context + 测试 | 端点(P3 proof bundle) |
 
-`feature-done` 是唯一端点组合点：先完成必要 L1，再让适用的 L2/L3 基于同一稳定快照独立执行；
-每次调用在首个终态结束，不自动形成修复—复审循环。Reviewers 遵守 cite-or-skip、fresh read、完整
-适用范围和 ambiguity feedback；精确调度、证据、漂移、去重及复审规则只见
+`feature-done` 是唯一端点组合点：必要 L1 之后，full lane READY 需要独立 L2/L3；风险决定并行或
+先 L3 后 L2。每个 gate run 使用一个稳定快照，做完/交付意图允许一次有界修复和 fresh run。
+Reviewers 遵守 cite-or-skip、fresh read、完整适用范围和 ambiguity feedback；精确授权、调度、规则源、fallback、证据、漂移、去重及复审规则只见
 [`feature-done`](actions/feature-done.md)、[`agents-md-reviewer`](reviewers/agents-md-reviewer.md) 和
 [`spec-reviewer`](reviewers/spec-reviewer.md)。
 

@@ -89,6 +89,10 @@ for (const [name, config] of Object.entries(expected)) {
     problems.push(`${name}: l2Applicable must be an explicit boolean`);
     continue;
   }
+  if (typeof config.l2EndpointStatus !== "string") {
+    problems.push(`${name}: l2EndpointStatus must be explicit`);
+    continue;
+  }
   const target = materialize(name, config);
   try {
     const test = spawnSync(process.execPath, ["--test"], { cwd: target, encoding: "utf8" });
@@ -132,10 +136,20 @@ for (const [name, config] of Object.entries(expected)) {
       problems.push(`${name}: finding concepts differ; missing=${JSON.stringify(missingConcepts)} unexpected=${JSON.stringify(unexpectedConcepts)}`);
     }
 
+    const l3Blocking = concepts.includes("empty string behavior") || concepts.includes("empty input verification");
+    const expectedL2Status = !config.l2Applicable
+      ? "N/A"
+      : l3Blocking
+        ? "not-run(awaiting final L3 candidate)"
+        : "completed";
+    if (config.l2EndpointStatus !== expectedL2Status) {
+      problems.push(`${name}: L2 endpoint status expected ${expectedL2Status}, got ${config.l2EndpointStatus}`);
+    }
+
     const verdict = aggregateVerdict({
       l1Passed: test.status === 0,
-      l2Blocking: concepts.includes("matching test filename"),
-      l3Blocking: concepts.includes("empty string behavior") || concepts.includes("empty input verification"),
+      l2Blocking: config.l2EndpointStatus === "completed" && concepts.includes("matching test filename"),
+      l3Blocking,
       lightVerificationPassed,
       receiptReliable: true,
       reviewerExecutionApplicable: config.l2Applicable,
@@ -153,4 +167,4 @@ if (problems.length) {
   process.exit(1);
 }
 
-console.log("Endpoint fixture inputs OK: full semantic preflight, full/light mutations, required finding concepts, and deterministic verdict truth table are coherent (model reviewers not executed)." );
+console.log("Endpoint fixture inputs OK: full semantic preflight, full/light mutations, reviewer sensitivity concepts, and scheduling/verdict truth tables are coherent (model reviewers not executed)." );

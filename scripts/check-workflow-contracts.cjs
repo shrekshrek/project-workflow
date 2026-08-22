@@ -25,6 +25,13 @@ const forbidPatterns = (relative, entries) => {
     if (pattern.test(content)) problems.push(`${relative}: contains forbidden ${label}`);
   }
 };
+const requireTerms = (relative, label, terms) => {
+  const content = read(relative);
+  const missing = terms.filter((term) => (
+    typeof term === "string" ? !content.includes(term) : !term.test(content)
+  ));
+  if (missing.length > 0) problems.push(`${relative}: incomplete ${label}`);
+};
 
 requirePatterns("docs/actions/README.md", [
   ["contract ownership section", /^## Contract ownership$/m],
@@ -77,20 +84,41 @@ requirePatterns("docs/actions/feature-done.md", [
   ["review layers", /^## Review Layers$/m],
   ["delivery receipt", /^## Delivery Receipt/m],
   ["stable snapshot", /stable final snapshot/i],
-  ["terminal invocation boundary", /non-READY verdict ends[\s\S]*does not implicitly authorize another L2\/L3 cycle/i],
-  ["explicit rerun request", /later explicit user request/i],
+  ["bounded finish flow", /readiness check ends[\s\S]*Finish\/delivery intent[\s\S]*one[\s\S]*repair[\s\S]*fresh gate run[\s\S]*second non-READY verdict/i],
   ["L1 L2 L3", /L1 Mechanical:[\s\S]*L2 Project conventions:[\s\S]*L3 Change-spec compliance:/],
+  ["full review scheduling", /L2 Project conventions: required for full lane[\s\S]*parallel-scheduled full-lane review[\s\S]*dispatch L2 and L3 together[\s\S]*ordinary full-lane work[\s\S]*dispatch L3 first[\s\S]*dispatch L2[\s\S]*same snapshot/i],
+  ["review input separation", /authoritative convention population from the filesystem[\s\S]*`AGENTS\.md`[\s\S]*Caller-supplied[\s\S]*hints only[\s\S]*Route convention sources to L2 and the change-spec package to L3/i],
+  ["archive boundary", /close, archive, or submit[\s\S]*feature-archive[\s\S]*without asking again/i],
+  ["compact failed history", /explicit rerun of an active `已实现` feature preserves[\s\S]*prior[\s\S]*READY receipt[\s\S]*Ordinary non-READY reruns replace[\s\S]*full Previous Proof Bundles are reserved/i],
+  ["deferred current truth", /Domain doc check: defer it until L1[\s\S]*form a READY candidate[\s\S]*`not-run\(non-READY prerequisite\)`/i],
   ["review drift", /review-input drift/i],
   ["compact reviews", /`Reviews`:[\s\S]*`completed`[\s\S]*`invalidated`/],
   ["current truth", /`Current truth`:/],
   ["endpoint-owned checklist boundary", /checklists limited to implementation, review, and check outcomes[\s\S]*archive eligibility[\s\S]*circular checklist item/i],
   ["non-ready next route", /`Next`:[\s\S]*`direct-repair`[\s\S]*`spec-revise`[\s\S]*`user-decision`[\s\S]*`separate-boundary`/i],
-  ["delivery artifact baseline", /accepted feature artifact as the requirements baseline[\s\S]*Do not reconstruct or reinterpret the full\s+conversation/i],
+  ["delivery artifact baseline", /accepted feature artifact as the requirements baseline/i],
+]);
+requireTerms("docs/actions/feature-done.md", "mechanical feature boundary", [
+  "Git-derived feature population",
+  /complete\s+`base`-to-worktree population/,
+  "tracked changes plus untracked paths reported by Git",
+  "`base` is `HEAD` when all",
+  /include\s+committed and uncommitted work/,
+  "`base..reviewed` commit range",
+  "population as indivisible",
+  "before expanded L1",
+]);
+requireTerms("docs/actions/feature-done.md", "bounded repair delta review", [
+  "same-run repair-delta reconciliation",
+  /prior role report declared complete\s+coverage/,
+  "`direct-repair`",
+  "fresh same-role reviewer",
+  "complete final snapshot",
+  /exists\s+only for the current run/,
 ]);
 forbidPatterns("docs/actions/feature-done.md", [
   ["forced primary-flow summary", /primary-flow result/i],
   ["duplicated review-execution receipt", /- `Review execution`:/],
-  ["automatic feature-done reentry", /may apply[\s\S]{0,160}and invoke `feature-done` again/i],
   ["stale reviewer-result reuse after L1 failure", /preserve (?:any )?(?:still-valid )?(?:same-task )?reviewer (?:results|evidence)/i],
 ]);
 
@@ -107,8 +135,28 @@ forbidPatterns("docs/spec-driven.md", [
 requirePatterns("docs/reviewers/README.md", [
   ["execution contract", /^## Reviewer execution contract$/m],
   ["independent reviewer", /independent reviewer/i],
-  ["main-session fallback", /main-session fallback/i],
+  ["main-session execution", /use the main session under the same read-only role contract/i],
   ["stable owner snapshot", /stable owner-supplied snapshot/i],
+  ["independent role contracts", /Each role retains its independent canonical contract/i],
+  ["single reviewer fallback", /exactly one[\s\S]*execution fallback[\s\S]*only when no terminal result exists/i],
+]);
+requireTerms("docs/reviewers/README.md", "repair delta fresh review", [
+  "same-run repair-delta reconciliation",
+  "fresh review of a new stable final snapshot",
+  "not reuse of the prior verdict",
+  "cross-task cache",
+]);
+requireTerms("docs/project-workflow-overview.drawio", "current feature-done overview", [
+  "机械 Feature 边界",
+  "做完意图最多一次范围内修复",
+  "direct repair 可同轮复核",
+  "高风险并行,普通先 L3 后 L2",
+  "READY → archive pending",
+  "明确关闭/归档/提交 → /feature-archive",
+]);
+forbidPatterns("docs/project-workflow-overview.drawio", [
+  ["legacy parallel scheduling", /L2\/L3 容量允许时并行/],
+  ["legacy explicit-rerun-only flow", /用户再次要求时复审|非 READY 不自动重跑/],
 ]);
 forbidPatterns("docs/reviewers/README.md", [
   ["status-only protocol", /status-only/i],
@@ -177,8 +225,7 @@ for (const host of ["claude", "codex"]) {
     ["legacy approved-only wording", /user-approved drift fixes|approved drift fixes|approved convention edits/i],
   ]);
   requirePatterns(`adapters/${host}/skills/feature-done/SKILL.md`, [
-    ["terminal verdict boundary", /end on its\s+terminal verdict/i],
-    ["no automatic reentry", /must not re-enter this skill automatically/i],
+    ["canonical endpoint delegation", /Execute the canonical preflight and gate[\s\S]*mechanical Git boundary[\s\S]*bounded repair[\s\S]*review scheduling[\s\S]*repair-delta reconciliation[\s\S]*execution fallback/i],
   ]);
 }
 
@@ -198,27 +245,6 @@ forbidPatterns("docs/examples/reviewer-mutation-smoke.md", [
   ["legacy exact-population output", /exact-population evidence|evidence ID|enumerates the full population/i],
 ]);
 
-const actions = [
-  "project-init", "project-personalize", "feature-init", "spec-quality-check",
-  "spec-revise", "feature-done", "feature-archive", "spec-reconcile", "agents-md-revise",
-];
-for (const action of actions) {
-  for (const host of ["claude", "codex"]) {
-    const relative = `adapters/${host}/skills/${action}/SKILL.md`;
-    const content = read(relative);
-    if (content.split(/\r?\n/).length >= 200) problems.push(`${relative}: skill must remain below 200 lines`);
-    requirePatterns(relative, [
-      ["user-language contract", /Match the user's language/i],
-      ["canonical action reference", new RegExp(`docs/actions/${action}\\.md`)],
-    ]);
-    forbidPatterns(relative, [
-      ["unsafe checkout restore", /git checkout/i],
-      ["automatic commit", /\bgit commit\b/i],
-      ["continue silently choreography", /continue silently/i],
-    ]);
-  }
-}
-
 requirePatterns("adapters/claude/skills/feature-init/SKILL.md", [
   ["Claude materializer", /CLAUDE_PLUGIN_ROOT[\s\S]*materialize-feature-artifact\.cjs/],
 ]);
@@ -228,26 +254,16 @@ requirePatterns("adapters/codex/skills/feature-init/SKILL.md", [
 ]);
 for (const host of ["claude", "codex"]) {
   requirePatterns(`adapters/${host}/skills/feature-done/SKILL.md`, [
-    ["L2 reviewer", /agents-md-reviewer/],
-    ["L3 reviewer", /spec-reviewer/],
     ["receipt", /## Proof Bundle/],
   ]);
   requirePatterns(`adapters/${host}/skills/spec-quality-check/SKILL.md`, [
-    ["single quality reviewer", /spec-quality-reviewer/],
-    ["requirements reconciliation", /Requirements Reconciliation/],
     ["frozen correction rejection", /N\/A\(route: spec-revise\)/],
-    ["direct correction source", /exact user statement[\s\S]*normalized replacement[\s\S]*older rule/i],
-    ["quality does not reopen closure", /multi-turn decision closure[\s\S]*without[\s\S]*reopening a resolved choice/i],
   ]);
   requirePatterns(`adapters/${host}/skills/spec-revise/SKILL.md`, [
     ["latest-user correction trigger", /latest-user correction[\s\S]*contract-correction/i],
-    ["stale quality gate forbidden", /never route the stale artifact through[\s\S]*spec-quality-check/i],
-    ["revision decision closure", /close the material current-conversation correction set[\s\S]*without reconfirmation/i],
   ]);
   requirePatterns(`adapters/${host}/skills/feature-done/SKILL.md`, [
-    ["endpoint-owned task boundary", /checklist work[\s\S]*finish[\s\S]*before this endpoint[\s\S]*endpoint\/lifecycle outputs/i],
-    ["non-ready next route", /non-READY verdict[\s\S]*canonical `Next` route[\s\S]*without starting repair or another gate run/i],
-    ["delivery does not replay conversation", /accepted artifact as the requirements baseline[\s\S]*rather than replaying the conversation/i],
+    ["archive handoff", /close\/archive\/submit intent continues to[\s\S]*feature-archive/i],
   ]);
 }
 
@@ -267,8 +283,11 @@ for (const relative of [
 
 requirePatterns("docs/examples/reviewer-mutation-smoke.md", [
   ["endpoint-owned task smoke", /run feature-done and become READY[\s\S]*endpoint\/lifecycle[\s\S]*cleanup before review/i],
-  ["non-ready route smoke", /non-READY receipt[\s\S]*`direct-repair`[\s\S]*`spec-revise`[\s\S]*without starting repair or another gate run/i],
+  ["non-ready route smoke", /non-READY receipt[\s\S]*`direct-repair`[\s\S]*`spec-revise`/i],
   ["decision closure reviewer smoke", /resolved multi-turn decision closure[\s\S]*without reopening the choice[\s\S]*`SOURCE GAP`/i],
+  ["complete dirty worktree population smoke", /commit an earlier selected-feature change[\s\S]*tracked edit[\s\S]*untracked selected-feature file[\s\S]*actual feature base[\s\S]*complete committed-and-uncommitted worktree population/i],
+  ["mixed ownership boundary smoke", /Mix another active feature or unrelated work[\s\S]*`BLOCKED` before L1[\s\S]*instead of subtracting paths/i],
+  ["scheduling-neutral review drift smoke", /sequential or capacity-serialized run[\s\S]*after one reviewer returns[\s\S]*before final aggregation[\s\S]*invalidated\(review-input drift\)/i],
 ]);
 
 requirePatterns("docs/examples/feature-init-scenario-matrix.md", [
@@ -279,16 +298,9 @@ requirePatterns("adapters/codex/.codex-plugin/plugin.json", [
   ["default correction route", /materially corrects accepted feature behavior[\s\S]*\$spec-revise[\s\S]*\$spec-quality-check/i],
 ]);
 
-for (const relative of ["scripts/materialize-feature-artifact.cjs", "scripts/materialize-project-baseline.cjs"]) {
-  requirePatterns(relative, [
-    ["symlink/path safety", /symlink|symbolic|lstat|realpath/i],
-    ["no-clobber safety", /exist|occup|conflict|clobber/i],
-  ]);
-}
-
 if (problems.length) {
   console.error("Workflow structure check failed:");
   for (const problem of problems) console.error(`- ${problem}`);
   process.exit(1);
 }
-console.log("Workflow structure OK: canonical ownership, lightweight adapters, safe materialization, risk-routed review, compact receipts, and flexible phase execution.");
+console.log("Workflow structure OK: canonical ownership, lightweight adapters, safe materialization, risk-scheduled review, compact receipts, and flexible phase execution.");

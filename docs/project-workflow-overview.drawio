@@ -72,13 +72,13 @@
         <mxCell id="skill_featdone" value="&lt;b&gt;/feature-done&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;completion preflight → L1 → 单轮适用 L2/L3&lt;br/&gt;&lt;b&gt;[E]&lt;/b&gt; check → current delivery receipt&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2E7D32;strokeWidth=2;fontSize=11;align=center;fontStyle=1;" vertex="1" parent="1">
           <mxGeometry x="870" y="382" width="220" height="60" as="geometry"/>
         </mxCell>
-        <mxCell id="step_deliver" value="&lt;b&gt;READY / NEEDS WORK / BLOCKED&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;一个稳定快照，一个终态&lt;br/&gt;用户再次要求时复审&lt;/span&gt;" style="text;html=1;strokeColor=#90A4AE;fillColor=#FAFAFA;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=11;rounded=0;dashed=1;" vertex="1" parent="1">
+        <mxCell id="step_deliver" value="&lt;b&gt;READY / NEEDS WORK / BLOCKED&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;一个稳定快照，一个终态&lt;br/&gt;做完意图最多一次范围内修复&lt;/span&gt;" style="text;html=1;strokeColor=#90A4AE;fillColor=#FAFAFA;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=11;rounded=0;dashed=1;" vertex="1" parent="1">
           <mxGeometry x="1120" y="386" width="235" height="56" as="geometry"/>
         </mxCell>
         <mxCell id="skill_featarchive" value="&lt;b&gt;/feature-archive&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;完整 READY receipt 才可清扫;dirty 仅同任务&lt;br/&gt;&lt;b&gt;[E]&lt;/b&gt; 当前事实 + &lt;b&gt;[B]&lt;/b&gt; archive&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2E7D32;fontSize=11;align=center;" vertex="1" parent="1">
           <mxGeometry x="1390" y="382" width="220" height="60" as="geometry"/>
         </mxCell>
-        <mxCell id="featdone_decompose" value="&lt;span style=&#39;font-size:10px;color:#558B2F;&#39;&gt;= 一个稳定 snapshot + L1 + 适用 L2/L3 + delivery receipt；非 READY 不自动重跑&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=10;fontColor=#558B2F;" vertex="1" parent="1">
+        <mxCell id="featdone_decompose" value="&lt;span style=&#39;font-size:10px;color:#558B2F;&#39;&gt;= 机械 Feature 边界 + 稳定 snapshot + L1 + 适用 L2/L3 + receipt；direct repair 可同轮复核&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=10;fontColor=#558B2F;" vertex="1" parent="1">
           <mxGeometry x="600" y="450" width="930" height="20" as="geometry"/>
         </mxCell>
         <mxCell id="lightlane_note" value="🔀 &lt;b&gt;轻车道(确有持久清单消费者的低风险小改)&lt;/b&gt;:/feature-init 分流 → 仅 tasks.md(免 frozen spec/plan)· 跳 /spec-quality-check · L2 按风险触发 · L3=N/A。判据/安全闸见 spec-driven §3.2.5" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F8E9;strokeColor=#558B2F;dashed=1;fontSize=9;align=left;verticalAlign=middle;spacing=4;fontColor=#558B2F;" vertex="1" parent="1">
@@ -326,7 +326,7 @@
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
 
-        <mxCell id="composite_note" value="&lt;b&gt;/feature-done&lt;/b&gt; = 唯一端点 gate:&lt;br/&gt;&lt;span style=&#39;font-size:10px;color:#546E7A;&#39;&gt;L1 + 适用 L2/L3(L2/L3 容量允许时并行) → current-truth check → delivery receipt ── verdict 单点聚合,L2/L3 重叠 finding 装配时去重 (workflow §6.4);READY + current truth pending → /feature-archive 收尾&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F8E9;strokeColor=#558B2F;fontSize=11;align=left;verticalAlign=middle;spacing=8;dashed=1;" vertex="1" parent="1">
+        <mxCell id="composite_note" value="&lt;b&gt;/feature-done&lt;/b&gt; = 唯一端点 gate:&lt;br/&gt;&lt;span style=&#39;font-size:10px;color:#546E7A;&#39;&gt;机械 Feature 边界 → L1 → 适用 L2/L3(高风险并行,普通先 L3 后 L2) → current-truth check → receipt;READY → archive pending;明确关闭/归档/提交 → /feature-archive(current truth pending 在此合并)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F8E9;strokeColor=#558B2F;fontSize=11;align=left;verticalAlign=middle;spacing=8;dashed=1;" vertex="1" parent="1">
           <mxGeometry x="60" y="700" width="1280" height="60" as="geometry"/>
         </mxCell>
         <mxCell id="e_done_l1" style="endArrow=classic;html=1;dashed=1;rounded=0;strokeColor=#558B2F;strokeWidth=1;" edge="1" parent="1" source="s_featdone" target="s_l1">

@@ -13,7 +13,8 @@
   → 小改直接做;需要追踪或显式评估路由时 feature-init(先 Impact/Necessity + Scope Viability;DIRECT / LIGHT / FULL;PREVIEW 只读,仅 LIGHT/FULL 的 APPLY 创建 artifact)
   → high-impact unknown 先问清,full lane 再 materialize/补完草稿并跑 spec-quality-check
   → 实施(按需要分成可验证阶段:实现 → focused check → 记录到现有 task → 依赖工作)
-      ├─ 当前任务立即收尾:feature-done → feature-archive → commit / PR / merge
+      ├─ 当前任务明确要求做完:feature-done(最多一次就地修复 + 受影响复验) → READY,archive pending
+      ├─ 明确要求关闭/归档/提交:READY 后自动衔接 feature-archive → commit / PR / merge
       └─ 延后批量收尾:提交实现并记录稳定 commit SHA(可来自 PR head)
                          → feature-done → 提交 endpoint outputs
                          → feature-archive 周期性批量收尾
@@ -111,13 +112,14 @@ outcome 或没有当前 consumer 的能力时,在继续扩展前暂停;普通必
 /project-workflow:feature-done <feature-slug>
 ```
 
-`feature-done` 统一拥有 completion preflight、L1/L2/L3、current-truth 判断和 `## Proof Bundle`。
-它用低成本 preflight 拒绝未完成工作、混杂 diff、明确范围膨胀、缺失的 Codify 承诺和失败的
-最短 actor-to-result 路径;测试价值和 guidance 语义分别由既有 Q3/L2/L3 判断,不在 preflight 再做一轮主观 review。
-每次交付审查一个稳定最终快照并在首个终态结束；非 READY 不会在原请求内自动进入修复—L2/L3 循环。修复后只有用户再次明确要求验收才用新快照复审，并只复用输入未变化的 L1 证据。文件、测试或代码行数量本身不触发审查。精确证据复用、重跑、Receipt 和触发规则只见
+`feature-done` 统一完成低成本 preflight、机械 Feature 边界、L1、full-lane L2/L3、current-truth 判断和
+`## Proof Bundle`。纯检查到 verdict 即止；“做完/交付”最多包含一次范围内修复和 fresh final verdict，
+符合条件的 direct-repair 可同轮复核。FULL 的 READY 始终需要独立 L2/L3：高风险并行，普通变更先
+L3 后 L2。精确规则只见
 [`feature-done`](actions/feature-done.md)。
 
-立即归档可复用同任务的 READY;延后清扫需要指向精确 commit SHA 的 READY receipt:
+“做完/交付”到 READY 即止并报告 archive pending；关闭/归档/提交意图直接衔接 `feature-archive`。
+延后到跨任务清扫时使用指向精确 commit SHA 的 READY receipt：
 
 ```text
 /project-workflow:feature-archive
