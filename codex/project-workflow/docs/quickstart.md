@@ -1,0 +1,160 @@
+# project-workflow 快速开始
+
+当你想在真实项目里按最短路径使用 project-workflow 时,读这份。完整方法论见 [`workflow.md`](workflow.md),action 权威定义见 [`actions/`](actions/),跨工具边界见 [`cross-tool-methodology.md`](cross-tool-methodology.md)。
+
+本文使用 Claude Code 命令示例;Codex 安装 plugin 后使用同名 `$skill`,手工模式按 [`docs/actions/`](actions/) 执行同一 action。
+
+个人和团队使用同一条流程。团队成员各自在自己的 change 内完成分流、实施、验证,再按归档时机选择下述提交顺序即可,不需要额外 team mode 或协作层。
+
+日常开发共用同一条主干;实施后按归档时机选择一种收尾顺序:
+
+```text
+一次项目接入(project-init / project-personalize 二选一)
+  → 小改直接做;需要追踪或显式评估路由时 feature-init(先 Impact/Necessity + Scope Viability;DIRECT / LIGHT / FULL;PREVIEW 只读,仅 LIGHT/FULL 的 APPLY 创建 artifact)
+  → high-impact unknown 先问清,full lane 再 materialize/补完草稿并跑 spec-quality-check
+  → 实施(按需要分成可验证阶段:实现 → focused check → 记录到现有 task → 依赖工作)
+      ├─ 当前任务明确要求做完:feature-done(最多一次就地修复 + 受影响复验) → READY,archive pending
+      ├─ 明确要求关闭/归档/提交:READY 后自动衔接 feature-archive → commit / PR / merge
+      └─ 延后批量收尾:提交实现并记录稳定 commit SHA(可来自 PR head)
+                         → feature-done → 提交 endpoint outputs
+                         → feature-archive 周期性批量收尾
+```
+
+三个低频入口不属于日常必经步骤:
+
+| 仅在这种情况出现 | Action |
+|---|---|
+| 已确认契约在实施中发生实质变化 | [`spec-revise`](actions/spec-revise.md) |
+| 存量 active specs 已经互相冲突 | [`spec-reconcile`](actions/spec-reconcile.md) |
+| 客观项目状态与项目约定发生 drift | [`agents-md-revise`](actions/agents-md-revise.md) |
+
+## 1. 初始化项目约定
+
+六个 baseline 目标路径都不存在,且目录为空或只有不影响项目约定的参考资料、导出物、随手笔记:
+
+```text
+/project-workflow:project-init
+```
+
+存在需要写入项目约定的证据,包括 scaffold、代码、配置,或记录命令、目录、架构、约定、产品/current truth 的项目文档;或者六个目标路径中已有部分/自定义内容:
+
+```text
+/project-workflow:project-personalize
+```
+
+`project-init` 的预期结果只有六个中立文件:`AGENTS.md`、一行 alias `CLAUDE.md`、`.gitignore`、`docs/specs/index.md`、`docs/adr/README.md`、`docs/gotchas.md`;它不猜语言、命令、tier、rules 或 hooks,也不解释或合并已有的无关资料。六文件完全匹配且其余内容仅属无关资料时视为已初始化。只要已有内容提供了需要对齐的项目事实,或 baseline 目标路径已有冲突,就由 `project-personalize` 处理;若资料性质确实无法判断,只问一次再分流。若代码 scaffold 工具要求目标目录为空,先运行该工具。`project-init` 完成表示 workflow baseline ready,应用结构仍可待定,并提示两条可选后续:在第一个 feature 内完成最小架构,或仅当架构治理多个后续 feature 时单独追踪。`project-personalize` 完成表示 working agreement 已与当前结构对齐,不是架构优劣判定。
+
+应用基础或架构设计仍走普通 `feature-init` 分流:会建立或实质改变项目级 runtime tier、模块边界、数据/API 契约等结构,且确有持久 artifact 消费者时使用现有 full lane。没有 `project-foundation` 专用 action、lane 或保留 slug;最小结构与第一个功能不可分时放在同一个 feature 中,只有架构决定本身会约束多个后续功能时才单独追踪。只有命中的 architecture-shaped change 按需读取 [`architecture-design.md`](architecture-design.md);普通 feature 与 `project-personalize` 不读取。
+
+## 2. 判断是否需要 feature artifact
+
+小 bugfix、文案、样式、局部测试修复、低风险文档编辑、未被 current truth 声明且局部/可逆/无契约/可在当前任务完成的行为小改,不要启动 artifact;直接做,遵守适用的 `AGENTS.md` 和当前宿主提供的项目约定,最后说明改动和验证结果。已确认 spec 下的实施任务同样不新建 artifact，但继续使用原 feature 的 tasks 和 `feature-done`，不降级成 untracked direct checks。
+
+如果用户明确询问“这个改动是否需要 feature”,`feature-init` 仍应触发,但只返回 `PREVIEW`,不创建文件。普通讨论、诊断或合理性检查没有提出 feature 路由问题时不触发。对实施请求判为 `DIRECT/APPLY` 后继续原实施;判为 `LIGHT/APPLY` 时创建 `tasks.md` 后继续。若 `DIRECT` 是因为复用已有 active feature，后续门禁按该 artifact 的 lane/status 继续：accepted full 先复查语义实施就绪度，通过后继续实施并最终走 `feature-done`；不通过则修复/revise 后走 `spec-quality-check`。draft full 先走 `spec-quality-check`。只要求初始化 artifact 时则创建后停止,不自动实施。
+
+`feature-init` 是 Impact/Necessity、scope viability 和 DIRECT/LIGHT/FULL 的唯一规则源。它会在
+materialization 前关闭足以改变范围、归属、授权、数据处置或发布方式的未知项,只询问决定方向所需的
+问题;没有当前 consumer 的未来能力不进入当前 feature。精确触发和输出见
+[`feature-init`](actions/feature-init.md),不要从本快速开始维护第二份判定表。
+
+需要持久追踪、验证记录或规约保护时,再运行:
+
+```text
+/project-workflow:feature-init <feature-slug>
+```
+
+FULL 创建并补全:
+
+- `docs/specs/changes/<NNN>-<slug>/spec.md`:结果、范围、约束、验证方式
+- `docs/specs/changes/<NNN>-<slug>/plan.md`:模块影响、Sibling Alignment、技术决策
+- `docs/specs/changes/<NNN>-<slug>/tasks.md`:可验证的实施步骤
+
+LIGHT 只创建 `tasks.md`,用于确有消费者的持久清单;它跳过 `spec-quality-check`,但仍以
+`feature-done` 收尾。精确 lane 条件和升级规则留在 `feature-init`。
+
+full lane 写代码前先跑:
+
+```text
+/project-workflow:spec-quality-check <feature-slug>
+```
+
+该 gate 先做双向需求对账,再检查 artifact 质量、最小充分证据和已选择的 Guidance Placement;
+阻断项先修 artifact。精确 verdict、状态转换和 reviewer 规则只见
+[`spec-quality-check`](actions/spec-quality-check.md)。
+在首次写 full spec 或进行实质修订前，先收口当前多轮沟通中的实质决定；只有仍可能改变合同的
+歧义才询问用户，已经一致的决定直接写入。quality gate 核对合同是否忠实承载这些决定，不重复确认。
+若最新用户决定已经纠正、删除或取代已确认合同中的实质规则，不要先检查旧合同；先运行
+`spec-revise` 同步 spec/plan/tasks，再对修订结果运行 `spec-quality-check`。quality action 若误入该
+场景会在 mechanical/reviewer 之前返回 `N/A(route: spec-revise)`。
+
+## 3. 按 spec 边界实施
+
+full lane 让 AI 基于 `spec.md` + `plan.md` + `tasks.md` 写代码。存在真实依赖或风险边界时，按少量可验证
+阶段推进：完成一个可检查的责任、契约、状态或 actor-to-result 结果后，立即跑最小相关检查并把结果
+记在现有 task 上，再进入依赖工作。L2/L3 与 Proof Bundle 由 `feature-done` 执行。
+轻车道基于 `tasks.md` 写代码。未启动 project-workflow 的小任务直接按当前上下文实施。
+
+所有 lane 都继承 `feature-init` 的 Implementation Scope Stop:出现未声明的高影响边界、第二个独立
+outcome 或没有当前 consumer 的能力时,在继续扩展前暂停;普通必要细节和保持契约的简化实现继续。
+测试同样只保留能证明不同实质风险的最小证据,不能用层级、矩阵或 case 数量代替风险说明。
+
+如果实施中发现 spec 或 plan 本身错了,先停下,不要边改代码边改规格。运行:
+
+```text
+/project-workflow:spec-revise <feature-slug>
+```
+
+这个命令用于真实的需求、契约、模块边界变更;普通任务进度不需要用它。
+
+## 4. 完成功能
+
+```text
+/project-workflow:feature-done <feature-slug>
+```
+
+`feature-done` 统一完成低成本 preflight、机械 Feature 边界、L1、full-lane L2/L3、current-truth 判断和
+`## Proof Bundle`。纯检查到 verdict 即止；“做完/交付”最多包含一次范围内修复和 fresh final verdict，
+符合条件的 direct-repair 可同轮复核。FULL 的 READY 始终需要独立 L2/L3：高风险并行，普通变更先
+L3 后 L2。精确规则只见
+[`feature-done`](actions/feature-done.md)。
+
+“做完/交付”到 READY 即止并报告 archive pending；关闭/归档/提交意图直接衔接 `feature-archive`。
+延后到跨任务清扫时使用指向精确 commit SHA 的 READY receipt：
+
+```text
+/project-workflow:feature-archive
+```
+
+它先合并待更新的 current truth,再把已交付目录移入 `archive/`;精确资格和批量/单项行为见
+[`feature-archive`](actions/feature-archive.md)。
+
+## 4.5 存量项目 spec 已经积累混乱时
+
+老项目引入生命周期管理,或某产品域积累了多份互相矛盾的 spec 时,先做一次性修复再动工:
+
+```text
+/project-workflow:spec-reconcile <area-or-module>
+```
+
+它输出冲突矩阵、指定 source of truth、经你确认后修正生命周期状态并归档失效 spec。稳态下(archive 清扫常态化后)很少需要它。
+
+## 5. 发现约定漂移时刷新
+
+当重大依赖/框架、命令或目录已经变化,你反复提醒 AI 同一件事,或有其他客观 drift 证据时,运行:
+
+```text
+/project-workflow:agents-md-revise
+```
+
+它会让 root/nested `AGENTS.md` 跟真实项目保持接近,避免约定只留在聊天记录里。只有用户把宿主私有 convention files 明确纳入本次修订时才同时处理;Codex 不读取或翻译 Claude-private `.claude/rules/`。
+
+## 什么时候可以跳过完整流程
+
+本表是 [workflow.md §9 何时偏离手册](workflow.md#9-何时偏离手册) 的快捷镜像;两处不一致时以 §9 为准。
+
+| 场景 | 简化做法 |
+|---|---|
+| tiny/local、低风险且未改变已声明 current truth | 不建 feature artifact,直接做并跑相关检查;hook 只在已安装且 active 时提供增量反馈 |
+| 探索性 spike | 在临时 branch / worktree 做;只有留下持久架构/跨功能技术决定时才写 ADR |
+| 生产 hotfix | 先修;之后补测试并记录后续技术债 |
+| 架构 / API / 数据模型变更 | 不要跳过 spec;使用全车道 feature spec。仅架构/模块边界、持久跨功能技术决定或取代既有 ADR 时再写 ADR |
