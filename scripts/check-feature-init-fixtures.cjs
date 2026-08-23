@@ -193,6 +193,7 @@ function validateFixtures() {
     "scope-necessity-speculative-admin-ask",
     "impact-coupled-cutover",
     "scope-split-provider-rollout-ask",
+    "direction-concern-ask",
  ]) {
     if (!expected[scenario]) problems.push(`missing required scope/impact scenario ${scenario}`);
  }

@@ -52,9 +52,8 @@
 
 如果用户明确询问“这个改动是否需要 feature”,`feature-init` 仍应触发,但只返回 `PREVIEW`,不创建文件。普通讨论、诊断或合理性检查没有提出 feature 路由问题时不触发。对实施请求判为 `DIRECT/APPLY` 后继续原实施;判为 `LIGHT/APPLY` 时创建 `tasks.md` 后继续。若 `DIRECT` 是因为复用已有 active feature，后续门禁按该 artifact 的 lane/status 继续：accepted full 先复查语义实施就绪度，通过后继续实施并最终走 `feature-done`；不通过则修复/revise 后走 `spec-quality-check`。draft full 先走 `spec-quality-check`。只要求初始化 artifact 时则创建后停止,不自动实施。
 
-`feature-init` 是 Impact/Necessity、scope viability 和 DIRECT/LIGHT/FULL 的唯一规则源。它会在
-materialization 前关闭足以改变范围、归属、授权、数据处置或发布方式的未知项,只询问决定方向所需的
-问题;没有当前 consumer 的未来能力不进入当前 feature。精确触发和输出见
+`feature-init` 是 Impact/Necessity、scope viability 和 DIRECT/LIGHT/FULL 的唯一规则源。它关闭会改变
+方向的未知项、保持普通细节继续，并排除没有当前 consumer 的未来能力。精确触发和输出见
 [`feature-init`](actions/feature-init.md),不要从本快速开始维护第二份判定表。
 
 需要持久追踪、验证记录或规约保护时,再运行:
@@ -94,9 +93,8 @@ full lane 让 AI 基于 `spec.md` + `plan.md` + `tasks.md` 写代码。存在真
 记在现有 task 上，再进入依赖工作。L2/L3 与 Proof Bundle 由 `feature-done` 执行。
 轻车道基于 `tasks.md` 写代码。未启动 project-workflow 的小任务直接按当前上下文实施。
 
-所有 lane 都继承 `feature-init` 的 Implementation Scope Stop:出现未声明的高影响边界、第二个独立
-outcome 或没有当前 consumer 的能力时,在继续扩展前暂停;普通必要细节和保持契约的简化实现继续。
-测试同样只保留能证明不同实质风险的最小证据,不能用层级、矩阵或 case 数量代替风险说明。
+所有 lane 都继承 `feature-init` 的 Implementation Scope Stop：普通必要细节继续，方向性顾虑在扩展
+受影响工作前沟通。测试只保留能证明不同实质风险的最小证据。
 
 如果实施中发现 spec 或 plan 本身错了,先停下,不要边改代码边改规格。运行:
 

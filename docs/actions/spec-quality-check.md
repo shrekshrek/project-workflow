@@ -55,23 +55,11 @@ or supersede decision—not merely because ordinary contract prose has no duplic
 
 ## Requirements Reconciliation
 
-The same fresh reviewer used for Q3-Q7 first performs one bidirectional reconciliation against the exact
-Requirements Source Map:
-
-1. `requirements -> artifacts`: every material accepted outcome, rule, constraint, exclusion, fallback, and
-   supersede decision appears consistently in the appropriate spec/plan/tasks location.
-2. `artifacts -> requirements`: every material business rule, ownership/authorization/data state, durable
-   workflow, or scope commitment is either explicitly user-supplied/confirmed, traceable to an applicable
-   external source, or surfaced as a proposed decision still requiring acceptance; implementation detail may
-   be derived in the plan when it does not silently add behavior or scope. Do not require a duplicate Prior
-   decisions row for content already owned by the accepted spec.
-3. Cross-artifact and temporal consistency: spec, plan, and tasks agree, and an explicitly superseded older
-   semantic does not survive in prose, verification, tasks, fallback behavior, or migration handling.
-   When the authoritative source says "remove", "no longer", "only", "single source", or an equivalent
-   exclusion, retaining an optional, conditional, fallback, or compatibility path is a `superseded-remnant`
-   unless the source explicitly preserves it.
-4. Counterexamples: test ownership, authorization, hierarchy, fallback, unknown-data, and migration rules
-   against at least one materially different case whenever the rule changes the result.
+The same fresh reviewer used for Q3-Q7 first applies the canonical
+[`spec-quality-reviewer`](../reviewers/spec-quality-reviewer.md#requirements-reconciliation) method to the exact
+Requirements Source Map. It checks requirements-to-artifacts coverage, artifact authority, temporal/cross-
+artifact consistency, and material counterexamples; the action owns the source package, dispatch, and aggregate
+verdict rather than a second interpretation of that method.
 
 Return exactly one reconciliation status before the quality findings:
 
@@ -83,8 +71,8 @@ Return exactly one reconciliation status before the quality findings:
 
 `MISMATCH` and `SOURCE GAP` both return `BLOCKED` before implementation. They are repaired through the
 normal artifact-edit or `spec-revise` path; they do not create another gate, reviewer, or status model.
-Requirements Reconciliation checks faithful coverage and authority. It never substitutes a new interpretation
-for a resolved source decision or turns the quality gate into another requirements interview.
+Reconciliation checks faithful coverage and authority; it never substitutes a new interpretation for a resolved
+source decision or turns the gate into another requirements interview.
 
 ## Checks
 
@@ -117,9 +105,7 @@ Required checks: seven core quality questions, plus conditional current-truth ch
    - Q7d: multi-boundary, architecture-shaped, or materially high-risk work records its current outcome/consumer,
      responsibility and contract boundary, concrete coupling/rollback risk, and scope-growth triggers.
      Broad work has either separable child outcomes or concrete indivisible coupling; any unresolved
-     coordination/rollback risk is explicitly accepted. It uses a dependency-ordered set of independently
-     verifiable implementation phases when this exposes
-     failures before dependent work; each meaningful phase names an inspectable result and focused evidence.
+     coordination/rollback risk is explicitly accepted.
 8. Only when the touched area has a `docs/specs/<area>.md`: the spec cites it and does not contradict it, or explicitly records why it deviates. Projects without current-truth documents skip this check.
 9. When check 8 applies: the spec includes a `## Delta` section with `Added`, `Modified`, and `Removed` subsections; at least one subsection has concrete content (not placeholders or bare N/A).
 

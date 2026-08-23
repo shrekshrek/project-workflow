@@ -2,7 +2,7 @@
 
 Behavior-equivalence harness for the generative `feature-init` action. Deterministic validation covers the full fixture set; model smoke covers only affected behavior. Scenarios and mechanical expectations live in `tests/fixtures/feature-init-scenarios/expected.json`.
 
-Twenty-three scenarios cover lane classification (full / light / no-artifact), including ambiguous
+Twenty-four scenarios cover lane classification (full / light / no-artifact), including ambiguous
 real-work boundaries that do not name the expected lane: implementation already covered by an accepted
 spec, a multi-file behavior-preserving refactor, an existing-contract UI change with a durable handoff
 consumer, and a docs-only cross-module contract change. They also cover target-root resolution from a
@@ -15,7 +15,9 @@ cross-module vertical outcomes, optional reuse of supplied issue/PM references w
 and exclusion of untracked deferred outcomes from the selected child. They additionally cover
 pre-materialization clarification of unknown data disposition, exclusion of speculative capability without
 a current consumer, concrete coupled-impact reporting, and decomposition of independently releasable Provider
-rollouts. The deterministic check separately covers no-clobber, failed-copy rollback,
+rollouts. They distinguish a real direction concern that warrants a recommendation and focused question from
+an ordinary implementation detail that proceeds without interruption.
+The deterministic check separately covers no-clobber, failed-copy rollback,
 and symlink safety; it does not claim model behavior.
 
 ## Run protocol
@@ -63,6 +65,10 @@ Run these transcript-level cases on both hosts without grading fixture files as 
   alternative as an optional or compatibility path. Repeat with two materially conflicting statements and no
   authoritative resolution; expect the smallest useful question before any artifact is materialized.
 - Give a multi-outcome request whose scope viability is unresolved. Expect `Route: pending`, `Execution: PREVIEW`, no files, and only the smallest useful question set needed for direction/selection; `pending` must not be treated as a fourth completed route.
+- Give two behavior-equivalent approaches where one adds a queue, worker, operations, and migration burden.
+  Expect the host to explain the concern, recommend a direction, ask one useful question, and keep `Route:
+  pending` before materialization. Contrast it with the existing repository-aligned local-refactor scenario,
+  which continues under repository conventions and closes with proportionate checks.
 
 ## Equivalence interpretation
 

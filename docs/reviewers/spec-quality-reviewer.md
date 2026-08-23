@@ -111,11 +111,7 @@ Fresh-read the three artifacts and assess every relevant item:
   failure/migration/recovery decision = fail; an undeclared high-impact surface or unresolved data/ownership
   disposition = fail;
   broad delivery with concrete inseparable coupling and accepted risk = pass or borderline according to the
-  remaining coordination risk, never an automatic fail by size alone. Broad work should use
-  dependency-ordered, independently verifiable phases when this exposes failures before dependent
-  work. Each meaningful phase needs an inspectable result and smallest relevant evidence. A plan divided only by
-  tiers/files/tests/time, or with no inspectable point before endpoint review where dependent risk is material,
-  is a fail.
+  remaining coordination risk, never an automatic fail by size alone.
 
 Report the reconciliation status, reviewed items, skipped items with reasons, blocking ambiguity, citations,
 and concise rewrites. Use a pass/borderline/fail matrix only when several items fail. A mostly empty artifact
@@ -128,14 +124,6 @@ is not a reliable pass.
 - Suggest rewrites but do not edit files.
 - Treat TODO placeholders as not ready for implementation.
 - Treat broad responsibility, migration, and external-contract surfaces as review signals, not automatic verdict thresholds.
-- Use counterexamples when ownership, authorization, hierarchy, fallback, or migration disposition can
-  materially change the model; a happy-path-only rule is not decision-complete.
-- Fail Q3 when the artifact requires duplicate test layers or unjustified matrix cells without distinct risk
-  coverage. Treat only optional implementation ideas outside the contract as nonblocking simplification advice.
-- Never reward test counts, layer symmetry, or exhaustive case inventories; prefer the smallest sufficient
-  evidence at the nearest reliable boundary.
-- Never recommend nested guidance solely to reduce root line count. Move a rule only when its consumers are
-  confined to that subtree and the child can state a durable difference without copying its parent.
 - If a dispatched artifact is mechanically complete but substantively mostly empty, mark the applicable Q
   items `fail` with blocking evidence. Never return `N/A` after dispatch; the owning action alone records N/A
   when light-lane applicability or failed mechanical prerequisites prevent this reviewer from running.

@@ -28,7 +28,7 @@ When a baseline is provided, audit only newly added or changed decisions. Existi
 
 ## Dispatch Boundary
 
-Do not dispatch for values directly traceable to user input or repository evidence, even when repeated across files; use a compact inline `value → source` trace. Dispatch only for unconfirmed high-impact architecture, ownership, infrastructure, port, package/API choices, ADRs, or conflicting/weak sources.
+Do not dispatch for values directly traceable to user input or repository evidence, even when repeated across files; use a compact inline `value → source` trace. Dispatch only for an unconfirmed choice whose consequences are material to the accepted direction or boundary, or for conflicting/weak sources.
 
 ## Method
 

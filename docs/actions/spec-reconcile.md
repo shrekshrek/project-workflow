@@ -29,8 +29,10 @@ Do not use for a single active feature that is simply wrong mid-implementation; 
 ## Workflow
 
 1. Resolve an area, module, or explicit feature list and collect at least two related active specs plus relevant current truth, ADRs, and optional implementation evidence.
-2. Extract concrete assertions and build a conflict matrix containing only direct contradictions with exact citations. Do not choose a winner automatically.
-3. Ask the user to select precedence for each contradiction and classify each losing spec as superseded or abandoned. Unresolved conflicts block new implementation in the area.
+2. Build an exact-citation matrix of direct contradictions, grouping only conflicts resolved by the same
+   precedence and lifecycle decision; keep independent conflicts separate and never choose a winner silently.
+3. For each group, present evidence, impact, and a recommendation; the user chooses the direction and losing
+   lifecycle state, and may split the group. Unresolved groups block implementation in the affected area.
 4. After approval, prepare losing status/successor links and current-truth edits without applying them. Move each losing directory with an ordinary filesystem rename, relocate local Markdown links, and move it back before stopping if relocation fails.
 5. After successful moves, apply final statuses and extract still-valid facts into current-truth gaps; replace archive-link lists or historical narratives with present-tense facts only after approval.
 6. Flag losing directions backed by Accepted ADRs for superseding decisions or status correction. Update an existing changes index when present.

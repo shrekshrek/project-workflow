@@ -165,7 +165,7 @@ Run `spec-quality-check` against two full-lane artifacts whose individual tasks 
 - For multi-boundary or materially high-risk work, leave ownership/data-disposition coupling or scope-growth
   triggers unresolved and confirm Q7d returns `BLOCKED`. Ordinary same-boundary artifacts rely on Scope,
   Constraints, Module Impact, and Verification. When real dependency checkpoints are
-  missing, confirm Q7a/Q7d remains `BLOCKED` until plan/tasks make them actionable with focused checks.
+  missing, confirm Q7a remains `BLOCKED` until plan/tasks make them actionable with focused checks.
 
 ## Architecture-shaped spec-quality smoke
 
@@ -202,18 +202,20 @@ Run `spec-quality-check` against two full-lane artifacts whose individual tasks 
   spec/plan/ADR. Give the same rule an objective lint/hook/test implementation and confirm the preferred
   proposal is `mechanize`, not another prompt file.
 
-## Personalization conversation smoke
+## Decision conversation smoke
 
-- Give `project-personalize` a manifest and CI file that agree on one test command. Confirm it reports the
-  command as Observed and asks no question about it.
-- Add two conflicting active lint commands with no ownership evidence. Confirm it reports the smallest Proposed
-  adjustment, puts only the deciding choices under Unresolved, and asks only the questions needed to resolve them.
-- Answer the question, then expose a separate hook-policy gap. Confirm the staged draft/source trace updates and
-  the next question does not restate settled command evidence.
+- Give `project-personalize` a manifest and CI file that agree on one test command. Confirm it carries the
+  observed command into the draft and asks no question about it; a fixed label is optional.
+- Add two conflicting active lint commands with no ownership evidence. Confirm it explains the evidence,
+  recommends the smallest adjustment, and asks only the questions needed to resolve the working agreement.
+- Answer, then expose a separate hook-policy gap and an objectively stale source path. Confirm the draft/source
+  trace updates, independent evidence work continues without restating settled facts, and later material evidence
+  reopens only the affected choice with a reason.
 - Make the remaining uncertainty an architecture/product decision. Confirm it routes to `feature-init` instead
   of extending personalization.
 - Close all material gaps. Confirm the authorized changes apply without an additional
   feature, spec, lane, gate, reviewer, status, or approval cycle created by the conversation.
+- For `spec-reconcile`, group only contradictions resolved by one precedence/lifecycle choice; keep independent conflicts separate, present evidence and a recommendation, allow the user to split the group, and choose nothing silently.
 
 ## Implementation Scope Stop smoke
 
@@ -265,7 +267,7 @@ dependency-ordered results: domain/state, public contract, and actor operation:
 - Change the next public DTO so that it contradicts the accepted failure-state contract. Confirm Scope Stop
   activates before dependent UI, tests, or documentation are added.
 - Replace the inspectable results with broad technical buckets that hide a real dependency checkpoint. Confirm
-  Q7a/Q7d blocks the missing result/evidence boundary.
+  Q7a blocks the missing result/evidence boundary.
 - Reduce the same feature to one directly verifiable responsibility and confirm Q7a accepts its existing task and
   evidence boundary.
 - Add a material dependency/rollback risk and confirm important dependent phases name an inspectable

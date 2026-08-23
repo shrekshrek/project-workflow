@@ -812,7 +812,8 @@ Artifact 写法和 7 问自检见 [`spec-driven.md`](spec-driven.md);运行时�
 
 [`feature-init`](actions/feature-init.md) 统一负责 Impact/Necessity、scope viability、DIRECT/LIGHT/FULL
 和 Implementation Scope Stop。先关闭会改变方向的未知项，再按需建立一个可独立验收和回退的
-artifact；普通低层选择可以留作有边界的实施时决定。spec/plan/tasks 分别拥有 WHAT/HOW/STEPS，
+artifact；普通低层选择留给实施。AI 发现继续推进可能走错方向时，说明顾虑和建议并自然追问；已有
+选择通常沿用，只有新证据或新发现的重要后果使当前建议发生实质变化时才重新沟通。spec/plan/tasks 分别拥有 WHAT/HOW/STEPS，
 Prior decisions 只保存需要 why/source 的非显然选择，不复制 spec。复用 accepted FULL 只做语义实施
 就绪度复查；精确判定留在 action。
 
@@ -833,9 +834,8 @@ Full lane 填完后运行 [`spec-quality-check`](actions/spec-quality-check.md)�
 少量可验证阶段：关闭一个可检查结果，运行最小 focused check，再进入依赖工作；同一失败无新诊断
 证据地重复时报告 blocker。L2/L3 与 Proof Bundle 仍由 `feature-done` 执行。
 
-只在跑偏、陷入无新证据的循环、越出已接受边界、出现第二个独立 outcome 或无当前 consumer 的能力时
-打断。变量命名、普通实现细节和已接受边界内的简化由 AI + hook/L1 自行收敛。Scope Stop 的分类与
-输出只见 [`feature-init`](actions/feature-init.md)；测试层、矩阵和 case 也只在证明不同实质风险时增加。
+实现中的沟通沿用 §3.1。变量命名、普通实现细节和已接受边界内的简化由 AI + hook/L1 自行收敛。
+Scope Stop 的分类与输出只见 [`feature-init`](actions/feature-init.md)；测试层、矩阵和 case 也只在证明不同实质风险时增加。
 
 **底层逻辑**:机械细节上的中途打断会制造反复解释;方向漂移上的延迟打断会制造大量返工和冗余。
 环境层(§6.3)接管机械合规,阶段 focused check 提前暴露局部失败,Implementation Scope Stop 管方向,

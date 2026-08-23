@@ -30,14 +30,12 @@ its owner, but must not become an alternative normative source.
 Product/application architecture uses the normal feature lifecycle rather than a separate mandatory
 review flow:
 
-- At planning, `feature-init` selects the full lane and conditionally loads
-  [`architecture-design`](../architecture-design.md) only when the proposed outcome establishes or materially
-  changes runtime tiers, responsibility/module boundaries, data/API ownership, durable trust/authorization
-  ownership boundaries, deployment components, or another durable cross-feature structure.
-- During implementation, the `feature-init` Implementation Scope Stop pauses an undeclared architecture
-  delta before more production code, tests, migrations, compatibility paths, or documentation are added.
-- At delivery, `feature-done` compares the actual change with the accepted impact boundary and leaves
-  convention/spec judgment to L2/L3. It does not add another architecture reflection.
+- At planning, architecture-shaped work stays in `feature-init` and conditionally reads
+  [`architecture-design`](../architecture-design.md); ordinary work skips it.
+- During implementation, `feature-init` owns scope-stop behavior: ordinary details continue, while a material
+  direction concern pauses affected or dependent work.
+- At delivery, `feature-done` compares the actual change with the accepted boundary and leaves convention/spec
+  judgment to L2/L3; it adds no architecture review layer.
 
 Tiny local work, ordinary same-boundary implementation detail, speculative future concerns, and file/test/
 line counts never trigger architecture review by themselves. There is no standalone architecture action,

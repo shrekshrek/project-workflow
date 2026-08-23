@@ -34,13 +34,12 @@ Use [`project-init`](project-init.md) when all six baseline destinations are abs
 
 ## Evidence-led Decision Conversation
 
-Keep the target unchanged while material decisions remain. Present only applicable findings as **Observed**
-(repository evidence), **Proposed** (the smallest evidence-backed adjustment), and **Unresolved** (a decision
-whose answer changes the working agreement). Ask dependent material questions in sequence; closely related
-independent choices may be grouped. Prefer bounded choices, and
-after each answer update the in-memory/staged draft plus its source trace without restating settled evidence.
-When no material gap remains, summarize and preflight the staged changes, then apply them under the current
-request's authorization. Ask again only for a materially different policy choice or external write.
+Communicate applicable evidence, the smallest recommendation, and only decisions that change the working
+agreement. Use **Observed / Proposed / Unresolved** labels only when several findings benefit; ordinary cases
+stay natural. Sequence dependent questions and group related independent ones. Keep only the affected change
+pending while continuing safe evidence work. Settled choices carry forward unless new repository evidence
+materially changes the recommendation; then explain why and reopen only that choice. Update the staged draft
+and source trace after answers, and preflight/apply the consistent population under current authorization.
 
 Do not ask about facts the repository already proves, values that may safely remain deferred, or architecture/
 product decisions owned by `feature-init`. This conversation creates no additional feature, spec, lane, gate,
@@ -52,7 +51,7 @@ reviewer, status, or approval cycle.
 2. Inspect root/nested `AGENTS.md`, aliases, manifests, shallow structure, commands, source/test paths, project-specific boundaries, existing test/CI configuration, and existing host-private assets. Preserve useful custom guidance.
 3. Start the Evidence-led Decision Conversation with only applicable scopes: create/complete the minimum working agreement, replace demonstrably stale scaffold values, repair real tier guidance, survey structure, or explicitly selected host-private rules/hooks.
 4. For a missing baseline, stage the neutral six-file template with `scripts/materialize-project-baseline.cjs`; do not write the target yet.
-5. Use the codebase-explorer methodology only for a nontrivial or unclear structure survey. When observed project content shows multiple durable runtime tiers and the user selects tier-level guidance, read the conditional [`_multi_tier_examples`](../../template/_multi_tier_examples/README.md) reference before drafting it. When a material stack, library, or tool choice remains unresolved and current external evidence would change the result, run the tech-researcher methodology, present 2-3 suitable candidates and one recommendation, and let the user make the final choice. Derive commands, their actual scope/trigger, source/test paths, project-specific rules, and tier ownership from repository evidence. A command being available does not make it mandatory for every feature.
+5. Use the codebase-explorer methodology only for a nontrivial or unclear structure survey. When observed project content shows multiple durable runtime tiers and the user selects tier-level guidance, read the conditional [`_multi_tier_examples`](../../template/_multi_tier_examples/README.md) reference before drafting it. Use tech-researcher only when an unresolved choice would materially change the working agreement and needs current external evidence; present suitable candidates and a recommendation for the user's direction. Ordinary tooling follows repository evidence and applicable conventions. Derive commands, their actual scope/trigger, source/test paths, project-specific rules, and tier ownership from repository evidence. A command being available does not make it mandatory for every feature.
    When structure/guidance scope is selected, perform a bounded guidance-placement survey. A nested
    `AGENTS.md` candidate must be a durable rule for a clear existing or intentionally planned subtree,
    differ materially from its parent, be costly or unsafe to infer repeatedly, and be neither temporary
@@ -61,10 +60,11 @@ reviewer, status, or approval cycle.
    file only for a real exception. A selected nested `CLAUDE.md` contains exactly `@AGENTS.md` plus a newline.
    Findings propose narrow moves/creation/deletion; they do not establish that the architecture itself is good.
 6. Validate selected host-private rules and hooks only when they already exist or the user chose them. Never copy optional assets by default.
-7. Run an inline trace for repository- or user-sourced synchronization and the decision-completeness auditor only for unconfirmed high-impact choices, ADRs, or conflicting/weak evidence.
-8. Preflight unchanged baselines and staged destinations, summarize the proposed changes, and apply when the
-   current request authorizes them. Ask only when a material policy choice or different/external write remains
-   unresolved. Normalize an existing target-root symlink to its real directory, but reject symlinked destination
+7. Use inline trace for sourced synchronization; dispatch the decision-completeness auditor only for a material
+   unconfirmed choice or conflicting/weak evidence.
+8. Preflight unchanged baselines and staged destinations, summarize the proposed changes, and apply under the
+   current request's authorization and conversation above. Normalize an existing target-root symlink to its
+   real directory, but reject symlinked destination
    components and an absent target below a symlinked ancestor. Conflicts or a blocking audit leave the target unchanged.
 9. Validate placeholders, commands, source/test paths, project-specific rules/boundaries, real tier ownership, aliases, selected rule scopes, hook status, and `AGENTS.md` concision.
 

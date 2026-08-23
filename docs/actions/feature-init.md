@@ -90,9 +90,14 @@ signals for closer review, never substitutes for outcome and coupling analysis.
 If a material unknown can change scope, ownership, authorization, data handling, or delivery shape, keep
 the route pending and ask the smallest useful set of material questions. Ask dependent decisions in sequence;
 closely related independent decisions may be grouped. Do not materialize a speculative
-spec and fill these decisions afterward. Low-level implementation details that do not change the contract
-may remain explicit implementation-time decisions. Bound each one by owner, affected responsibility, and
-expected evidence; do not force a material decision into implementation merely to finish artifact fill.
+spec and fill these decisions afterward.
+
+Use conversational judgment rather than a closed decision checklist. If continuing would risk building the
+wrong thing or committing the project to a meaningfully different direction, pause, explain the concern and
+recommended direction, and ask the focused question needed to proceed. Settled choices normally carry forward;
+reopen one only when new evidence or a newly discovered material consequence changes the recommendation, then
+explain why and ask the focused question needed to proceed. Ordinary implementation details continue without
+interruption.
 
 Before drafting a full-lane artifact, close the material decisions from the current conversation: normalize
 the latest explicitly accepted rule, retain the source and any explicit supersession or exclusion, and identify
@@ -153,13 +158,14 @@ justifies absorbing it.
 
 Classify the discovery before resuming:
 
-- Inside the same accepted outcome and baseline, with no contract change: treat it as `necessary-detail`,
-  record only a durable implementation decision when useful, and continue without asking the user.
+- Inside the same accepted outcome and baseline, with no contract change or other direction concern: treat it
+  as `necessary-detail`, record only a durable implementation decision when useful, and continue without asking
+  the user.
 - A simpler implementation that preserves the accepted contract: remove the unnecessary work and continue;
   do not create a revision or follow-up merely to preserve it.
-- A material contract correction or inseparable wider boundary: present a compact `Scope stop` containing
-  the discovered delta, boundary mismatch, present necessity, and recommended direction. Ask the smallest
-  useful set of questions; use `spec-revise` after the user chooses the changed direction.
+- A material contract correction, inseparable wider boundary, or other direction concern: present a compact
+  `Scope stop` containing the discovered delta or concern, present necessity, and recommended direction. Ask
+  the focused question needed to resume; use `spec-revise` when the accepted artifact changes.
 - A separable outcome or speculative capability: recommend excluding/removing it or routing it to a child
   only when the user wants it preserved. Do not silently implement it or create a backlog.
 
@@ -240,14 +246,14 @@ Adapters materialize the selected template through the packaged `scripts/materia
 3. Run the impact and necessity preflight proportionately. For an evidently local, reversible change, use the
    bounded evidence already opened rather than expanding discovery. Remove speculative capability, surface
    only decision-relevant impact, and keep the route pending while a material business, ownership,
-   authorization, data-disposition, or release-coupling question remains. Ask the smallest useful set of material questions.
+   authorization, data-disposition, or release-coupling question remains. Apply the conversational-judgment
+   rule above and ask only what is useful for the next decision.
 4. Decide whether a new artifact has a durable consumer and whether an active feature already covers the outcome. If not, return `DIRECT`; if an accepted feature covers implementation, report `Feature: reuse=<path>` and do not create a duplicate. Recheck its accepted boundary and actionable Verification/tasks for semantic implementation readiness. Stop this action's artifact work, then return control to an enclosing implementation/change request when one exists.
-5. Run the scope-viability check. An evident single outcome needs no user-facing gate result. If separable
-   outcomes would be bundled, report the compact decision and ask the user to choose a child or accept the
-   bundled-delivery risk. Create nothing while a required direction or selection decision is pending, and ask
-   only the questions needed to resolve it. External tracking is never a prerequisite for starting the selected
-   child. Defer lane-only reads until the outcome and owning boundary are selected.
-6. Choose `LIGHT` or `FULL` for the selected outcome and record the concrete trigger. Ask only when the business goal, ownership, impact boundary, or decomposition is unclear.
+5. Apply the scope-viability rules above. Surface only a required decomposition or bundled-risk decision, and
+   create nothing until it is resolved. External tracking is never a prerequisite for the selected child; defer
+   lane-only reads until its outcome and owning boundary are selected.
+6. Choose `LIGHT` or `FULL` for the selected outcome and record the concrete trigger. Ask only when a decision
+   material to the selected direction remains unclear.
 7. If execution is `PREVIEW`, report the route decision and stop before reading lane templates or conditional architecture guidance, computing a number, invoking the materializer, or dispatching an auditor.
 8. For `FULL`, choose brownfield only when a substantive domain document exists; otherwise use greenfield.
    First perform the compact decision closure above. If all material conversation decisions are consistent,
@@ -275,8 +281,8 @@ Adapters materialize the selected template through the packaged `scripts/materia
 11. Use an inline value-to-source trace for repository- or user-sourced prefill and make only the non-obvious,
    externally derived, conflict-resolving, bundled-risk, or superseding decisions durable in the Prior
    decisions source column before `spec-quality-check`; ordinary spec content keeps one owner. Dispatch the
-   decision-completeness auditor only when newly generated content contains unconfirmed high-impact
-   architecture, ownership, infrastructure, port, package/API, or ADR choices, or conflicting/weak evidence.
+   decision-completeness auditor only when newly generated content makes an unconfirmed choice whose
+   consequences are material to the accepted direction or boundary, or when evidence is conflicting or weak.
    Directly traceable values and ordinary full-lane work without such choices are `N/A`; do not dispatch merely
    because the route is `FULL`.
 12. Validate the created population before reporting route, execution, feature action, shape, ownership, impact
@@ -303,8 +309,8 @@ When the auditor boundary applies, follow the canonical [reviewer execution cont
 - Never plant unsupported endpoints, entities, fields, codes, paths, technologies, ownership, or coupling.
   Resolve material unknowns before implementation; keep genuine low-level choices as bounded implementation-
   time decisions/tasks and briefly trace sourced prefill.
-- Decision closure is a pre-draft interpretation check, not a new approval gate: resolved decisions are not
-  re-asked, and unresolved material ambiguity blocks artifact creation rather than being guessed into the spec.
+- Decision closure is a pre-draft interpretation check, not a new approval gate. It follows the
+  conversational-judgment rule above; unresolved material ambiguity blocks artifact creation.
 - Verification breadth follows traceable behavior and distinct risk, not derived edge-case habit, document size, test-layer count, or case-count symmetry. Consolidate obligations when the same evidence proves them; retain a matrix only with an explicit interaction, regression, release, or compliance reason.
 - Scope Stop applies to every route. Materialization requires closed high-impact decisions, and every new durable
   surface has a current consumer/necessity trace; FULL is not permission for adjacent or speculative expansion.

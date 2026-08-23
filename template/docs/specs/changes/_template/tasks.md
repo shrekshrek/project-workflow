@@ -1,7 +1,7 @@
 # <NNN> <slug> — Tasks
 
 > 基于 plan.md。按可独立实施、验证或 review 的结果组织，实施时勾选 + 加注。
-> 实施中出现 Scope、Constraints、Module Impact 或条件性交付边界未声明的 outcome/持久状态/API/角色/工作流/管理面/队列/runtime/Provider/迁移/授权/发布边界时,在继续写生产代码、测试、migration 或兼容层前立即停下。先按 scope delta 分类,报告 delta、当前必要性和推荐的删除/收窄/child/spec-revise 方向;只询问改变方向的必要问题。不得因代码已经写出而自动收编。
+> 实施中发现未声明的实质边界变化，或继续推进可能做错目标、让项目走向实质不同方向时，先停下会加深返工的工作，说明顾虑、当前必要性和建议，只问恢复所需的问题。契约或边界改变走 Scope Stop / spec-revise。已确认选择通常沿用；只有新证据或新发现的重要后果使当前建议发生实质变化时，才说明原因并重新沟通。普通实施细节继续，已经写出的代码不构成收编理由。
 > 在真实依赖或风险检查点，完成当前阶段、运行最小相关检查并记录结果，再进入依赖工作。
 > L2/L3 与 Proof Bundle 由 `feature-done` 执行；material delta 触发 Scope Stop。
 > 清单只写 `feature-done` 运行前可完成的实施、review 或 check 结果；READY、Proof Bundle、状态写入和归档资格由 endpoint/lifecycle 记录，不写成 checkbox。

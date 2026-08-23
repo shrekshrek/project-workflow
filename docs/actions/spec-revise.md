@@ -60,14 +60,14 @@ An implementation regression under an unchanged accepted contract does not use t
 4. Classify `ADR_REQUIRED`: yes only for architecture/module boundaries, durable cross-feature technical decisions, or superseding an ADR. When yes, search ADR filenames, titles, status fields, and existing references first, then open only candidates relevant to the affected area or decision.
 5. Before drafting, close the material correction set from the current conversation: normalize the latest
    explicitly accepted replacement, preserve each explicit supersession/exclusion, and identify only conflicts
-   whose interpretation could change the revised contract. Ask only when the revision direction, affected
-   scope, ADR decision, or supersede action remains materially ambiguous. An explicit user instruction already
-   settles the stated decision; do not replay the conversation or ask for ceremonial reconfirmation.
+   whose interpretation could change the revised contract. Apply `feature-init`'s conversational-judgment rule;
+   settled corrections proceed without ceremonial reconfirmation.
    When a decision is required, report one compact `Scope stop`: discovered delta, mismatch with the
    accepted boundary, current necessity, recommended remove/narrow/child/revise direction, and the smallest
    useful decision set. Do not continue the delta until the user decides.
 6. When the revision changes the accepted impact boundary, current-consumer/necessity trace, or delivery
-   shape, rerun the `feature-init` impact/necessity and scope-viability checks before drafting. If it
+   shape, proportionately reapply only the affected `feature-init` impact/necessity and scope-viability
+   questions before drafting, keeping routing and unrelated settled decisions intact. If it
    introduces another independently acceptable, shippable, and revertible outcome without mandatory
    coupling, ask the user to create a child feature or explicitly accept the bundled-delivery risk. When
    the outcome is deferred to a child, record the boundary in plan Prior decisions when it needs durable
@@ -120,8 +120,8 @@ When the auditor boundary applies, follow the canonical [reviewer execution cont
 
 ## Validation
 
-- Ask decision questions only for unresolved ambiguity. Draft and audit the synchronized contents before apply;
-  do not add a second confirmation when the current request already authorizes the revision.
+- Apply the canonical conversational-judgment rule to decision questions. Draft and audit the synchronized
+  contents before apply; the current request's revision authorization remains in effect.
 - Decision closure reconciles material current-conversation corrections before drafting; it creates no new
   approval state and never turns already settled decisions into another question set.
 - Confirm the next implementation step. Rerun [`spec-quality-check`](spec-quality-check.md) whenever scope

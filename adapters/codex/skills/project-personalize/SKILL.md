@@ -9,20 +9,18 @@ Match the user's language and preserve file language. Read [`../../../../docs/ac
 
 - Include dotfiles in target inspection, excluding version-control metadata from content classification. Classify the six baseline destinations and inspect other content only far enough to identify project evidence. All destinations absent plus only incidental material redirects to `$project-init`; all six matching plus only incidental material is N/A; project evidence or any partial/custom/occupied destination stays here. Ask one focused routing question only when the distinction is genuinely ambiguous.
 - Resolve the plugin root as the nearest ancestor of this skill containing `.codex-plugin/plugin.json`. Stage missing baseline files with its `scripts/materialize-project-baseline.cjs`.
-- Under the shared execution contract, dispatch fresh general subagents for applicable [`codebase-explorer`](../../../../docs/reviewers/codebase-explorer.md), [`tech-researcher`](../../../../docs/reviewers/tech-researcher.md), or [`decision-completeness-auditor`](../../../../docs/reviewers/decision-completeness-auditor.md) boundaries. Each subagent reads its canonical spec; the main session reads it only for fallback. The user makes final technical choices.
+- Under the shared execution contract, dispatch fresh general subagents only at the canonical
+  [`codebase-explorer`](../../../../docs/reviewers/codebase-explorer.md),
+  [`tech-researcher`](../../../../docs/reviewers/tech-researcher.md), or
+  [`decision-completeness-auditor`](../../../../docs/reviewers/decision-completeness-auditor.md) boundaries.
+  Each subagent reads its canonical spec; the main session reads it only for fallback.
 - Read [`../../../../docs/actions/project-personalize-reference.md`](../../../../docs/actions/project-personalize-reference.md) only when repository evidence or a user decision makes one section relevant. It supplies examples, never defaults.
 - Preserve host-private rules/hooks unless explicitly selected. Do not copy host-private rules/hooks/tier examples by default.
 - Do not run architecture-design conversational fill here. Report relevant repository and accepted-decision evidence, and route material architecture changes to `$feature-init`.
-- Use the canonical Evidence-led Decision Conversation: present Observed / Proposed / Unresolved, ask dependent
-  decisions in sequence while closely related independent questions may be grouped, and update the staged draft
-  without restating settled evidence.
-- When structure/guidance scope is selected, run the canonical bounded Guidance Placement survey. Propose
-  nested guidance only for a durable clear-subtree difference that is costly/unsafe to infer and not product,
-  temporary, inherited, or better enforced mechanically. Prefer tier over duplicate module files; require
-  evidence before moving a root rule; use exactly `@AGENTS.md` in an adopted nested Claude alias. Include all
-  proposed create/move/delete paths in the staged summary; never create files for symmetry.
-- Preflight the staged changes and apply them under the current request's authorization. Ask only for a material
-  unresolved policy choice or different/external write. Conflict, symlink, or blocking audit leaves the target unchanged.
+- Use the canonical evidence-led conversation and Guidance Placement rules; choose natural or structured
+  presentation according to the number of findings and keep only affected choices pending.
+- Preflight and apply the staged changes under the current request's authorization and canonical decision
+  conversation. Conflict, symlink, or blocking audit leaves the target unchanged.
 - Do not rewrite feature history or commit.
 
-Report only changed or newly confirmed commands/scopes, source/test paths, project-specific rules/boundaries, tier ownership, changed files, hook status, unresolved decisions, and exceptions. Compress each successful applicable `Reviewer execution` to one line; do not restate unchanged evidence. Conclude that the working agreement is aligned for direct work or `$feature-init` without claiming an architecture-quality verdict.
+Report the canonical compact result and applicable `Reviewer execution` without adding an adapter-specific schema.

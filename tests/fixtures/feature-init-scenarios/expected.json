@@ -19,7 +19,8 @@
     "shape": null,
     "mustRetainTodoMarker": false,
     "forbiddenPlantPatterns": [],
-    "sentinel": "docs/specs/changes/002-existing-thing/tasks.md"
+    "sentinel": "docs/specs/changes/002-existing-thing/tasks.md",
+    "expectedBehavior": "应沿用仓库现有约定直接完成内部整理，并以 proportionate checks 收尾。"
   },
   "no-artifact-typo": {
     "base": "base-numbered",
@@ -231,6 +232,13 @@
     "prompt": "feature-init provider-scope-cleanup: 删除共享旧字段后，还计划分别改文档、人员、项目、资讯和产品 Provider；每个 Provider 都能在共享契约兼容期内独立验收、启用和回退。",
     "interactionOnly": true,
     "expectedBehavior": "必须识别共享契约切换与各 Provider rollout 中可独立交付的结果，在创建产物前报告 split-required/pending-selection 并询问先做哪个 child；不得直接创建一个总 feature。",
+    "sentinel": "docs/specs/changes/002-existing-thing/tasks.md"
+  },
+  "direction-concern-ask": {
+    "base": "base-numbered",
+    "prompt": "feature-init notification-delivery: 为现有应用增加低频站内通知。方案 A 复用现有数据库和进程内调度；方案 B 新增消息队列、独立 worker 和重试基础设施。两者都满足当前行为，尚未决定要现在就承担哪种复杂度。",
+    "interactionOnly": true,
+    "expectedBehavior": "必须注意到两个方案会把项目带向明显不同的长期负担，说明顾虑并推荐复用现有能力，然后问一个推进所需的关键问题；方向明确前保持 Route pending 且不得创建 artifact。不得把分析责任丢给用户、降级为普通实施时 TODO，或因未来可能扩展而默认引入队列/worker。",
     "sentinel": "docs/specs/changes/002-existing-thing/tasks.md"
   }
 }

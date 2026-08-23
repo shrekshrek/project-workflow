@@ -199,7 +199,7 @@ artifact 前关闭会改变范围、所有权、授权、数据处置或发布�
 | 用 Resend 不用 SES:已有 Resend 账号,SES 要跑域名验证;来源=user confirmation 2025-02-06 | 用 Resend |
 
 **为什么**:非显然技术选择、外部来源解释、冲突/bundled-risk 裁决或 supersede 决定如果不带原因,
-AI 在实施中遇到问题会**重新打开讨论**(`要不要换 SES?`)。带原因 = 关闭讨论。普通 Outcomes、Scope、
+AI 在实施中容易丢失判断上下文。记录原因和来源可避免无依据重问，也支持后续基于证据判断。普通 Outcomes、Scope、
 Constraints、Exclusions 仍由 spec.md 单独拥有,不复制到本节;没有需追踪决定时可省略该节或自然说明无。
 
 **关键纪律 —— 选择性当场写回**:讨论中形成上述需持久追踪的决定时,**立刻**追加到 plan.md §3,
@@ -278,7 +278,7 @@ Verification 只保留尚未被阶段检查覆盖的跨阶段/最终证据，不
 | §4 Verification | "怎么机验?本次最关键的成功与错误路径是什么?用哪个最小测试层级就能证明主要风险?"(→ §3.7 Q3 可测)|
 | §2 Scope(末轮)| "现在你知道边界了——本次**明确不做**的实质边界是什么?"(→ §3.7 Q2 必有"不做")|
 | 多边界 / 架构型 / 实质高风险边界 | "谁现在使用?哪些责任或契约必须一起变化?耦合和回滚边界是什么?什么发现会触发暂停?"(→ §3.7 Q7c/Q7d)|
-| 多边界 FULL 实施顺序 | "哪些责任、契约、状态或用户结果值得在依赖工作开始前独立检查?用哪个最小 focused check 证明?重要阶段的退出条件与下一个 consumer 是什么?"(→ §3.7 Q7a/Q7d)|
+| 多边界 FULL 实施顺序 | "哪些责任、契约、状态或用户结果值得在依赖工作开始前独立检查?用哪个最小 focused check 证明?重要阶段的退出条件与下一个 consumer 是什么?"(→ §3.7 Q7a)|
 
 #### 用户不确定某节技术选型时
 
@@ -399,10 +399,11 @@ Draft / Filled / Validated **本质同档**(自由编辑);Frozen / Revised **本
 | **小**(临时方案、补丁) | `tasks.md` 实施记录 | 写一行,不改 spec/plan;无需走 SOP |
 | **中**(plan 选型 / 模块边界 需调整) | `plan.md`(可能含 module AGENTS.md)| **走 [workflow.md §3.5](workflow.md#35-开发中发现-specplan-错怎么办) SOP**(修订记录 + 跨文件同步;模块边界变化满足 `ADR_REQUIRED`);若涉模块边界变化,加走 [§2.6](workflow.md#26-module-中途变更feature-实施中发现边界要调整) |
 | **大**(scope / outcomes 实际跟想做的不一样) | `spec.md` § 1/2(经 SOP)| **走 [workflow.md §3.5](workflow.md#35-开发中发现-specplan-错怎么办) SOP**;若大到 outcomes 跑偏,起新功能目录 `<NNN+1>-<slug>/` 引用旧的(见 §5) |
-| **Scope delta**(出现未声明持久状态/API/角色/工作流/管理面/队列/runtime/Provider/迁移/授权/发布边界) | 对照已接受的 Scope / Constraints / Module Impact 和条件式边界 | 立即停实现并分类:`necessary-detail` 留在原 outcome;`contract-correction` 走 `/spec-revise`;`separable-outcome` 拆 child;`speculative-capability` 删除/延期;`bundled-risk` 需具体 coupling + 用户接受 |
+| **Scope delta**(出现未声明的实质契约或责任边界变化) | 对照已接受的 Scope / Constraints / Module Impact 和条件式边界 | 暂停会加深返工的工作并分类:`necessary-detail` 留在原 outcome;`contract-correction` 走 `/spec-revise`;`separable-outcome` 拆 child;`speculative-capability` 删除/延期;`bundled-risk` 需具体 coupling + 用户接受 |
 
 这里的“立即停”发生在继续为 delta 写生产代码、测试、migration 或兼容层之前。AI 先报告 delta、既有边界
-差异、当前必要性和推荐的删除/收窄/child/revise 方向;只有方向确需用户决定时才询问。
+差异、当前必要性和推荐的删除/收窄/child/revise 方向；继续推进可能做错目标或走向实质不同方向时，
+自然询问恢复所需的问题。已有选择沿用 [`workflow.md` §3.1](workflow.md#31-规划阶段) 的沟通原则。
 同一 outcome/边界内的 `necessary-detail` 或保持契约的更简单实现直接继续。
 已经写出的代码/测试不构成收编理由;full lane 也不例外。
 

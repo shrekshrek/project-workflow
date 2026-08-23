@@ -200,7 +200,7 @@ Most work does **not** use all nine actions. Initialize once, then use the daily
 |---|---|---|
 | Once, baseline-compatible target | `project-init` | Create the neutral six-file project baseline without disturbing incidental content. |
 | Once, project evidence or partial/custom baseline exists | `project-personalize` | Establish or adapt the evidence-backed project agreement; when structure/guidance scope is selected, propose evidence-backed root/tier/module placement without creating files for symmetry. |
-| Per proposed change | `feature-init` | Assess impact and uncertainty, then choose DIRECT, LIGHT, or FULL. Material unknowns pause before artifact creation; undeclared direction changes pause during implementation. Reused accepted FULL artifacts first pass a semantic implementation-readiness recheck, then retain their lane/lifecycle gates. |
+| Per proposed change | `feature-init` | Choose DIRECT, LIGHT, or FULL, discuss only direction-changing uncertainty, and carry the accepted boundary into implementation. Reused accepted FULL artifacts retain their lane/lifecycle gates after a semantic readiness recheck. |
 | Full lane only | `spec-quality-check` | Reconcile accepted requirements and gate the completed artifact before implementation. |
 | End of tracked change | `feature-done` | Establish the Git feature boundary, validate one stable snapshot with proportionate L1 and risk-scheduled full-lane L2/L3, and write one compact receipt. |
 | Periodic sweep | `feature-archive` | Merge pending current truth and move delivered changes out of the active tree. |
