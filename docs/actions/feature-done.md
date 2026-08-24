@@ -9,8 +9,8 @@ Canonical endpoint action for deciding whether a feature is ready and recording 
 
 This action owns the endpoint gate: completion preflight, L1, full-lane L2/L3, current-truth check,
 and delivery receipt. Adapters implement it as one entry point.
-Each gate run reviews one stable final snapshot and returns its terminal verdict. A readiness check ends there;
-finish/delivery intent follows the bounded repair rule under Reviewer Execution.
+Each gate run reviews one stable final snapshot and returns its terminal verdict. It never repairs
+implementation or non-receipt artifacts; a non-READY verdict returns control to the user.
 
 ## Completion Preflight
 
@@ -110,16 +110,10 @@ useful, keep a dated one-line attempt summary in the implementation record. A no
 Run applicable review only after L1 passes, under the shared
 [reviewer execution contract](../reviewers/README.md#reviewer-execution-contract). Missing applicable execution
 evidence blocks `READY`; an allowed N/A is an applicability decision. Finish implementation and non-receipt
-artifact edits first. Reviewers are read-only; the enclosing finish/delivery workflow owns the one permitted repair
-pass and fresh gate run. A readiness check ends at the verdict. A second non-READY verdict, material decision,
-external/destructive write, or unavailable prerequisite returns to the user.
-
-The bounded repair pass records the first snapshot and repair delta, reruns affected L1 evidence, and creates a
-fresh final snapshot. Same-run repair-delta reconciliation applies when the prior role report declared complete
-coverage, every blocker maps to `direct-repair`, the delta stays within named finding paths/evidence, and the spec,
-conventions, feature boundary, and runtime contract are unchanged. A fresh same-role reviewer rechecks all findings
-and delta-affected obligations and returns a terminal verdict for the complete final snapshot. Other repairs use a
-fresh full review; reconciliation state exists only for the current run.
+artifact edits first. Reviewers and this action are read-only outside endpoint-owned receipt/status writes.
+A non-READY verdict reports its blockers and `Next` routes, then stops. After separately authorized repair, a
+later explicit invocation creates a new snapshot, reuses only unchanged same-task evidence allowed by the L1
+rules, and reruns affected checks or reviews; uncertainty requires the standard full review.
 
 Treat the accepted feature artifact as the requirements baseline. A visible later material decision routes to
 `spec-revise`; otherwise verify implementation fidelity against that artifact.
@@ -133,8 +127,7 @@ Every Verification obligation has evidence or an explicit gap; missing or unread
 `BLOCKED` with `not-run(review-package incomplete)`. Each evidence entry records obligation, command/assertion,
 `run` or `same-task reuse`, result, relevant-input scope, and original reference. Reviewers consume rather than
 rerun it; missing supplied evidence is `UNRELIABLE`, while an explicit failed/gap entry is a finding. Supply
-Route convention sources to L2 and the change-spec package to L3; eligible same-run repair-delta reconciliation
-also supplies that role's prior terminal report and exact repair delta.
+Route convention sources to L2 and the change-spec package to L3.
 
 For a parallel-scheduled full-lane review, dispatch L2 and L3 together when capacity permits; otherwise use
 sequential fresh dispatch. For ordinary full-lane work, dispatch L3 first; if it passes and the snapshot is unchanged, dispatch L2
@@ -163,15 +156,14 @@ these facts unambiguous:
   baseline for completed reviews and a concise reason for every other state. Add findings, unverified
   obligations, or ambiguities only when non-empty. A full-lane READY needs valid completed L2 and L3 coverage;
   a non-READY ordinary full-lane run may record L2 `not-run(awaiting final L3 candidate)`. Light lane records its verification results and may mark L3
-  `N/A(light lane)`. When a completed review used same-run repair-delta reconciliation, record its prior-report
-  reference and repair-delta identity. Reviewer identifiers and dispatch mode are optional diagnostics; coverage
-  evidence remains required.
+  `N/A(light lane)`. Reviewer identifiers and dispatch mode are optional diagnostics; coverage evidence remains
+  required.
 - `Current truth`: `not-run(non-READY prerequisite)` / no relevant domain doc / aligned / update pending / area
   unresolved. Use `area unresolved` only for durable behavior whose ownership is genuinely unknown.
 - `Open questions`: only unresolved items that affect handoff or release; omit when empty.
 - `Next`: only for a non-READY verdict, classify each blocker or coherent blocker group as `direct-repair`,
   `spec-revise`, `user-decision`, or `separate-boundary`. Keep the route tied to its blocker; repair authority comes
-  from the enclosing finish/delivery request.
+  from separate user authorization after the verdict.
 - `Drift`: only actionable project-convention suggestions already produced by L2; omit when empty. Persist it
   elsewhere only when the user explicitly asks to revise conventions. Guidance-placement suggestions name the
   evidence, proposed root/tier/module/mechanical owner, and whether `agents-md-revise` should handle it. Convention

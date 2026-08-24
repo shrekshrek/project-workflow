@@ -19,6 +19,6 @@ Match the user's language. Read [`../../../../docs/actions/spec-quality-check.md
   population. The same invocation owns reconciliation and Q3-Q7, including applicable Q6 Guidance Placement
   and bounded architecture adequacy; never add a reconciliation or architecture reviewer. `MISMATCH` or
   `SOURCE GAP` is `BLOCKED`.
-- On `READY`, consume an explicit current-request "if this passes, continue implementation" authorization by changing only the top status marker from draft to confirmed, then continue the requested implementation. Pure checks remain read-only; `BORDERLINE` requires explicit acceptance of its concrete risk and follow-up. Never use this authorization to repair artifact content or commit.
+- Apply the canonical verdict, status, and implementation-handoff rules; never repair artifact content or commit.
 Report the canonical reconciliation and verdict compactly, plus blocking findings, any status transition, and
 the next action. Do not add an adapter-specific report schema or narrate every ordinary pass.

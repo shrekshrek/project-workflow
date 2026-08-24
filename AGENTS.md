@@ -76,7 +76,7 @@ scripts/
 ## 修改纪律
 
 - **方法论 vs 工程化分层**:本仓库**只放方法论与 adapter 资产**(`docs/` + `template/` + plugin / skills)。工程化样例(具体栈代码)放在另一个仓库,不进本仓库
-- **Action source of truth**:workflow action 的触发、输入、输出、不变量、验证写在 `docs/actions/`;修改 Claude/Codex skill 前先改对应 action spec
+- **Action source of truth**:workflow action 的触发、输入、输出、不变量、验证写在 `docs/actions/`;修改 Claude/Codex skill 前先改对应 action spec。同一关注点只保留一个 normative owner;新增行为先合并或替换已有规则,adapter、template 和外围文档只保留必要引用或摘要,不复制决策逻辑、条件表或解释;提交前检查第二权威来源和无谓净增。
 - **Reviewer source of truth**:L2/L3/research/audit 的方法写在 `docs/reviewers/`;修改 `adapters/claude/agents/` 或 Codex reviewer 调用前先改对应 reviewer spec
 - **Generated release artifacts**:主分支不保留自包含安装包副本;运行 `node scripts/build-plugin-packages.cjs --check` 验证两端生成包,版本化 release commit 通过全部 CI 后发布到 `plugin-dist`
 - **双端 native adapter**:`adapters/claude/skills/` 是 Claude-native;`adapters/codex/skills/` 是 Codex-native。两边必须保持同一 9-action 集合并引用同名 `docs/actions/`,但 runtime 交互 / subagent / 命令写法分别维护;禁止把一边的 SKILL.md 原样同步到另一边

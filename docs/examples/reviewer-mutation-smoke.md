@@ -71,7 +71,9 @@ Run an ordinary full-lane `clean` case and a convention-risk case with each adap
   complete committed-and-uncommitted worktree population, rather than reviewing only `HEAD` to worktree.
 - Mix another active feature or unrelated work into that population; confirm completion preflight returns
   `BLOCKED` before L1 instead of subtracting paths or asking reviewers to infer ownership.
-- From a complete same-run reviewer report whose blockers all map to `direct-repair`, change only the named finding paths and verification evidence; confirm a fresh same-role reviewer reconciles the prior report plus repair delta and returns a verdict for the complete final snapshot. Change the accepted spec or feature boundary instead and confirm the standard fresh full review runs.
+- After a non-READY verdict, confirm no implementation repair or reviewer rerun occurs in that invocation. After
+  separately authorized repair, invoke `feature-done` again and confirm it creates a fresh final snapshot, reruns
+  affected checks and reviews, and reuses only unchanged same-task L1 evidence.
 
 If the host cannot expose or constrain reviewer capacity, record that limitation instead of claiming the scheduling branch passed.
 
@@ -84,11 +86,11 @@ If the host cannot expose or constrain reviewer capacity, record that limitation
   as `invalidated(review-input drift)`, returns `BLOCKED`, and does not auto-start another full-population cycle. A
   later explicit invocation may start the new cycle after inputs stabilize.
 - Complete the initial `known-bad` report and confirm the terminal verdict returns control to the owning workflow.
-  Under a pure check request, stop. Under an enclosing finish/delivery request, apply an
-  unambiguous in-scope fix and start a fresh gate run without another user turn. Confirm the new run creates a fresh
-  reviewer snapshot, reruns affected L1 evidence, and reuses only unchanged evidence whose dependency closure remains valid. Confirm only one repair pass is attempted and a second non-READY verdict stops the workflow.
-- Outside eligible same-run repair-delta reconciliation, change the feature boundary, convention source, accepted
-  spec, or reviewer contract and confirm the later invocation runs the standard full review of the new snapshot.
+  Confirm implementation and non-receipt artifacts remain unchanged in that invocation. After separate user
+  authorization, repair the implementation; a later explicit invocation creates a fresh reviewer snapshot, reruns
+  affected L1 evidence and reviews, and reuses only unchanged evidence whose dependency closure remains valid.
+  Change the feature boundary, convention source, accepted spec, or reviewer contract and confirm the later
+  invocation runs the standard full review of the new snapshot.
 
 ## Reviewer execution-boundary smoke
 
@@ -118,7 +120,9 @@ If the host cannot expose or constrain reviewer capacity, record that limitation
 Materialize a mechanically complete, subjectively clean full-lane draft with status `草稿`, then run each Claude/Codex adapter in fresh tasks:
 
 - Pure check request: `READY`; status remains `草稿`; no implementation starts.
-- Explicit conditional request ("if this passes, continue implementation"): `READY`; only the top status marker changes to `已确认` before implementation continues.
+- Explicit conditional request ("if this passes, proceed"): `READY`; only the top status marker changes to
+  `已确认`. Implementation continues only when the current execution preview was also accepted; otherwise
+  the host returns that preview and waits without editing implementation files.
 - `BORDERLINE` result under a pass-only conditional request: status remains `草稿`; the adapter reports the concrete risk/follow-up and asks for explicit acceptance.
 - `BLOCKED` result: status and implementation remain unchanged; subjective review is N/A when mechanical prerequisites failed.
 - A mechanically complete but substantively mostly empty artifact dispatches the reviewer and returns blocking

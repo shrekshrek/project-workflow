@@ -13,7 +13,7 @@ copying its decision table or inventing a second gate.
 
 | Concern | Normative owner | Downstream use |
 |---|---|---|
-| Impact/necessity, DIRECT/LIGHT/FULL routing, scope viability, implementation scope stop, and planning-time minimum evidence | [`feature-init`](feature-init.md) | `spec-quality-check` verifies the full-lane artifact applied the accepted boundary; `feature-done` compares the actual change with it |
+| Impact/necessity, DIRECT/LIGHT/FULL routing, scope viability, the execution preview and phase handoffs, implementation scope stop, and planning-time minimum evidence | [`feature-init`](feature-init.md) | `spec-quality-check` verifies the full-lane artifact applied the accepted boundary and preserves the preview handoff; `feature-done` compares the actual change with it |
 | Bidirectional requirements reconciliation and pre-implementation full-lane quality | [`spec-quality-check`](spec-quality-check.md) | The spec-quality reviewer supplies the assessment method; it does not own routing or implementation scope. A defensive applicability check hands a pending frozen-contract correction to `spec-revise` before review |
 | Frozen-contract correction, reopening, and synchronized scope-delta handling | [`spec-revise`](spec-revise.md) | It reuses `feature-init` viability rules only when the accepted boundary changes |
 | Actual-diff completion preflight, L1/L2/L3 aggregation, current-truth decision, and delivery receipt | [`feature-done`](feature-done.md) | Reviewers consume the action-owned snapshot and never add a delivery layer |

@@ -314,8 +314,8 @@ Prior decisions，也不会因为缺少第二份记录而产生 `SOURCE GAP`。
 | 7c | 每个新增持久状态、API、角色、工作流、管理面、队列或 runtime component 是否有当前 consumer,且当前 outcome 没有它就无法安全完成?| 只有未来可能性 → 删除或按用户意愿持久延期;不要用“更完整”代替当前必要性 |
 | 7d | 普通工作是否由 Scope / Constraints / Module Impact / Verification 形成清晰边界?多边界、架构型或实质高风险工作是否额外写清耦合、回滚边界和 scope-growth triggers?| 缺失或不完整就先修订；有可拆结果则拆，不可拆则写具体 coupling 和接受风险 |
 
-**Gate 语义**：failed 阻断实施；borderline 需要记录并接受具体风险；全部通过后，只有当前请求已授权
-继续实施时才把 `草稿` 改为 `已确认`。Domain References/Delta 仅在已有 current-truth 文档时检查，
+**Gate 语义**：failed 阻断实施；borderline 需要记录并接受具体风险；全部通过后，只有当前请求要求
+通过后继续时才把 `草稿` 改为 `已确认`。真正开始实施还需要当前预计执行方案已在对话中获得认可;否则 gate 只返回方案并等待。Domain References/Delta 仅在已有 current-truth 文档时检查，
 ADR 仍按 `ADR_REQUIRED` 条件创建。
 
 **跟 [workflow.md §3.5](workflow.md#35-开发中发现-specplan-错怎么办) 的关系**:本节是 **pre-implementation 自检**(便宜阶段),§3.5 是 **mid-implementation 修订**(贵阶段)。两者都不可省。
@@ -395,7 +395,7 @@ Draft / Filled / Validated **本质同档**(自由编辑);Frozen / Revised **本
 已经写出的代码/测试不构成收编理由;full lane 也不例外。
 
 多边界 FULL feature 在真实依赖或风险需要时使用少量可验证阶段。完成一个可检查的责任、契约、状态或
-用户结果后，立即运行最小相关检查，把结果记在现有 task 上，再进入依赖工作。focused check 失败时
+用户结果后，立即运行最小相关检查，把结果记在现有 task 上，交接结果和下一阶段，经用户继续后再进入依赖工作。focused check 失败时
 留在当前阶段修复并重跑受影响证据；同一失败没有新诊断证据地重复时停止并报告 blocker。依赖或
 回滚风险明显的重要阶段可写退出条件、下一个 consumer 和最小 focused evidence。L2/L3 与 Proof Bundle
 由 `feature-done` 执行。
@@ -434,14 +434,14 @@ Draft / Filled / Validated **本质同档**(自由编辑);Frozen / Revised **本
 | 状态 | 含义 | 能否指导新实施? | 谁来标 |
 |---|---|---|---|
 | `草稿` | 仍在迭代 | 否 | `/feature-init` 创建时默认 |
-| `已确认` | 用户接受,实施开始,契约冻结 | ✅ 本 feature | 用户明确授权;可由 READY gate 消费“通过就继续”的条件授权 |
+| `已确认` | artifact 可实施,契约冻结;实际开始仍以当前执行方案获得认可为准 | ✅ 本 feature | 用户明确要求通过后继续时可由 READY gate 标记;gate 不代替方案交接 |
 | `已实现` | 契约被代码兑现;若仍未归档,重大契约/plan/Verification 遗漏可经 `/spec-revise` 退回 `已确认` | 仅作历史;正式重开后恢复为本 feature 指引 | `feature-done` READY 时 |
 | `已取代`(superseded) | 方向被后续 spec / ADR / current truth 替代 | ❌ | `feature-archive` / `spec-reconcile` |
 | `已废弃`(abandoned) | 方向错误或不再需要,中途停止 | ❌ | `feature-archive` / `spec-reconcile` |
 
 **物理归档是主机制,状态标记是辅助**:`docs/specs/changes/` 只放**进行中**的变更;交付收尾时用普通目录移动将整目录放进 `docs/specs/changes/archive/`(`/feature-archive` 默认清扫模式批量处理,full lane / light lane 一视同仁)。普通移动同时兼容 tracked/untracked artifact,Git 在提交时仍可识别 rename。理由:检索工具(grep / glob)尊重目录边界,不读文件顶部的状态行——只靠就地标记,agent 搜关键词照样命中旧 change 正文。目录隔离 + AGENTS.md 一行"检索现状排除 changes/archive/",才是机械可靠的注意力防线。
 
-**重开边界**:`已实现` 不是日常可编辑状态。只有 feature 仍在 active tree、尚未归档且发现会改变交付判断的重大契约、plan 或 Verification 遗漏时,才能运行 `/spec-revise`:保留旧 receipt、退回 `已确认`、修订后重新走交付门禁。若契约不变而实现回归,修复实现并 fresh-run `feature-done`;明确的做完/交付请求可在同一授权下完成最多一次直接修复与复验，纯检查请求需要再次明确调用。端点保存旧 receipt、写新 verdict,非 READY 时退回 `已确认`。已进入 `archive/` 的 feature 永久只读,后续变化必须建立 successor change。
+**重开边界**:`已实现` 不是日常可编辑状态。只有 feature 仍在 active tree、尚未归档且发现会改变交付判断的重大契约、plan 或 Verification 遗漏时,才能运行 `/spec-revise`:保留旧 receipt、退回 `已确认`、修订后重新走交付门禁。若契约不变而实现回归,另行确认后修复实现，再显式运行 `feature-done`。端点只审查稳定快照、保存旧 receipt、写新 verdict,非 READY 时退回 `已确认`。已进入 `archive/` 的 feature 永久只读,后续变化必须建立 successor change。
 
 **标记规则**:改状态标记 + 在文件顶部加一行指向替代物(新 spec / ADR / `docs/specs/<area>.md`)的链接,**不改正文、不删目录**。没有"历史基础"这类中间状态——若旧 spec 里的数据模型 / API / 基础设施仍有效,把这些**事实提炼进 `docs/specs/<area>.md`**,spec 本身照常归档;把旧 spec 留在活动区当参考,正是历史污染的入口。
 

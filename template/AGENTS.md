@@ -19,6 +19,9 @@ This file is the cross-tool source of truth for working in this repository. Keep
 ## Change Workflow
 
 - Make tiny, local, low-risk fixes directly, including reversible behavior work not declared in current truth, and report the checks run.
+- Before the first implementation edit, give the user a proportionate preview of the intended outcome,
+  approach, boundary, rationale, verification, and meaningful phases. After each phase, report its result,
+  evidence, deviations, and next phase, then wait before continuing.
 - When a proposed implementation may need tracked acceptance, cross-session handoff, current-truth synchronization, or contract/risk protection, use the host's `feature-init` action to check whether the request is one independently deliverable outcome or needs decomposition before returning DIRECT/no artifact, LIGHT/tasks-only, or FULL/spec-plan-tasks. An explicit feature-routing question uses read-only PREVIEW; general discussion/review/diagnosis without that question does not invoke the action. Only authorized LIGHT/FULL APPLY creates an artifact; DIRECT creates none and an enclosing implementation request continues.
 - Resolve current behavior from `docs/specs/` and the selected active feature; exclude `docs/specs/changes/archive/` unless tracing history.
 - If direct or light work grows into contract-shaped, cross-module, architecture, data, security, or other high-risk scope, stop and upgrade the lane before continuing.

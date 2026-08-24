@@ -47,7 +47,7 @@ Also classify execution authorization independently:
 - `PREVIEW`: report the proposed route and reasons, but create or modify nothing. A read-only request that explicitly asks for feature routing always uses this mode; general discussion/review/diagnosis without that request does not invoke the action.
 - `APPLY`: apply the route to feature artifacts when the user explicitly requested artifact initialization or implementation/change. `APPLY` authorizes only the artifact work owned by this action; this action still writes no implementation code.
 
-Keep the action boundary separate from the enclosing task's continuation. An artifact-initialization-only request stops after this action reports/materializes its route. For an original implementation/change request, completion returns control to that request without another confirmation: `DIRECT/APPLY` continues implementation immediately, `LIGHT/APPLY` continues after `tasks.md` is created, and `FULL/APPLY` proceeds through `spec-quality-check` before implementation under that gate's authorization rules. The feature-init action itself never edits implementation code.
+Keep the action boundary separate from the enclosing task's continuation. An artifact-initialization-only request stops after this action reports/materializes its route. An implementation/change request authorizes routing and required artifact preparation, not an unseen implementation approach. Before the first implementation edit for a feature or direct change, present a proportionate, self-contained execution preview of the intended outcome, approach and change boundary, key rationale, verification direction, and meaningful phases when more than one is useful, then wait for the user's acceptance. Acceptance starts the first phase; later phases use the handoff below. A material departure uses **Implementation Scope Stop**. The feature-init action itself never edits implementation code.
 
 A blocking impact/necessity, scope-viability, or selection decision remains `Route: pending` until the required answer, selection, or acceptance exists; `pending` is not a fourth completed route and never authorizes materialization. Resolve an existing active feature that covers the same outcome before allocating a number. Reuse it when compatible, route accepted-spec implementation as `DIRECT`, and never create a duplicate merely because `feature-init` was invoked.
 
@@ -172,13 +172,13 @@ without a stop report.
 Use a dependency-ordered phase at a real dependency or risk checkpoint. Each phase closes an inspectable
 responsibility, contract/state transition, or actor-to-result segment.
 
-After a meaningful phase is implemented, run the smallest relevant check and record the result on its existing
-task before starting work that depends on it. Fix a failure in that phase and rerun only affected evidence; if
-the same failure repeats without new diagnostic evidence, stop and report the concrete blocker. At a phase
-boundary or after context/session resume, re-read the accepted behavior, applicable delivery boundary, Verification,
-and remaining tasks. A material mismatch invokes Implementation Scope Stop before dependent work; aligned
-ordinary details continue. L2/L3 dispatch, lifecycle status, and receipts remain endpoint concerns. A small or
-direct result proceeds under its existing task and final evidence.
+Within the current phase, fix a failure and rerun only affected evidence; if the same failure repeats without
+new diagnostic evidence, stop and report the concrete blocker. After a meaningful phase, run its smallest
+relevant check, update its existing task, and return a compact handoff naming the closed result and evidence,
+any material deviation, and the next proposed phase. Wait for the user before beginning that phase. At the
+handoff or after context/session resume, re-read the accepted behavior, applicable delivery boundary,
+Verification, and remaining tasks; a material mismatch invokes Implementation Scope Stop. L2/L3 dispatch,
+lifecycle status, and receipts remain endpoint concerns. A small or direct result may be one phase.
 
 ## Outputs
 
@@ -189,9 +189,10 @@ artifact disposition, and actual next step unambiguous; a fixed report layout is
 - `Execution`: `PREVIEW` / `APPLY`.
 - `Reason`: concrete evidence for why `DIRECT` is sufficient, which durable consumer prevents `DIRECT` and triggers `LIGHT`, or which contract/high-risk condition triggers `FULL`. Do not use an unexplained label such as "durable change".
 - `Feature`: `none`, `create=<path>`, or `reuse=<path>`.
-- `Next gates`: the actual remaining sequence. For `Feature: none`, an enclosing `DIRECT/APPLY` implementation
-  request continues to implementation → proportionate direct checks. For `Feature: create=<path>`, light uses
-  implementation → `feature-done`, while full uses `spec-quality-check` → implementation → `feature-done`.
+- `Next gates`: the actual remaining sequence; every implementation path includes the execution preview and,
+  when applicable, phase handoffs above. For `Feature: none`, use implementation →
+  proportionate direct checks. For `Feature: create=<path>`, light uses implementation → `feature-done`, while
+  full uses `spec-quality-check` → implementation → `feature-done`.
   For `Feature: reuse=<path>`, derive the sequence from that artifact's lane and lifecycle instead of from the
   `DIRECT` no-creation label: draft full begins with `spec-quality-check`; accepted full first rechecks that
   its accepted outcome/boundary remain current and its Verification/tasks are actionable, then uses
@@ -280,9 +281,9 @@ report the conflict and rerun feature-init to recompute it.
     when applicable, unresolved placeholders, evidence, and next gates.
 13. If the original request was implementation/change rather than artifact initialization alone, complete the
    contract-level fill needed for the selected gate and keep genuine low-level choices as bounded implementation-
-   time decisions/tasks. Then return control to the enclosing request:
-   continue after `DIRECT`, continue after light-lane materialization, or invoke `spec-quality-check` for full
-   lane. A reused artifact follows its own lane/lifecycle gates and the semantic readiness recheck in step 4.
+   time decisions/tasks. Then return control through the execution-preview handoff above after `DIRECT` or
+   light-lane materialization, or after `spec-quality-check` permits full-lane implementation. A reused artifact
+   follows its own lane/lifecycle gates and the semantic readiness recheck in step 4.
    This action owns only routing and artifact work,
    so implementation edits occur after it exits.
 
@@ -296,7 +297,8 @@ When the auditor boundary applies, follow the canonical [reviewer execution cont
 - Read-only discussion, assessment, diagnosis, status review, and route preview never write. An explicit routing
   assessment uses `PREVIEW`; artifact initialization or implementation/change intent is required for `APPLY`.
 - Completed route labels are stable: `DIRECT` creates nothing, `LIGHT` creates only `tasks.md`, and `FULL` creates `spec.md` / `plan.md` / `tasks.md`. Invocation itself never changes the route or forces creation.
-- Finishing this action preserves an enclosing implementation/change request. Continue according to the selected route and gate sequence; stop after the route/artifact report only when that was the whole request or a blocking decision remains.
+- Finishing this action preserves an enclosing implementation/change request; the execution-preview and phase
+  handoffs above control when implementation proceeds.
 - Never plant unsupported endpoints, entities, fields, codes, paths, technologies, ownership, or coupling.
   Resolve material unknowns before implementation; keep genuine low-level choices as bounded implementation-
   time decisions/tasks and briefly trace sourced prefill.

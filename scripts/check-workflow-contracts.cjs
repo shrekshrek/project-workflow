@@ -42,13 +42,16 @@ requirePatterns("docs/actions/feature-init.md", [
   ["three routes", /`DIRECT`[\s\S]*`LIGHT`[\s\S]*`FULL`/],
   ["preview and apply", /`PREVIEW`[\s\S]*`APPLY`/],
   ["scope stop", /Implementation Scope Stop/],
-  ["phase check", /dependency or risk checkpoint[\s\S]*smallest relevant check/i],
+  ["phase check", /dependency or risk checkpoint[\s\S]*smallest\s+relevant check/i],
+  ["phase handoff", /After a meaningful phase[\s\S]*compact handoff[\s\S]*Wait for the user/i],
   ["tracking is not a child prerequisite", /External tracking is never a prerequisite/i],
   ["pre-draft decision closure", /Before drafting a full-lane artifact[\s\S]*ceremonial reconfirmation/i],
+  ["pre-implementation execution preview", /Before the first implementation edit[\s\S]*execution preview[\s\S]*user's acceptance/i],
 ]);
 forbidPatterns("docs/actions/feature-init.md", [
   ["mandatory risk-size labels", /small, medium, large, or extra-large/i],
   ["legacy required handoff blocker", /required decision, selection, or handoff/i],
+  ["legacy automatic implementation continuation", /returns control to that request without another confirmation/i],
 ]);
 
 requirePatterns("docs/actions/spec-quality-check.md", [
@@ -59,6 +62,7 @@ requirePatterns("docs/actions/spec-quality-check.md", [
   ["frozen correction handoff", /`N\/A\(route: spec-revise\)`[\s\S]*before mechanical checks or reviewer dispatch/i],
   ["direct correction evidence", /exact user statement[\s\S]*normalized[\s\S]*supersedes/i],
   ["quality consumes decision closure", /decision closure[\s\S]*does not replay product[\s\S]*reopen a settled choice/i],
+  ["quality preserves execution preview", /Continue into implementation only[\s\S]*execution preview[\s\S]*accepted/i],
 ]);
 forbidPatterns("docs/actions/spec-quality-check.md", [
   ["forced empty decision token", /N\/A\(no durable why\/source decision\)/i],
@@ -84,7 +88,7 @@ requirePatterns("docs/actions/feature-done.md", [
   ["review layers", /^## Review Layers$/m],
   ["delivery receipt", /^## Delivery Receipt/m],
   ["stable snapshot", /stable final snapshot/i],
-  ["bounded finish flow", /readiness check ends[\s\S]*Finish\/delivery intent[\s\S]*one[\s\S]*repair[\s\S]*fresh gate run[\s\S]*second non-READY verdict/i],
+  ["terminal endpoint handoff", /Each gate run reviews one stable final snapshot[\s\S]*never repairs[\s\S]*non-READY verdict returns control/i],
   ["L1 L2 L3", /L1 Mechanical:[\s\S]*L2 Project conventions:[\s\S]*L3 Change-spec compliance:/],
   ["full review scheduling", /L2 Project conventions: required for full lane[\s\S]*parallel-scheduled full-lane review[\s\S]*dispatch L2 and L3 together[\s\S]*ordinary full-lane work[\s\S]*dispatch L3 first[\s\S]*dispatch L2[\s\S]*same snapshot/i],
   ["review input separation", /authoritative convention population from the filesystem[\s\S]*`AGENTS\.md`[\s\S]*Caller-supplied[\s\S]*hints only[\s\S]*Route convention sources to L2 and the change-spec package to L3/i],
@@ -108,18 +112,11 @@ requireTerms("docs/actions/feature-done.md", "mechanical feature boundary", [
   "population as indivisible",
   "before expanded L1",
 ]);
-requireTerms("docs/actions/feature-done.md", "bounded repair delta review", [
-  "same-run repair-delta reconciliation",
-  /prior role report declared complete\s+coverage/,
-  "`direct-repair`",
-  "fresh same-role reviewer",
-  "complete final snapshot",
-  /exists\s+only for the current run/,
-]);
 forbidPatterns("docs/actions/feature-done.md", [
   ["forced primary-flow summary", /primary-flow result/i],
   ["duplicated review-execution receipt", /- `Review execution`:/],
   ["stale reviewer-result reuse after L1 failure", /preserve (?:any )?(?:still-valid )?(?:same-task )?reviewer (?:results|evidence)/i],
+  ["same-run implementation repair", /bounded repair|same-run repair-delta|one permitted repair/i],
 ]);
 
 requirePatterns("docs/spec-driven.md", [
@@ -140,16 +137,10 @@ requirePatterns("docs/reviewers/README.md", [
   ["independent role contracts", /Each role retains its independent canonical contract/i],
   ["single reviewer fallback", /exactly one[\s\S]*execution fallback[\s\S]*only when no terminal result exists/i],
 ]);
-requireTerms("docs/reviewers/README.md", "repair delta fresh review", [
-  "same-run repair-delta reconciliation",
-  "fresh review of a new stable final snapshot",
-  "not reuse of the prior verdict",
-  "cross-task cache",
-]);
 requireTerms("docs/project-workflow-overview.drawio", "current feature-done overview", [
   "机械 Feature 边界",
-  "做完意图最多一次范围内修复",
-  "direct repair 可同轮复核",
+  "non-READY 交回用户",
+  "不在 gate 内修实现",
   "高风险并行,普通先 L3 后 L2",
   "READY → archive pending",
   "明确关闭/归档/提交 → /feature-archive",
@@ -161,6 +152,7 @@ forbidPatterns("docs/project-workflow-overview.drawio", [
 forbidPatterns("docs/reviewers/README.md", [
   ["status-only protocol", /status-only/i],
   ["single terminal-report choreography", /one terminal report/i],
+  ["same-run repair delta", /same-run repair-delta/i],
 ]);
 
 for (const relative of [
@@ -225,7 +217,10 @@ for (const host of ["claude", "codex"]) {
     ["legacy approved-only wording", /user-approved drift fixes|approved drift fixes|approved convention edits/i],
   ]);
   requirePatterns(`adapters/${host}/skills/feature-done/SKILL.md`, [
-    ["canonical endpoint delegation", /Execute the canonical preflight and gate[\s\S]*mechanical Git boundary[\s\S]*bounded repair[\s\S]*review scheduling[\s\S]*repair-delta reconciliation[\s\S]*execution fallback/i],
+    ["canonical endpoint delegation", /Execute the canonical preflight and gate[\s\S]*mechanical Git boundary[\s\S]*stable\s+snapshots[\s\S]*review scheduling[\s\S]*terminal handoff[\s\S]*execution fallback/i],
+  ]);
+  forbidPatterns(`adapters/${host}/skills/feature-done/SKILL.md`, [
+    ["same-run repair delegation", /bounded repair|repair-delta reconciliation/i],
   ]);
 }
 

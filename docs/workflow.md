@@ -791,7 +791,7 @@ project-workflow 对模块**长什么样**有 opinionated 偏好(不强制):
              实施(FULL 按需可验证阶段 / LIGHT 任务清单)+ focused 验证
              (契约真错才 spec-revise)
                          ↓
-              ├─ 明确要求做完:feature-done(机械 Feature 边界 + 最多一次范围内修复 + fresh final verdict) → READY,archive pending
+              ├─ 明确要求做完:feature-done(机械 Feature 边界 + 一个稳定快照 + 一个终态；non-READY 交回用户) → READY,archive pending
               ├─ 明确关闭/归档/提交:READY 后自动衔接 feature-archive → PR/merge
               └─ 延后:提交实现并记录 commit SHA(可来自 PR head) → feature-done
                        → 提交 endpoint outputs → feature-archive sweep
@@ -831,7 +831,7 @@ Full lane 填完后运行 [`spec-quality-check`](actions/spec-quality-check.md)�
 | **环境(hook + LSP)** | 自动监督代码符合规范 |
 
 不要逐文件打断，也不要把方向漂移拖到 `feature-done`。多边界 FULL 仅在真实依赖或风险检查点使用
-少量可验证阶段：关闭一个可检查结果，运行最小 focused check，再进入依赖工作；同一失败无新诊断
+少量可验证阶段：关闭一个可检查结果，运行最小 focused check，交接结果和下一阶段，经用户继续后再进入依赖工作；同一失败无新诊断
 证据地重复时报告 blocker。L2/L3 与 Proof Bundle 仍由 `feature-done` 执行。
 
 实现中的沟通沿用 §3.1。变量命名、普通实现细节和已接受边界内的简化由 AI + hook/L1 自行收敛。

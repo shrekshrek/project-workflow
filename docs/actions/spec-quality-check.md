@@ -40,7 +40,7 @@ before this gate instead of using `spec-revise`.
 - The result of pre-draft decision closure when the current conversation contained multiple material decisions.
   This gate verifies that the artifact faithfully carries those resolved decisions; it does not replay product
   discovery, reopen a settled choice, or ask the user to confirm it again.
-- Whether the current user request explicitly authorizes implementation after this gate passes.
+- Whether the current execution preview is accepted and the request asks to proceed when this gate passes.
 
 Do not rely on remembered chat as the only source across sessions. Before this gate can return `READY`, every
 non-obvious material choice that interprets an external source, resolves a conflict, accepts bundled risk, or
@@ -148,12 +148,15 @@ A Requirements Reconciliation result of `MISMATCH` or `SOURCE GAP` always makes 
 
 `spec.md` status handling:
 
-- If the current request explicitly authorizes implementation contingent on this gate passing (for example, "if the check passes, continue implementation"), `READY` consumes that authorization: change only the top status marker from `草稿` to `已确认`, preserve the rest of the artifact, and continue the requested implementation.
+- If the request asks to proceed when this gate passes, `READY` may change only the top status marker from
+  `草稿` to `已确认`. Continue into implementation only when the current execution preview is also accepted;
+  otherwise preserve the artifact, return the preview, and wait.
 - A pure check/review request remains read-only and reports that `已确认` is still required before implementation.
 - `BORDERLINE` never consumes a pass-only authorization.
   - Reuse a traceable acceptance from the plan when its outcomes and risk are unchanged; do not ask twice.
   - Otherwise require explicit risk acceptance before changing status or implementing.
-  - Risk acceptance is not implementation authorization. A separate current request to implement permits the draft-to-confirmed transition and implementation while the verdict remains `BORDERLINE`.
+  - Risk acceptance is not implementation authorization. A proceed request permits the draft-to-confirmed
+    transition; an accepted preview is still required, and may include the concrete risk to avoid asking twice.
 - An already `已确认` spec needs no status edit. A missing, malformed, or ambiguous status marker blocks an automatic transition.
 
 ## Reviewer Execution
@@ -191,7 +194,6 @@ Run the canonical subjective reviewer under the shared [reviewer execution contr
   it hands that case to `spec-revise` before checks or reviewer dispatch.
 - This gate consumes the decision-closure result through the Requirements Source Map; it does not repeat the
   pre-draft user confirmation step.
-- Conditional implementation authorization permits only the status transition owned by this gate; it does not authorize spec/plan/tasks content repair.
 - Failed checks block full-lane implementation.
 - Requirements reconciliation is bidirectional and fail-closed; current implementation is evidence of
   impact, never authority for a requirement.

@@ -19,7 +19,6 @@ Do not review functional correctness, design taste, feature-spec compliance, gen
 - convention source files
 - the owning action's structured L1 evidence map when a convention rule depends on mechanical evidence; an explicitly empty map is valid when no applicable convention rule has that dependency
 - optional feature/spec path for context only
-- eligible same-run repair-delta inputs defined by the shared reviewer execution contract
 
 For Claude, only project-root `.claude/rules/*.md` may be supplied; user-level `~/.claude/rules/` are excluded unless explicitly selected. Rules with a `paths:` YAML list are scoped; those without it are project-global. Codex uses root/nested `AGENTS.md` and does not translate Claude-private files.
 

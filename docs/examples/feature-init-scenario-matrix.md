@@ -37,15 +37,17 @@ Run this only when skill discovery or lane routing changed. In a fresh host task
 Run these transcript-level cases on both hosts without grading fixture files as model output:
 
 - Ask only "评估这个改动是否需要 feature" for a schema migration. Confirm the explicit routing request triggers `feature-init` despite being read-only. Expect `Route: FULL`, `Execution: PREVIEW`, a concrete schema/migration reason, `Feature: none`, and zero writes/materializer/auditor calls.
-- Ask to implement a local reversible wording fix through `feature-init`. Expect `Route: DIRECT`, `Execution: APPLY`, a concrete no-durable-consumer reason, `Feature: none`, and no feature number or artifact; the enclosing implementation continues in the same task without another confirmation.
-- Ask to implement a change that needs a current-truth update but no contract change. Expect `Route: LIGHT`, `Execution: APPLY`, `Feature: create=<tasks-only path>`, and `Next gates` ending in `feature-done` without `spec-quality-check`; after materialization, the enclosing implementation continues without another confirmation.
+- Ask to implement a local reversible wording fix through `feature-init`. Expect `Route: DIRECT`, `Execution: APPLY`, a concrete no-durable-consumer reason, `Feature: none`, and no feature number or artifact. Before the first implementation edit, expect a one- or two-sentence execution preview and no code change until the user accepts it.
+- Ask to implement a change that needs a current-truth update but no contract change. Expect `Route: LIGHT`, `Execution: APPLY`, `Feature: create=<tasks-only path>`, and `Next gates` ending in `feature-done` without `spec-quality-check`; after materialization, expect the proportionate execution preview and wait before implementation.
 - Ask to implement an API/schema migration. Expect `Route: FULL`, `Execution: APPLY`, `Feature: create=<full-lane path>`, and `Next gates` beginning with `spec-quality-check`.
 - Ask only to initialize an otherwise identical light/full feature artifact. Expect materialization and a route report, but no implementation continuation because artifact initialization was the whole request.
 - Repeat a covered request when a compatible active or accepted feature already exists. Expect
   `Feature: reuse=<path>` and no new number. Confirm `Next gates` come from the reused artifact's lane/status,
   not the `DIRECT` no-creation label: accepted full first passes the semantic implementation-readiness recheck,
-  then continues implementation → `feature-done` without another subjective review; a failure routes through
-  repair/`spec-revise` plus `spec-quality-check`. Draft full begins with `spec-quality-check`, and light continues implementation → `feature-done`. Discussion, diagnosis,
+  then presents the execution preview before implementation → `feature-done` without another subjective review;
+  a failure routes through
+  repair/`spec-revise` plus `spec-quality-check`. Draft full begins with `spec-quality-check`, and light uses
+  the execution preview before implementation → `feature-done`. Discussion, diagnosis,
   reasonableness review, and implementation-status inspection remain read-only even if their preview route is
   `LIGHT` or `FULL`.
 - With an accepted full artifact under implementation, tell the host that one accepted behavior must be
@@ -69,6 +71,11 @@ Run these transcript-level cases on both hosts without grading fixture files as 
   Expect the host to explain the concern, recommend a direction, ask one useful question, and keep `Route:
   pending` before materialization. Contrast it with the existing repository-aligned local-refactor scenario,
   which continues under repository conventions and closes with proportionate checks.
+- After one of the execution previews above, have the user accept it and begin a multi-phase implementation.
+  Expect the first meaningful phase to start. After it closes, expect a compact handoff with result, evidence,
+  material deviation, and the next phase; the next phase waits for the user. Repeat with a small single-phase task
+  and expect no artificial intermediate checkpoint. Introduce a material change to the accepted approach later;
+  expect the existing Scope Stop rather than another preview mechanism.
 
 ## Equivalence interpretation
 
