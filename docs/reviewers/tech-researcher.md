@@ -26,11 +26,12 @@ Use current documentation or web research when library status, versions, mainten
 
 ### Phase 1: Candidate Inventory
 
-List 2-3 mainstream candidates that fit the project context. Exclude obsolete, experimental, or mismatched options.
+Use the smallest credible candidate set that exposes the material choice. Exclude obsolete, experimental, or
+mismatched options unless the context specifically calls for them.
 
 ### Phase 2: Objective Comparison
 
-For each candidate compare:
+Compare the factors that can change this decision, such as:
 
 - short characterization
 - key advantages
@@ -44,34 +45,11 @@ Recommend one default and explain why. Include one "choose another option if..."
 
 ## Output
 
-Use this structure:
-
-```markdown
-# Technical Choice: <topic>
-
-Context: <one sentence>
-
-## Candidates
-
-### 1. <name>
-- Character:
-- Pros:
-- Cons:
-- Fit:
-
-## Recommendation
-
-Pick: <name>
-
-Why: <2-4 sentences>
-
-When to choose differently: <one sentence>
-```
+Return a concise comparison, recommendation, rationale, and the condition that would change it. Use a table or
+prose according to the number and complexity of candidates; omit dimensions that do not affect the choice.
 
 ## Rules
 
-- Keep report under about 60 lines.
 - Do not overwhelm with every feature.
 - State uncertainty when current information could not be verified.
 - Caller routes the recommendation back to the user; this reviewer does not decide.
-

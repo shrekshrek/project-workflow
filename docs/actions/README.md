@@ -20,10 +20,10 @@ copying its decision table or inventing a second gate.
 | Archive eligibility, current-truth merge, and physical lifecycle closure | [`feature-archive`](feature-archive.md) | It consumes the complete `feature-done` receipt and never infers READY from partial or historical fields |
 | Durable root/tier/module guidance maintenance | [`agents-md-revise`](agents-md-revise.md) | Feature actions may select or verify a placement, but do not run a convention-maintenance sweep |
 
-The action specs are the executable contract. Reviewer documents own assessment methods, adapters own
-host execution mechanics, and templates own only the fields materialized into a target project. `README`,
-`quickstart`, `workflow`, and `spec-driven` are explanatory surfaces: they may summarize a rule and link to
-its owner, but must not become an alternative normative source.
+The action specs and Shared runtime conventions below are executable contracts. Reviewer documents own
+assessment methods, adapters own host execution mechanics, and templates own only the fields materialized into
+a target project. Other `README` content, `quickstart`, `workflow`, and `spec-driven` are explanatory surfaces:
+they may summarize a rule and link to its owner, but must not become an alternative normative source.
 
 ## Architecture risk routing
 

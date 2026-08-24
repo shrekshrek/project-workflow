@@ -224,7 +224,7 @@ console, compatibility state, and second Provider:
 
 - Discover that the simplest implementation needs an ordinary private helper inside an already declared
   responsibility area. Confirm it is classified `necessary-detail` and implementation continues without a
-  user question or `Scope stop` narration.
+  user question or stop narration.
 - Propose a reusable Pending state/admin console “for possible future operations.” Confirm implementation
   stops before adding more production code, tests, migrations, compatibility paths, or docs for it; the report
   contains the delta, boundary mismatch, current necessity, recommended removal, and only the questions needed

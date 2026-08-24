@@ -90,12 +90,10 @@ Required checks: seven core quality questions, plus conditional current-truth ch
    decisions show how the proposed architecture satisfies those constraints; this is folded into Q5/Q7c/Q7d,
    not a separate quality question.
 6. When the work makes or changes a sibling-convention choice, the plan records alignment, justified
-   deviation, or codification. Merely touching several modules does not require an alignment table. A `Codify` choice names
-   the durable difference, source, and exact enforcement/placement: root guidance for cross-project rules,
-   tier guidance for a shared runtime-local difference, module guidance only for a real parent exception,
-   or a mechanical lint/hook/test when that is the better owner. Nested guidance repeats no parent text;
-   feature/product semantics remain in spec/plan/ADR. If the project uses nested Claude compatibility,
-   the planned `CLAUDE.md` is exactly a one-line `@AGENTS.md` alias.
+   deviation, or codification. Merely touching several modules does not require an alignment table. A `Codify`
+   choice names the durable difference, source, and exact target. When such a choice exists, read and apply the
+   canonical [Guidance Placement Contract](agents-md-revise.md#guidance-placement-contract); otherwise do not
+   load it.
 7. Delivery shape is viable:
    - Q7a: tasks expose independently actionable or reviewable results where separate decisions or dependency risk warrant it, and include the necessary validation/proof work. Each real dependency or risk checkpoint closes an inspectable result and records its smallest relevant check before dependent work.
    - Q7b: the artifact represents one independently demonstrable, acceptable, and revertible outcome. Size alone never changes the verdict. Separable outcomes are split unless concrete coupling requires one delivery or the plan records an explicit bundled-risk decision and source.

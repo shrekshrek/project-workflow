@@ -113,7 +113,10 @@ Bundle related small changes into one tracked feature when they share a user goa
 
 Infer candidate outcomes from the requested actors, observable results, release boundaries, migrations, and responsibility areas even when the user does not say "independently shippable." Do not split merely because work spans several modules, contains many tasks, or is large. Keep an evident single-outcome decision internal and continue without extra gate narration, even when supplied coupling evidence explains why it stays together. Never report a nonblocking Scope Viability result.
 
-When separability is materially unclear, several independent outcomes need a selection, or the user must accept bundled-delivery risk, surface a compact Scope Viability result with the current outcome, candidate outcomes, coupling evidence or uncertainty, and `clarification-required`, `split-required`, or `bundled-risk-accepted`. Ask only the question set needed to resolve that decision. Use `pending-selection` only when that state applies; do not emit empty fields or an N/A result for the normal single-outcome or no-artifact path. Block materialization until the required decision or selection is complete.
+When separability is materially unclear, several independent outcomes need a selection, or bundled delivery
+needs the user's acceptance, explain the current outcome, candidate outcomes, and concrete coupling evidence
+or uncertainty. Recommend a direction and ask only what is needed to choose it. Do not narrate this check for
+the normal single-outcome or no-artifact path. Block materialization until the required direction is clear.
 
 Broad responsibility, migration, or external-contract surfaces prompt closer scope review, but size alone never requires a split. A large indivisible vertical slice may stay together when its coupling is explicit.
 
@@ -126,19 +129,11 @@ work there. Creating or updating an external item remains a separate write requi
 an available integration; it is not a prerequisite for starting the selected child. A later tracker change affects
 the active feature only after the user accepts it through `spec-revise`.
 
-When the selected outcome creates/changes a tier or module boundary, introduces a durable local exception,
-or chooses `Codify` in Sibling Alignment, resolve **Guidance Placement** inside the existing plan/tasks:
-
-- root `AGENTS.md` for genuinely cross-project rules;
-- tier `AGENTS.md` when sibling modules in one runtime share a difference from the root;
-- module `AGENTS.md` only for a durable exception from its parent;
-- existing plan/spec/ADR for feature/product/decision content that is not a working convention; or
-- lint/hook/test for a rule that is better enforced mechanically.
-
-For a nested guidance target, record the exact target path, the difference-only rule, its evidence/source,
-and whether this project uses the one-line nested `CLAUDE.md` alias. Do not create guidance merely because a
-directory exists, copy parent content, or turn temporary implementation detail into policy. Ordinary features
-with no placement signal remain silent and create no guidance work.
+When the selected outcome creates or changes a tier/module boundary, introduces a durable local exception, or
+chooses `Codify` in Sibling Alignment, read and apply the canonical
+[Guidance Placement Contract](agents-md-revise.md#guidance-placement-contract), then record the exact owner,
+rule, and source in existing plan/tasks. Ordinary features with no placement signal remain silent and do not
+load that contract or create guidance work.
 
 Lane classification happens once per artifact; scope viability and the accepted impact boundary do not
 freeze. Recheck them at `spec-quality-check`, after a material `spec-revise`, and whenever implementation
@@ -163,16 +158,16 @@ Classify the discovery before resuming:
   the user.
 - A simpler implementation that preserves the accepted contract: remove the unnecessary work and continue;
   do not create a revision or follow-up merely to preserve it.
-- A material contract correction, inseparable wider boundary, or other direction concern: present a compact
-  `Scope stop` containing the discovered delta or concern, present necessity, and recommended direction. Ask
-  the focused question needed to resume; use `spec-revise` when the accepted artifact changes.
+- A material contract correction, inseparable wider boundary, or other direction concern: explain the
+  discovered delta or concern, present necessity, and recommended direction. Ask the focused question needed
+  to resume; use `spec-revise` when the accepted artifact changes.
 - A separable outcome or speculative capability: recommend excluding/removing it or routing it to a child
   only when the user wants it preserved. Do not silently implement it or create a backlog.
 
 While a material direction question is pending, do not continue unrelated parts of the same feature merely
 to stay busy when they could deepen rework. User acceptance of a material change is recorded with its source
-in the existing Prior decisions/revision trace. Do not emit a `Scope stop` report for ordinary details that
-are clearly inside the accepted boundary.
+in the existing Prior decisions/revision trace. Ordinary details clearly inside the accepted boundary continue
+without a stop report.
 
 Use a dependency-ordered phase at a real dependency or risk checkpoint. Each phase closes an inspectable
 responsibility, contract/state transition, or actor-to-result segment.
@@ -224,17 +219,13 @@ Light lane:
 
 For either lane, write Verification as the smallest set of **proof obligations**, not a planned test-case inventory. Every obligation must trace to a stated outcome, boundary, constraint, material risk, or applicable project convention; do not derive generic edge, error, status-code, or unspecified-input cases from testing habit alone. State the behavior or material risk that must be proved and the minimum executable evidence; one command or assertion may satisfy several related obligations. For user-visible work, order the shortest meaningful actor-to-result verification first, followed by broader or lower-level evidence. Choose unit, integration, e2e, CLI, data assertions, or manual release evidence only when that source adds distinct confidence. Use a matrix only when interacting dimensions can change the result (for example role × state, supported platform × packaging mode, or migration source × target), the project already owns a relevant regression matrix, or an explicit release/compliance contract requires it. Do not create a test-layer, endpoint, status-code, or happy/boundary/error matrix for symmetry.
 
-During implementation, add or retain a distinct test layer/case only when it proves a material obligation or
-risk not already covered by cheaper existing evidence, or an applicable project/release convention requires
-it. Prefer extending the nearest existing test over adding a new file/layer when that remains clear. Remove
-tests that only protect superseded behavior; consolidate overlapping cases and commands. Use focused checks
-while editing, then execute the final check population selected by the feature artifact, changed scope, shared-
-surface impact, and applicable project/release conventions. Execute each unchanged final evidence source once;
-test counts, layer counts, and large matrices never improve a verdict by themselves.
+Use the shared [NNN numbering](README.md#shared-runtime-conventions) rule. A user-supplied unused number greater
+than the computed next number needs confirmation; an occupied or older number never overwrites or becomes free
+through a slug change.
 
-The directory number is the next available three-digit number (shared active+archive sequence, see [Shared runtime conventions](README.md#shared-runtime-conventions)) unless the user supplied a non-conflicting number. When the user supplies a number: equal to the computed next number → use it silently; greater than the computed number → ask which to use; less than or equal to an existing number → report the collision and switch to the computed number or another unused number (the slug may also change, but changing it alone never frees an occupied number). Never overwrite an existing `docs/specs/changes/<NNN>-<slug>/` directory.
-
-Adapters materialize the selected template through the packaged `scripts/materialize-feature-artifact.cjs`. The script validates the target root and requested number, normalizes an existing target-root symlink to its real directory, creates the final feature directory with an atomic no-clobber gate, copies only the selected lane files with exclusive creation, rejects symlinked destinations beneath the resolved root, and rolls back files created by a failed copy. A refusal leaves every pre-existing file untouched. If another process or earlier action occupied the number first, report the conflict and rerun feature-init to recompute the next number.
+Adapters materialize through the packaged `scripts/materialize-feature-artifact.cjs`; never bypass its atomic
+no-clobber and symlink-safety checks. A refusal leaves existing files untouched. If the number becomes occupied,
+report the conflict and rerun feature-init to recompute it.
 
 ## Workflow
 
@@ -324,4 +315,5 @@ When the auditor boundary applies, follow the canonical [reviewer execution cont
 ## Validation
 
 - Confirm created files match the selected lane.
-- Report lane, module decision, literal unresolved template placeholders, and next action. For the normal single-outcome path, omit the Scope Viability field completely; add a decomposition or bundled-risk decision only when one affected the flow.
+- Report lane, module decision, literal unresolved template placeholders, and next action. Mention decomposition
+  or accepted bundled risk only when it affected the flow.

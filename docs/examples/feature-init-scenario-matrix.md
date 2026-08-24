@@ -9,8 +9,8 @@ consumer, and a docs-only cross-module contract change. They also cover target-r
 subdirectory, NNN numbering over the shared active+archive sequence, brownfield/greenfield shape detection,
 exact lane file sets, no-artifact whole-tree preservation, `{{TODO}}` retention, plant refusal, and
 module-ownership non-guessing, pre-materialization decomposition of several independently shippable
-outcomes, implicit decomposition when the user does not name separability, explicit `pending-selection` /
-selection of the current child without making external tracking a prerequisite, preservation of coupled migrations and
+outcomes, implicit decomposition when the user does not name separability, focused selection of the current
+child without making external tracking a prerequisite, preservation of coupled migrations and
 cross-module vertical outcomes, optional reuse of supplied issue/PM references without requiring a fixed tracking field,
 and exclusion of untracked deferred outcomes from the selected child. They additionally cover
 pre-materialization clarification of unknown data disposition, exclusion of speculative capability without
@@ -25,7 +25,7 @@ and symlink safety; it does not claim model behavior.
 1. `node scripts/check-feature-init-fixtures.cjs` — deterministic coherence check (CI-safe, no model).
 2. Select the smallest model-smoke set that covers the changed behavior. Shared behavior runs at least one affected scenario on each supported host; host-only behavior runs on that host. Run the full matrix only when the affected behavior cannot be bounded.
 3. For each selected scenario, copy its base into a temp directory, `git init && git add -A && git commit`, then run the `feature-init` runtime adapter there with the scenario `prompt` (from the scenario `cwd` when set). When the adapter asks a question covered by `prescribedAnswers`, answer exactly that; any other business question stays unanswered (the run must not need it). Grade file-level outcomes with `node scripts/check-feature-init-fixtures.cjs --grade <scenario> <temp-dir>`.
-4. Interaction-only scenarios are judged from the transcript against `expectedBehavior`: they must ask when required, must not fabricate ownership, tracking references, a repository backlog, or an epic artifact, and must create no files before the required answer. Any materialized scenario with `expectedBehavior` is mechanically graded for its files and manually graded for the stated transcript behavior, including its Scope Viability decision and coupling rationale.
+4. Interaction-only scenarios are judged from the transcript against `expectedBehavior`: they must ask when required, must not fabricate ownership, tracking references, a repository backlog, or an epic artifact, and must create no files before the required answer. Grade the behavior and decision boundary rather than exact headings or status words. Any materialized scenario with `expectedBehavior` is mechanically graded for its files and manually graded for the stated transcript behavior, including its decomposition decision and coupling rationale.
 5. Record scenarios, hosts, and selection reason in the release task; state any known coverage limitation.
 
 ## Implicit activation smoke

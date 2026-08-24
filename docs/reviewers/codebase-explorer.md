@@ -11,7 +11,7 @@ Survey:
 - source and test locations
 - manifest-detected frameworks
 - module directory patterns
-- rough file counts and project scale
+- rough file counts when they help explain the structure
 - naming patterns
 
 Do not modify files, read every source file, infer business boundaries, or judge code quality.
@@ -36,19 +36,14 @@ Read manifests such as `package.json`, `pyproject.toml`, `go.mod`, `Cargo.toml`,
 
 Inspect likely source roots and second-level module directories. Distinguish observed facts from recommendations.
 
-### Phase 4: Scale
-
-Count files by language and total tracked files when available. Classify scale as small, medium, or large.
-
 ## Output
 
-Use this structure:
+Return a compact evidence-first survey that includes the useful parts of:
 
 ```markdown
 # Codebase Structure Survey
 
 Scan root: <path>
-Detected scale: <small/medium/large>
 
 ## Top-level Structure
 <compact tree>
@@ -69,10 +64,10 @@ Detected scale: <small/medium/large>
 <mismatches, uncertainties, unusual structure>
 ```
 
+Omit empty or irrelevant sections; this is a content guide, not a fixed response schema.
+
 ## Rules
 
 - Read-only.
-- Keep report under about 80 lines.
 - Facts first; recommendations only in the requested AGENTS.md section snippet.
 - Skip vendored/generated folders.
-

@@ -822,7 +822,7 @@ Prior decisions 只保存需要 why/source 的非显然选择，不复制 spec�
 Full lane 填完后运行 [`spec-quality-check`](actions/spec-quality-check.md)；它拥有需求对账、质量、verdict
 和状态转换规则，本文不复制判定表。
 
-### 3.2 实现阶段:机械细节不中断,方向漂移立即停
+### 3.2 实现阶段:机械细节不中断,方向风险及时沟通
 
 | 角色 | 工作 |
 |---|---|
@@ -835,7 +835,7 @@ Full lane 填完后运行 [`spec-quality-check`](actions/spec-quality-check.md)�
 证据地重复时报告 blocker。L2/L3 与 Proof Bundle 仍由 `feature-done` 执行。
 
 实现中的沟通沿用 §3.1。变量命名、普通实现细节和已接受边界内的简化由 AI + hook/L1 自行收敛。
-Scope Stop 的分类与输出只见 [`feature-init`](actions/feature-init.md)；测试层、矩阵和 case 也只在证明不同实质风险时增加。
+范围暂停的判断只见 [`feature-init`](actions/feature-init.md)；测试层、矩阵和 case 也只在证明不同实质风险时增加。
 
 **底层逻辑**:机械细节上的中途打断会制造反复解释;方向漂移上的延迟打断会制造大量返工和冗余。
 环境层(§6.3)接管机械合规,阶段 focused check 提前暴露局部失败,Implementation Scope Stop 管方向,
@@ -862,10 +862,9 @@ Scope Stop 的分类与输出只见 [`feature-init`](actions/feature-init.md)；
 
 ### 3.5 开发中发现 spec/plan 错怎么办
 
-实施后发现契约或边界错误，先按 Scope Delta 分类：`necessary-detail` 留在原 outcome，
-`contract-correction` 走 [`spec-revise`](actions/spec-revise.md)，`separable-outcome` 拆 child，
-`speculative-capability` 删除/延期，`bundled-risk` 需具体 coupling 和用户接受。方向未决时发紧凑
-`Scope stop` 并暂停会加深返工的工作；已写代码不构成收编理由。
+实施后发现契约或边界错误，只暂停会加深返工的部分并自然说明问题、建议方向和需要用户决定的
+事项；已写代码不构成收编理由。完整范围判断见 [`feature-init`](actions/feature-init.md)，冻结契约的
+修订与证据保留见 [`spec-revise`](actions/spec-revise.md)，正文不维护第二套分类表。
 
 实现回归但契约正确时修代码并显式重跑 `feature-done`；已交付未归档的重大 artifact 遗漏才由
 `spec-revise` 正式重开，已归档则起 successor change。精确修订和 receipt 历史规则只见 action。

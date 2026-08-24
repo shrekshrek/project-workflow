@@ -135,14 +135,14 @@
     "base": "base-numbered",
     "prompt": "feature-init people-operations: 同时做人员全量导入核对、手工增改、组织投影、外部 PMO 授权、数据问题处理;这些能力可以分别验收、上线和回滚,但没有要求必须同批发布。",
     "interactionOnly": true,
-    "expectedBehavior": "必须识别多个可独立交付结果并在创建产物前报告 split-required 和 pending-selection，询问先做哪个子 feature，或让用户明确接受合并交付风险；不得创建 epic lane、epic 文件或未经决定直接生成一个总 feature。",
+    "expectedBehavior": "必须识别多个可独立交付结果，在创建产物前说明候选拆分与建议方向，并询问先做哪个子 feature，或让用户明确接受合并交付风险；不得要求固定状态词，不得创建 epic lane、epic 文件或未经决定直接生成一个总 feature。",
     "sentinel": "docs/specs/changes/002-existing-thing/tasks.md"
   },
   "scope-viability-implicit-ask": {
     "base": "base-numbered",
     "prompt": "feature-init people-operations-platform: 开始建设人员运营平台，包括批量导入与核对、员工手工增改、组织结构投影、外部合作方授权和数据问题处理。先把这个项目整体开起来。",
     "interactionOnly": true,
-    "expectedBehavior": "即使 prompt 没有说可独立交付，也必须从多个可观察结果中识别候选拆分，在创建产物前报告 clarification-required，并只询问确认独立发布/回滚所需的最小问题集；阻塞期间不得预读 lane-specific、materializer、architecture 或 reviewer 资料，不得直接断言可拆、生成总 feature 或进入车道分类。",
+    "expectedBehavior": "即使 prompt 没有说可独立交付，也必须从多个可观察结果中识别候选拆分，在创建产物前自然说明不确定性和建议方向，并只询问确认独立发布/回滚所需的最小问题集；阻塞期间不得预读 lane-specific、materializer、architecture 或 reviewer 资料，不得直接断言可拆、生成总 feature 或进入车道分类。",
     "sentinel": "docs/specs/changes/002-existing-thing/tasks.md"
   },
   "scope-viability-coupled-migration": {
@@ -231,7 +231,7 @@
     "base": "base-numbered",
     "prompt": "feature-init provider-scope-cleanup: 删除共享旧字段后，还计划分别改文档、人员、项目、资讯和产品 Provider；每个 Provider 都能在共享契约兼容期内独立验收、启用和回退。",
     "interactionOnly": true,
-    "expectedBehavior": "必须识别共享契约切换与各 Provider rollout 中可独立交付的结果，在创建产物前报告 split-required/pending-selection 并询问先做哪个 child；不得直接创建一个总 feature。",
+    "expectedBehavior": "必须识别共享契约切换与各 Provider rollout 中可独立交付的结果，在创建产物前说明候选边界并询问先做哪个 child；不得要求固定状态词，不得直接创建一个总 feature。",
     "sentinel": "docs/specs/changes/002-existing-thing/tasks.md"
   },
   "direction-concern-ask": {

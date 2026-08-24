@@ -27,6 +27,16 @@ Do not use to rewrite historical feature specs, create backlog items, or make su
 - A Guidance Placement audit with evidence-backed keep/move/create/delete/mechanize proposals; apply only
   changes authorized by the current request or an explicit follow-up decision.
 
+## Guidance Placement Contract
+
+Create or move nested guidance only for a durable rule that applies to a clear existing or intentionally
+planned subtree, materially differs from inherited guidance, and is costly or unsafe to infer repeatedly.
+Place it at the narrowest scope that owns all consumers: root for a cross-project rule, tier for a shared
+runtime-local difference, and module only for a real parent exception. Keep feature/product semantics and
+durable design decisions in spec/plan/ADR, and prefer lint/hook/test when mechanical enforcement is the better
+owner. Nested guidance states differences only; never create it for directory symmetry or temporary detail.
+`AGENTS.md` is canonical, and a project-adopted nested `CLAUDE.md` is exactly the one-line `@AGENTS.md` alias.
+
 ## Workflow
 
 1. Resolve root/nested `AGENTS.md` and only the host-specific convention files explicitly included in this run.
@@ -40,10 +50,7 @@ Do not use to rewrite historical feature specs, create backlog items, or make su
      other than `@AGENTS.md` plus a newline, or point to missing guidance;
    - nested guidance whose directory moved/disappeared; and
    - prompt rules that objective lint/hook/test enforcement now owns better.
-   A create/move candidate must apply to a clear existing/intentionally planned subtree, be durable, differ
-   materially from its parent, and be costly/unsafe to infer repeatedly. Keep cross-scope rules at root,
-   prefer one tier rule over duplicated module files, exclude feature/product semantics, and never propose a
-   file merely to reduce line count or mirror directory symmetry.
+   Apply the Guidance Placement Contract above. Never propose a file merely to reduce line count.
 5. For each mismatch, record the old text, observed state, evidence source, exact affected subtree, and a
    narrow keep/move/create/delete/mechanize patch. Exclude preferences and weak pattern guesses.
 6. Ask only about material ambiguity or genuinely new policy. Objective stale-value synchronization proceeds
@@ -63,8 +70,7 @@ When the auditor boundary applies, follow the canonical [reviewer execution cont
 - Apply only convention changes authorized by the current request or an explicit follow-up decision.
 - Specific new convention text must be traceable to observed project state or an explicit user decision.
 - Moving text out of root requires evidence that no remaining consumer exists outside the target subtree.
-- `AGENTS.md` remains canonical; nested `CLAUDE.md` is only an optional project-adopted one-line alias, never
-  a second convention source.
+- Placement and aliases follow the Guidance Placement Contract above.
 
 ## Validation
 

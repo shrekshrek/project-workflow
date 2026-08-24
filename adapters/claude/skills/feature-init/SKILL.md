@@ -1,6 +1,6 @@
 ---
 name: feature-init
-description: Preview or apply feature routing when the user explicitly asks whether work needs a project-workflow feature, or when proposed implementation may need tracked acceptance, handoff, current-truth synchronization, or contract/risk protection; classify completed decisions as DIRECT, LIGHT tasks-only, or FULL spec/plan/tasks. Route-preview requests are read-only. Do not invoke for general discussion, reasonableness assessment, diagnosis, implementation-status review, or local reversible work unless the user explicitly requests feature routing.
+description: Preview or apply DIRECT/LIGHT/FULL routing for implementation that may need durable tracking or contract/risk protection, and for explicit feature-routing questions. Do not invoke for ordinary discussion, diagnosis, or clear local reversible work unless routing is requested.
 ---
 
 # Feature Init

@@ -52,13 +52,10 @@ reviewer, status, or approval cycle.
 3. Start the Evidence-led Decision Conversation with only applicable scopes: create/complete the minimum working agreement, replace demonstrably stale scaffold values, repair real tier guidance, survey structure, or explicitly selected host-private rules/hooks.
 4. For a missing baseline, stage the neutral six-file template with `scripts/materialize-project-baseline.cjs`; do not write the target yet.
 5. Use the codebase-explorer methodology only for a nontrivial or unclear structure survey. When observed project content shows multiple durable runtime tiers and the user selects tier-level guidance, read the conditional [`_multi_tier_examples`](../../template/_multi_tier_examples/README.md) reference before drafting it. Use tech-researcher only when an unresolved choice would materially change the working agreement and needs current external evidence; present suitable candidates and a recommendation for the user's direction. Ordinary tooling follows repository evidence and applicable conventions. Derive commands, their actual scope/trigger, source/test paths, project-specific rules, and tier ownership from repository evidence. A command being available does not make it mandatory for every feature.
-   When structure/guidance scope is selected, perform a bounded guidance-placement survey. A nested
-   `AGENTS.md` candidate must be a durable rule for a clear existing or intentionally planned subtree,
-   differ materially from its parent, be costly or unsafe to infer repeatedly, and be neither temporary
-   feature/product behavior nor better enforced mechanically. Keep cross-project and cross-Provider rules
-   at the root. Prefer one tier file over many module files when siblings share the rule; create a module
-   file only for a real exception. A selected nested `CLAUDE.md` contains exactly `@AGENTS.md` plus a newline.
-   Findings propose narrow moves/creation/deletion; they do not establish that the architecture itself is good.
+   When structure/guidance scope is selected, read the canonical
+   [Guidance Placement Contract](agents-md-revise.md#guidance-placement-contract) and perform a bounded survey.
+   Otherwise do not load it. Propose only evidence-backed narrow moves, creation, deletion, or mechanization;
+   placement findings do not establish that the architecture is good.
 6. Validate selected host-private rules and hooks only when they already exist or the user chose them. Never copy optional assets by default.
 7. Use inline trace for sourced synchronization; dispatch the decision-completeness auditor only for a material
    unconfirmed choice or conflicting/weak evidence.
@@ -82,10 +79,7 @@ Every applicable explorer, researcher, or auditor boundary follows the canonical
 - Do not invent product semantics from directory names.
 - Align observed structure and conventions with repository evidence, explicit user decisions, and accepted specs/ADRs when present. Do not claim that an architecture is suitable without goals and quality constraints, and do not redesign it inside this action; route a material architecture change to the ordinary full lane in [`feature-init`](feature-init.md).
 - Architecture-design conversational fill is out of scope. Report the relevant repository and accepted-decision evidence for a material architecture change so `feature-init` can consume it; do not load the architecture guide or make foundation decisions here.
-- `AGENTS.md` remains concise; put tier-specific guidance in tier files.
-- Nested guidance follows the difference-only rule: never repeat inherited parent text, never create a file
-  solely because a directory is named module/tier, and never move a root rule whose consumers cross the
-  proposed subtree.
+- `AGENTS.md` remains concise and follows the canonical Guidance Placement Contract when applicable.
 - Do not leave an existing scaffold's commands and source/test paths deferred when objective repository evidence resolves them. Do not invent style, Git, coverage, deployment, or tier policies that the repository and user do not establish.
 - Do not introduce a missing test layer, matrix, coverage gate, or release suite for completeness. Preserve an existing matrix only with its observed command and purpose; add a new one only after the user explicitly selects it for concrete interacting risks or a release/compliance contract.
 - When the selected host uses path-scoped convention files, their path patterns must match existing or intentionally planned paths. Do not translate one host's private files into another host's runtime format unless the user explicitly requests a migration.

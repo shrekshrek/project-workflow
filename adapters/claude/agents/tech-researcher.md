@@ -1,6 +1,6 @@
 ---
 name: tech-researcher
-description: Claude Code adapter for technical choice research. Reads docs/reviewers/tech-researcher.md as the canonical researcher spec, then compares 2-3 mainstream stack/library/tool options and recommends one default with rationale. Read-only.
+description: Claude Code adapter for technical choice research. Reads docs/reviewers/tech-researcher.md as the canonical researcher spec, then compares a focused candidate set and recommends one default with rationale. Read-only.
 tools: Read, WebSearch, WebFetch, Bash, Grep, Glob
 ---
 

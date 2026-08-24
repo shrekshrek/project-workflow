@@ -87,11 +87,10 @@ Fresh-read the three artifacts and assess every relevant item:
   proportionate mapping = pass.
 - Q6 sibling/guidance alignment: `Align` uses an applicable existing rule; `Deviate` names why the feature
   exception stays local; `Codify` names a durable difference, evidence/source, and exact target = pass.
-  Cross-project rules belong at root, shared runtime-local differences at tier, and module files only at a
-  real exception from the parent. Product/feature semantics belong in spec/plan/ADR; mechanically decidable
-  rules prefer lint/hook/test. Repeated parent text, directory-symmetry files, a missing target/alias task, or
-  a nested `CLAUDE.md` planned as anything other than one-line `@AGENTS.md` = fail. An uncertain owner =
-  borderline or fail according to whether it can change implementation.
+  When Q6 contains a placement decision, read and apply the canonical
+  [Guidance Placement Contract](../actions/agents-md-revise.md#guidance-placement-contract); otherwise do not
+  load it. A violation, missing promised target/alias task, or uncertain owner is fail or borderline according
+  to whether it can change implementation.
 - Q7a tasks: independently actionable or reviewable output/check that can finish before `feature-done` = pass;
   a broad bucket that hides separate decisions or a material dependency checkpoint = fail; work without
   verification = borderline. READY, Proof Bundle/status writes, and archive eligibility are endpoint/lifecycle

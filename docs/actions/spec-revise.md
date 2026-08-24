@@ -41,19 +41,12 @@ An implementation regression under an unchanged accepted contract does not use t
 2. Confirm that the discovery is a material contract, verification, scope, plan, or module-boundary error.
    Stop implementation work for the discovered delta while its direction is unresolved; do not keep adding
    code, tests, migrations, or compatibility paths that could deepen the rework.
-   Classify the scope delta before drafting:
-   - `necessary-detail`: required by the same accepted outcome and inside its impact boundary; record the
-     implementation decision without widening the contract
-   - `contract-correction`: accepted business behavior, ownership, authorization, data disposition, or
-     Verification was wrong; revise the synchronized artifacts
-   - `separable-outcome`: independently acceptable/shippable/revertible work; create or hand off a child
-     feature instead of absorbing it
-   - `speculative-capability`: no current consumer or not necessary for the selected outcome; remove or
-     defer it
-   - `bundled-risk`: materially wider but inseparable; require concrete coupling and explicit acceptance
-   Put minor clarification in plan prior decisions or implementation notes instead.
-   A current user correction that conflicts with accepted behavior is `contract-correction`; do not run
-   `spec-quality-check` against the stale artifact or continue implementing it first.
+   Route the delta through `feature-init`'s accepted-boundary and scope-viability rules. Necessary detail inside
+   the same outcome continues; an independent outcome becomes a child; capability without a current need is
+   removed or deferred; and materially wider inseparable work needs concrete coupling and user acceptance. A
+   current user correction that conflicts with accepted behavior is a `contract-correction`: do not run
+   `spec-quality-check` against the stale artifact or continue the affected work before revising the
+   synchronized artifacts.
 3. Resolve the accepted boundary, actual affected modules/files and Git overlap, then
    fresh-read applicable conventions. Do not treat already-written implementation as evidence that the
    expansion belongs in the feature.
@@ -62,19 +55,13 @@ An implementation regression under an unchanged accepted contract does not use t
    explicitly accepted replacement, preserve each explicit supersession/exclusion, and identify only conflicts
    whose interpretation could change the revised contract. Apply `feature-init`'s conversational-judgment rule;
    settled corrections proceed without ceremonial reconfirmation.
-   When a decision is required, report one compact `Scope stop`: discovered delta, mismatch with the
-   accepted boundary, current necessity, recommended remove/narrow/child/revise direction, and the smallest
-   useful decision set. Do not continue the delta until the user decides.
-6. When the revision changes the accepted impact boundary, current-consumer/necessity trace, or delivery
-   shape, proportionately reapply only the affected `feature-init` impact/necessity and scope-viability
-   questions before drafting, keeping routing and unrelated settled decisions intact. If it
-   introduces another independently acceptable, shippable, and revertible outcome without mandatory
-   coupling, ask the user to create a child feature or explicitly accept the bundled-delivery risk. When
-   the outcome is deferred to a child, record the boundary in plan Prior decisions when it needs durable
-   handoff; reuse an issue/PM reference when one already exists or the user asks to create one, but do not make
-   an external tracker a prerequisite. Record an accepted bundle in the
-   existing plan prior-decisions or risks section. Remove speculative capability instead of creating a
-   deferred implementation obligation when the user does not need it preserved.
+   When a decision is required, naturally explain the discovered delta, mismatch with the accepted boundary,
+   current necessity, recommended remove/narrow/child/revise direction, and the smallest useful decision set.
+   Do not continue the delta until the user decides.
+6. When the accepted boundary, current need, or delivery shape changes, proportionately reapply only the
+   affected `feature-init` questions and keep routing and unrelated settled decisions intact. Record a child
+   boundary or accepted bundle when durable handoff is useful. Reuse an existing or explicitly requested
+   issue/PM reference, but never make external tracking a prerequisite.
 7. For every contract correction, build a compact supersession trace before drafting: exact current user
    statement when available, normalized replacement rule, older rule being replaced, and affected
    spec/plan/tasks/ADR locations. Preserve exclusion and exclusivity semantics such as "remove", "no longer",
@@ -88,10 +75,10 @@ An implementation regression under an unchanged accepted contract does not use t
    feature, also return `已实现` to `已确认`, move the exact previous receipt under a uniquely named
    dated-or-numbered superseded heading, and recreate one empty canonical `## Proof Bundle`; never edit the
    old receipt into a new verdict.
-8. Update sibling alignment and resolve Guidance Placement only when a changed tier/module introduces a
-   durable parent difference or selects Codify. Name the exact root/tier/module/mechanical owner and source;
-   nested guidance contains differences only and any project-adopted nested `CLAUDE.md` is a one-line alias.
-   Do not propose a file for ordinary modules, product semantics, temporary details, or directory symmetry.
+8. Update sibling alignment only when a changed tier/module introduces a durable parent difference or selects
+   Codify. At that boundary, read and apply the canonical
+   [Guidance Placement Contract](agents-md-revise.md#guidance-placement-contract) and name the exact owner and
+   source; otherwise do not load it.
 9. Run an inline trace for repository- or user-sourced corrections; use the decision-completeness auditor only for an ADR, unconfirmed high-impact choices, or conflicting/weak evidence.
 10. Apply the synchronized revision when the user's request already authorizes it. Ask only for an unresolved
     material decision or an external write; rejection or a blocking audit leaves the worktree unchanged.

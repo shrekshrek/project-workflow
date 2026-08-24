@@ -259,26 +259,13 @@ Verification 只保留尚未被阶段检查覆盖的跨阶段/最终证据，不
 > **本节既适用 `/feature-init` materialization 前后的 conversational fill,也适用主会话非-skill context 的纯人 + AI 协作填**。
 > Plugin 不使用固定问卷:只询问实际阻塞的高影响未知项;依赖问题按顺序推进，相关独立问题可以合并。低层实现细节可在 fill 期间保留 TODO，但 `{{TODO}}` 不进入实施。
 
-#### 顺序:按节依次填,不跳
+#### 自然覆盖质量问题
 
-```
-§1 Outcomes(场景)→ §3 Constraints → §4 Verification → §2 Scope 末轮补"不做"
-```
+根据当前决定自然覆盖 Outcomes、Scope、Constraints 和 Verification，不要求固定填写顺序。只询问
+会改变契约或实施方向的未知项；已经清楚的内容直接写入，低层实现细节留给 plan/tasks。多边界或
+高风险工作再补当前使用者、责任/契约边界、耦合与回滚风险，以及值得独立检查的阶段结果。
 
 > 数据模型 / API 契约 / 架构细节属 plan.md(HOW),不在 spec.md(WHAT);见 §3.1。
-
-**为什么 §2 末轮补**:用户走完 §1/§3/§4 才知道 scope 真实边界,**此时问"什么不做"答得最准**。
-
-#### 每节用 §3.7 quality 标准作引导问题
-
-| 填的节 | AI 引导问题(对应 §3.7 哪条质量标准)|
-|---|---|
-| §1 Outcomes | "具体场景?谁在哪做什么、看到什么?边界 case?"(→ §3.7 Q4 具体度)|
-| §3 Constraints | "真约束还是希望?如'希望快'→量化成'P95 < 200ms'"(→ §3.7 Q5 真假)|
-| §4 Verification | "怎么机验?本次最关键的成功与错误路径是什么?用哪个最小测试层级就能证明主要风险?"(→ §3.7 Q3 可测)|
-| §2 Scope(末轮)| "现在你知道边界了——本次**明确不做**的实质边界是什么?"(→ §3.7 Q2 必有"不做")|
-| 多边界 / 架构型 / 实质高风险边界 | "谁现在使用?哪些责任或契约必须一起变化?耦合和回滚边界是什么?什么发现会触发暂停?"(→ §3.7 Q7c/Q7d)|
-| 多边界 FULL 实施顺序 | "哪些责任、契约、状态或用户结果值得在依赖工作开始前独立检查?用哪个最小 focused check 证明?重要阶段的退出条件与下一个 consumer 是什么?"(→ §3.7 Q7a)|
 
 #### 用户不确定某节技术选型时
 
@@ -399,12 +386,12 @@ Draft / Filled / Validated **本质同档**(自由编辑);Frozen / Revised **本
 | **小**(临时方案、补丁) | `tasks.md` 实施记录 | 写一行,不改 spec/plan;无需走 SOP |
 | **中**(plan 选型 / 模块边界 需调整) | `plan.md`(可能含 module AGENTS.md)| **走 [workflow.md §3.5](workflow.md#35-开发中发现-specplan-错怎么办) SOP**(修订记录 + 跨文件同步;模块边界变化满足 `ADR_REQUIRED`);若涉模块边界变化,加走 [§2.6](workflow.md#26-module-中途变更feature-实施中发现边界要调整) |
 | **大**(scope / outcomes 实际跟想做的不一样) | `spec.md` § 1/2(经 SOP)| **走 [workflow.md §3.5](workflow.md#35-开发中发现-specplan-错怎么办) SOP**;若大到 outcomes 跑偏,起新功能目录 `<NNN+1>-<slug>/` 引用旧的(见 §5) |
-| **Scope delta**(出现未声明的实质契约或责任边界变化) | 对照已接受的 Scope / Constraints / Module Impact 和条件式边界 | 暂停会加深返工的工作并分类:`necessary-detail` 留在原 outcome;`contract-correction` 走 `/spec-revise`;`separable-outcome` 拆 child;`speculative-capability` 删除/延期;`bundled-risk` 需具体 coupling + 用户接受 |
+| **Scope delta**(出现未声明的实质契约或责任边界变化) | 对照已接受的 Scope / Constraints / Module Impact 和条件式边界 | 暂停会加深返工的工作；同一 outcome 的必要细节继续，契约错误走 `/spec-revise`，独立结果拆 child，当前不需要的能力删除/延期，扩大但不可拆的工作说明 coupling 后由用户决定 |
 
 这里的“立即停”发生在继续为 delta 写生产代码、测试、migration 或兼容层之前。AI 先报告 delta、既有边界
 差异、当前必要性和推荐的删除/收窄/child/revise 方向；继续推进可能做错目标或走向实质不同方向时，
 自然询问恢复所需的问题。已有选择沿用 [`workflow.md` §3.1](workflow.md#31-规划阶段) 的沟通原则。
-同一 outcome/边界内的 `necessary-detail` 或保持契约的更简单实现直接继续。
+同一 outcome/边界内的必要细节或保持契约的更简单实现直接继续。
 已经写出的代码/测试不构成收编理由;full lane 也不例外。
 
 多边界 FULL feature 在真实依赖或风险需要时使用少量可验证阶段。完成一个可检查的责任、契约、状态或
