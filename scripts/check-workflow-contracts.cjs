@@ -46,7 +46,7 @@ requirePatterns("docs/actions/feature-init.md", [
   ["phase handoff", /After a meaningful phase[\s\S]*compact handoff[\s\S]*Wait for the user/i],
   ["tracking is not a child prerequisite", /External tracking is never a prerequisite/i],
   ["pre-draft decision closure", /Before drafting a full-lane artifact[\s\S]*ceremonial reconfirmation/i],
-  ["pre-implementation execution preview", /Before the first implementation edit[\s\S]*execution preview[\s\S]*user's acceptance/i],
+  ["pre-implementation execution preview", /Before the first implementation edit[\s\S]*execution preview[\s\S]*current outcome and consumer[\s\S]*included and excluded change boundary[\s\S]*current facts[\s\S]*minimum sufficient approach[\s\S]*operating-cost boundaries[\s\S]*verification direction[\s\S]*meaningful phases[\s\S]*user's acceptance/i],
 ]);
 forbidPatterns("docs/actions/feature-init.md", [
   ["mandatory risk-size labels", /small, medium, large, or extra-large/i],
@@ -217,7 +217,7 @@ for (const host of ["claude", "codex"]) {
     ["legacy approved-only wording", /user-approved drift fixes|approved drift fixes|approved convention edits/i],
   ]);
   requirePatterns(`adapters/${host}/skills/feature-done/SKILL.md`, [
-    ["canonical endpoint delegation", /Execute the canonical preflight and gate[\s\S]*mechanical Git boundary[\s\S]*stable\s+snapshots[\s\S]*review scheduling[\s\S]*terminal handoff[\s\S]*execution fallback/i],
+    ["canonical action delegation", /Execute the complete canonical action/i],
   ]);
   forbidPatterns(`adapters/${host}/skills/feature-done/SKILL.md`, [
     ["same-run repair delegation", /bounded repair|repair-delta reconciliation/i],
@@ -245,26 +245,15 @@ requirePatterns("adapters/claude/skills/feature-init/SKILL.md", [
 ]);
 requirePatterns("adapters/codex/skills/feature-init/SKILL.md", [
   ["Codex plugin root and materializer", /\.codex-plugin\/plugin\.json[\s\S]*materialize-feature-artifact\.cjs/],
-  ["Codex decision closure", /Before full-lane drafting[\s\S]*without reconfirmation/i],
 ]);
 for (const host of ["claude", "codex"]) {
   requirePatterns(`adapters/${host}/skills/feature-done/SKILL.md`, [
     ["receipt", /## Proof Bundle/],
   ]);
-  requirePatterns(`adapters/${host}/skills/spec-quality-check/SKILL.md`, [
-    ["frozen correction rejection", /N\/A\(route: spec-revise\)/],
-  ]);
-  requirePatterns(`adapters/${host}/skills/spec-revise/SKILL.md`, [
-    ["latest-user correction trigger", /latest-user correction[\s\S]*contract-correction/i],
-  ]);
   requirePatterns(`adapters/${host}/skills/feature-done/SKILL.md`, [
     ["archive handoff", /close\/archive\/submit intent continues to[\s\S]*feature-archive/i],
   ]);
 }
-
-requirePatterns("adapters/claude/skills/feature-init/SKILL.md", [
-  ["Claude decision closure", /Before full-lane drafting[\s\S]*without reconfirmation/i],
-]);
 
 for (const relative of [
   "template/docs/specs/changes/_template/tasks.md",

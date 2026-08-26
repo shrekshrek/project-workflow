@@ -194,6 +194,8 @@ function validateFixtures() {
     "impact-coupled-cutover",
     "scope-split-provider-rollout-ask",
     "direction-concern-ask",
+    "project-evidence-conflict-before-spec-ask",
+    "operating-envelope-before-implementation-ask",
  ]) {
     if (!expected[scenario]) problems.push(`missing required scope/impact scenario ${scenario}`);
  }

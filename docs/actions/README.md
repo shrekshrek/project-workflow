@@ -14,7 +14,7 @@ copying its decision table or inventing a second gate.
 | Concern | Normative owner | Downstream use |
 |---|---|---|
 | Impact/necessity, DIRECT/LIGHT/FULL routing, scope viability, the execution preview and phase handoffs, implementation scope stop, and planning-time minimum evidence | [`feature-init`](feature-init.md) | `spec-quality-check` verifies the full-lane artifact applied the accepted boundary and preserves the preview handoff; `feature-done` compares the actual change with it |
-| Bidirectional requirements reconciliation and pre-implementation full-lane quality | [`spec-quality-check`](spec-quality-check.md) | The spec-quality reviewer supplies the assessment method; it does not own routing or implementation scope. A defensive applicability check hands a pending frozen-contract correction to `spec-revise` before review |
+| Bidirectional requirements reconciliation and pre-implementation full-lane quality | [`spec-quality-check`](spec-quality-check.md) | The spec-quality reviewer supplies the assessment method; pending frozen-contract corrections route to `spec-revise` before review |
 | Frozen-contract correction, reopening, and synchronized scope-delta handling | [`spec-revise`](spec-revise.md) | It reuses `feature-init` viability rules only when the accepted boundary changes |
 | Actual-diff completion preflight, L1/L2/L3 aggregation, current-truth decision, and delivery receipt | [`feature-done`](feature-done.md) | Reviewers consume the action-owned snapshot and never add a delivery layer |
 | Archive eligibility, current-truth merge, and physical lifecycle closure | [`feature-archive`](feature-archive.md) | It consumes the complete `feature-done` receipt and never infers READY from partial or historical fields |
@@ -27,19 +27,17 @@ they may summarize a rule and link to its owner, but must not become an alternat
 
 ## Architecture risk routing
 
-Product/application architecture uses the normal feature lifecycle rather than a separate mandatory
-review flow:
+The normal feature lifecycle owns product/application architecture work:
 
 - At planning, architecture-shaped work stays in `feature-init` and conditionally reads
   [`architecture-design`](../architecture-design.md); ordinary work skips it.
 - During implementation, `feature-init` owns scope-stop behavior: ordinary details continue, while a material
   direction concern pauses affected or dependent work.
-- At delivery, `feature-done` compares the actual change with the accepted boundary and leaves convention/spec
-  judgment to L2/L3; it adds no architecture review layer.
+- At delivery, `feature-done` compares the actual change with the accepted boundary and L2/L3 apply their
+  existing convention/spec contracts.
 
-Tiny local work, ordinary same-boundary implementation detail, speculative future concerns, and file/test/
-line counts never trigger architecture review by themselves. There is no standalone architecture action,
-endpoint observation, reviewer layer, receipt slot, mandatory N/A output, or full-repository architecture sweep.
+Architecture review requires an accepted durable boundary signal. Tiny local work, ordinary same-boundary
+implementation detail, speculative future concerns, and file/test/line counts remain on their normal paths.
 
 ## Shared runtime conventions
 
@@ -61,4 +59,4 @@ Single authoritative home for rules that several actions need. Action specs and 
 | [`spec-reconcile`](spec-reconcile.md) | Repair conflicts across accumulated specs in one area (retrofit tool): pick source of truth, mark and archive losing specs |
 | [`agents-md-revise`](agents-md-revise.md) | Refresh evidence-backed project conventions and their placement |
 
-Architecture-shaped full-lane work remains part of `feature-init`. It conditionally reads the shared [`architecture-design` guidance](../architecture-design.md); this reference is not another action, lane, gate, reviewer, or artifact type.
+Architecture-shaped full-lane work remains part of `feature-init` and conditionally reads the shared [`architecture-design` guidance](../architecture-design.md).

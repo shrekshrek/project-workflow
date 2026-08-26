@@ -47,7 +47,7 @@ Also classify execution authorization independently:
 - `PREVIEW`: report the proposed route and reasons, but create or modify nothing. A read-only request that explicitly asks for feature routing always uses this mode; general discussion/review/diagnosis without that request does not invoke the action.
 - `APPLY`: apply the route to feature artifacts when the user explicitly requested artifact initialization or implementation/change. `APPLY` authorizes only the artifact work owned by this action; this action still writes no implementation code.
 
-Keep the action boundary separate from the enclosing task's continuation. An artifact-initialization-only request stops after this action reports/materializes its route. An implementation/change request authorizes routing and required artifact preparation, not an unseen implementation approach. Before the first implementation edit for a feature or direct change, present a proportionate, self-contained execution preview of the intended outcome, approach and change boundary, key rationale, verification direction, and meaningful phases when more than one is useful, then wait for the user's acceptance. Acceptance starts the first phase; later phases use the handoff below. A material departure uses **Implementation Scope Stop**. The feature-init action itself never edits implementation code.
+Keep the action boundary separate from the enclosing task's continuation. An artifact-initialization-only request stops after this action reports/materializes its route. An implementation/change request authorizes routing and required artifact preparation, not an unseen implementation approach. Before the first implementation edit for a feature or direct change, present a proportionate, self-contained execution preview that makes clear the current outcome and consumer; the included and excluded change boundary; relevant current facts to preserve or change; the minimum sufficient approach and key rationale; material responsibility and operating-cost boundaries; the verification direction; and meaningful phases when more than one is useful. Use natural prose or a few bullets rather than a fixed form. Resolve evidence-backed facts directly, surface only unresolved decisions that could materially change the result, boundary, approach, risk, or verification, then wait for the user's acceptance. Acceptance starts the first phase; later phases use the handoff below. A material departure uses **Implementation Scope Stop**. The feature-init action itself never edits implementation code.
 
 A blocking impact/necessity, scope-viability, or selection decision remains `Route: pending` until the required answer, selection, or acceptance exists; `pending` is not a fourth completed route and never authorizes materialization. Resolve an existing active feature that covers the same outcome before allocating a number. Reuse it when compatible, route accepted-spec implementation as `DIRECT`, and never create a duplicate merely because `feature-init` was invoked.
 
@@ -74,12 +74,14 @@ Before lane selection or materialization, run an **impact and necessity prefligh
 decision aid, not an implementation plan. Establish:
 
 - the selected current outcome and its present actor/consumer
-- likely responsibility areas plus contract/API, data/schema/migration, authorization/security,
-  runtime/configuration, release, and rollback signals
-- the disposition of legacy, missing, invalid, or unowned data when the requested change can encounter it
-- known dirty-worktree overlap that may belong to another change
-- every material unknown in business behavior, ownership, authorization, data disposition, or release
-  coupling
+- likely affected responsibility boundaries and only the high-impact signals needed for route and boundary decisions
+- the disposition of existing, legacy, missing, invalid, or unowned state when the requested change can encounter it
+- any unresolved question that could materially change the outcome, boundary, approach, risk, or verification
+
+Use the bounded sources above to test the current interpretation and proposed direction. Resolve apparent
+conflicts or missing constraints from authoritative applicable project conventions, current truth, and accepted
+decisions. Use existing behavior to test that interpretation and expose remaining conflicts. Surface only
+unresolved questions that could materially change the outcome, boundary, approach, risk, or verification.
 
 Judge necessity at the outcome and responsibility level: persistent state, APIs, roles, workflows,
 management surfaces, queues, or runtime components need a present consumer and a concrete reason to exist.
@@ -87,12 +89,12 @@ Do not require a ledger row for every implementation element. Remove speculative
 selected outcome or treat it as a candidate deferred outcome. Breadth, module count, and estimated effort are
 signals for closer review, never substitutes for outcome and coupling analysis.
 
-If a material unknown can change scope, ownership, authorization, data handling, or delivery shape, keep
-the route pending and ask the smallest useful set of material questions. Ask dependent decisions in sequence;
+If such an unresolved question remains, keep the route pending and ask the smallest useful set of material
+questions. Ask dependent decisions in sequence;
 closely related independent decisions may be grouped. Do not materialize a speculative
 spec and fill these decisions afterward.
 
-Use conversational judgment rather than a closed decision checklist. If continuing would risk building the
+Use conversational judgment and apply the questions above proportionately. If continuing would risk building the
 wrong thing or committing the project to a meaningfully different direction, pause, explain the concern and
 recommended direction, and ask the focused question needed to proceed. Settled choices normally carry forward;
 reopen one only when new evidence or a newly discovered material consequence changes the recommendation, then
@@ -237,9 +239,8 @@ report the conflict and rerun feature-init to recompute it.
    by the proposed feature.
 3. Run the impact and necessity preflight proportionately. For an evidently local, reversible change, use the
    bounded evidence already opened rather than expanding discovery. Remove speculative capability, surface
-   only decision-relevant impact, and keep the route pending while a material business, ownership,
-   authorization, data-disposition, or release-coupling question remains. Apply the conversational-judgment
-   rule above and ask only what is useful for the next decision.
+   only decision-relevant impact, and keep the route pending while an unresolved material question defined above
+   remains. Apply the conversational-judgment rule above and ask only what is useful for the next decision.
 4. Decide whether a new artifact has a durable consumer and whether an active feature already covers the outcome. If not, return `DIRECT`; if an accepted feature covers implementation, report `Feature: reuse=<path>` and do not create a duplicate. Recheck its accepted boundary and actionable Verification/tasks for semantic implementation readiness. Stop this action's artifact work, then return control to an enclosing implementation/change request when one exists.
 5. Apply the scope-viability rules above. Surface only a required decomposition or bundled-risk decision, and
    create nothing until it is resolved. External tracking is never a prerequisite for the selected child; defer
@@ -302,8 +303,8 @@ When the auditor boundary applies, follow the canonical [reviewer execution cont
 - Never plant unsupported endpoints, entities, fields, codes, paths, technologies, ownership, or coupling.
   Resolve material unknowns before implementation; keep genuine low-level choices as bounded implementation-
   time decisions/tasks and briefly trace sourced prefill.
-- Decision closure is a pre-draft interpretation check, not a new approval gate. It follows the
-  conversational-judgment rule above; unresolved material ambiguity blocks artifact creation.
+- Decision closure follows the conversational-judgment rule above: consistent material decisions flow into the
+  draft, while unresolved material ambiguity blocks artifact creation.
 - Verification breadth follows traceable behavior and distinct risk, not derived edge-case habit, document size, test-layer count, or case-count symmetry. Consolidate obligations when the same evidence proves them; retain a matrix only with an explicit interaction, regression, release, or compliance reason.
 - Scope Stop applies to every route. Materialization requires closed high-impact decisions, and every new durable
   surface has a current consumer/necessity trace; FULL is not permission for adjacent or speculative expansion.

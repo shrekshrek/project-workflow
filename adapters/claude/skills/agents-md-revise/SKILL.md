@@ -13,10 +13,7 @@ Claude execution details:
 - Use Read/Grep/Glob/Bash for evidence. Missing `AGENTS.md` redirects to `/project-workflow:project-personalize`.
 - Use inline trace for sourced synchronization; dispatch a fresh `decision-completeness-auditor` only at its narrowed canonical boundary, with fallback under the shared execution contract. Blocking or unreliable audit evidence prevents apply.
 - Ask only for material ambiguity or new policy; do not reconfirm objective stale-value synchronization item by item.
-- Include the canonical Guidance Placement audit: path-local root rules, child-parent duplication, evidence-
-  backed missing local guidance, malformed/missing adopted one-line aliases, orphan guidance, and rules better
-  mechanized. Propose evidence-backed keep/move/create/delete/mechanize patches; never judge architecture,
-  create for symmetry, or move root text while consumers remain outside the subtree.
+- Run the canonical Guidance Placement audit and apply only evidence-backed placement changes.
 - Apply only convention edits authorized by the current request or an explicit follow-up decision. Do not edit
   product specs, implementation code, or commit.
 

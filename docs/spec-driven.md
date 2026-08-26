@@ -214,7 +214,9 @@ supersedes。不要把 ordinary spec contract 再抄一遍。
 
 #### 风险与未决
 
-实施前已知的风险点 + 还没敲定但会在实施中决定的事。**让未决浮上来**,不要假装都想清楚了。
+记录实施前已知的风险，以及不会改变已确认契约、可在实施中收敛的低层选择。会改变 outcome、
+scope、ownership、authorization、data disposition、release boundary 或验证方式的未决项必须先解决；
+不能安全解决时保持 handoff 未就绪。
 
 ### 3.5 `tasks.md` 写法(STEPS,实时)
 
@@ -296,10 +298,8 @@ bundled-risk 或 supersede 的决定才在 Prior decisions 写 why/source,普通
 
 **为什么必跑**:实施开始后才发现"输入不清晰" → 回炒成本是 spec 阶段修的 5-10 倍。这 7 个问题是 project-workflow 实证里**最常出错的 7 个位置**。
 
-同一个 fresh reviewer 先用临时 Requirements Source Map 做双向对账，再执行质量检查：接受的要求必须
-落入 artifact，artifact 的新增业务语义必须有当前必要性和权威来源，已取代语义不得残留。结果为
-`ALIGNED`、`MISMATCH` 或 `SOURCE GAP`；后两者阻断实施。普通 spec 内容直接引用原 section，不复制到
-Prior decisions，也不会因为缺少第二份记录而产生 `SOURCE GAP`。
+写作者先确认接受的要求都进入 artifact、新增业务语义具有当前必要性和权威来源、已取代语义没有
+残留。普通 spec 内容直接引用原 section；只有需要持久 why/source 的决定进入 Prior decisions。
 
 | # | 问题 | 不通过的修法 |
 |---|---|---|
@@ -314,14 +314,9 @@ Prior decisions，也不会因为缺少第二份记录而产生 `SOURCE GAP`。
 | 7c | 每个新增持久状态、API、角色、工作流、管理面、队列或 runtime component 是否有当前 consumer,且当前 outcome 没有它就无法安全完成?| 只有未来可能性 → 删除或按用户意愿持久延期;不要用“更完整”代替当前必要性 |
 | 7d | 普通工作是否由 Scope / Constraints / Module Impact / Verification 形成清晰边界?多边界、架构型或实质高风险工作是否额外写清耦合、回滚边界和 scope-growth triggers?| 缺失或不完整就先修订；有可拆结果则拆，不可拆则写具体 coupling 和接受风险 |
 
-**Gate 语义**：failed 阻断实施；borderline 需要记录并接受具体风险；全部通过后，只有当前请求要求
-通过后继续时才把 `草稿` 改为 `已确认`。真正开始实施还需要当前预计执行方案已在对话中获得认可;否则 gate 只返回方案并等待。Domain References/Delta 仅在已有 current-truth 文档时检查，
-ADR 仍按 `ADR_REQUIRED` 条件创建。
-
-**跟 [workflow.md §3.5](workflow.md#35-开发中发现-specplan-错怎么办) 的关系**:本节是 **pre-implementation 自检**(便宜阶段),§3.5 是 **mid-implementation 修订**(贵阶段)。两者都不可省。
-
-**Action**：[`spec-quality-check`](actions/spec-quality-check.md) 拥有机械检查、同一 reviewer 的 Requirements
-Reconciliation + 质量检查、dispatch/fallback 和 verdict 规则；本文只保留写作者视角的速查。
+完成这份写作者速查后运行 [`spec-quality-check`](actions/spec-quality-check.md)。该 action 统一负责双向
+Requirements Reconciliation、机械与主观检查、verdict、状态转换和实施交接；本节只帮助作者在提交
+Gate 前修好 artifact。实施中发现冻结契约错误时改走 [workflow.md §3.5](workflow.md#35-开发中发现-specplan-错怎么办)。
 
 ---
 

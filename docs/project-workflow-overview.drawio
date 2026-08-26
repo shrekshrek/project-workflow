@@ -113,7 +113,7 @@
         <mxCell id="p3_mech3" value="&lt;b&gt;协作走平台原生&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;backlog / 讨论 → GitHub Issues / Discussions&lt;br/&gt;不进 repo 文件 (§4.4 / §7.8)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#E65100;fontSize=11;align=center;" vertex="1" parent="1">
           <mxGeometry x="810" y="565" width="280" height="65" as="geometry"/>
         </mxCell>
-        <mxCell id="p3_note" value="&lt;span style=&#39;font-size:10px;color:#546E7A;&#39;&gt;P3 不是新一组 skill —— 是 hooks (D) + 跟 P2 端点 review (/feature-done) 的&lt;b&gt;持续运行态&lt;/b&gt;&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=10;" vertex="1" parent="1">
+        <mxCell id="p3_note" value="&lt;span style=&#39;font-size:10px;color:#546E7A;&#39;&gt;P3 由 hooks (D) + P2 端点 review (/feature-done) 形成&lt;b&gt;持续运行态&lt;/b&gt;&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=10;" vertex="1" parent="1">
           <mxGeometry x="1110" y="572" width="530" height="50" as="geometry"/>
         </mxCell>
 

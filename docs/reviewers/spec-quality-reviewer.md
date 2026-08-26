@@ -25,8 +25,8 @@ responsibility, a cross-component contract, data/state ownership, a durable trus
 boundary, or deployment ownership, perform one bounded architecture-adequacy check inside Q5/Q7c/Q7d. Verify
 that the smallest sufficient responsibility/component set, applicable cross-boundary contracts and state,
 trust/deployment ownership, and material failure/migration/recovery behavior support the stated outcomes and
-quality constraints. This is not a separate question, dispatch, verdict, artifact field, technology-taste
-review, or full-repository architecture audit. Ordinary same-boundary permissions and internal refactors skip it.
+quality constraints. Keep the assessment within the accepted delivery boundary and the existing Q5/Q7c/Q7d
+findings. Ordinary same-boundary permissions and internal refactors skip it.
 
 ## Requirements Reconciliation
 

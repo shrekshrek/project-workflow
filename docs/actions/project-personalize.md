@@ -41,9 +41,8 @@ pending while continuing safe evidence work. Settled choices carry forward unles
 materially changes the recommendation; then explain why and reopen only that choice. Update the staged draft
 and source trace after answers, and preflight/apply the consistent population under current authorization.
 
-Do not ask about facts the repository already proves, values that may safely remain deferred, or architecture/
-product decisions owned by `feature-init`. This conversation creates no additional feature, spec, lane, gate,
-reviewer, status, or approval cycle.
+Keep this conversation focused on decisions that change the working agreement. Repository-proven facts and
+safely deferred values proceed directly; architecture or product decisions route to `feature-init`.
 
 ## Workflow
 
@@ -84,7 +83,7 @@ Every applicable explorer, researcher, or auditor boundary follows the canonical
 - Do not introduce a missing test layer, matrix, coverage gate, or release suite for completeness. Preserve an existing matrix only with its observed command and purpose; add a new one only after the user explicitly selects it for concrete interacting risks or a release/compliance contract.
 - When the selected host uses path-scoped convention files, their path patterns must match existing or intentionally planned paths. Do not translate one host's private files into another host's runtime format unless the user explicitly requests a migration.
 - Historical feature specs are not rewritten.
-- Successful completion means the evidence-backed working agreement is aligned with the currently observable project. The target is ready for direct work or [`feature-init`](feature-init.md); this is not an architecture-quality verdict.
+- Successful completion means the evidence-backed working agreement is aligned with the currently observable project. The target is ready for direct work or [`feature-init`](feature-init.md).
 - Compose every proposed patch in memory or a disposable staging directory, then run trace/audit before applying
   it under the current authorization. A blocking audit leaves the target unchanged. Missing-baseline apply uses
   strict no-clobber preflight: any apply-time conflict or symlinked destination beneath the resolved project root

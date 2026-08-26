@@ -9,11 +9,9 @@ Match the user's language. Read [`../../../../docs/actions/feature-init.md`](../
 
 - Resolve the target root explicitly and read applicable `AGENTS.md` plus active current truth; never write under an incidental cwd.
 - Resolve the plugin root as the nearest ancestor of this skill containing `.codex-plugin/plugin.json`; invoke its `scripts/materialize-feature-artifact.cjs` and never bypass the no-clobber gate.
-- Resolve applicable Guidance Placement in existing plan/tasks; ordinary modules receive no generated
-  guidance. Under the shared execution contract, dispatch a fresh subagent for
+- Under the shared execution contract, dispatch a fresh subagent for
   [`decision-completeness-auditor`](../../../../docs/reviewers/decision-completeness-auditor.md) only at the
   canonical high-impact/weak-evidence boundary. Record an allowed fallback reason and canonical Reviewer execution evidence.
-- Before full-lane drafting, apply canonical decision closure without reconfirmation for its own sake.
 - Create no implementation code and never commit. Return control to the enclosing request as directed by the
   canonical action.
 

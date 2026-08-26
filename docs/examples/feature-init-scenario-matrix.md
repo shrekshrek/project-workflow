@@ -2,7 +2,7 @@
 
 Behavior-equivalence harness for the generative `feature-init` action. Deterministic validation covers the full fixture set; model smoke covers only affected behavior. Scenarios and mechanical expectations live in `tests/fixtures/feature-init-scenarios/expected.json`.
 
-Twenty-four scenarios cover lane classification (full / light / no-artifact), including ambiguous
+Twenty-six scenarios cover lane classification (full / light / no-artifact), including ambiguous
 real-work boundaries that do not name the expected lane: implementation already covered by an accepted
 spec, a multi-file behavior-preserving refactor, an existing-contract UI change with a durable handoff
 consumer, and a docs-only cross-module contract change. They also cover target-root resolution from a
@@ -16,7 +16,10 @@ and exclusion of untracked deferred outcomes from the selected child. They addit
 pre-materialization clarification of unknown data disposition, exclusion of speculative capability without
 a current consumer, concrete coupled-impact reporting, and decomposition of independently releasable Provider
 rollouts. They distinguish a real direction concern that warrants a recommendation and focused question from
-an ordinary implementation detail that proceeds without interruption.
+an ordinary implementation detail that proceeds without interruption. They also cover pre-draft resolution
+of current-truth evidence: material conflicts surface for decision, while settled implementation premises
+proceed directly. A bounded operating-cost scenario checks that a finite upper limit does not by itself justify
+multiple default inference paths or future-facing derived data without a current consumer.
 The deterministic check separately covers no-clobber, failed-copy rollback,
 and symlink safety; it does not claim model behavior.
 
@@ -71,6 +74,17 @@ Run these transcript-level cases on both hosts without grading fixture files as 
   Expect the host to explain the concern, recommend a direction, ask one useful question, and keep `Route:
   pending` before materialization. Contrast it with the existing repository-aligned local-refactor scenario,
   which continues under repository conventions and closes with proportionate checks.
+- Ask to distinguish login failure messages although the fixture current truth requires one unified error.
+  Expect the host to cite the conflict and ask whether to change that behavior before drafting or writing code.
+  Contrast this with the existing session-expiry UI case: the same current truth already settles token storage,
+  so the host proceeds under the existing contract.
+- Ask to start a media-understanding feature whose current consumer only needs inspectable processing evidence,
+  while the proposed default runs several inference capabilities across up to 120 video frames and creates a
+  second text-vector space for future retrieval. Expect the pre-draft conversation to expose the multiplicative
+  operating cost, recommend a minimum sufficient direction, and request only the unresolved capability tradeoff.
+  Once that direction is accepted and gated, the execution preview carries it forward without reopening the
+  choice. A finite upper limit or an implementation-time default must not be treated as evidence that the full
+  proposal is currently necessary.
 - After one of the execution previews above, have the user accept it and begin a multi-phase implementation.
   Expect the first meaningful phase to start. After it closes, expect a compact handoff with result, evidence,
   material deviation, and the next phase; the next phase waits for the user. Repeat with a small single-phase task

@@ -109,8 +109,8 @@ When the auditor boundary applies, follow the canonical [reviewer execution cont
 
 - Apply the canonical conversational-judgment rule to decision questions. Draft and audit the synchronized
   contents before apply; the current request's revision authorization remains in effect.
-- Decision closure reconciles material current-conversation corrections before drafting; it creates no new
-  approval state and never turns already settled decisions into another question set.
+- Decision closure applies `feature-init`'s conversational judgment: reconcile material corrections before
+  drafting, carry settled decisions forward, and keep unresolved material decisions pending.
 - Confirm the next implementation step. Rerun [`spec-quality-check`](spec-quality-check.md) whenever scope
   viability, current necessity, impact baseline, or a high-impact rule changed; otherwise state why it is
   unnecessary.

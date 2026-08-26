@@ -70,9 +70,8 @@ Return exactly one reconciliation status before the quality findings:
   an authoritative source. State the one decision/source needed; do not guess from implementation or memory.
 
 `MISMATCH` and `SOURCE GAP` both return `BLOCKED` before implementation. They are repaired through the
-normal artifact-edit or `spec-revise` path; they do not create another gate, reviewer, or status model.
-Reconciliation checks faithful coverage and authority; it never substitutes a new interpretation for a resolved
-source decision or turns the gate into another requirements interview.
+normal artifact-edit or `spec-revise` path. Reconciliation checks faithful coverage and authority while
+preserving resolved source decisions.
 
 ## Checks
 
@@ -87,8 +86,7 @@ Required checks: seven core quality questions, plus conditional current-truth ch
 4. Outcomes describe concrete user/system behavior, not generic intent.
 5. Constraints are concrete enough to constrain implementation. For architecture-shaped work, applicable
    responsibilities, contracts/state, durable trust/authorization ownership, deployment, and failure/recovery
-   decisions show how the proposed architecture satisfies those constraints; this is folded into Q5/Q7c/Q7d,
-   not a separate quality question.
+   decisions show how the proposed architecture satisfies those constraints within Q5/Q7c/Q7d.
 6. When the work makes or changes a sibling-convention choice, the plan records alignment, justified
    deviation, or codification. Merely touching several modules does not require an alignment table. A `Codify`
    choice names the durable difference, source, and exact target. When such a choice exists, read and apply the
@@ -168,8 +166,7 @@ Run the canonical subjective reviewer under the shared [reviewer execution contr
 1. Resolve an active feature and stop as N/A when it is light lane. Before any mechanical check, compare the
    current request and accepted current-conversation decisions with the artifact lifecycle and contract. If an
    accepted or delivered-but-unarchived contract has a pending material correction, return
-   `N/A(route: spec-revise)` and do not dispatch a reviewer. This is a defensive handoff; `spec-revise` remains
-   the sole owner of frozen-contract correction.
+   `N/A(route: spec-revise)` and stop before reviewer dispatch; `spec-revise` owns frozen-contract correction.
 2. Detect greenfield or brownfield shape from the canonical section markers.
 3. Run the applicable mechanical table above without maintaining an adapter-local copy. If any required mechanical check fails, report `BLOCKED` and stop before subjective review.
 4. Only when mechanical prerequisites pass, assemble the exact Requirements Source Map without editing the
@@ -180,25 +177,19 @@ Run the canonical subjective reviewer under the shared [reviewer execution contr
 5. Dispatch one canonical [`spec-quality-reviewer`](../reviewers/spec-quality-reviewer.md) against the exact
    source map and spec/plan/tasks population
    under the reviewer-execution contract. The same invocation performs Requirements Reconciliation first,
-   then Q3-Q7 including Q6 guidance placement and Q7b aggregate delivery coherence; never dispatch a second
-   reconciliation reviewer. When the accepted boundary is architecture-shaped, that same
-   reviewer performs the bounded architecture-adequacy check inside Q5/Q7c/Q7d; do not add a reviewer,
-   question number, verdict, receipt field, or repository-wide architecture review.
+   then Q3-Q7 including Q6 guidance placement and Q7b aggregate delivery coherence. When the accepted boundary
+   is architecture-shaped, it also performs the bounded architecture-adequacy check inside Q5/Q7c/Q7d.
 6. Deduplicate reconciliation and quality findings by root cause, cite exact evidence, identify proof obligations that the same evidence can consolidate, and apply the verdict contract above. An artifact that requires duplicate layers or matrix cells without distinct risk coverage fails Q3; optional implementation ideas not required by the artifact may be reported as nonblocking simplification suggestions and do not expand the contract.
 7. Apply the status-only transition above when its authorization and verdict conditions hold. Otherwise keep the gate read-only unless the user separately asks to repair the artifacts.
 
 ## Invariants
 
 - This gate validates the artifact, not the implementation.
-- This gate never validates or repairs an artifact known to be stale against a current material correction;
-  it hands that case to `spec-revise` before checks or reviewer dispatch.
-- This gate consumes the decision-closure result through the Requirements Source Map; it does not repeat the
-  pre-draft user confirmation step.
+- A pending material correction routes to `spec-revise` before checks or reviewer dispatch.
+- The Requirements Source Map carries the decision-closure result into this gate and preserves settled choices.
 - Failed checks block full-lane implementation.
 - Requirements reconciliation is bidirectional and fail-closed; current implementation is evidence of
   impact, never authority for a requirement.
-- Requirements reconciliation extends the existing reviewer invocation; it is not a new action, artifact,
-  reviewer role, or dispatch.
 - Requirements reconciliation preserves one content owner: `spec.md` owns ordinary contract content, while
   Prior decisions owns only decisions that need a durable why/source trace.
 - Architecture adequacy is conditional on a durable boundary signal and remains inside Q5/Q7c/Q7d of the

@@ -14,8 +14,7 @@ implementation or non-receipt artifacts; a non-READY verdict returns control to 
 
 ## Completion Preflight
 
-Run this cheap completion check before expanded L1 commands or reviewer dispatch. It is ordering, not a
-new review layer:
+Run this cheap completion check before expanded L1 commands or reviewer dispatch:
 
 - The selected artifact is active and has no unfinished checklist item or unresolved material placeholder
   in its contract, plan, task checklist, Verification, or implementation record. Ignore the canonical

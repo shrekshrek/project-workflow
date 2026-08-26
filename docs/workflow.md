@@ -752,23 +752,22 @@ project-workflow 对模块**长什么样**有 opinionated 偏好(不强制):
 - 现有 module 边界错(代码自然属于 A 但放在 B,反复跨调)
 - spec 没涵盖的新 module 突然必要(实际写代码才发现)
 
-**SOP**:
+**处理原则**:
 
-1. **停**正在写的代码 —— 不要边迁移代码边重新认知边界
-2. **起 ADR**(`docs/adr/NNNN-<topic>.md`)记 module 边界调整决策 + 原因
-3. **重审 plan.md §1.1 Sibling Alignment** —— 这次往往"Codify"选项触发(把新发现的边界规则提升到 AGENTS.md / tier-level AGENTS.md)
-4. **做 Guidance Placement**:跨项目 → root;同 tier sibling 共享差量 → tier;真实模块反常 → module;
-   可机械判定 → lint/hook/test。记录精确落点、差量、来源和 alias 任务,不为普通模块建文件
-5. **改 spec.md "模块影响范围" 节** + 末尾"修订记录"加一行(走 [§3.5 修订 SOP](#35-开发中发现-specplan-错怎么办))
-6. **改 plan.md §1 模块影响范围**:列实际边界变更
-7. **回到实施**
+1. 停止会加深返工的实现，按 `feature-init` 的 Implementation Scope Stop 判断它是必要细节、
+   契约修正、不可分的边界扩大，还是可分 child。
+2. 需要改变已确认 artifact 时运行 [`spec-revise`](actions/spec-revise.md)，先解决方向，再同步
+   spec / plan / tasks、实际影响范围、Sibling Alignment 和 Verification。
+3. 实际决定满足 `ADR_REQUIRED` 时才创建或取代 ADR；存在持久局部规则时才应用 Guidance
+   Placement，并记录精确 owner、差量和来源。
+4. 完成 `spec-revise` 要求的质量复查和实施交接后，再恢复受影响或依赖工作。
 
 **反模式**:
 - 边写代码边偷偷拆 module 不记录 → 半年后没人记得为什么 `backend/foo` 在那里
-- 大量代码迁移但不起 ADR → 决策失忆
-- 拖到 feature 完成才合并改动 → spec/plan 跟现实漂移
+- 需要跨 feature 持久的边界决定没有 ADR → 决策失忆
+- 拖到 feature 完成才同步 artifact 或补质量复查 → spec/plan 跟现实漂移
 
-**Action**:[`spec-revise`](actions/spec-revise.md) 自动化本 SOP——module 模式覆盖本节流程(ADR 编号 + 跨文件一致性 + 修订记录格式)。
+精确修订、ADR 条件、跨文件同步和复查规则由 [`spec-revise`](actions/spec-revise.md) 统一定义。
 
 ---
 

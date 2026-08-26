@@ -1,6 +1,6 @@
 # Architecture design guidance
 
-Conditional methodology reference for an architecture-shaped full-lane change. It is not a workflow action, lane, gate, reviewer, artifact type, or reserved slug.
+Conditional methodology reference consumed by `feature-init` for architecture-shaped full-lane changes.
 
 ## Use boundary
 
@@ -12,7 +12,7 @@ rule inside an unchanged trust and responsibility boundary does not trigger this
 - Keep the minimum architecture needed by one outcome inside that feature.
 - Use a separate architecture-shaped change only when the architecture has its own durable consumer or governs several later features.
 - Ordinary features skip this guide.
-- [`project-personalize`](actions/project-personalize.md) may supply repository evidence, but it does not run this design process or return an architecture-quality verdict.
+- [`project-personalize`](actions/project-personalize.md) may supply repository evidence; `feature-init` owns design decisions and handoff readiness.
 
 ## Evidence and conversation
 
@@ -33,13 +33,13 @@ Runtime component, module, deployment unit, and tier are distinct concepts. Mult
 
 ## Existing artifact mapping
 
-Use the ordinary full-lane files; create no additional architecture document or schema.
+Record the design in the ordinary full-lane files:
 
 - `spec.md`: outcomes, include/exclude scope, externally meaningful constraints, and verification.
 - `plan.md`: module/tier impact, ownership, sibling alignment, contracts/state, runtime decisions, prior decisions, risks, and unresolved items.
 - `tasks.md`: decision-resolution work, implementation steps, migrations when applicable, and executable verification.
 
-Create an ADR only after an actual decision satisfies `ADR_REQUIRED`; an unresolved choice is a TODO, not a speculative ADR.
+Keep unresolved choices as TODOs. Create an ADR only after an actual decision satisfies `ADR_REQUIRED`.
 
 ## Handoff readiness
 

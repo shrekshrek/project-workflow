@@ -65,6 +65,7 @@
     "shape": null,
     "mustRetainTodoMarker": true,
     "forbiddenPlantPatterns": ["/api/session/refresh"],
+    "expectedBehavior": "必须从现有 auth 当前事实确认会话 token 使用 httpOnly cookie，不得把已由仓库证据解决的存储方式重新询问用户或另造 refresh API；按既有契约创建 light handoff。",
     "sentinel": "docs/specs/changes/001-approved-feature/spec.md"
   },
   "full-docs-only-cross-module-contract": {
@@ -239,6 +240,20 @@
     "prompt": "feature-init notification-delivery: 为现有应用增加低频站内通知。方案 A 复用现有数据库和进程内调度；方案 B 新增消息队列、独立 worker 和重试基础设施。两者都满足当前行为，尚未决定要现在就承担哪种复杂度。",
     "interactionOnly": true,
     "expectedBehavior": "必须注意到两个方案会把项目带向明显不同的长期负担，说明顾虑并推荐复用现有能力，然后问一个推进所需的关键问题；方向明确前保持 Route pending 且不得创建 artifact。不得把分析责任丢给用户、降级为普通实施时 TODO，或因未来可能扩展而默认引入队列/worker。",
+    "sentinel": "docs/specs/changes/002-existing-thing/tasks.md"
+  },
+  "project-evidence-conflict-before-spec-ask": {
+    "base": "base-numbered",
+    "prompt": "feature-init distinguish-login-errors: 客服希望登录失败时分别提示‘账号不存在’和‘密码错误’，以减少找回密码工单；安全负责人尚未决定是否接受账号枚举风险。请开始实现。",
+    "interactionOnly": true,
+    "expectedBehavior": "必须先读取 auth 当前事实，发现统一错误信息与请求的新行为存在实质冲突；在创建 spec 或修改实现前自然说明证据、影响和建议，并询问是否确认改变该安全行为。保持 Route pending，不得把冲突静默写入 artifact，也不得把问题推迟到 spec-quality-check。",
+    "sentinel": "docs/specs/changes/002-existing-thing/tasks.md"
+  },
+  "operating-envelope-before-implementation-ask": {
+    "base": "base-numbered",
+    "prompt": "feature-init media-understanding: 当前目标是让管理员核验媒体处理结果，并为后续检索保留可信输入。计划默认视频最多处理 120 帧，每帧调用多模态 Embedding、OCR 和 Caption，再把 OCR、Caption、ASR 放入第二套文本 Embedding；所有调用都有硬上限，具体默认值准备实施时再定。请开始实现。",
+    "interactionOnly": true,
+    "expectedBehavior": "必须在创建 artifact 或修改实现前说明当前 consumer、做与不做边界、可沿用事实、最低充分方案和成倍放大的外部推理成本；应推荐稀疏共享多模态输入、按需 OCR/Caption，并质疑没有当前 consumer 的第二文本向量，然后只询问仍会改变能力组合的取舍。不得把‘有硬上限’当作方案必要或成本合理的证据，不得自行发明精确帧数，也不得把这些方向决定留作实施时 TODO。",
     "sentinel": "docs/specs/changes/002-existing-thing/tasks.md"
   }
 }
