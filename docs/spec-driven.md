@@ -118,8 +118,8 @@ docs/specs/changes/
 - 目录名 `<NNN>-<slug>`,编号便于排序和引用
 - 完成后**整个目录归档,不删、不改**;后续变更起新目录引用旧的(见 §5)
 
-### 3.2.5 入口分流:先判是否需要 project-workflow
-<a id="325-轻车道小改免-frozen-spec--plan"></a>
+### 3.2.1 入口分流:先判是否需要 project-workflow
+<a id="321-轻车道小改免-frozen-spec--plan"></a>
 
 本指南负责 artifact 的写法,不重复运行时分流规则;精确判定以 [`feature-init`](actions/feature-init.md) 为准。最短心智模型:
 
@@ -233,7 +233,7 @@ scope、ownership、authorization、data disposition、release boundary 或验�
 可检查的责任、契约、状态或用户结果，并在依赖工作开始前完成最小相关检查和任务记录。全局
 Verification 只保留尚未被阶段检查覆盖的跨阶段/最终证据，不重复列一遍。对依赖或回滚风险明显的阶段，可补退出条件、下一个 consumer 与 focused evidence。
 
-**跨 tier 契约先行**:先确定共同 API/schema/event/fixture,再按依赖或可独立验证的阶段排序;见 [workflow §8.6](workflow.md#86-全栈项目的契约先行contract-first-tactic)。
+**跨 tier 契约先行**:先确定共同 API/schema/event/fixture,再按依赖或可独立验证的阶段排序;见 [workflow §8.1](workflow.md#81-全栈项目的契约先行contract-first-tactic)。
 
 #### 实施记录
 
@@ -251,44 +251,18 @@ Verification 只保留尚未被阶段检查覆盖的跨阶段/最终证据，不
 
 完整 `spec.md` / `plan.md` / `tasks.md` 样例已移到按需参考的 [`docs/examples/full-feature-artifact.md`](examples/full-feature-artifact.md)。正文只保留规则与协作 SOP,避免示例中的路径、接口和技术选择被误当成默认值。
 
-<a id="365-phase-a填-todos-的-ai-协作-sop"></a>
-### 3.6.5 Phase A:填 TODOs 的 AI 协作 SOP(主会话用 ── primary mode)
+<a id="361-实施前-artifact-自然协作"></a>
+### 3.6.1 实施前 artifact 的自然协作
 
-`feature-init` 先关闭会改变 scope、ownership、authorization、data disposition 或 release coupling
-的高影响决定，再创建并预填 artifact。创建后只保留不改变契约的低层 TODO；quality gate 前必须
-解析，或改成有边界、owner 和证据的实施时任务/决定。
+`feature-init` 在创建 artifact 前关闭会改变结果或实施方向的高影响决定，并根据当前决定自然覆盖
+Outcomes、Scope、Constraints、Verification 和必要的 plan/tasks 内容，不使用固定问卷。已清楚的
+事实直接采用；只有外部证据会实质改变未决选择时才使用 `tech-researcher`。多边界或高风险工作再
+补当前使用者、责任/契约边界、耦合与回滚风险，以及值得独立检查的阶段结果。
 
-> **本节既适用 `/feature-init` materialization 前后的 conversational fill,也适用主会话非-skill context 的纯人 + AI 协作填**。
-> Plugin 不使用固定问卷:只询问实际阻塞的高影响未知项;依赖问题按顺序推进，相关独立问题可以合并。低层实现细节可在 fill 期间保留 TODO，但 `{{TODO}}` 不进入实施。
-
-#### 自然覆盖质量问题
-
-根据当前决定自然覆盖 Outcomes、Scope、Constraints 和 Verification，不要求固定填写顺序。只询问
-会改变契约或实施方向的未知项；已经清楚的内容直接写入，低层实现细节留给 plan/tasks。多边界或
-高风险工作再补当前使用者、责任/契约边界、耦合与回滚风险，以及值得独立检查的阶段结果。
-
-> 数据模型 / API 契约 / 架构细节属 plan.md(HOW),不在 spec.md(WHAT);见 §3.1。
-
-#### 用户不确定某节技术选型时
-
-→ 只有当当前外部证据会实质影响选型时,AI 才建议使用 `tech-researcher`(可用 sub-agent,也可由主会话完成);不要为了覆盖 Agent 而调度,也不要替用户决定。
-
-#### 末尾提示
-
-先判断 plan 是否形成架构/模块边界、持久跨 feature 技术决定或取代既有 ADR。命中 `ADR_REQUIRED`
-才从 plugin 模板实例化 ADR 并在 plan 引用;未命中 ADR 但属于非显然选择、外部解释、冲突/
-bundled-risk 或 supersede 的决定才在 Prior decisions 写 why/source,普通实现细节不逐项记账。然后
-提示:"全部填完。建议跑 `/project-workflow:spec-quality-check` 做 pre-impl gate 验证。"
-
-#### 这跟 /spec-revise 的区别
-
-| 维度 | Phase A AI 协作填 | /spec-revise(State 4 修订)|
-|---|---|---|
-| Spec 状态 | Draft → Filled(见 [§3.8](#38-spec-编辑边界只有-1-条线)) | Frozen |
-| ADR | 按 `ADR_REQUIRED` 条件创建 | 按 `ADR_REQUIRED` 条件创建 |
-| `## 修订记录` | ❌ 无需 | ✅ 必须 |
-| 跨文件同步 | 自然(初次写 plan/tasks 一并) | ✅ 必须 orchestrate |
-| Skill? | ❌ 主会话 AI 读本节直接做(`/feature-init` materialization 前关闭高影响决定,物化后解析或具体化低层 TODO)| ✅ /spec-revise |
+创建后可继续自由完善尚未冻结的 artifact，但 unresolved placeholder 不进入实施。只有满足
+`ADR_REQUIRED` 的真实决定才创建 ADR；需要持久 why/source 的非显然决定才进入 Prior decisions。
+准备完成后运行 [`spec-quality-check`](actions/spec-quality-check.md)。开始依据 artifact 实施后，真实
+契约或边界变化改走 [`spec-revise`](actions/spec-revise.md)；普通实现细节继续留在 plan/tasks。
 
 ---
 
@@ -326,87 +300,50 @@ spec.md 编辑规则**只看 1 个问题**:**是否已经开始依据它实施?*
 
 | 状态 | 编辑规则 | 工具 |
 |---|---|---|
-| **尚未开始 impl** | **自由编辑**(用户 + AI 主会话 iterate) | [`feature-init`](actions/feature-init.md) / [§3.6.5 Phase A SOP](#365-phase-a填-todos-的-ai-协作-sop)/ [`spec-quality-check`](actions/spec-quality-check.md) |
+| **尚未开始 impl** | **自由编辑**(用户 + AI 主会话 iterate) | [`feature-init`](actions/feature-init.md) / [§3.6.1 实施前自然协作](#361-实施前-artifact-自然协作)/ [`spec-quality-check`](actions/spec-quality-check.md) |
 | **已开始 impl** | **必走 SOP**(`## 修订记录` 节追加 + 跨文件同步;满足 `ADR_REQUIRED` 时加 ADR)| [`spec-revise`](actions/spec-revise.md) |
 
 **为什么这条边界**:spec 是契约。没人基于它写代码时,改是无成本的;基于它写过代码后,改 = 撕毁契约 → 必须留下变更记录(`## 修订记录`)并跨文件同步(plan / tasks / 可能 module AGENTS.md)。ADR 只承载真正持久的架构/模块边界、跨功能技术决定或既有 ADR 的取代关系,不是每次修订的收据。
 
-**反模式**:把实施前的 iteration 当 frozen 后修订处理(走完整 revision 流程),或给每次 frozen 修订无条件起 ADR → ceremony 过度,spec 反而难起步。Git commit 只是版本控制动作,不是契约边界。
-
-**关于 spec.md 状态字段**(`> 状态: 草稿 / 已确认 / 已实现`,template 默认有):是**业务流程标签**,跟本节编辑边界**正交**。**草稿** = 仍可自由迭代;**已确认** = 用户接受并开始实施,契约冻结;**已实现** = 契约已被代码兑现(spec 自身的兑现标记,不是部署状态)。部署 / 上线状态由 CI / 部署系统跟踪,不在 spec 上标(故无"已上线")。交付后的生命周期状态(已取代 / 已废弃)与物理归档见 [§5.1](#51-生命周期状态全集--物理归档)。
-
-> **谁翻**:`feature-done` 给 READY 时翻(契约兑现的判定点)。只有重跑活动 `已实现` Feature 才完整保留旧 READY receipt；普通非 READY 复验覆盖 canonical receipt，并在非 READY 时退回已确认。这里只动生命周期状态，不修改契约正文。
-
-<details>
-<summary>(细化命名,仅作工程参考——操作只看上面 1 条边界)</summary>
-
-| 细化状态 | 何时 |
-|---|---|
-| Draft | `/feature-init` 刚生成,有 `{{TODO}}` |
-| Filled | TODOs 填完,未 quality-check |
-| Validated | `/spec-quality-check` 7 问通过 |
-| Frozen | 用户已接受并开始依据它实施 |
-| Revised | 经过至少一次 `/spec-revise` |
-
-Draft / Filled / Validated **本质同档**(自由编辑);Frozen / Revised **本质同档**(走 SOP)。
-</details>
+不要把实施前迭代当成 frozen 修订，也不要为每次修订无条件创建 ADR。Git commit 不是契约边界。
+`草稿 / 已确认 / 已实现` 是生命周期标签：确认并开始实施后冻结，`feature-done` READY 时标记已实现；
+部署状态由部署系统跟踪。完整状态与归档见 [§5.1](#51-生命周期状态全集--物理归档)。
 
 ---
 
 ## 4. AI 协作中的 spec 用法
 
-> **跟 [workflow.md §3 P2 Feature Development](workflow.md#3-p2feature-development每个功能) 的关系**:
-> §3 是 P2 阶段的**流程**(规划 / 实现 / 交付 / 修订),本节是 spec **文件本身在协作中怎么用**(喂给 AI / 实施中如何处理 / AI 跑偏怎么办)。两者互补:§3 管"什么时候做什么",本节管"具体跟 spec 文件怎么交互"。
+本节只说明协作时如何使用 artifact；运行时流程由 [workflow §3](workflow.md#3-p2feature-development每个功能)
+和 canonical actions 定义。
 
 ### 4.1 怎么把 spec 喂给 AI
 
-**正确做法**:新 session 第一句:
+新 session 直接让 AI 读取当前文件，而不是把内容复制进 prompt：
 
 ```
 请先阅读 docs/specs/changes/002-invitation/spec.md 和 plan.md,然后从 tasks.md 第 1 条开始实现。
 ```
 
-**错误做法**:把内容复制到 prompt 里。
-
-**为什么**:文件路径让 AI 直接读最新版本;复制的内容会变成 stale 副本(你后续改了文件,prompt 里还是老的)。
-**进阶**:不同阶段给不同文件 —— 评审阶段只给 `spec.md`,实施给 `spec.md + plan.md + tasks.md`,reviewer 检查给三份齐全。
+文件路径保持来源最新。契约判断以 spec 为基线；实施和 quality/reviewer action 按其输入规则读取
+plan/tasks，不人为裁剪必要上下文。
 
 ### 4.2 实施中如果发现错
 
-> **快查表** —— spec.md 修订(中 / 大档)的完整 SOP(`## 修订记录` 节 + 跨文件同步;符合 `ADR_REQUIRED` 时加 ADR)在 [workflow.md §3.5](workflow.md#35-开发中发现-specplan-错怎么办)。本表只回答"落在哪个文件"+"严重度分档"。
+普通实现补充写入 plan/tasks；会改变已接受契约或责任边界的发现，在加深返工前交给
+[`feature-init`](actions/feature-init.md) 的 Scope Stop，并在需要时运行
+[`spec-revise`](actions/spec-revise.md)。已写代码不构成扩大范围的理由。
 
-| 错的程度 | 落在哪个文件 | 怎么处理 |
-|---|---|---|
-| **小**(漏了一个需要持久 why/source 的 prior decision) | `plan.md` §3 Prior decisions | 当场追加,告诉 AI 重新读 plan.md;无需走 §3.5 SOP |
-| **小**(临时方案、补丁) | `tasks.md` 实施记录 | 写一行,不改 spec/plan;无需走 SOP |
-| **中**(plan 选型 / 模块边界 需调整) | `plan.md`(可能含 module AGENTS.md)| **走 [workflow.md §3.5](workflow.md#35-开发中发现-specplan-错怎么办) SOP**(修订记录 + 跨文件同步;模块边界变化满足 `ADR_REQUIRED`);若涉模块边界变化,加走 [§2.6](workflow.md#26-module-中途变更feature-实施中发现边界要调整) |
-| **大**(scope / outcomes 实际跟想做的不一样) | `spec.md` § 1/2(经 SOP)| **走 [workflow.md §3.5](workflow.md#35-开发中发现-specplan-错怎么办) SOP**;若大到 outcomes 跑偏,起新功能目录 `<NNN+1>-<slug>/` 引用旧的(见 §5) |
-| **Scope delta**(出现未声明的实质契约或责任边界变化) | 对照已接受的 Scope / Constraints / Module Impact 和条件式边界 | 暂停会加深返工的工作；同一 outcome 的必要细节继续，契约错误走 `/spec-revise`，独立结果拆 child，当前不需要的能力删除/延期，扩大但不可拆的工作说明 coupling 后由用户决定 |
-
-这里的“立即停”发生在继续为 delta 写生产代码、测试、migration 或兼容层之前。AI 先报告 delta、既有边界
-差异、当前必要性和推荐的删除/收窄/child/revise 方向；继续推进可能做错目标或走向实质不同方向时，
-自然询问恢复所需的问题。已有选择沿用 [`workflow.md` §3.1](workflow.md#31-规划阶段) 的沟通原则。
-同一 outcome/边界内的必要细节或保持契约的更简单实现直接继续。
-已经写出的代码/测试不构成收编理由;full lane 也不例外。
-
-多边界 FULL feature 在真实依赖或风险需要时使用少量可验证阶段。完成一个可检查的责任、契约、状态或
-用户结果后，立即运行最小相关检查，把结果记在现有 task 上，交接结果和下一阶段，经用户继续后再进入依赖工作。focused check 失败时
-留在当前阶段修复并重跑受影响证据；同一失败没有新诊断证据地重复时停止并报告 blocker。依赖或
-回滚风险明显的重要阶段可写退出条件、下一个 consumer 和最小 focused evidence。L2/L3 与 Proof Bundle
-由 `feature-done` 执行。
-
-测试遵循“最小充分证据”:每个新增 test layer、matrix、fixture 或 case 必须覆盖现有更便宜证据没有覆盖
-的实质风险,或满足项目/发布约定。一个 evidence 可覆盖多个义务;优先扩展最近且清晰的已有测试,删除
-已取代行为的测试并合并重叠 case。测试数量、层级对称和穷举 inventory 不提高 verdict。
+多边界工作只在真实依赖或风险检查点分阶段，阶段完成后运行最小相关证据并交接下一步。测试仍遵循
+最小充分证据：新增层级、矩阵或 case 必须覆盖不同风险或明确约定；数量和对称性本身不提高 verdict。
 
 ### 4.3 AI 容易跑偏的两种场景
 
 | 场景 | 根因 | 应对 |
 |---|---|---|
-| AI 主动加超出范围的功能 | `spec.md` 没写"不做" | 必填 §3.3 Scope boundaries 的"不做"部分 |
-| AI 在开发中不断收编新状态/API/模块 | 已接受边界或必要的 growth triggers 不清楚 | 触发即停,按 Scope delta 五分类处理;已经写了代码不构成收编理由 |
-| AI 在实施中反复猜 | spec/plan 写得抽象 | 把 §3.3-3.5 的好/坏对照内化,自检一遍 |
-| 多边界 FULL 到端点才发现合同缺口 | plan/tasks 只有 tier/file bucket，依赖工作前没有局部检查 | 按真实依赖改为少量可验证阶段；阶段结果完成后立即跑 focused check 并记录，material delta 才 Scope Stop |
+| AI 主动加范围外功能 | Scope 没写清 Include / Exclude | 先补边界，再继续实施 |
+| AI 不断增加状态/API/模块 | accepted boundary 不清或出现 material delta | 触发 Scope Stop；已有代码不是收编理由 |
+| AI 反复猜测 | spec/plan 太抽象 | 补充可观察结果、关键约束和必要决策 |
+| 多边界工作到端点才暴露缺口 | tasks 只有 tier/file bucket | 按真实依赖设置少量可验证阶段 |
 
 ---
 
@@ -522,7 +459,7 @@ docs/specs/changes/
 ### 6.7 spec.md 和 plan.md 内容混淆
 **症状**:用户场景写在 plan,技术架构写在 spec
 **后果**:评审看错文件,变更冻结失效
-**修正**:WHAT 进 spec(用户视角),HOW 进 plan(技术视角);**评审者只看 spec.md**
+**修正**:WHAT 进 spec(用户视角),HOW 进 plan(技术视角);契约判断以 spec.md 为基线，plan/tasks 只提供实施上下文
 
 ---
 

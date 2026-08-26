@@ -8,7 +8,7 @@
 **project-workflow v3** —— spec-driven feature development blueprint + runtime adapters。
 
 四层资产(本仓库):
-1. `docs/` —— 方法论文档(5 阶段、4 支柱、canonical actions、spec 三件套、gotchas 示范 ledger)
+1. `docs/` —— 方法论文档(四个运行阶段、4 支柱、canonical actions、spec 三件套、gotchas 示范 ledger)
 2. `template/` —— starter scaffold(方法论核心 + Claude compatibility assets,语言中立但非 tool-empty)
 3. `adapters/claude/` —— Claude Code-native skills / named agents / manifest
 4. `adapters/codex/` —— Codex-native skills / manifest;两端安装包由构建脚本生成
@@ -52,7 +52,7 @@ docs/                  方法论文档
 ├── actions/           workflow action canonical specs
 ├── reviewers/         reviewer/auditor/researcher canonical specs
 ├── architecture-design.md  architecture-shaped full change 的按需设计指南
-├── workflow.md        ⭐ 5 阶段 + 4 支柱(核心)
+├── workflow.md        ⭐ 四个运行阶段 + 4 支柱(核心)
 ├── cross-tool-methodology.md  core vs runtime adapter 边界
 ├── gotchas.md         example-of-one gotchas 证据库(示范短版)
 ├── spec-driven.md     spec/plan/tasks 详解

@@ -1,6 +1,6 @@
 # <NNN> <slug> — Tasks(轻车道)
 
-> **轻车道**:bugfix / polish / additive 小改,无 frozen spec.md / plan.md。判据见 [spec-driven.md §3.2.5](https://github.com/shrekshrek/project-workflow/blob/main/docs/spec-driven.md#325-入口分流先判是否需要-project-workflow)。
+> **轻车道**:bugfix / polish / additive 小改,无 frozen spec.md / plan.md。判据见 [spec-driven.md §3.2.1](https://github.com/shrekshrek/project-workflow/blob/main/docs/spec-driven.md#321-入口分流先判是否需要-project-workflow)。
 > ⚠️ 实施中若触达 API / DB / security / multi-tenant / evidence invariants / 跨模块契约 / 高爆破半径,或出现边界外 outcome/能力 → 在继续写代码、测试、migration 或兼容层前停。报告 delta、当前必要性和推荐方向;只有方向确需用户决定时询问所需的最少问题。需要时升级 full lane,不得因已写代码自动收编。
 > 清单只写 `feature-done` 运行前可完成的实施、review 或 check 结果；READY、Proof Bundle、状态写入和归档资格由 endpoint/lifecycle 记录，不写成 checkbox。
 

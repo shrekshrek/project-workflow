@@ -14,7 +14,7 @@ AI-assisted coding has three Tier 1 engineering problems. Every part of v3 — t
 - **Context-as-RAM** — Context windows behave like RAM, not storage. Long sessions drift, token costs scale, attention degrades past 200-line files.
 - **Drift** — Without long-term memory, AI conventions drift across time (same code reviewed twice gives different verdicts), modules (A vs B style mismatch), and project lifecycle (month 1 vs month 6 codebase).
 
-Cross-layer inconsistency (frontend/backend/DB contracts) is treated as a stack-specific tactic (`docs/workflow.md §8.6`), not a top-level proposition — community evidence frames it as a general architecture problem, not AI-specific.
+Cross-layer inconsistency (frontend/backend/DB contracts) is treated as a stack-specific tactic (`docs/workflow.md §8.1`), not a top-level proposition — community evidence frames it as a general architecture problem, not AI-specific.
 
 Full framing with sources: [`docs/workflow.md §0.1`](docs/workflow.md).
 

@@ -25,7 +25,7 @@
           <mxGeometry x="1120" y="110" width="540" height="70" as="geometry"/>
         </mxCell>
 
-        <mxCell id="lifecycle_header" value="5 阶段生命周期(skill = host-native action 入口,sub-agent = LLM-only 内部审查角色)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontStyle=2;fontColor=#37474F;" vertex="1" parent="1">
+        <mxCell id="lifecycle_header" value="四个运行阶段(skill = host-native action 入口,sub-agent = LLM-only 内部审查角色)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontStyle=2;fontColor=#37474F;" vertex="1" parent="1">
           <mxGeometry x="40" y="200" width="1620" height="20" as="geometry"/>
         </mxCell>
 
@@ -81,7 +81,7 @@
         <mxCell id="featdone_decompose" value="&lt;span style=&#39;font-size:10px;color:#558B2F;&#39;&gt;= 机械 Feature 边界 + 稳定 snapshot + L1 + 适用 L2/L3 + receipt；不在 gate 内修实现&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=10;fontColor=#558B2F;" vertex="1" parent="1">
           <mxGeometry x="600" y="450" width="930" height="20" as="geometry"/>
         </mxCell>
-        <mxCell id="lightlane_note" value="🔀 &lt;b&gt;轻车道(确有持久清单消费者的低风险小改)&lt;/b&gt;:/feature-init 分流 → 仅 tasks.md(免 frozen spec/plan)· 跳 /spec-quality-check · L2 按风险触发 · L3=N/A。判据/安全闸见 spec-driven §3.2.5" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F8E9;strokeColor=#558B2F;dashed=1;fontSize=9;align=left;verticalAlign=middle;spacing=4;fontColor=#558B2F;" vertex="1" parent="1">
+        <mxCell id="lightlane_note" value="🔀 &lt;b&gt;轻车道(确有持久清单消费者的低风险小改)&lt;/b&gt;:/feature-init 分流 → 仅 tasks.md(免 frozen spec/plan)· 跳 /spec-quality-check · L2 按风险触发 · L3=N/A。判据/安全闸见 spec-driven §3.2.1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F8E9;strokeColor=#558B2F;dashed=1;fontSize=9;align=left;verticalAlign=middle;spacing=4;fontColor=#558B2F;" vertex="1" parent="1">
           <mxGeometry x="200" y="446" width="395" height="28" as="geometry"/>
         </mxCell>
 
