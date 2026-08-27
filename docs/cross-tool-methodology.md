@@ -77,7 +77,7 @@ Adapter 设计必须遵守一个约束:**不要复制 methodology core**。例�
 
 Runtime adapter 本身则应保持 **host-native 且薄**:`adapters/claude/skills/` 使用 Claude Code 的交互、具名 agent 和 slash-command 语义;`adapters/codex/skills/` 使用 Codex 的 `$skill`、通用 subagent 和 Codex 工具语义。两端在 canonical dispatch boundary 都遵守“能力与容量存在则必须调度;否则有据 fallback;缺证据 fail closed”,同时保持同一 action 集合并引用同名 canonical spec,但不得把一端 SKILL.md 原样复制给另一端。源仓库的 [`scripts/check-adapter-parity.js`](../scripts/check-adapter-parity.js) 机械校验 action parity、canonical 引用、行数和 runtime marker 隔离。
 
-Adapter 不设 helper 命令层:`feature-done` 是端点的唯一入口。每次交付从完整 worktree diff 或精确 commit range 建立机械 Feature 边界,审查一个稳定最终快照并返回一个终态；non-READY 交回用户，不在 gate 内修实现。用户另行确认修复后再显式运行端点；用户回合边界本身不使未变的同任务 L1 证据失效，输入漂移、证据缺失或跨任务则重新取得相应证据。历史上 Claude Code 曾有 `/l1-review` / `/l2-review` / `/l3-review` / `/proof-bundle` 四个 helper skill,已在 v3.0 合并进 `feature-done`。
+Adapter 不设 helper 命令层:`feature-done` 是端点的唯一入口。每次交付从完整 worktree diff 或精确 commit range 建立机械 Feature 边界,审查一个稳定最终快照并返回一个终态，不在 gate 内修实现。端点外的修复、复验和证据复用遵循 [`feature-done`](actions/feature-done.md) 的原请求授权与验证规则。历史上 Claude Code 曾有 `/l1-review` / `/l2-review` / `/l3-review` / `/proof-bundle` 四个 helper skill,已在 v3.0 合并进 `feature-done`。
 
 ---
 

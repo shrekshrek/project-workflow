@@ -44,6 +44,7 @@ requirePatterns("docs/actions/feature-init.md", [
   ["scope stop", /Implementation Scope Stop/],
   ["phase check", /dependency or risk checkpoint[\s\S]*smallest\s+relevant check/i],
   ["phase handoff", /After a meaningful phase[\s\S]*compact handoff[\s\S]*Wait for the user/i],
+  ["repair convergence handoff", /During implementation and post-gate repair[\s\S]*cycling without converging[\s\S]*pause[\s\S]*recommended next step[\s\S]*wait for the user's decision/i],
   ["tracking is not a child prerequisite", /External tracking is never a prerequisite/i],
   ["pre-draft decision closure", /Before drafting a full-lane artifact[\s\S]*ceremonial reconfirmation/i],
   ["pre-implementation execution preview", /Before the first implementation edit[\s\S]*execution preview[\s\S]*current outcome and consumer[\s\S]*included and excluded change boundary[\s\S]*current facts[\s\S]*minimum sufficient approach[\s\S]*operating-cost boundaries[\s\S]*verification direction[\s\S]*meaningful phases[\s\S]*user's acceptance/i],
@@ -89,6 +90,7 @@ requirePatterns("docs/actions/feature-done.md", [
   ["delivery receipt", /^## Delivery Receipt/m],
   ["stable snapshot", /stable final snapshot/i],
   ["terminal endpoint handoff", /Each gate run reviews one stable final snapshot[\s\S]*never repairs[\s\S]*non-READY verdict returns control/i],
+  ["repair authorization", /review-only request stops[\s\S]*already authorized implementation or delivery request[\s\S]*ordinary repairs within the accepted scope without another confirmation, outside this action[\s\S]*operations requiring separate approval still wait for it/i],
   ["L1 L2 L3", /L1 Mechanical:[\s\S]*L2 Project conventions:[\s\S]*L3 Change-spec compliance:/],
   ["full review scheduling", /L2 Project conventions: required for full lane[\s\S]*parallel-scheduled full-lane review[\s\S]*dispatch L2 and L3 together[\s\S]*ordinary full-lane work[\s\S]*dispatch L3 first[\s\S]*dispatch L2[\s\S]*same snapshot/i],
   ["review input separation", /authoritative convention population from the filesystem[\s\S]*`AGENTS\.md`[\s\S]*Caller-supplied[\s\S]*hints only[\s\S]*Route convention sources to L2 and the change-spec package to L3/i],
@@ -139,7 +141,7 @@ requirePatterns("docs/reviewers/README.md", [
 ]);
 requireTerms("docs/project-workflow-overview.drawio", "current feature-done overview", [
   "机械 Feature 边界",
-  "non-READY 交回用户",
+  "non-READY 按原授权处理",
   "不在 gate 内修实现",
   "高风险并行,普通先 L3 后 L2",
   "READY → archive pending",

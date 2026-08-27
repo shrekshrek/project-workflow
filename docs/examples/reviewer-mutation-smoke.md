@@ -71,9 +71,9 @@ Run an ordinary full-lane `clean` case and a convention-risk case with each adap
   complete committed-and-uncommitted worktree population, rather than reviewing only `HEAD` to worktree.
 - Mix another active feature or unrelated work into that population; confirm completion preflight returns
   `BLOCKED` before L1 instead of subtracting paths or asking reviewers to infer ownership.
-- After a non-READY verdict, confirm no implementation repair or reviewer rerun occurs in that invocation. After
-  separately authorized repair, invoke `feature-done` again and confirm it creates a fresh final snapshot, reruns
-  affected checks and reviews, and reuses only unchanged same-task L1 evidence.
+- After a non-READY verdict, confirm no implementation repair or reviewer rerun occurs inside that gate.
+  After repair outside the gate, invoke `feature-done` again and confirm it creates a fresh final snapshot,
+  reruns affected checks and applicable reviews, and reuses only unchanged same-task L1 evidence.
 
 If the host cannot expose or constrain reviewer capacity, record that limitation instead of claiming the scheduling branch passed.
 
@@ -85,12 +85,14 @@ If the host cannot expose or constrain reviewer capacity, record that limitation
   before final aggregation. Confirm the endpoint rejects the cycle for aggregation, records every applicable slot
   as `invalidated(review-input drift)`, returns `BLOCKED`, and does not auto-start another full-population cycle. A
   later explicit invocation may start the new cycle after inputs stabilize.
-- Complete the initial `known-bad` report and confirm the terminal verdict returns control to the owning workflow.
-  Confirm implementation and non-receipt artifacts remain unchanged in that invocation. After separate user
-  authorization, repair the implementation; a later explicit invocation creates a fresh reviewer snapshot, reruns
-  affected L1 evidence and reviews, and reuses only unchanged evidence whose dependency closure remains valid.
-  Change the feature boundary, convention source, accepted spec, or reviewer contract and confirm the later
-  invocation runs the standard full review of the new snapshot.
+- Complete the initial `known-bad` report and confirm implementation and non-receipt artifacts remain unchanged
+  inside the gate. With an existing implementation/delivery request, confirm the owning workflow reports and
+  repairs ordinary defects within the accepted scope without another confirmation, then runs a fresh gate.
+  Let repair and review keep cycling without converging, including when findings change between runs; confirm
+  it explains the remaining problems and recommended next step, then waits for the user's decision.
+  With a review-only request, confirm it stops at the verdict. A material direction/scope change or an operation
+  requiring separate approval still waits for the user. Change the feature boundary, convention source,
+  accepted spec, or reviewer contract and confirm the later gate runs the standard full review of the new snapshot.
 
 ## Reviewer execution-boundary smoke
 
@@ -266,8 +268,8 @@ dependency-ordered results: domain/state, public contract, and actor operation:
 - Keep the next result aligned with the accepted boundary. Confirm work continues under the same active feature,
   tasks, accepted boundary, and endpoint gates.
 - Fail the public-contract focused check once and confirm the implementation repairs only that phase and reruns
-  affected evidence. Repeat the same failure without new diagnostic evidence and confirm it reports the blocker
-  instead of starting an L2/L3 or broad endpoint-review loop.
+  affected evidence. Repeat the same failure without new diagnostic evidence and confirm it explains the blocker
+  and recommended next step, then waits for the user's decision instead of starting a broad review loop.
 - Change the next public DTO so that it contradicts the accepted failure-state contract. Confirm Scope Stop
   activates before dependent UI, tests, or documentation are added.
 - Replace the inspectable results with broad technical buckets that hide a real dependency checkpoint. Confirm

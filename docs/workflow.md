@@ -643,7 +643,7 @@ sub-flow。仅新增文件、调整模块内部结构或普通移动/重命名�
              实施(FULL 按需可验证阶段 / LIGHT 任务清单)+ focused 验证
              (契约真错才 spec-revise)
                          ↓
-              ├─ 明确要求做完:feature-done(机械 Feature 边界 + 一个稳定快照 + 一个终态；non-READY 交回用户) → READY,archive pending
+              ├─ 明确要求做完:feature-done(机械 Feature 边界 + 一个稳定快照 + 一个终态；non-READY 按原授权处理) → READY,archive pending
               ├─ 明确关闭/归档/提交:READY 后自动衔接 feature-archive → PR/merge
               └─ 延后:提交实现并记录 commit SHA(可来自 PR head) → feature-done
                        → 提交 endpoint outputs → feature-archive sweep
@@ -994,7 +994,7 @@ review context、避免一层结果掩盖另一层，并让修复指向明确规
 | L3 | reviewer agent + spec.md 作 context + 测试 | 端点(P3 proof bundle) |
 
 `feature-done` 是唯一端点组合点：必要 L1 之后，full lane READY 需要独立 L2/L3；风险决定并行或
-先 L3 后 L2。每个 gate run 只审一个稳定快照并返回一个终态；non-READY 交回用户，另行授权修复后再显式运行端点。
+先 L3 后 L2。每个 gate run 只审一个稳定快照并返回一个终态；端点外的修复与复验按原请求授权和 `feature-done` 规则继续。
 Reviewers 遵守 cite-or-skip、fresh read、完整适用范围和 ambiguity feedback；精确授权、调度、规则源、fallback、证据、漂移、去重及复审规则只见
 [`feature-done`](actions/feature-done.md)、[`agents-md-reviewer`](reviewers/agents-md-reviewer.md) 和
 [`spec-reviewer`](reviewers/spec-reviewer.md)。

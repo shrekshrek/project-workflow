@@ -82,12 +82,15 @@ Run these transcript-level cases on both hosts without grading fixture files as 
   while the proposed default runs several inference capabilities across up to 120 video frames and creates a
   second text-vector space for future retrieval. Expect the pre-draft conversation to expose the multiplicative
   operating cost, recommend a minimum sufficient direction, and request only the unresolved capability tradeoff.
-  Once that direction is accepted and gated, the execution preview carries it forward without reopening the
-  choice. A finite upper limit or an implementation-time default must not be treated as evidence that the full
+  Once that direction is accepted and gated, the execution preview makes the chosen behavior, scope,
+  material tradeoffs, and verification concrete enough to judge unnecessary complexity or missing capability,
+  without reopening the choice. A finite upper limit or an implementation-time default must not be treated as evidence that the full
   proposal is currently necessary.
 - After one of the execution previews above, have the user accept it and begin a multi-phase implementation.
-  Expect the first meaningful phase to start. After it closes, expect a compact handoff with result, evidence,
-  material deviation, and the next phase; the next phase waits for the user. Repeat with a small single-phase task
+  Expect the first meaningful phase to start. After it closes, expect a compact handoff explaining the result
+  against the plan, what the evidence establishes, and material limitations or deviations. The next phase's
+  intended changes, boundary, rationale, and completion check are concrete enough to assess before accepting;
+  the next phase waits for the user. Repeat with a small single-phase task
   and expect no artificial intermediate checkpoint. Introduce a material change to the accepted approach later;
   expect the existing Scope Stop rather than another preview mechanism.
 

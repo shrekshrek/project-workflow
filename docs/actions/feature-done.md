@@ -10,7 +10,7 @@ Canonical endpoint action for deciding whether a feature is ready and recording 
 This action owns the endpoint gate: completion preflight, L1, full-lane L2/L3, current-truth check,
 and delivery receipt. Adapters implement it as one entry point.
 Each gate run reviews one stable final snapshot and returns its terminal verdict. It never repairs
-implementation or non-receipt artifacts; a non-READY verdict returns control to the user.
+implementation or non-receipt artifacts; a non-READY verdict returns control to the enclosing request.
 
 ## Completion Preflight
 
@@ -110,9 +110,13 @@ Run applicable review only after L1 passes, under the shared
 [reviewer execution contract](../reviewers/README.md#reviewer-execution-contract). Missing applicable execution
 evidence blocks `READY`; an allowed N/A is an applicability decision. Finish implementation and non-receipt
 artifact edits first. Reviewers and this action are read-only outside endpoint-owned receipt/status writes.
-A non-READY verdict reports its blockers and `Next` routes, then stops. After separately authorized repair, a
-later explicit invocation creates a new snapshot, reuses only unchanged same-task evidence allowed by the L1
-rules, and reruns affected checks or reviews; uncertainty requires the standard full review.
+A non-READY verdict reports its blockers and `Next` routes, then ends this gate. A review-only request stops
+at the verdict. For a current, already authorized implementation or delivery request, the enclosing workflow reports
+and performs ordinary repairs within the accepted scope without another confirmation, outside this action.
+Apply [feature-init's Scope Stop](feature-init.md#implementation-scope-stop) to direction/scope changes and
+non-converging repair/verification; operations requiring separate approval still wait for it. After repair, invoke this action
+again on a fresh snapshot, reuse only unchanged same-task L1 evidence, and rerun affected checks and applicable
+reviews; uncertainty requires the standard full review.
 
 Treat the accepted feature artifact as the requirements baseline. A visible later material decision routes to
 `spec-revise`; otherwise verify implementation fidelity against that artifact.
@@ -161,8 +165,8 @@ these facts unambiguous:
   unresolved. Use `area unresolved` only for durable behavior whose ownership is genuinely unknown.
 - `Open questions`: only unresolved items that affect handoff or release; omit when empty.
 - `Next`: only for a non-READY verdict, classify each blocker or coherent blocker group as `direct-repair`,
-  `spec-revise`, `user-decision`, or `separate-boundary`. Keep the route tied to its blocker; repair authority comes
-  from separate user authorization after the verdict.
+  `spec-revise`, `user-decision`, or `separate-boundary`. Keep the route tied to its blocker; continuation follows
+  [Reviewer Execution](#reviewer-execution) above.
 - `Drift`: only actionable project-convention suggestions already produced by L2; omit when empty. Persist it
   elsewhere only when the user explicitly asks to revise conventions. Guidance-placement suggestions name the
   evidence, proposed root/tier/module/mechanical owner, and whether `agents-md-revise` should handle it. Convention

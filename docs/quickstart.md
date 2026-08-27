@@ -13,7 +13,7 @@
   → 小改直接做;需要追踪或显式评估路由时 feature-init(先 Impact/Necessity + Scope Viability;DIRECT / LIGHT / FULL;PREVIEW 只读,仅 LIGHT/FULL 的 APPLY 创建 artifact)
   → high-impact unknown 先问清,full lane 再 materialize/补完草稿并跑 spec-quality-check
   → 实施(按需要分成可验证阶段:实现 → focused check → 记录到现有 task → 依赖工作)
-      ├─ 当前任务明确要求做完:feature-done(一个稳定快照 + 一个终态；non-READY 交回用户) → READY,archive pending
+      ├─ 当前任务明确要求做完:feature-done(一个稳定快照 + 一个终态；non-READY 按原授权处理) → READY,archive pending
       ├─ 明确要求关闭/归档/提交:READY 后自动衔接 feature-archive → commit / PR / merge
       └─ 延后批量收尾:提交实现并记录稳定 commit SHA(可来自 PR head)
                          → feature-done → 提交 endpoint outputs
@@ -111,8 +111,8 @@ full lane 让 AI 基于 `spec.md` + `plan.md` + `tasks.md` 写代码。存在真
 ```
 
 `feature-done` 统一完成低成本 preflight、机械 Feature 边界、L1、full-lane L2/L3、current-truth 判断和
-`## Proof Bundle`。每次只检查一个稳定快照并给出一个终态；non-READY 交回用户，不在 gate 内修实现。
-用户另行确认修复后，再显式运行一次；输入未变的同任务证据可按规则复用。FULL 的 READY 始终需要独立 L2/L3：高风险并行，普通变更先
+`## Proof Bundle`。每次只检查一个稳定快照并给出一个终态，不在 gate 内修实现。普通修复沿用实施授权，
+仅审查则止于结论；修复后重新运行端点，输入未变的同任务 L1 证据可按规则复用。FULL 的 READY 始终需要独立 L2/L3：高风险并行，普通变更先
 L3 后 L2。精确规则只见
 [`feature-done`](actions/feature-done.md)。
 

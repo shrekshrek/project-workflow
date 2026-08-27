@@ -47,7 +47,7 @@ Also classify execution authorization independently:
 - `PREVIEW`: report the proposed route and reasons, but create or modify nothing. A read-only request that explicitly asks for feature routing always uses this mode; general discussion/review/diagnosis without that request does not invoke the action.
 - `APPLY`: apply the route to feature artifacts when the user explicitly requested artifact initialization or implementation/change. `APPLY` authorizes only the artifact work owned by this action; this action still writes no implementation code.
 
-Keep the action boundary separate from the enclosing task's continuation. An artifact-initialization-only request stops after this action reports/materializes its route. An implementation/change request authorizes routing and required artifact preparation, not an unseen implementation approach. Before the first implementation edit for a feature or direct change, present a proportionate, self-contained execution preview that makes clear the current outcome and consumer; the included and excluded change boundary; relevant current facts to preserve or change; the minimum sufficient approach and key rationale; material responsibility and operating-cost boundaries; the verification direction; and meaningful phases when more than one is useful. Use natural prose or a few bullets rather than a fixed form. Resolve evidence-backed facts directly, surface only unresolved decisions that could materially change the result, boundary, approach, risk, or verification, then wait for the user's acceptance. Acceptance starts the first phase; later phases use the handoff below. A material departure uses **Implementation Scope Stop**. The feature-init action itself never edits implementation code.
+Keep the action boundary separate from the enclosing task's continuation. An artifact-initialization-only request stops after this action reports/materializes its route. An implementation/change request authorizes routing and required artifact preparation, not an unseen implementation approach. Before the first implementation edit for a feature or direct change, present a proportionate, self-contained execution preview that makes clear the current outcome and consumer; the included and excluded change boundary; relevant current facts to preserve or change; the minimum sufficient approach and key rationale; material responsibility and operating-cost boundaries; the verification direction; and meaningful phases when more than one is useful. Make the explanation concrete enough for the user to judge direction and whether the approach adds unnecessary complexity or omits necessary capability; explain material tradeoffs and resulting limits where they affect that judgment. Scale detail to the change, using natural prose or a few bullets rather than a fixed form. Resolve evidence-backed facts directly, surface only unresolved decisions that could materially change the result, boundary, approach, risk, or verification, then wait for the user's acceptance. Acceptance starts the first phase; later phases use the handoff below. A material departure uses **Implementation Scope Stop**. The feature-init action itself never edits implementation code.
 
 A blocking impact/necessity, scope-viability, or selection decision remains `Route: pending` until the required answer, selection, or acceptance exists; `pending` is not a fourth completed route and never authorizes materialization. Resolve an existing active feature that covers the same outcome before allocating a number. Reuse it when compatible, route accepted-spec implementation as `DIRECT`, and never create a duplicate merely because `feature-init` was invoked.
 
@@ -174,10 +174,13 @@ without a stop report.
 Use a dependency-ordered phase at a real dependency or risk checkpoint. Each phase closes an inspectable
 responsibility, contract/state transition, or actor-to-result segment.
 
-Within the current phase, fix a failure and rerun only affected evidence; if the same failure repeats without
-new diagnostic evidence, stop and report the concrete blocker. After a meaningful phase, run its smallest
-relevant check, update its existing task, and return a compact handoff naming the closed result and evidence,
-any material deviation, and the next proposed phase. Wait for the user before beginning that phase. At the
+During implementation and post-gate repair, fix failures and rerun only affected evidence. If repair and
+verification keep cycling without converging, pause, explain the remaining problems and recommended next step,
+and wait for the user's decision. After a meaningful phase, run its smallest
+relevant check, update its existing task, and return a compact handoff explaining what changed against the
+plan, what the evidence establishes, and any material limitations or deviations. Explain the next phase's
+intended changes and boundary, why they are needed, and how completion will be checked, with enough detail
+to judge direction and scope. Wait for the user before beginning that phase. At the
 handoff or after context/session resume, re-read the accepted behavior, applicable delivery boundary,
 Verification, and remaining tasks; a material mismatch invokes Implementation Scope Stop. L2/L3 dispatch,
 lifecycle status, and receipts remain endpoint concerns. A small or direct result may be one phase.
