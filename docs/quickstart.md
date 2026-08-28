@@ -42,9 +42,9 @@
 /project-workflow:project-personalize
 ```
 
-`project-init` 的预期结果只有六个中立文件:`AGENTS.md`、一行 alias `CLAUDE.md`、`.gitignore`、`docs/specs/index.md`、`docs/adr/README.md`、`docs/gotchas.md`;它不猜语言、命令、tier、rules 或 hooks,也不解释或合并已有的无关资料。六文件完全匹配且其余内容仅属无关资料时视为已初始化。只要已有内容提供了需要对齐的项目事实,或 baseline 目标路径已有冲突,就由 `project-personalize` 处理;若资料性质确实无法判断,只问一次再分流。若代码 scaffold 工具要求目标目录为空,先运行该工具。`project-init` 完成表示 workflow baseline ready,应用结构仍可待定,并提示两条可选后续:在第一个 feature 内完成最小架构,或仅当架构治理多个后续 feature 时单独追踪。`project-personalize` 完成表示 working agreement 已与当前结构对齐,不是架构优劣判定。
+`project-init` 的预期结果只有六个中立文件:`AGENTS.md`、一行 alias `CLAUDE.md`、`.gitignore`、`docs/specs/index.md`、`docs/adr/README.md`、`docs/gotchas.md`;它不猜语言、命令、tier 或 rules,也不解释或合并已有的无关资料。六文件完全匹配且其余内容仅属无关资料时视为已初始化。只要已有内容提供了需要对齐的项目事实,或 baseline 目标路径已有冲突,就由 `project-personalize` 处理;若资料性质确实无法判断,只问一次再分流。若代码 scaffold 工具要求目标目录为空,先运行该工具。`project-init` 完成表示 workflow baseline ready,应用结构仍可待定,并提示两条可选后续:在第一个 feature 内完成最小架构,或仅当架构治理多个后续 feature 时单独追踪。`project-personalize` 完成表示 working agreement 已与当前结构对齐,不是架构优劣判定。
 
-应用基础或架构设计仍走普通 `feature-init` 分流:会建立或实质改变项目级 runtime tier、模块边界、数据/API 契约等结构,且确有持久 artifact 消费者时使用现有 full lane。没有 `project-foundation` 专用 action、lane 或保留 slug;最小结构与第一个功能不可分时放在同一个 feature 中,只有架构决定本身会约束多个后续功能时才单独追踪。只有命中的 architecture-shaped change 按需读取 [`architecture-design.md`](architecture-design.md);普通 feature 与 `project-personalize` 不读取。
+应用基础或架构设计仍按 [`feature-init`](actions/feature-init.md) 选择最轻的充分路径，不另起 action 或 lane。最小结构与第一个功能不可分时放在同一个 feature 中，只有架构决定有独立持久消费者时才单独追踪；需要设计时按需读取 [`architecture-design.md`](architecture-design.md)。
 
 ## 2. 判断是否需要 feature artifact
 
@@ -110,7 +110,7 @@ full lane 让 AI 基于 `spec.md` + `plan.md` + `tasks.md` 写代码。存在真
 /project-workflow:feature-done <feature-slug>
 ```
 
-`feature-done` 统一完成低成本 preflight、机械 Feature 边界、L1、full-lane L2/L3、current-truth 判断和
+`feature-done` 统一完成低成本 preflight、机械 Feature 边界、L1、适用的 L2/L3、current-truth 判断和
 `## Proof Bundle`。每次只检查一个稳定快照并给出一个终态，不在 gate 内修实现。普通修复沿用实施授权，
 仅审查则止于结论；修复后重新运行端点，输入未变的同任务 L1 证据可按规则复用。FULL 的 READY 始终需要独立 L2/L3：高风险并行，普通变更先
 L3 后 L2。精确规则只见
@@ -152,7 +152,7 @@ L3 后 L2。精确规则只见
 
 | 场景 | 简化做法 |
 |---|---|
-| tiny/local、低风险且未改变已声明 current truth | 不建 feature artifact,直接做并跑相关检查;hook 只在已安装且 active 时提供增量反馈 |
+| tiny/local、低风险且未改变已声明 current truth | 不建 feature artifact,直接做并跑相关检查 |
 | 探索性 spike | 在临时 branch / worktree 做;只有留下持久架构/跨功能技术决定时才写 ADR |
 | 生产 hotfix | 先修;之后补测试并记录后续技术债 |
-| 架构 / API / 数据模型变更 | 不要跳过 spec;使用全车道 feature spec。仅架构/模块边界、持久跨功能技术决定或取代既有 ADR 时再写 ADR |
+| 架构 / API / 数据模型变更 | 按 `feature-init` 判断文档需要，不按名称自动 FULL；仅命中 `ADR_REQUIRED` 才写 ADR |

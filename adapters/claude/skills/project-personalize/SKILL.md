@@ -13,8 +13,8 @@ Claude execution details:
   from content classification, and apply the canonical target classification and route.
 - Inspect with Read/Grep/Glob/Bash. Use `codebase-explorer`, `tech-researcher`, and
   `decision-completeness-auditor` only at their canonical boundaries.
-- For a partial/missing baseline, use `${CLAUDE_PLUGIN_ROOT}/scripts/materialize-project-baseline.cjs --stage` in a disposable directory. A missing baseline does not copy host-private rules, hooks, or tier examples.
-- Treat `.claude/rules/` and hooks as host-private: preserve them unless selected, and activate a new hook only under the canonical verified-command rule.
+- For a partial/missing baseline, use `${CLAUDE_PLUGIN_ROOT}/scripts/materialize-project-baseline.cjs --stage` in a disposable directory.
+- Include `.claude/rules/` only within the selected convention scope; preserve unrelated project configuration.
 - Read `${CLAUDE_PLUGIN_ROOT}/docs/actions/project-personalize-reference.md` only when repository evidence or a user decision makes a specific section relevant; it supplies examples, never defaults.
 - Use inline trace or fresh named agents at those canonical boundaries; fallback follows the shared execution contract.
 - Preflight and apply staged changes under the current request's authorization. An unsafe destination

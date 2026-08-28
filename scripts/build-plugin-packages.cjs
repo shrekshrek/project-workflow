@@ -154,7 +154,6 @@ function validatePackage(packageRoot, host) {
   ]) requirePath(packageRoot, relative);
 
   if (host === "claude") {
-    requirePath(packageRoot, "template/.claude/settings.json");
     const reviewers = fs.readdirSync(path.join(packageRoot, "agents"))
       .filter((value) => value.endsWith(".md"))
       .map((value) => value.replace(/\.md$/, ""))
@@ -169,7 +168,6 @@ function validatePackage(packageRoot, host) {
       throw new Error("Claude package must not contain Codex-private template assets");
     }
   } else {
-    requirePath(packageRoot, "template/.codex/hooks.json");
     if (manifest.skills !== "./skills/") throw new Error("Codex manifest skills path must be ./skills/");
     if (fs.existsSync(path.join(packageRoot, "agents"))) {
       throw new Error("Codex package must use reviewer specs through native subagents, not Claude agent adapters");
@@ -179,17 +177,6 @@ function validatePackage(packageRoot, host) {
     }
   }
 
-  const hookPath = path.join(packageRoot, host === "claude"
-    ? "template/.claude/hooks/lint-on-edit.cjs"
-    : "template/.codex/hooks/lint-on-edit.cjs");
-  const hookResult = spawnSync(process.execPath, [hookPath], {
-    cwd: packageRoot,
-    encoding: "utf8",
-    input: "{}\n",
-  });
-  if (hookResult.status !== 0) {
-    throw new Error(`${host} packaged hook is not self-contained: ${hookResult.stderr.trim()}`);
-  }
   return manifest.version;
 }
 
@@ -224,13 +211,6 @@ function buildHost(host, outputRoot) {
       ? (value) => transformDocumentation(value, host)
       : (value) => value;
     copyFile(path.join(repoRoot, sourceRelative), path.join(packageRoot, targetRelative), transform);
-  }
-  if (host === "codex") {
-    // Keep one source implementation while shipping a host-self-contained Codex hook.
-    copyFile(
-      path.join(repoRoot, "template/.claude/hooks/lint-on-edit.cjs"),
-      path.join(packageRoot, "template/.codex/hooks/lint-on-edit.cjs"),
-    );
   }
   return packageRoot;
 }

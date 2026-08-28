@@ -5,7 +5,8 @@
     "endpointVerdict": "READY",
     "l2EndpointStatus": "completed",
     "requiredFindingConcepts": [],
-    "l2Applicable": true
+    "l2Applicable": true,
+    "l3Applicable": true
   },
   "known-bad": {
     "base": "base",
@@ -17,7 +18,8 @@
       "empty string behavior",
       "empty input verification"
     ],
-    "l2Applicable": true
+    "l2Applicable": true,
+    "l3Applicable": true
   },
   "light-clean": {
     "base": "light-base",
@@ -25,7 +27,8 @@
     "endpointVerdict": "READY",
     "l2EndpointStatus": "N/A",
     "requiredFindingConcepts": [],
-    "l2Applicable": false
+    "l2Applicable": false,
+    "l3Applicable": false
   },
   "light-known-bad": {
     "base": "light-base",
@@ -33,8 +36,9 @@
     "endpointVerdict": "NEEDS WORK",
     "l2EndpointStatus": "N/A",
     "requiredFindingConcepts": [
-      "light-lane verification"
+      "whitespace-only behavior"
     ],
-    "l2Applicable": false
+    "l2Applicable": false,
+    "l3Applicable": true
   }
 }

@@ -3,7 +3,6 @@
 const fs = require("fs");
 const os = require("os");
 const path = require("path");
-const { spawnSync } = require("child_process");
 const { applyStaged, materialize } = require("./materialize-project-baseline.cjs");
 
 const repoRoot = path.resolve(__dirname, "..");
@@ -15,10 +14,6 @@ const retainedOptionalAssets = [
   "template/.claude/rules/code-style.md",
   "template/.claude/rules/testing.md",
   "template/.claude/rules/security.md",
-  "template/.claude/hooks/lint-on-edit.cjs",
-  "template/.claude/settings.json",
-  "template/.codex/hooks.json",
-  "template/.codex/hooks/lint-on-edit.cjs",
   "template/_multi_tier_examples/README.md",
   "template/_multi_tier_examples/service-tier.AGENTS.md.example",
   "template/_multi_tier_examples/ui-tier.AGENTS.md.example",
@@ -52,7 +47,7 @@ const optionalAssetContracts = {
     forbidden: ["每个 endpoint 至少"],
   },
   "template/.claude/rules/_examples/react.example.md": {
-    required: ["React 18+ 类型不再隐式加入 `children`"],
+    required: ["组件形式、Props 类型与文件组织沿用项目约定"],
     forbidden: ["**禁** `React.FC<Props>`"],
   },
   "template/.claude/rules/_examples/README.md": {
@@ -125,9 +120,6 @@ for (const forbidden of [
   "docs/specs/_template/domain.md",
   "docs/specs/changes/_template/tasks.md",
   "docs/adr/0000-template.md",
-  ".claude/settings.json",
-  ".claude/hooks/lint-on-edit.cjs",
-  ".codex/hooks.json",
 ]) {
   if (baselineFiles.includes(forbidden)) problems.push(`materialized baseline retains plugin-only asset ${forbidden}`);
 }
@@ -152,16 +144,27 @@ fs.rmSync(baselineRoot, { recursive: true, force: true });
 
 const incidentalRoot = fs.mkdtempSync(path.join(realTmpRoot, "project-workflow-incidental-"));
 const incidentalStage = fs.mkdtempSync(path.join(realTmpRoot, "project-workflow-incidental-stage-"));
-const incidentalPath = path.join(incidentalRoot, "references", "source-note.md");
-fs.mkdirSync(path.dirname(incidentalPath), { recursive: true });
-fs.writeFileSync(incidentalPath, "standalone reference\n");
+const incidentalFiles = {
+  "references/source-note.md": "standalone reference\n",
+  ".claude/settings.json": '{"hooks":{"PostToolUse":[]},"permissions":{"allow":[]}}\n',
+  ".codex/hooks.json": '{"hooks":{"PostToolUse":[]}}\n',
+};
+for (const [relative, content] of Object.entries(incidentalFiles)) {
+  const destination = path.join(incidentalRoot, relative);
+  fs.mkdirSync(path.dirname(destination), { recursive: true });
+  fs.writeFileSync(destination, content);
+}
 const incidentalResult = materialize(path.join(repoRoot, "template"), incidentalStage, { againstRoot: incidentalRoot });
-if (fs.readFileSync(incidentalPath, "utf8") !== "standalone reference\n") {
-  problems.push("baseline staging changed incidental target content");
+for (const [relative, content] of Object.entries(incidentalFiles)) {
+  if (fs.readFileSync(path.join(incidentalRoot, relative), "utf8") !== content) {
+    problems.push(`baseline staging changed incidental target content: ${relative}`);
+  }
 }
 applyStaged(incidentalStage, incidentalRoot);
-if (fs.readFileSync(incidentalPath, "utf8") !== "standalone reference\n") {
-  problems.push("baseline apply changed incidental target content");
+for (const [relative, content] of Object.entries(incidentalFiles)) {
+  if (fs.readFileSync(path.join(incidentalRoot, relative), "utf8") !== content) {
+    problems.push(`baseline apply changed incidental target content: ${relative}`);
+  }
 }
 if (incidentalResult.skippedExisting.length !== 0 || !fs.existsSync(path.join(incidentalRoot, "AGENTS.md"))) {
   problems.push("baseline materializer did not add the complete neutral baseline beside incidental content");
@@ -293,94 +296,10 @@ for (const file of ruleFiles) {
   }
 }
 
-const hookPath = path.join(repoRoot, "template", ".claude", "hooks", "lint-on-edit.cjs");
-const wrapperPath = path.join(repoRoot, "template", ".codex", "hooks", "lint-on-edit.cjs");
-const hookCases = [
-  ["valid file input", JSON.stringify({ cwd: repoRoot, tool_input: { file_path: "README.md" } })],
-  ["empty input", ""],
-  ["Codex patch input", JSON.stringify({
-    cwd: repoRoot,
-    tool_input: { command: "*** Begin Patch\n*** Update File: README.md\n*** End Patch" },
-  })],
-  ["malformed JSON", "{invalid"],
-];
-
-for (const [name, input] of hookCases) {
-  const result = spawnSync(process.execPath, [hookPath], {
-    cwd: repoRoot,
-    input,
-    encoding: "utf8",
-  });
-  if (result.status !== 0) {
-    problems.push(`hook ${name}: expected exit 0, got ${result.status}`);
-  }
-  if (name === "malformed JSON" && !result.stderr.includes("malformed hook JSON")) {
-    problems.push("hook malformed JSON: expected concise warning");
-  }
-}
-
-const esmRoot = fs.mkdtempSync(path.join(realTmpRoot, "project-workflow-esm-hooks-"));
-fs.mkdirSync(path.join(esmRoot, ".claude", "hooks"), { recursive: true });
-fs.mkdirSync(path.join(esmRoot, ".codex", "hooks"), { recursive: true });
-fs.writeFileSync(path.join(esmRoot, "package.json"), JSON.stringify({ type: "module" }));
-fs.copyFileSync(hookPath, path.join(esmRoot, ".claude", "hooks", "lint-on-edit.cjs"));
-fs.copyFileSync(wrapperPath, path.join(esmRoot, ".codex", "hooks", "lint-on-edit.cjs"));
-
-const esmScripts = [
-  ["Claude hook", ".claude/hooks/lint-on-edit.cjs"],
-  ["Codex wrapper", ".codex/hooks/lint-on-edit.cjs"],
-];
-const esmInputs = [
-  ["valid file input", JSON.stringify({ cwd: esmRoot, tool_input: { file_path: "package.json" } })],
-  ["empty input", ""],
-  ["patch input", JSON.stringify({
-    cwd: esmRoot,
-    tool_input: { command: "*** Begin Patch\n*** Update File: package.json\n*** End Patch" },
-  })],
-  ["malformed JSON", "{invalid"],
-];
-
-for (const [scriptName, script] of esmScripts) {
-  for (const [inputName, input] of esmInputs) {
-    const result = spawnSync(process.execPath, [path.join(esmRoot, script)], {
-      cwd: esmRoot,
-      input,
-      encoding: "utf8",
-    });
-    if (result.status !== 0) {
-      problems.push(`hook ${scriptName} ${inputName} in ESM project: expected exit 0, got ${result.status}`);
-    }
-    if (inputName === "malformed JSON" && !result.stderr.includes("malformed hook JSON")) {
-      problems.push(`hook ${scriptName} malformed JSON in ESM project: expected concise warning`);
-    }
-  }
-}
-fs.rmSync(esmRoot, { recursive: true, force: true });
-
-for (const config of [
-  path.join(repoRoot, "template", ".claude", "settings.json"),
-  path.join(repoRoot, "template", ".codex", "hooks.json"),
-]) {
-  const content = fs.readFileSync(config, "utf8");
-  if (!content.includes("lint-on-edit.cjs") || content.includes("lint-on-edit.js")) {
-    problems.push(`${relative(config)}: hook configuration must reference .cjs only`);
-  }
-}
-
-const codexHookConfig = fs.readFileSync(path.join(repoRoot, "template", ".codex", "hooks.json"), "utf8");
-if (!codexHookConfig.includes("commandWindows") || !codexHookConfig.includes("powershell -NoProfile")) {
-  problems.push("template/.codex/hooks.json: Windows command override is required");
-}
-
-const hookContent = fs.readFileSync(hookPath, "utf8");
-for (const marker of ["Scripts', `${name}.exe`", "Scripts', `${name}.cmd`", ".bin', `${name}.cmd`"]) {
-  if (!hookContent.includes(marker)) problems.push(`template hook: missing Windows local-bin marker ${JSON.stringify(marker)}`);
-}
-
 if (problems.length > 0) {
   console.error("Template contract check failed:");
   for (const problem of problems) console.error(`- ${problem}`);
   process.exit(1);
 }
 
-console.log(`Template contracts OK: staged/strict baseline boundaries + ${ruleFiles.length} rules + ${hookCases.length + (esmScripts.length * esmInputs.length)} hook cases.`);
+console.log(`Template contracts OK: staged/strict baseline boundaries + ${ruleFiles.length} rules.`);

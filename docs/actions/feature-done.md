@@ -7,7 +7,7 @@ Canonical endpoint action for deciding whether a feature is ready and recording 
 - Implementation for a feature is believed complete.
 - The user wants a single readiness verdict.
 
-This action owns the endpoint gate: completion preflight, L1, full-lane L2/L3, current-truth check,
+This action owns the endpoint gate: completion preflight, L1, applicable L2/L3, current-truth check,
 and delivery receipt. Adapters implement it as one entry point.
 Each gate run reviews one stable final snapshot and returns its terminal verdict. It never repairs
 implementation or non-receipt artifacts; a non-READY verdict returns control to the enclosing request.
@@ -41,7 +41,7 @@ Run this cheap completion check before expanded L1 commands or reviewer dispatch
   Constraints, Module Impact, and any conditional delivery boundary (or the light-lane expected-impact boundary). A new persistent state, API,
   role, workflow, management surface, queue, runtime, Provider/responsibility area, contract, migration,
   authorization rule, or release boundary that was not declared returns `NEEDS WORK` before expanded L1
-  and routes to `spec-revise`, lane upgrade, or a child feature.
+  and routes through [Implementation Scope Stop](feature-init.md#implementation-scope-stop).
   If ownership of the extra change is ambiguous, return `BLOCKED`.
 - Close every explicit Guidance Placement commitment before expanded L1. When plan Sibling Alignment or an
   accepted task says `Codify`, mechanically require either the named root/tier/module `AGENTS.md` target plus
@@ -85,16 +85,18 @@ useful, keep a dated one-line attempt summary in the implementation record. A no
   a shared surface, contract, dependency, or build configuration. Sequence cache-sharing heavyweight commands.
 - L1 prerequisite: finish all independently executable required checks before review. Failure yields `NEEDS WORK`,
   unavailability yields `BLOCKED`, and applicable reviewer slots record `not-run(L1 prerequisite)`.
-- L2 Project conventions: required for full lane and risk-routed only for light lane. For full lane, risk controls
+- L2 Project conventions: required for full lane; for light lane, run only for an explicit project requirement or
+  a concrete qualitative convention concern that mechanical checks cannot settle. Otherwise record a reasoned N/A.
+  For full lane, risk controls
   scheduling rather than applicability. Use parallel review when the user/project explicitly requires it, or when
   convention sources change or the change spans multiple convention scopes/shared surfaces, durable
   architecture/ownership, security/authorization/multi-tenant behavior, migration, or release/rollback boundaries.
-  Reviewer Execution owns full-lane dispatch order. For light lane, run L2 under the same risk triggers or a plausible qualitative convention conflict
-  that cannot be resolved mechanically; otherwise record `N/A(low-risk light lane; no L2 trigger)`.
-- L3 Change-spec compliance: always required for full lane. Compare implementation to
-  `docs/specs/changes/.../spec.md` via `spec-reviewer`; **brownfield** = Delta + Constraints + Verification;
-  **greenfield** = §1–§4. Domain docs remain context, not the L3 baseline.
-- Light-lane verification: when no `spec.md` exists, execute or mechanically check every item under `tasks.md` `## 验证`; L3 remains N/A, but an unverified or failed item blocks READY.
+  Reviewer Execution owns full-lane dispatch order.
+- L3 Change-spec compliance: always required for full lane. For light lane, run when the actual diff raises a
+  concrete behavior, security, or recovery concern needing independent judgment, or the project requires it;
+  otherwise record a reasoned N/A. Use `spec-reviewer` against full-lane `spec.md` or light-lane `tasks.md`
+  goal/boundary, constraints, and verification. Domain docs remain context, not the L3 baseline.
+- Light-lane verification: execute or mechanically check every item under `tasks.md` `## 验证`; an unverified or failed item blocks READY regardless of reviewer applicability.
 - Evidence deduplication: when one command/assertion proves several related Verification items, execute it once and
   map that result to each obligation. A matrix runs only while its declared dimensions remain applicable and prove
   distinct risk.
@@ -116,10 +118,11 @@ and performs ordinary repairs within the accepted scope without another confirma
 Apply [feature-init's Scope Stop](feature-init.md#implementation-scope-stop) to direction/scope changes and
 non-converging repair/verification; operations requiring separate approval still wait for it. After repair, invoke this action
 again on a fresh snapshot, reuse only unchanged same-task L1 evidence, and rerun affected checks and applicable
-reviews; uncertainty requires the standard full review.
+reviews. Keep repair reporting to the blocker, fix, changed evidence, and next result; reference valid evidence
+instead of restating the plan or copying earlier failed receipts.
 
-Treat the accepted feature artifact as the requirements baseline. A visible later material decision routes to
-`spec-revise`; otherwise verify implementation fidelity against that artifact.
+Treat the accepted feature artifact as the requirements baseline; handle later material decisions through
+[Implementation Scope Stop](feature-init.md#implementation-scope-stop) before reviewing implementation fidelity.
 
 Create one transient snapshot with repository identity, authoritative changed paths, L1 evidence, applicable
 spec/artifacts, and convention sources. Resolve the authoritative convention population from the filesystem: for
@@ -158,8 +161,8 @@ these facts unambiguous:
 - `Reviews`: for L2 and L3, record `completed`, `N/A`, `not-run`, or `invalidated`, with the verdict and
   baseline for completed reviews and a concise reason for every other state. Add findings, unverified
   obligations, or ambiguities only when non-empty. A full-lane READY needs valid completed L2 and L3 coverage;
-  a non-READY ordinary full-lane run may record L2 `not-run(awaiting final L3 candidate)`. Light lane records its verification results and may mark L3
-  `N/A(light lane)`. Reviewer identifiers and dispatch mode are optional diagnostics; coverage evidence remains
+  a non-READY ordinary full-lane run may record L2 `not-run(awaiting final L3 candidate)`. Light lane records its verification results and the actual applicability of each reviewer, not a blanket lane-based skip.
+  Reviewer identifiers and dispatch mode are optional diagnostics; coverage evidence remains
   required.
 - `Current truth`: `not-run(non-READY prerequisite)` / no relevant domain doc / aligned / update pending / area
   unresolved. Use `area unresolved` only for durable behavior whose ownership is genuinely unknown.
@@ -179,8 +182,6 @@ relevant exceptions, and current truth.
 Return a concise summary containing: verdict; aggregate check result; L2/L3 result or non-execution reason;
 current-truth state; `Lifecycle: READY; archive pending` when READY; non-empty blockers and `Next` routes; and the
 repository-relative `tasks.md#proof-bundle` path. The linked receipt holds command-level detail.
-
-For light lane, when the project already declares disaster-invariant/high-blast-radius paths, re-check the actual diff against them; a match is a misclassification. Projects without this optional declaration rely on the semantic high-risk conditions from `feature-init` and do not need an empty path list.
 
 For full-lane `READY`, change only the top `spec.md` status marker to `已实现`; light lane and non-READY results keep
 their existing status.
@@ -211,7 +212,7 @@ history only when the user requests calibration. Establish reviewer sensitivity 
 
 - One stable snapshot produces one terminal verdict. Full-lane READY requires independent L2/L3 PASS; risk selects
   their scheduling.
-- The accepted artifact is the delivery baseline; a visible later material correction routes to `spec-revise`.
+- The accepted artifact is the delivery baseline; material corrections follow the scope-stop route above.
 - READY, receipt/status writes, and archive eligibility are endpoint/lifecycle outputs, not implementation tasks.
 - Reviewer coverage evidence supports the verdict. Each gate run creates fresh reviewer results; unchanged
   same-task L1 evidence remains reusable.

@@ -12,7 +12,7 @@ paths:
 
 ## 通用
 
-> ⚠️ **缩进 / 行宽**:跟 formatter default 一致(Python Black/Ruff 88 / TS Prettier 80 等)── **不写在这**(workflow §1.3 "标准通用约定不该收")。真覆盖了 default 才在下方加一条 + 同步 lint config(`pyproject.toml [tool.ruff]` / `eslint.config.js`)。
+> 格式规则由项目 formatter/lint 配置维护；这里只记录工具不能表达的项目特有约定。
 
 - 注释纪律:**不写**"这段代码做了什么"(代码自身能说明);**写**"为什么这么做"(决策、约束、workaround)
 
@@ -22,7 +22,7 @@ paths:
 
 ## 函数 / 类
 
-- (按需写,如"函数 < 50 行 / 类 < 200 行")
+- (按项目已有约定填写职责或接口要求)
 
 ## 文件 / 模块
 
@@ -34,4 +34,4 @@ paths:
 
 ## 异步代码
 
-- (按需写,如"全 async/await,不 mix Promise.then")
+- (按项目实际并发与取消约定填写)

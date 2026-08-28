@@ -60,7 +60,7 @@ Deep reference, not required reading: [`workflow.md`](docs/workflow.md), [`spec-
 | Layer | What | Where |
 |---|---|---|
 | 📘 **Methodology core** | Project setup, tracked feature delivery, continuous maintenance, and convention refresh principles + canonical action specs + 4 pillars + cross-tool boundaries + spec-driven templates + demonstrative gotchas ledger | [`docs/`](docs/) |
-| 🧰 **Starter template** | Six-file generated baseline plus optional rules, hooks, tier examples, feature/domain/ADR templates, and safety scripts retained in the plugin library. | [`template/`](template/) |
+| 🧰 **Starter template** | Six-file generated baseline plus optional rules, tier examples, feature/domain/ADR templates, and safety scripts retained in the plugin library. | [`template/`](template/) |
 | 🤖 **Claude Code adapter** | 9 Claude-native slash-command skills + 6 named sub-agents | [`adapters/claude/`](adapters/claude/) + [`.claude-plugin/`](.claude-plugin/) marketplace |
 | 🧩 **Codex adapter** | 9 Codex-native skills using bundled canonical reviewer specs | [`adapters/codex/`](adapters/codex/) + [`.agents/plugins/`](.agents/plugins/) marketplace |
 
@@ -165,7 +165,7 @@ $agents-md-revise
 
 Run `$project-init` once when all six neutral baseline destinations are absent and existing content, if any, is merely incidental: `AGENTS.md`, the one-line `CLAUDE.md` alias, `.gitignore`, `docs/specs/index.md`, `docs/adr/README.md`, and `docs/gotchas.md`. It preserves unrelated references, exports, or notes without interpreting them. A matching baseline plus only incidental content is already initialized. Use `$project-personalize` when code, configuration, or project-specific documentation establishes commands, paths, conventions, architecture, product/current truth, or when a baseline destination is partial, custom, or occupied. If a scaffold generator requires an empty target, run it first. `project-init` leaves the workflow baseline ready even when application structure is undecided; `project-personalize` leaves the evidence-backed working agreement aligned without claiming the architecture is suitable.
 
-Application-foundation and architecture work uses the ordinary `$feature-init` classification. Project-wide runtime tiers, module boundaries, data/API contracts, or other architecture changes use the existing full lane when a durable artifact is useful; there is no reserved `project-foundation` action, lane, or slug. Keep minimal setup inside the first feature when the two are inseparable, and create a separate architecture-shaped change only when it governs several later features or otherwise has its own durable consumer. Only that selected architecture-shaped change loads the shared [`architecture-design` guidance](docs/architecture-design.md); ordinary features and `project-personalize` skip it.
+Application-foundation and architecture work follows [`feature-init`](docs/actions/feature-init.md)'s lightest sufficient route, without a separate action or lane. Keep minimal setup inside the first feature when inseparable; track architecture separately only when it has its own durable consumer. Read [`architecture-design`](docs/architecture-design.md) when the action calls for it.
 
 ### Manual fallback
 
@@ -178,7 +178,7 @@ node <path-to-this-repo>/scripts/materialize-project-baseline.cjs \
   --apply-staged <temporary-staging-dir> <your-project>
 ```
 
-The generated baseline contains no stack placeholders or no-op hooks. All reusable templates and optional host-specific assets stay in the plugin/source library; add them later through evidence-backed personalization. Dockerfile / docker-compose / build scripts remain project-owned.
+The generated baseline contains no stack placeholders. All reusable templates and optional host-specific assets stay in the plugin/source library; add them later through evidence-backed personalization. Dockerfile / docker-compose / build scripts remain project-owned.
 
 ### Source naming rule
 
@@ -187,8 +187,8 @@ The plugin identity is `project-workflow` for both Claude Code and Codex. Local 
 ### Runtime compatibility
 
 - Release checks currently run with Claude Code 2.1.144 and Codex CLI 0.142.5; these are tested baselines, not declared minimum versions.
-- Primary release verification runs on macOS. When hooks are materialized, Codex includes a PowerShell `commandWindows` override and the shared hook resolves Windows venv/npm binaries; Linux and Windows remain smoke-tested rather than full end-to-end certified.
-- Older hosts without current plugin or hook support may still use the manual fallback, but are outside adapter guarantees.
+- Primary release verification runs on macOS; Linux and Windows are not fully end-to-end certified.
+- Older hosts without current plugin support may still use the manual fallback, but are outside adapter guarantees.
 
 ## Workflow surface
 

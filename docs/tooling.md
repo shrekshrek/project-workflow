@@ -45,14 +45,13 @@
 | 模型 | Claude(Anthropic) | GPT(OpenAI) | 多模型(GPT/Claude/Gemini) |
 | 主交互 | 对话式 + 工具调用 | 对话式 + app/CLI/IDE 多入口 | 编辑器内 inline + chat |
 | Persistent guidance | `CLAUDE.md` / `AGENTS.md` alias | `AGENTS.md` discovery | `AGENTS.md` 或 `.cursor/rules/*.mdc` |
-| Hook 系统 | ✅ `.claude/settings.json` + hooks | ✅ `.codex/hooks.json` / `.codex/config.toml` | 能力随 Cursor 版本演进;本仓库不维护对应 adapter |
 | Reusable workflow | ✅ Claude Code plugin / skills | ✅ Codex plugin + bundled skills | project rules / commands / extensions;不作为本仓库正式 adapter |
 | Parallel work | ✅ 原生支持 | ✅ worktrees / subagents / cloud threads | 不纳入本仓库稳定能力假设 |
 
 ### 2.2 选择理由
 
 **本项目正式维护 Claude Code 与 Codex 两个 adapter**:
-- `adapters/claude/` 保留 Claude-native skills、named agents、manifest 与可选 hooks/rules 机制
+- `adapters/claude/` 保留 Claude-native skills、named agents、manifest 与可选 rules
 - `adapters/codex/` 保留 Codex-native skills、manifest 与“可调度时强制 general subagent、否则有据 main-session fallback”的执行语义,不复制 Claude runtime skill
 - 两端差异只留在配置、触发、plugin-root 和 subagent dispatch;methodology core 统一由 `docs/actions/` 与 `docs/reviewers/` 定义
 - 构建脚本生成两个独立安装包并发布到 `plugin-dist`;使用者只需选择自己正在使用的宿主
@@ -69,14 +68,14 @@
 | 装多个 IDE 工具会冲突吗? | 不会(它们读同一份代码) |
 | 该选一个主 adapter 吗? | 单个项目按实际宿主选择即可;本仓库同时维护两端,但流程只在 core 定义一次 |
 | Claude/Codex 能共用什么? | `AGENTS.md`, `docs/actions/`, `docs/reviewers/`, `docs/specs/`, `docs/specs/changes/`, ADR, proof bundle, L1/L2/L3 语义 |
-| Claude/Codex 不能共用什么? | plugin manifest、hook 配置、skill 安装路径、sub-agent 配置格式 |
+| Claude/Codex 不能共用什么? | plugin manifest、skill 安装路径、sub-agent 配置格式 |
 | 切换工具的成本? | 低到中(weeks),前提是上层资产保持工具无关 |
 
 两端不能共用的还包括 **SKILL.md runtime body**:action 语义共用,但交互、命令名、subagent dispatch、plugin-root 解析必须 host-native。源仓库 CI 用 [`scripts/check-adapter-parity.js`](../scripts/check-adapter-parity.js) 保证 action 集合相同而不是文件内容相同。
 
 ### 2.4 Codex native adapter surface
 
-Codex/Claude/manual 的完整 capability mapping 与不可变边界由 [`cross-tool-methodology.md §3`](cross-tool-methodology.md#3-adapter-mapping) 统一维护。本文件只保留工具选择结论:共享 methodology core,分别维护 host-native skills、hooks、manifest 和 subagent 调度,不要复制第二套 action/reviewer 定义。
+Codex/Claude/manual 的完整 capability mapping 与不可变边界由 [`cross-tool-methodology.md §3`](cross-tool-methodology.md#3-adapter-mapping) 统一维护。本文件只保留工具选择结论:共享 methodology core,分别维护 host-native skills、manifest 和 subagent 调度,不要复制第二套 action/reviewer 定义。
 
 ---
 
@@ -176,7 +175,7 @@ Claude Code adapter 依赖官方内建能力;第三方 MCP / plugins 只是可�
 
 ### 4.2 Codex / OpenAI 原生能力
 
-Codex adapter 复用 methodology core,但用 Codex 原生的 `AGENTS.md` discovery、plugin skills、hooks/config、general subagent 与 App/CLI 分发。具体映射只在 [`cross-tool-methodology.md`](cross-tool-methodology.md) 和 plugin package 中维护;迁移时只翻译入口、安装、hook 与 reviewer 调用方式,不要 fork `workflow.md`、`spec-driven.md`、actions 或 reviewers。
+Codex adapter 复用 methodology core,但用 Codex 原生的 `AGENTS.md` discovery、plugin skills、general subagent 与 App/CLI 分发。具体映射只在 [`cross-tool-methodology.md`](cross-tool-methodology.md) 和 plugin package 中维护;迁移时只翻译入口、安装与 reviewer 调用方式,不要 fork `workflow.md`、`spec-driven.md`、actions 或 reviewers。
 
 ---
 

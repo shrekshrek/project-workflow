@@ -20,11 +20,11 @@ This file is the cross-tool source of truth for working in this repository. Keep
 
 - Make tiny, local, low-risk fixes directly, including reversible behavior work not declared in current truth, and report the checks run.
 - Before the first implementation edit, give the user a proportionate preview of the intended outcome,
-  approach, boundary, rationale, verification, and meaningful phases. After each phase, report its result,
+  approach, boundary, rationale, verification, and meaningful phases; wait for the user's acceptance. After each phase, report its result,
   evidence, deviations, and next phase, then wait before continuing.
 - When a proposed implementation may need tracked acceptance, cross-session handoff, current-truth synchronization, or contract/risk protection, use the host's `feature-init` action to check whether the request is one independently deliverable outcome or needs decomposition before returning DIRECT/no artifact, LIGHT/tasks-only, or FULL/spec-plan-tasks. An explicit feature-routing question uses read-only PREVIEW; general discussion/review/diagnosis without that question does not invoke the action. Only authorized LIGHT/FULL APPLY creates an artifact; DIRECT creates none and an enclosing implementation request continues.
 - Resolve current behavior from `docs/specs/` and the selected active feature; exclude `docs/specs/changes/archive/` unless tracing history.
-- If direct or light work grows into contract-shaped, cross-module, architecture, data, security, or other high-risk scope, stop and upgrade the lane before continuing.
+- Choose the lightest sufficient artifact via `feature-init`; reassess when the accepted boundary or decision needs change, not merely when a risk category is touched. Verification remains proportionate to actual risk.
 - For every lane, stop before extending implementation when work discovers an outcome, persistent state,
   API, role, workflow, management surface, queue, runtime, responsibility area, contract, migration,
   authorization rule, or release boundary outside the accepted scope/impact baseline. Full lane is not
@@ -45,12 +45,11 @@ This file is the cross-tool source of truth for working in this repository. Keep
   inherited guidance, and is costly or unsafe to infer repeatedly. Keep cross-project rules at root, prefer one
   tier rule over duplicated sibling-module files, and keep nested files difference-only. Do not create them for
   directory symmetry, line-count reduction, feature/product semantics, temporary instructions, or decisions
-  better owned by a spec/plan/ADR or mechanical lint/hook/test. If this project adopts nested Claude aliases,
+  better owned by a spec/plan/ADR or mechanical lint/test. If this project adopts nested Claude aliases,
   each matching `CLAUDE.md` contains exactly `@AGENTS.md` plus one newline.
-- Keep tests few and sufficient: every added test layer, matrix, fixture, or case must prove a material
-  obligation/risk not already covered by cheaper evidence, or satisfy an applicable project/release
-  convention. Prefer extending the nearest clear existing test, consolidate overlap, and remove tests for
-  superseded behavior. Counts and layer symmetry are not quality signals.
+- Keep verification sufficient for declared behavior, material risks, and applicable project/release
+  conventions. Prefer clear existing tests, consolidate redundant coverage, and remove tests for superseded
+  behavior while preserving relevant regression coverage.
 - During implementation run focused checks for the changed boundary. Before delivery, select the final check
   population from the feature's proof obligations, actual changed scope, shared-surface impact, and applicable
   project/release conventions. Run a repository-wide or release suite only when one of those inputs requires

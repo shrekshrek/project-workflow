@@ -17,7 +17,7 @@
 
 > 仅当本 feature 真正需要对齐、偏离或提升兄弟模块约定时保留本节；单纯触及多模块不构成填表理由。Codify 不等于一定新建文件:
 > 跨项目规则留根级,同 tier 共享差量进 tier,只有真实模块特例进 module;产品/feature 语义留 spec/plan/ADR,
-> 可机械判定的优先 lint/hook/test。嵌套 Claude 兼容采用一行 `@AGENTS.md` alias,不复制规则正文。
+> 可机械判定的优先 lint/test。嵌套 Claude 兼容采用一行 `@AGENTS.md` alias,不复制规则正文。
 
 ### 1.2 条件式交付边界(仅多边界 / 架构型 / 实质高风险时保留)
 

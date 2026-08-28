@@ -37,9 +37,8 @@ proposed/accepted contract; generated draft text is not self-authorizing. Do not
 conversation, infer a requirement from current implementation, or demand that ordinary spec content be copied
 into plan Prior decisions.
 
-When the caller supplies a decision-closure result for a multi-turn conversation, verify that its resolved
-material decisions are represented faithfully. Do not reopen a resolved product choice, invent a new
-interpretation, or turn reconciliation into another user interview; missing authority remains `SOURCE GAP`.
+Use the supplied decision-closure result to verify faithful representation of resolved material decisions;
+missing authority remains `SOURCE GAP` for the caller to resolve.
 
 For a current-conversation correction or supersede decision, require the caller to provide the exact user
 statement, normalized replacement, and older rule it supersedes. A caller-authored "user confirmed" summary

@@ -2,10 +2,10 @@
 
 Behavior-equivalence harness for the generative `feature-init` action. Deterministic validation covers the full fixture set; model smoke covers only affected behavior. Scenarios and mechanical expectations live in `tests/fixtures/feature-init-scenarios/expected.json`.
 
-Twenty-six scenarios cover lane classification (full / light / no-artifact), including ambiguous
+The scenarios cover lane classification (full / light / no-artifact), including ambiguous
 real-work boundaries that do not name the expected lane: implementation already covered by an accepted
 spec, a multi-file behavior-preserving refactor, an existing-contract UI change with a durable handoff
-consumer, and a docs-only cross-module contract change. They also cover target-root resolution from a
+consumer, a bounded cross-runtime auth repair, and a docs-only coordinated contract change. They also cover target-root resolution from a
 subdirectory, NNN numbering over the shared active+archive sequence, brownfield/greenfield shape detection,
 exact lane file sets, no-artifact whole-tree preservation, `{{TODO}}` retention, plant refusal, and
 module-ownership non-guessing, pre-materialization decomposition of several independently shippable
@@ -33,16 +33,16 @@ and symlink safety; it does not claim model behavior.
 
 ## Implicit activation smoke
 
-Run this only when skill discovery or lane routing changed. In a fresh host task with the plugin installed, issue ordinary implementation requests without naming `feature-init`: one tiny local fix, one bounded reversible user-visible behavior change not declared in current truth, one low-risk change that explicitly needs a cross-session acceptance checklist, and one contract-shaped or cross-module feature. Confirm that the host keeps the first two direct, invokes `feature-init` for the latter two, selects light then full respectively, and does not search `docs/specs/changes/archive/` for current behavior. Record this manual smoke in the release task; it tests skill discovery and is intentionally not a second CI harness.
+When discovery or routing changes, test ordinary requests without naming `feature-init`: a local fix, an undeclared reversible behavior change, a bounded auth repair needing handoff, and a coordinated redesign needing separate requirements/design. Expect DIRECT, DIRECT, LIGHT, FULL respectively, with no archive search for current truth. This tests discovery, not just artifact generation; record host and coverage limits.
 
 ## Route and authorization smoke
 
 Run these transcript-level cases on both hosts without grading fixture files as model output:
 
-- Ask only "评估这个改动是否需要 feature" for a schema migration. Confirm the explicit routing request triggers `feature-init` despite being read-only. Expect `Route: FULL`, `Execution: PREVIEW`, a concrete schema/migration reason, `Feature: none`, and zero writes/materializer/auditor calls.
+- Ask only "评估这个改动是否需要 feature" for a coordinated schema migration needing a rollout contract. Expect `FULL`, `PREVIEW`, an explanation of the extra documents' purpose, `Feature: none`, and zero writes.
 - Ask to implement a local reversible wording fix through `feature-init`. Expect `Route: DIRECT`, `Execution: APPLY`, a concrete no-durable-consumer reason, `Feature: none`, and no feature number or artifact. Before the first implementation edit, expect a one- or two-sentence execution preview and no code change until the user accepts it.
 - Ask to implement a change that needs a current-truth update but no contract change. Expect `Route: LIGHT`, `Execution: APPLY`, `Feature: create=<tasks-only path>`, and `Next gates` ending in `feature-done` without `spec-quality-check`; after materialization, expect the proportionate execution preview and wait before implementation.
-- Ask to implement an API/schema migration. Expect `Route: FULL`, `Execution: APPLY`, `Feature: create=<full-lane path>`, and `Next gates` beginning with `spec-quality-check`.
+- Ask to implement that coordinated migration. Expect `FULL`, `APPLY`, a full artifact, and `spec-quality-check`. Contrast with `light-bounded-auth-repair`: retain LIGHT and necessary verification despite auth and cross-runtime impact.
 - Ask only to initialize an otherwise identical light/full feature artifact. Expect materialization and a route report, but no implementation continuation because artifact initialization was the whole request.
 - Repeat a covered request when a compatible active or accepted feature already exists. Expect
   `Feature: reuse=<path>` and no new number. Confirm `Next gates` come from the reused artifact's lane/status,
@@ -58,7 +58,9 @@ Run these transcript-level cases on both hosts without grading fixture files as 
   must not run `spec-quality-check` against the stale artifact. After the synchronized revision, expect the
   normal `spec-quality-check` gate when the changed boundary requires it. In the same scenario, state that the
   behavior is removed and another owner is the single source. Expect synchronized spec/plan/tasks/ADR content
-  with no optional, fallback, or compatibility path for the superseded owner.
+  with no optional, fallback, or compatibility path for the superseded owner. Repeat with a LIGHT correction
+  that still fits `tasks.md`, including an explicit `spec-revise` call: update its checklist and decision source,
+  reopen affected tasks, supersede prior evidence/receipt, and rerun affected verification before `feature-done`.
 - Invoke `spec-quality-check` explicitly while the same frozen-contract correction is still pending. Expect
   `N/A(route: spec-revise)`, no mechanical/reviewer run, and no artifact edit. Repeat with an unimplemented
   draft: expect ordinary draft repair before the quality gate, not a frozen-contract revision.

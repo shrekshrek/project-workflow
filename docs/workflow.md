@@ -40,7 +40,7 @@ AI 协作开发有**三个 Tier 1 工程痛点**,本手册的四个运行阶段�
 
 **社群证据**:[Martin Fowler — Encoding Team Standards](https://martinfowler.com/articles/reduce-friction-ai/encoding-team-standards.html)(更多见 [§参考与延伸](#参考与延伸))
 
-**v3 主力支撑**:[§6.3 Env-enforced rules](#63-规则由环境强制environment-enforced-rules)(active hooks / endpoint checks)+ [§1 P0 AGENTS.md](#1-p0project-setup项目第一天) 单一 source of truth + [§5 P4 Drift Refresh](#5-p4drift-refresh主动修正)
+**v3 主力支撑**:[§6.3 Env-enforced rules](#63-规则由环境强制environment-enforced-rules)(阶段检查 / endpoint checks)+ [§1 P0 AGENTS.md](#1-p0project-setup项目第一天) 单一 source of truth + [§5 P4 Drift Refresh](#5-p4drift-refresh主动修正)
 
 #### 跨层不一致(全栈 tactic,不是独立命题)
 
@@ -74,7 +74,7 @@ AI 协作开发有**三个 Tier 1 工程痛点**,本手册的四个运行阶段�
 │      ─ 仅"反常"时加 <module>/AGENTS.md(见 §2.3)             │
 ├─────────────────────────────────────────────────────────────┤
 │ P3: Continuous Maintenance(开发期间常驻)                    │
-│ ─ active hooks 增量校验;端点 L1 + FULL 必需 L2/L3          │
+│ ─ 阶段 focused 验证;端点 L1 + FULL 必需 L2/L3          │
 │ ─ 高风险并行;普通变更 L3 PASS 后再做一次最终 L2            │
 │ ─ backlog / discussions 走平台原生(Issues / Discussions)   │
 ├─────────────────────────────────────────────────────────────┤
@@ -140,7 +140,7 @@ AI 协作开发有**三个 Tier 1 工程痛点**,本手册的四个运行阶段�
 | **产品域级**(扁平) | `docs/specs/index.md` + 按需 `docs/specs/<area>.md` | P0 `project-init` 建索引;正文 `/feature-archive` merge |
 | **宿主私有路径规则**(可选) | 例如 Claude `.claude/rules/*.md`;不是 portable core | plugin 保留示例和机制说明;仅在具体宿主、具体项目需要时启用,其他 adapter 无需读取或翻译 |
 | **跨功能决策**(扁平,不嵌套) | `docs/adr/NNNN-<title>.md` | 重大架构选择 / spec-revise 满足 `ADR_REQUIRED`([§3.5](#35-开发中发现-specplan-错怎么办))/ 模块边界变更([§2.6](#26-module-中途变更feature-实施中发现边界要调整)) 时 |
-| **工具基础设施**(扁平,不嵌套) | `.gitignore`;有已验证命令时才 materialize adapter hooks/settings;drift 状态按需 | P0 不创建 no-op hook |
+| **工具基础设施**(扁平,不嵌套) | `.gitignore` 与项目自有检查配置 | P0 仅提供中立 baseline |
 
 #### 文档职责 5 类(总框架)
 
@@ -151,7 +151,7 @@ AI 协作开发有**三个 Tier 1 工程痛点**,本手册的四个运行阶段�
 | **A. 约定**(Conventions) | portable core 是 `AGENTS.md`(项目 / tier / 模块嵌套)+ adapter alias;宿主私有 scoped rules 可选 | "我们**现在**怎么工作?"(规则 / 风格 / 最佳实践) | 当前态;AGENTS.md 频率梯度见 [§1.3](#13-agentsmd-的内容标准),Claude 可选规则见 [§1.6](#16-路径级规则claude-rules官方支持) | 项目级必然;tier / 模块级与宿主私有资产可选 |
 | **B. 变更**(Changes) | `docs/specs/changes/<NNN>-<slug>/{spec,plan,tasks}.md` 或轻车道 `tasks.md`;交付后移入 `docs/specs/changes/archive/` | "这次 tracked change **做什么 + 怎么做 + 步骤**?" | per-change 生命周期,完成后**物理归档** | `/feature-init` 或行为变更下限(轻车道) |
 | **C. 决策**(ADR) | `docs/adr/NNNN-<title>.md` | "**当时为什么**这么选?+ trade-off?" | Accepted 后正文冻结;取代时只改状态并新建 ADR | 重大架构选择 / spec-revise 满足 `ADR_REQUIRED` / 模块边界变更时(§3.5 / §2.6)|
-| **D. 工具基础设施**(Infra) | `.gitignore` + 条件式 adapter hooks/settings | "工具**自动跑**什么?" | 普通 repo 代码生命周期 | 有可靠命令才创建 |
+| **D. 工具基础设施**(Infra) | `.gitignore` + 项目检查配置 | "工具**运行什么检查**?" | 普通 repo 代码生命周期 | 按项目实际需要维护 |
 | **E. 产品事实**(Domain docs) | `docs/specs/index.md` + 按需 `docs/specs/<area>.md`;变更在 `docs/specs/changes/` | "这个产品/系统域**现在**怎么工作?" | 当前态;`feature-archive` merge 更新 | P0 建索引;area doc 在有当前事实可沉淀时创建 |
 
 **两轴交叉规则**:
@@ -167,7 +167,7 @@ AI 协作开发有**三个 Tier 1 工程痛点**,本手册的四个运行阶段�
 | **A 约定** | 可无冲突建立中立 baseline 的 `project-init` / 有项目证据或 partial/custom baseline 的 `project-personalize` | feature 内发现的新约定随该 change 更新;客观 drift 才用 `agents-md-revise` | 不归档,始终维护当前态;L2/Drift 提供反馈 |
 | **B 变更** | `feature-init` 先判 no artifact / light / full;仅 light/full 创建 | draft 自由填;冻结契约真错才 `spec-revise`;`feature-done` 判兑现 | `feature-archive` 物理归档;历史混乱才 `spec-reconcile` |
 | **C 决策** | 规划或 `spec-revise` 中仅 `ADR_REQUIRED=yes` 时创建 | Accepted 后正文不改;新决定用新 ADR,旧 ADR 只改为 `Superseded by NNNN` | `feature-archive` 做一致性检查;`spec-reconcile` 经用户确认修冲突,不做按年龄清扫 |
-| **D 基础设施** | `project-init` 不创建;`project-personalize` 只在命令 active + verified 且用户选择时创建 | 当普通 repo 基础设施变更处理:按风险直接改、走 light 或 full lane,并验证真实执行 | 不设专用周期 action;失效 hook 修复或删除,不能留 no-op mapping |
+| **D 基础设施** | baseline 提供 `.gitignore`；检查配置由项目维护 | 按普通项目变更处理并验证真实执行 | 随项目需要维护 |
 | **E 产品事实** | P0 只建索引;首个持久事实由 `feature-archive` 创建 area doc | `feature-done` 标 pending,`feature-archive` 替换式合并当前事实 | 历史冲突才 `spec-reconcile`;核对日期是读者信号,不由 A 类 drift action 代管 |
 
 > **`docs/gotchas.md` 归口**(A 类附属证据 ledger):职责上属 A——回答"工程上怎么干活",L2 review 把它并入 A 类约定全集消费;但它不是 A 的 core 载体,记录的是**已复现事故的证据**(反例 → 正例 → 为什么)而非强制规范,P4 drift refresh 不管它。生命周期:P0 生成空 ledger(文件头自带写入门槛与出口纪律),只有真实复现并验证过的故障才追加;出口两条——**升格即删条**(正例提炼进 AGENTS.md / path rules 后删除原条)与**前提失效即删条**(依赖的栈/基建移除后删除),git history 即归档。只进不出的 ledger 必然腐化成下一个污染源。
@@ -180,7 +180,7 @@ AI 协作开发有**三个 Tier 1 工程痛点**,本手册的四个运行阶段�
 "想看代码风格 / 测试 / 安全"  → A(path-scoped rules;Claude: .claude/rules/<topic>.md)
 "想看 feature 设计"          → B(docs/specs/changes/<NNN>-<slug>/;已交付的在 docs/specs/changes/archive/,只当历史读)
 "想看为什么选 X"             → C(docs/adr/NNNN-<X>.md)
-"想看 hook / 工具配置"        → D(.claude/hooks/, .claude/settings.json, .codex/hooks.json)
+"想看检查 / 工具配置"        → D(项目 lint / test / CI 配置)
 "想看某产品域现在的样子"      → E(docs/specs/<area>.md;没有 E 时可临时读最新 active spec;archive 只作历史证据,不当当前基线)
 ```
 
@@ -191,7 +191,7 @@ project-workflow 分两层:
 | 层 | 负责什么 | 是否绑定工具 | 例 |
 |---|---|---|---|
 | **Methodology core** | 流程、不变量、workflow action、reviewer 方法、文档契约、review 分层 | 否 | `AGENTS.md`, `docs/actions/`, `docs/reviewers/`, `docs/specs/`, `docs/specs/changes/`, ADR, proof bundle, L1/L2/L3 |
-| **Runtime adapter** | 把 core 自动化到某个工具 | 是 | Claude Code plugin skills, Codex skills/plugins/hooks, shell scripts |
+| **Runtime adapter** | 把 core 自动化到某个工具 | 是 | Claude Code plugin skills, Codex skills/plugins, shell scripts |
 
 Core docs 只定义"应该发生什么";adapter docs 定义"在某个工具里怎么触发"。其中 `docs/actions/` 是每个 workflow action 的唯一权威层,定义触发、输入、输出、不变量和验证;`docs/reviewers/` 是 reviewer / auditor / researcher 的唯一权威层。本文用 `/feature-init` 等短写表示 action 名,不是绑定某个宿主的精确命令;Claude Code 使用 `/project-workflow:*`,Codex 使用同名 `$skill`,手工模式直接按 action spec 执行。完整映射见 [`cross-tool-methodology.md`](cross-tool-methodology.md)。
 
@@ -204,7 +204,7 @@ Core docs 只定义"应该发生什么";adapter docs 定义"在某个工具里�
 | 子目标 | 含义 | 主要支撑机制 |
 |---|---|---|
 | **解耦开发** | 模块/功能可独立推进,边界清晰 | 功能 spec + 模块化 + 契约先于实现(§8.1) |
-| **规范一致** | 跨模块/跨功能的代码风格/架构/约定不漂移 | AGENTS.md + active hooks / endpoint checks(§6.3) |
+| **规范一致** | 跨模块/跨功能的代码风格/架构/约定不漂移 | AGENTS.md + 阶段检查 / endpoint checks(§6.3) |
 | **方向稳定** | 每个增量不会跑偏,AI 输出始终在 spec 边界内 | 三层 review(§6.4)+ proof bundle 端点验证(§3.3) |
 
 **关于"自维持"的真实含义**:这不是"100% 自动化",而是 **蓝图侧提供的工具/约定 + 纪律侧的用户实践协同**。详细分工见 [§6.0](#60-每条原则的两侧组成读-6164-前必读)。
@@ -219,13 +219,13 @@ Core docs 只定义"应该发生什么";adapter docs 定义"在某个工具里�
    
    不该追求的:让 AI"一次写对"或"零迭代"。合理迭代本身不是问题。
    
-   **解法**:规范靠环境 + 文档自维持(hooks / lint / types / tests / AGENTS.md / spec.md),让对齐对话发生在**系统跟 AI 之间**,不再发生在**人跟 AI 之间**(见 §6.3)。
+   **解法**:规范靠环境 + 文档自维持(lint / types / tests / AGENTS.md / spec.md),让对齐对话发生在**系统跟 AI 之间**,不再发生在**人跟 AI 之间**(见 §6.3)。
 
 2. **方法论 core 必须 portable;adapter 可以 opinionated**。
 
    `AGENTS.md` / `docs/actions/` / `spec.md` / ADR / proof bundle 这层用最广可读的格式(markdown + 标准约定),让 Claude Code、Codex 和手工流程都能执行同一方法论。仓库分别维护 Claude Code 与 Codex 的 host-native adapter;两端只实现各自运行时细节,不能复制一套不同的方法论。
 
-   **底层逻辑**:底层工具是 weeks-级别迁移成本,上层规范(AGENTS.md / spec.md)是 months-级别投入。上层规范必须 portable;工具特有能力(hooks / plugin manifests / sub-agent 配置)放进 adapter,不要反向污染 core。详见 §7.6 反模式 + [`cross-tool-methodology.md`](cross-tool-methodology.md)。
+   **底层逻辑**:底层工具是 weeks-级别迁移成本,上层规范(AGENTS.md / spec.md)是 months-级别投入。上层规范必须 portable;工具特有能力(plugin manifests / sub-agent 配置)放进 adapter,不要反向污染 core。详见 §7.6 反模式 + [`cross-tool-methodology.md`](cross-tool-methodology.md)。
 
 3. **Plugin / skill 工具的角色:scaffold + 条件性框架问 + 提醒 + 兜底,不当 interviewer 替 user 决策业务细节**。
 
@@ -233,7 +233,7 @@ Core docs 只定义"应该发生什么";adapter docs 定义"在某个工具里�
    - **Scaffold** ── 空项目只起中立六文件 baseline;feature 按需起 light/full artifact;现有代码用 personalize 补真实约定
    - **条件性框架 Q&A** ── 只问 user **当下能答 + audit 无法替代 + 延后成本极高** 的 branch 决策(如 slug / module 边界 / tier 归属);这些 once-and-done,不属"反复提醒"
    - **Reminders** ── 把 mission-critical checkpoint(如 Scope "不做" / Sibling Alignment)前置作提醒,让 user 在 conversational fill 时主动注意,不预问
-   - **Adaptive hooks** ── 被动触发(user 提到选型不确定 → 按需研究;外部库行为不确定 → 查当前权威文档),不预设题
+   - **按需研究** ── 被动触发(user 提到选型不确定 → 按需研究;外部库行为不确定 → 查当前权威文档),不预设题
    - **Audit safety net** ── decision-completeness-auditor catch plant,`/spec-quality-check` gate 把关质量
 
    Plugin **不该做**的:
@@ -307,7 +307,7 @@ P0 产出物分**两层**(职责严格不重叠):
 └── frontend/                       # Vue 3(或你的栈):vite + 路由 + store + modules
 ```
 
-**规则**:六文件 baseline 是方法论入口;B 层是工程化,换栈重写。**永远不在 baseline 猜栈特定应用代码或命令**。plugin/source library 继续保留 nested AGENTS、Claude rules、hooks、tier 示例、spec/ADR 模板、researcher/auditor 等完整能力;默认不复制不等于删除。
+**规则**:六文件 baseline 是方法论入口;B 层是工程化,换栈重写。**永远不在 baseline 猜栈特定应用代码或命令**。plugin/source library 继续保留 nested AGENTS、Claude rules、tier 示例、spec/ADR 模板、researcher/auditor 等完整能力;默认不复制不等于删除。
 
 > **跨工具口径**:`docs/specs/`、`docs/specs/changes/`、`docs/adr/`、`AGENTS.md` 是目标项目的 portable core 文件。`.claude/rules/` 等目录是宿主私有、项目自有的可选资产;其他工具不必读取、复制或翻译。
 
@@ -474,11 +474,9 @@ scoped rule，新建文件场景需以当前官方行为实测。`project-init` 
 `project-personalize` 仅在用户选择且项目证据支持时创建或修复。其他 adapter 不读取或翻译它们。
 具体语法以 [Claude Code 官方文档](https://code.claude.com/docs/en/memory#path-specific-rules)为准。
 
-### 1.7 Hooks 初始配置
+### 1.7 项目检查与故障记录
 
-只有存在快速、确定、已验证且不会扩大写范围的命令时，才 materialize 对应宿主的 hook；否则不生成
-no-op mapping 或脚本，由实施阶段和 `feature-done` 运行适用检查。Hook 配置、事件输入和阻断状态属于
-adapter，具体格式不进入方法论 core。Plugin 保留可选 source，目标项目只接收已选择并验证的实例。
+从项目证据识别真实检查命令，由实施阶段和 `feature-done` 按变更范围运行。项目已有的工具配置保持原样。
 
 项目本地 gotchas ledger 初始为空，只记录真实复现并验证过的故障；plugin 自身的
 [`docs/gotchas.md`](gotchas.md) 仅作 example-of-one，不复制到无关项目。
@@ -563,7 +561,6 @@ docs/adr/
 
 - `/memory`(Claude Code)或对应工具命令:确认 AGENTS.md / CLAUDE.md 加载
 - `project-init` 验证六文件、alias、无 placeholder、命令/路径可保持 deferred;`project-personalize` 验证仓库声明的真实命令与约定。前者完成 baseline,后者完成 evidence alignment;两者都可把下一步交给直接开发或 `feature-init`
-- hook active 时改一个匹配文件验证真执行;未安装时确认项目内无 hook mapping/script并报告原因
 - 把 AGENTS.md 给 AI 读一遍,问它"基于本文件总结这个项目",看理解是否准确
 
 ### 1.12 生成证据纪律(Evidence Discipline)
@@ -602,7 +599,7 @@ sub-flow。仅新增文件、调整模块内部结构或普通移动/重命名�
 
 模块级 AGENTS.md 只承载持久、明确限定在该 subtree、与父级真实不同且反复推断有成本或风险的
 差量。共享差量放到最近的共同父级；产品语义、临时 feature 细节和 ADR 理由不放入 guidance；可机械
-判定的规则优先交给 lint/hook/test。采用 Claude 兼容层时，同目录 CLAUDE.md 仍只是一行 alias。
+判定的规则优先交给 lint/test。采用 Claude 兼容层时，同目录 CLAUDE.md 仍只是一行 alias。
 精确放置规则见 [`agents-md-revise`](actions/agents-md-revise.md#guidance-placement-contract)。
 
 ### 2.4 谁做 & 校验
@@ -656,7 +653,7 @@ sub-flow。仅新增文件、调整模块内部结构或普通移动/重命名�
 | Skill | 何时 | 检查什么 |
 |---|---|---|
 | `/spec-quality-check` | **实施前** | **spec 本身**够不够好(7 问质量) |
-| `/feature-done` 的 L3 层 | **实施后端点** | **代码**做了 spec 说要做的事吗(code-vs-spec drift) |
+| `/feature-done` 的 L3 层 | **实施后端点，按适用性** | **代码**符合已接受 feature artifact 的行为和边界吗 |
 
 Artifact 写法和 7 问自检见 [`spec-driven.md`](spec-driven.md);运行时局部复查、证据复用和 fallback 规则见 [`feature-done`](actions/feature-done.md) 与 [`reviewer execution contract`](reviewers/README.md#reviewer-execution-contract)。
 
@@ -669,7 +666,7 @@ artifact；普通低层选择留给实施。AI 发现继续推进可能走错方
 Prior decisions 只保存需要 why/source 的非显然选择，不复制 spec。复用 accepted FULL 只做语义实施
 就绪度复查；精确判定留在 action。
 
-应用基础或架构设计不另起 action / lane / 保留 slug:它按普通 change 分类。建立或实质改变项目级 runtime tier、模块边界、数据/API 契约等架构,且确有持久 artifact 消费者时走 full lane;最小结构与第一个功能不可分时留在同一个 feature,只有架构决定本身会约束多个后续功能时才单独追踪。只有命中的 architecture-shaped change 条件读取 [`architecture-design.md`](architecture-design.md),把适用结论写回既有 spec/plan/tasks;普通 feature 与 `project-personalize` 跳过。多 tier 真正适用时才读取 §0.3 / §1.4 与 plugin 的 tier examples;单 tier 不生成 tier 文件。
+应用基础或架构设计也按 `feature-init` 选择最轻的充分路径，不另起 action / lane / 保留 slug；最小结构与首个功能不可分时留在一起，有独立持久消费者才单独追踪。需要设计时按需读取 [`architecture-design.md`](architecture-design.md)，结论写回现有 artifact。多 tier 真正适用时才读取 §0.3 / §1.4 与 tier examples；单 tier 不生成 tier 文件。
 
 Full lane 填完后运行 [`spec-quality-check`](actions/spec-quality-check.md)；它拥有需求对账、质量、verdict
 和状态转换规则，本文不复制判定表。
@@ -679,14 +676,14 @@ Full lane 填完后运行 [`spec-quality-check`](actions/spec-quality-check.md)�
 | 角色 | 工作 |
 |---|---|
 | **你** | 看 spec.md / 看最终 PR / 决定方向是否对 |
-| **AI** | 写代码 / 跑测试 / 跑 hook / 自纠 lint 错误 / 主动列开放问题 |
-| **环境(hook + LSP)** | 自动监督代码符合规范 |
+| **AI** | 写代码 / 跑测试 / 自纠 lint 错误 / 主动列开放问题 |
+| **环境(lint / tests / LSP)** | 自动监督代码符合规范 |
 
 不要逐文件打断，也不要把方向漂移拖到 `feature-done`。多边界 FULL 仅在真实依赖或风险检查点使用
 少量可验证阶段：关闭一个可检查结果，运行最小 focused check，交接结果和下一阶段，经用户继续后再进入依赖工作；同一失败无新诊断
 证据地重复时报告 blocker。L2/L3 与 Proof Bundle 仍由 `feature-done` 执行。
 
-实现中的沟通沿用 §3.1。变量命名、普通实现细节和已接受边界内的简化由 AI + hook/L1 自行收敛。
+实现中的沟通沿用 §3.1。变量命名、普通实现细节和已接受边界内的简化由 AI + L1 自行收敛。
 范围暂停的判断只见 [`feature-init`](actions/feature-init.md)；测试层、矩阵和 case 也只在证明不同实质风险时增加。
 
 **底层逻辑**:机械细节上的中途打断会制造反复解释;方向漂移上的延迟打断会制造大量返工和冗余。
@@ -732,7 +729,7 @@ Full lane 填完后运行 [`spec-quality-check`](actions/spec-quality-check.md)�
 L1 处理机械规则，L2 对照项目约定，L3 对照 feature 契约。实施中运行成本匹配的局部证据，交付时由
 `feature-done` 汇合适用层级；定义与 rationale 只见 [§6.4](#64-按规则源分层验证three-layer-review-separation)。
 
-### 4.2 Hooks 设计哲学
+### 4.2 反馈按成本分层
 
 反馈按成本分层：
 
@@ -745,8 +742,8 @@ L1 处理机械规则，L2 对照项目约定，L3 对照 feature 契约。实�
 PR / 发布   人审与发布级自动化     CI / release checks
 ```
 
-每层只承担与成本和风险匹配的检查。Hook 只接机械可判定、快速且能给出可操作错误的命令；长跑或
-主观判断进入阶段、端点或 CI。不要把发布套件塞进保存时 hook，也不要用人工 review 代替机械检查。
+每层只承担与成本和风险匹配的检查。阶段验证尽早暴露局部问题，交付与 CI 承担适用的完整检查；
+主观判断交给 reviewer 和用户，有效机械证据按端点规则复用。
 
 ### 4.3 端点 review:每个 feature 完成时
 
@@ -814,7 +811,7 @@ feature artifact 走自身生命周期，spec/代码偏差由端点处理；不�
 ### 5.5 演进 drift 的应对策略
 
 规则历史使用 Git，不另建重复 changelog。新规则通常只约束新改动；安全、合规或低成本明确回填的
-场景可以扩大修复范围。P4 不做周期性全量重写，也不靠提示型 hook 猜测 drift。
+场景可以扩大修复范围。P4 不做周期性全量重写。
 
 ---
 
@@ -829,7 +826,7 @@ feature artifact 走自身生命周期，spec/代码偏差由端点处理；不�
 
 每条原则都由两侧共同支撑,**缺一不可**:
 
-- **蓝图侧**(Blueprint —— 本项目提供):skill / template / hook 配置 / proof bundle workflow 等
+- **蓝图侧**(Blueprint —— 本项目提供):skill / template / proof bundle workflow 等
 - **纪律侧**(Discipline —— 用户协作行为):在任务边界重置上下文 / 真去写 spec / 端点 review 不偷懒等
 
 **4 条原则的蓝图/纪律平衡很不一样**,真实预期对照表:
@@ -838,7 +835,7 @@ feature artifact 走自身生命周期，spec/代码偏差由端点处理；不�
 |---|---|---|---|
 | **6.1** Spec-driven | `feature-init` artifact 模板 + `project-init` baseline + P4 refresh | 真去写、维护必要 artifact | 工具与用户共同完成 |
 | **6.2** Context budget | AGENTS.md 预算纪律 + 可选检查 | 在长会话中主动收敛上下文、一会话聚焦一项任务 | 主要依赖使用纪律 |
-| **6.3** Environment-enforced | 可选 hook source + verified-command gate + `project-personalize` 经确认 materialize | 选择是否启用并修复失效命令 | 启用后主要由工具执行 |
+| **6.3** Environment-enforced | 阶段验证与交付 L1 | 维护真实命令、处理检查结果 | 项目工具与工作流共同完成 |
 | **6.4** 三层验证错位 | delivery receipt workflow + adapter reviewer + reviewer context 注入 | 不跳过端点 review,处理 finding | 工具与用户共同闭环 |
 
 **读后续 4 条原则时记住**:有些保障启用后适合工具持续执行,有些仍依赖使用者保持上下文和验收纪律;不使用伪精确比例描述两者关系。
@@ -849,7 +846,7 @@ feature artifact 走自身生命周期，spec/代码偏差由端点处理；不�
 
 #### 主张
 
-规约(spec)是 source of truth / 行为契约,代码是 AI 根据契约生成和修改的实现产物。任何有 blast radius 的 AI 协作改动,**必须有可追踪 feature artifact 兜底**:full lane 用 `spec.md` / `plan.md` / `tasks.md`;轻车道小改用 `tasks.md` 的目标 / 边界 / 验证 / proof;小 bugfix / 文案 / 样式 / 局部测试修复等无 artifact 价值的任务不启动 project-workflow,直接做并说明验证。
+规约(spec)承载行为契约，代码是其实现。需要持久追踪的变更由 [`feature-init`](actions/feature-init.md) 选择最轻充分的 artifact；其余改动直接实施并说明验证。
 
 #### 底层逻辑
 
@@ -867,7 +864,7 @@ AI 输出质量 ≈ AI 能力 × 输入清晰度。AI 能力是常量(模型版�
 
 | 场景 | 动作 |
 |---|---|
-| Full lane | API/schema/迁移/权限/安全/架构/跨模块契约、新模块或其他高风险边界；模块数量本身不决定车道 |
+| Full lane | 需要独立需求与设计承载重要决策、契约或发布协调时使用，分流由 `feature-init` 判断 |
 | 六要素分布 | spec.md = Outcomes / Scope / Constraints / Verification;plan.md = Prior decisions / 模块影响 / 架构 / 风险 |
 | Scope 必写"不做" | 不写"不做",AI 会自动加 → scope creep 最大单一来源 |
 | Prior decisions 选择性写回 | 非显然选择、外部解释、冲突/bundled-risk 裁决和 supersede 决定才追加到 plan.md §3，带原因和稳定来源；没有此类决定时可省略或自然说明无 |
@@ -929,42 +926,28 @@ LLM 的 attention 是 quadratic 或 sub-linear cost over context length。当 co
 
 #### 主张
 
-凡是能机械判定的规范(lint / format / type / test),写成 hook 由环境跑;**不要靠 prompt 或 CLAUDE.md 提醒 AI 记住它**。
+能机械判定的规范由项目的 lint、format、typecheck 和 tests 验证；协作指令保留项目特有的约定与边界。
 
 #### 底层逻辑
 
-两个独立维度合起来 → 严格优于:
-
-1. **概率 vs 确定**:prompt 提醒是概率性的(AI 可能不读、不理解、忘记);hook 是确定性的(机制必跑,exit code 决定下一步)
-2. **context 成本**:prompt 提醒每次消耗 token,且 CLAUDE.md 越长依从度越下降(§6.2);hook 零 context 成本
-
-#### 依据
-
-| 类型 | 内容 |
-|---|---|
-| 官方原文 | Anthropic best-practices:*"If Claude already does something correctly without the instruction, delete it or convert it to a hook."* |
-| 上下文纪律 | 常驻指令只保留环境无法可靠推断或强制的项目事实；重复说明和长教程改为按需引用 |
-| 社区实践 | ECC 等大型能力包广泛使用 hooks,说明环境强制是常见落地路径;具体事件数随版本变化,不作为本方法论依据 |
+可执行检查提供可重复的结果与定位信息，减少反复人工提醒。`AGENTS.md` 记录命令及其适用范围，
+阶段验证尽早发现问题，交付端点检查必要证据是否完整。
 
 #### 怎么用
 
 | 场景 | 动作 |
 |---|---|
-| 想说"记得 X" 第 2 次出现 | **停**。问:能写成 hook 吗?能 → 写 hook;不能 → 才放 CLAUDE.md |
-| 配 hook 时 | 按当前宿主的阻断状态契约返回失败，并提供具体 stderr；退出码语义留给 adapter |
-| 写 CLAUDE.md 时 | 只放"环境层做不到的"约束(架构决策、命名直觉、业务边界);具体行为(lint/format)绝不写 |
-| 多文件/跨语言检查 | 不同语言用 case 分支 + 不同工具(eslint/ruff/gofmt);共享同一脚本骨架 |
+| 反复出现的机械错误 | 优先使用项目已有检查；确有缺口时补充相应 lint 或 test |
+| 运行检查 | 保留命令、结果与失败位置；失败修复后复验受影响证据 |
+| 维护 AGENTS.md | 保留真实命令和必要约定，避免复制工具已能判定的细节 |
+| 多文件/跨语言检查 | 使用各自项目命令，按真实依赖确定验证范围 |
 
 #### 失效情形
 
-强行 hook 反而坏事的情形:
-
 - **审美/设计判断**(代码"够不够清晰" / "命名好不好") → 需要 agent review 或人审
-- **跨文件/跨模块语义** → 单文件 hook 抓不到,需要全量 type check 或测试
-- **业务规则正确性**(用户邀请必须发邮件) → hook 不懂业务,需要 spec.md + 集成测试
-- **长跑检查**(全量测试、e2e、安全扫) → 卡死 AI,改用 async hook 或交付阶段 agent
-- **设计期/spec 期** → 还没代码可检查,hook 无用
-- **跨工具实现差异** → Claude Code / Codex / OpenCode 的 hook 配置、输入格式、授权模型不同 —— 概念通用但桥接成本不为零
+- **跨文件/跨模块语义** → 需要覆盖相关依赖的 typecheck 或测试
+- **业务规则正确性** → 需要已接受契约与相应行为证据
+- **长跑检查** → 放在适用的交付或 CI 环节，避免每次编辑重复运行
 
 ---
 
@@ -980,7 +963,7 @@ LLM 的 attention 是 quadratic 或 sub-linear cost over context length。当 co
 |---|---|---|---|
 | **L1** 通用规则 | language defaults + 团队全局规则(Claude adapter 可放 `~/.claude/rules/*`) | 代码规范吗? | 通用工程错误 |
 | **L2** 项目约定 | `AGENTS.md` + 路径级项目规则(Claude adapter 为 `.claude/rules/`) | 长得像这个项目吗? | 风格/结构错 |
-| **L3** 功能规约 | `docs/specs/changes/<NNN>/spec.md` | 做了说要做的事吗? | 行为/范围错 |
+| **L3** 功能规约 | 已接受的 `spec.md` 或轻车道 `tasks.md` | 做了说要做的事吗? | 行为/范围错 |
 
 三层失败模式正交：通用工程错误、项目约定偏离、功能契约偏离不能互相证明通过。分层能缩短
 review context、避免一层结果掩盖另一层，并让修复指向明确规则源。
@@ -989,9 +972,9 @@ review context、避免一层结果掩盖另一层，并让修复指向明确规
 
 | 层 | 工具 | 时机 |
 |---|---|---|
-| L1 | hook(eslint/ruff/gofmt,保存时单文件 lint+format,**自动改文件**)+ endpoint check(默认由 `feature-done` 跑 feature Verification + 变更项目标准命令;全仓/发布套件按风险触发;单独重跑 = 直接跑适用 check 命令)| 保存后 + 端点 |
+| L1 | 阶段 focused checks + `feature-done` 的 Verification 与变更项目标准命令；全仓/发布套件按实际需要运行，有效证据按端点规则复用 | 阶段 + 端点 |
 | L2 | reviewer agent + AGENTS.md 作 context | 端点(P3 proof bundle) |
-| L3 | reviewer agent + spec.md 作 context + 测试 | 端点(P3 proof bundle) |
+| L3 | reviewer agent + accepted feature artifact + 已有测试证据 | 端点，按适用性 |
 
 `feature-done` 是唯一端点组合点：必要 L1 之后，full lane READY 需要独立 L2/L3；风险决定并行或
 先 L3 后 L2。每个 gate run 只审一个稳定快照并返回一个终态；端点外的修复与复验按原请求授权和 `feature-done` 规则继续。
@@ -1005,7 +988,6 @@ Reviewers 遵守 cite-or-skip、fresh read、完整适用范围和 ambiguity fee
 
 - **设计期** → 还没代码,L1 / L2 都用不上,只 review spec 文本
 - **完全 AI 自主项目**(没人定项目约定) → 没有 AGENTS.md 时 L2 退化为 L1
-- **跨语言模块** → L1 hook 要按文件类型分支,复杂
 - **legacy 代码** → 老代码大量违反 L1/L2,先 lock("不报警旧代码"),只对新改动 enforce
 
 ---
@@ -1021,7 +1003,7 @@ Reviewers 遵守 cite-or-skip、fresh read、完整适用范围和 ambiguity fee
 **修正**:挑一个,其他用 small composable skill 补
 
 ### 7.3 不要把 review 留到 PR(也不要每行做)
-**修正**:hook 管机械错(每文件),agent review 管设计安全(每 feature 末尾),人审管方向(每 PR)。**三层错位**
+**修正**:L1 管机械检查，agent review 管约定与契约，人审管方向。**三层错位**
 
 ### 7.4 不要为了用 AI 拒绝键盘改 5 行代码
 **症状**:改动 < 5 行且你脑子里有答案,还非要让 AI 写
@@ -1032,10 +1014,10 @@ Reviewers 遵守 cite-or-skip、fresh read、完整适用范围和 ambiguity fee
 
 ### 7.6 不要把上层投资沉到底层工具
 **症状**:把项目规则只写进单一工具私有格式(如 `.cursor/rules/` 只 Cursor 读)而不是 AGENTS.md
-**修正**:协作约定写在**广泛可读**的位置(AGENTS.md / `docs/`,Claude Code、Codex 与其他兼容工具都能读),工具特定位置只放工具特异配置(如 `.claude/hooks/` / `.claude/settings.json`)。project-workflow 不强求"工具完全无关",但要避免锁死单一工具的私有格式 —— 见 [§0.5 信念 2](#05-实现策略的核心信念)。
+**修正**:协作约定写在**广泛可读**的位置(AGENTS.md / `docs/`,Claude Code、Codex 与其他兼容工具都能读),工具特定位置只放工具特异配置(如 plugin manifest)。project-workflow 不强求"工具完全无关",但要避免锁死单一工具的私有格式 —— 见 [§0.5 信念 2](#05-实现策略的核心信念)。
 
 ### 7.7 不要在 P0 没做完就跳到 P2
-**症状**:还没建 AGENTS.md / 必要规则就开始写 feature(hook 可按需缺省)
+**症状**:还没建 AGENTS.md / 必要规则就开始写 feature
 **后果**:基线缺失,每个 feature 都要重新讨论项目惯例
 **修正**:严格按 P0 → P2 顺序;P0 没做完不开 feature(模块新增是 P2 内 sub-flow,见 §2)
 
@@ -1058,7 +1040,7 @@ Reviewers 遵守 cite-or-skip、fresh read、完整适用范围和 ambiguity fee
 
 ## 8. 栈适配原则
 
-P0-P4 不绑定语言或框架。项目个性化时从仓库事实识别 formatter、lint、typecheck、test、build 和发布命令，再把它们放到成本匹配的层级：快速确定性检查可进入 hook，模块或 feature 检查进入实施阶段/交付端点，发布级检查按风险触发。不要仅因某个框架常见就新增依赖或命令。
+P0-P4 不绑定语言或框架。项目个性化时从仓库事实识别 formatter、lint、typecheck、test、build 和发布命令，再把它们放到成本匹配的层级：局部检查进入实施阶段，feature 检查进入交付端点，发布级检查按风险触发。不要仅因某个框架常见就新增依赖或命令。
 
 具体命令以仓库配置、`AGENTS.md` 和部署文档为准；真实踩坑可记录到 [`docs/gotchas.md`](gotchas.md)，不在通用手册维护容易过期的工具清单。外部文档、专项安全审查或额外 reviewer 只在当前风险需要且宿主具备相应能力时使用。
 
@@ -1084,11 +1066,11 @@ P0-P4 不绑定语言或框架。项目个性化时从仓库事实识别 formatt
 
 | 场景 | 建议偏离方式 |
 |---|---|
-| tiny/local、低风险且未改变已声明 current truth | 不建 feature artifact,直接做并跑相关检查;hook 仅在 active 时提供增量反馈 |
+| tiny/local、低风险且未改变已声明 current truth | 不建 feature artifact,直接做并跑相关检查 |
 | 探索性 spike | worktree + vibe coding;只有留下持久架构/跨功能技术决定时才补 ADR |
 | 紧急生产 hotfix | 直接修,事后补 spec 和测试,记 tech debt |
-| 架构变更 | **不要偏离**:使用 full lane；只有命中 `ADR_REQUIRED` 才写 ADR，隔离方式按仓库与风险选择 |
-| 低风险文档编辑 | 不建 feature artifact,检查 diff 与本地 links;契约/流程语义变更仍按风险选 light/full |
+| 架构变更 | 按 `feature-init` 判断文档需要；只有命中 `ADR_REQUIRED` 才写 ADR，隔离方式按仓库与风险选择 |
+| 低风险文档编辑 | 不建 feature artifact，检查 diff 与本地 links；语义变更仍按实际文档需要分流 |
 | 别人代码的小修 | 遵守对方风格,不强加本手册 |
 | 玩具 / 一次性脚本 | 跳过整个 P0 工程化,直接 vibe coding |
 
@@ -1121,17 +1103,15 @@ P0-P4 不绑定语言或框架。项目个性化时从仓库事实识别 formatt
 |---|---|
 | AGENTS.md 是跨工具事实标准 | 18 个月后社区可能转向别的命名;Cursor / Gemini CLI 渗透率待观察 |
 | Skills(SKILL.md)跨工具兼容 | 各家实现细节有差异,**真跨工具需实测** |
-| Hooks 概念在各工具有等价物 | 各工具 hook 配置、事件 schema、授权模型不同,跨工具桥接成本不为零 |
 | 宿主 plugin/skill 接口保持兼容 | 各宿主接口会演进;project-workflow 以各自 adapter 封装差异,并保留 manual fallback |
 
 ### 10.3 已知失败模式
 
 | 失败模式 | 信号 | 应对 |
 |---|---|---|
-| **过度工程化** | P0 配了一堆 hook / rules / ADR 模板,实际 feature 还没开发 | 收敛到首个 feature 真正需要的最小基线，其余按证据增补 |
+| **过度工程化** | P0 配了一堆 rules / ADR 模板,实际 feature 还没开发 | 收敛到首个 feature 真正需要的最小基线，其余按证据增补 |
 | **spec 变 todo list** | Outcomes / Scope / Constraints / Verification 模糊，tasks 却很详细 | 先关闭契约与验收未知项，再拆实施任务 |
-| **项目说明膨胀** | 同一规则在多个文件重复，旧例子开始压过当前约定 | P4 refresh；保留最接近执行点的权威规则，外围文档改为摘要和链接，可机械规则交给 lint/hook/test |
-| **hook 不稳定** | hook 频繁失败但不影响开发(因为没读 stderr) | 使用宿主定义的阻断状态并把具体 stderr 回喂 AI |
+| **项目说明膨胀** | 同一规则在多个文件重复，旧例子开始压过当前约定 | P4 refresh；保留最接近执行点的权威规则，外围文档改为摘要和链接，可机械规则交给 lint/test |
 | **三层 review 重叠** | reviewer 一个 review 把 L1/L2/L3 全跑了,prompt 1000+ tokens | 拆 reviewer 调用,各自只给对应 context |
 
 ### 10.4 演化承诺
@@ -1140,7 +1120,7 @@ P0-P4 不绑定语言或框架。项目个性化时从仓库事实识别 formatt
 
 - **真实项目出现可复现失败模式** → 修订对应流程与回归检查
 - **AGENTS.md 渗透率变化** → §1.3-1.4 内容跟进
-- **宿主 plugin/skill/hook 接口发生兼容性变化** → adapter 与安装文档同步
+- **宿主 plugin/skill 接口发生兼容性变化** → adapter 与安装文档同步
 - **跨工具实测发现差异** → §6.3 失效情形扩充
 - **新的方法论流派出现** → §6 重新审视
 
@@ -1160,7 +1140,6 @@ P0-P4 不绑定语言或框架。项目个性化时从仓库事实识别 formatt
 
 - [Anthropic — CLAUDE.md / memory](https://code.claude.com/docs/en/memory)
 - [Anthropic — Best practices for Claude Code](https://code.claude.com/docs/en/best-practices)
-- [Anthropic — Hooks reference](https://code.claude.com/docs/en/hooks)
 - [Anthropic — Skills](https://code.claude.com/docs/en/skills)
 - [Anthropic Engineering — Multi-Agent Research System](https://www.anthropic.com/engineering/multi-agent-research-system) —— orchestrator-worker 模式官方 codify(project-workflow sub-agent 设计的依据)
 

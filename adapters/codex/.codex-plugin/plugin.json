@@ -1,6 +1,6 @@
 {
   "name": "project-workflow",
-  "version": "3.17.2",
+  "version": "3.18.0",
   "description": "Spec-driven project workflow for Codex and Claude Code with project initialization, feature specs, reviews, delivery gates, and spec lifecycle management.",
   "author": {
     "name": "shrek.wang"
@@ -19,7 +19,7 @@
   "interface": {
     "displayName": "Project Workflow",
     "shortDescription": "Run spec-driven project workflow in Codex.",
-    "longDescription": "Project Workflow packages project initialization, feature spec scaffolding, pre-implementation quality checks, spec revision, convention drift refresh, end-of-feature review gates, and post-delivery spec lifecycle management for Codex. It keeps AGENTS.md, specs, ADRs, Claude compatibility assets, and Codex hooks aligned around one methodology.",
+    "longDescription": "Project Workflow packages project initialization, feature spec scaffolding, pre-implementation quality checks, spec revision, convention drift refresh, end-of-feature review gates, and post-delivery spec lifecycle management for Codex. It keeps AGENTS.md, specs, ADRs, and Claude compatibility aliases aligned around one methodology.",
     "developerName": "shrek.wang",
     "category": "Productivity",
     "capabilities": [

@@ -76,6 +76,10 @@ const allowedLightNATestVerdict = aggregateVerdict({
 if (allowedLightNATestVerdict !== "READY") {
   problems.push(`an inapplicable light-lane reviewer must not block READY, got ${allowedLightNATestVerdict}`);
 }
+if (aggregateVerdict({ l1Passed: true, receiptReliable: true, reviewerExecutionApplicable: false,
+  lightVerificationPassed: false }) !== "NEEDS WORK") {
+  problems.push("failed light verification must block READY even with no applicable reviewers");
+}
 
 function materialize(name, config) {
   const target = fs.mkdtempSync(path.join(os.tmpdir(), `project-workflow-${name}-`));
@@ -85,8 +89,8 @@ function materialize(name, config) {
 }
 
 for (const [name, config] of Object.entries(expected)) {
-  if (typeof config.l2Applicable !== "boolean") {
-    problems.push(`${name}: l2Applicable must be an explicit boolean`);
+  if (typeof config.l2Applicable !== "boolean" || typeof config.l3Applicable !== "boolean") {
+    problems.push(`${name}: L2/L3 applicability must be explicit booleans`);
     continue;
   }
   if (typeof config.l2EndpointStatus !== "string") {
@@ -104,8 +108,7 @@ for (const [name, config] of Object.entries(expected)) {
     let lightVerificationPassed = null;
     if (name.startsWith("light-")) {
       const verification = spawnSync(process.execPath, ["-e", "const {normalizeKey}=require('./src/normalize-key'); if (normalizeKey('') !== '') process.exit(1)"], { cwd: target, encoding: "utf8" });
-      const expectedStatus = config.endpointVerdict === "READY" ? 0 : 1;
-      if (verification.status !== expectedStatus) problems.push(`${name}: light verification expected exit ${expectedStatus}, got ${verification.status}`);
+      if (verification.status !== 0) problems.push(`${name}: light verification must stay green to test independent behavioral review`);
       lightVerificationPassed = verification.status === 0;
       if (!lightVerificationPassed) concepts.push("light-lane verification");
     }
@@ -116,7 +119,12 @@ for (const [name, config] of Object.entries(expected)) {
         problems.push("clean: empty-input verification missing");
       }
     } else {
-      if (!source.includes('if (input === "") throw')) problems.push(`${name}: planted behavior deviation missing`);
+      if (name === "light-known-bad") {
+        if (!source.includes('input.trim() === ""')) problems.push(`${name}: planted whitespace guard missing`);
+        const blank = spawnSync(process.execPath, ["-e", "require('./src/normalize-key').normalizeKey('   ')"], { cwd: target, encoding: "utf8" });
+        if (blank.status !== 1) problems.push(`${name}: planted whitespace-only failure missing`);
+        else concepts.push("whitespace-only behavior");
+      } else if (!source.includes('if (input === "") throw')) problems.push(`${name}: planted behavior deviation missing`);
       if (name === "known-bad" && (!tests.includes("key-utils.test.js") || tests.includes("normalize-key.test.js"))) {
         problems.push("known-bad: planted test-filename violation missing");
       } else if (name === "known-bad") {
@@ -136,7 +144,7 @@ for (const [name, config] of Object.entries(expected)) {
       problems.push(`${name}: finding concepts differ; missing=${JSON.stringify(missingConcepts)} unexpected=${JSON.stringify(unexpectedConcepts)}`);
     }
 
-    const l3Blocking = concepts.includes("empty string behavior") || concepts.includes("empty input verification");
+    const l3Blocking = config.l3Applicable && concepts.some((concept) => ["empty string behavior", "empty input verification", "whitespace-only behavior"].includes(concept));
     const expectedL2Status = !config.l2Applicable
       ? "N/A"
       : l3Blocking
@@ -152,7 +160,7 @@ for (const [name, config] of Object.entries(expected)) {
       l3Blocking,
       lightVerificationPassed,
       receiptReliable: true,
-      reviewerExecutionApplicable: config.l2Applicable,
+      reviewerExecutionApplicable: config.l2Applicable || config.l3Applicable,
       reviewerExecutionReliable: true,
     });
     if (verdict !== config.endpointVerdict) problems.push(`${name}: deterministic aggregate expected ${config.endpointVerdict}, got ${verdict}`);

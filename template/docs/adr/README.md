@@ -11,7 +11,7 @@
 
 不写:
 - 单功能内的技术选择(那进 `docs/specs/changes/<NNN>-<feature>/plan.md`)
-- 临时调试选择(进 plan.md `实施记录`)
+- 仍影响交付或维护的临时方案(进 tasks.md `实施记录`)
 - 跟项目无关的个人偏好(进 `CLAUDE.local.md`)
 
 ## 命名约定

@@ -13,4 +13,4 @@ Match the user's language. Read `${CLAUDE_PLUGIN_ROOT}/docs/actions/project-init
 3. Use a disposable staging directory and run the canonical staging, preview, no-clobber apply, validation, and
    result handoff with that materializer.
 
-Preserve incidental content without interpreting or merging it. Do not ask stack questions, generate code/rules/hooks/tier files, dispatch agents, or commit.
+Preserve incidental content without interpreting or merging it. Generate only the canonical six-file baseline; do not dispatch agents or commit.

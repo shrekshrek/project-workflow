@@ -1,7 +1,7 @@
 {
   "full-brownfield-api": {
     "base": "base-numbered",
-    "prompt": "feature-init password-reset: 给 auth 加密码重置——一个提交 email 的 POST 端点 + 邮件一次性 token;属于 API 契约变更。",
+    "prompt": "feature-init password-reset: 给 auth 加密码重置——一个提交 email 的 POST 端点 + 邮件一次性 token；客户端和邮件服务需要独立的契约与设计文档协调 token 生命周期及失败恢复。",
     "prescribedAnswers": {},
     "lane": "full",
     "expectDir": "docs/specs/changes/004-password-reset",
@@ -68,6 +68,18 @@
     "expectedBehavior": "必须从现有 auth 当前事实确认会话 token 使用 httpOnly cookie，不得把已由仓库证据解决的存储方式重新询问用户或另造 refresh API；按既有契约创建 light handoff。",
     "sentinel": "docs/specs/changes/001-approved-feature/spec.md"
   },
+  "light-bounded-auth-repair": {
+    "base": "base-numbered",
+    "prompt": "feature-init logout-cookie-repair: 修复现有登出时 cookie 清理参数不一致的问题，沿用登录时的属性使浏览器真正移除 cookie；会改前端错误恢复和服务端清理函数，不改变身份来源、会话策略或 API。需要跨 session 交接并补清理成功/失败回归。",
+    "prescribedAnswers": {},
+    "lane": "light",
+    "expectDir": "docs/specs/changes/004-logout-cookie-repair",
+    "shape": null,
+    "mustRetainTodoMarker": true,
+    "forbiddenPlantPatterns": ["/api/session/refresh"],
+    "expectedBehavior": "认证和跨前后端不是自动 FULL 的理由；既有目标、约束和验证可用 tasks.md 承载，仍保留实际 cookie/恢复风险所需的检查和按需审阅。",
+    "sentinel": "docs/specs/changes/001-approved-feature/spec.md"
+  },
   "full-docs-only-cross-module-contract": {
     "base": "base-numbered",
     "prompt": "feature-init align-actor-contract: auth 是 actor_id 契约 owner;统一 auth 与 billing 文档中的跨模块字段语义,本轮只修 canonical/reference docs,不改 runtime,需要冻结双方字段含义和兼容约束。",
@@ -81,7 +93,7 @@
   },
   "nnn-empty-start": {
     "base": "base-empty",
-    "prompt": "feature-init first-feature: 项目第一个追踪 feature,新建一个数据导入模块(全新领域,需要新模块)。",
+    "prompt": "feature-init first-feature: 项目第一个追踪 feature，新建数据导入模块；需要独立需求和设计说明导入规则、持久化与失败恢复，供后续调用方对齐。",
     "prescribedAnswers": {},
     "lane": "full",
     "expectDir": "docs/specs/changes/001-first-feature",

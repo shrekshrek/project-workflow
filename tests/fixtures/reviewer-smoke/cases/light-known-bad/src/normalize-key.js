@@ -1,5 +1,5 @@
 function normalizeKey(input) {
-  if (input === "") throw new Error("empty key");
+  if (input !== "" && input.trim() === "") throw new Error("blank key");
   return input.trim().toLowerCase();
 }
 

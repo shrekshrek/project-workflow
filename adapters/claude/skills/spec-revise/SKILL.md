@@ -9,7 +9,7 @@ Match the user's language and preserve file language. Read `${CLAUDE_PLUGIN_ROOT
 
 Claude execution details:
 
-- Resolve `$ARGUMENTS` through the shared active-feature rules. This action requires an accepted spec or an active unarchived delivered spec whose contract/plan/Verification is materially wrong and must reopen; an implementation regression under an unchanged contract is repaired directly and reruns `feature-done`. Light lane stops for an explicit upgrade decision.
+- Resolve `$ARGUMENTS` through the shared active-feature rules and apply the canonical lane/lifecycle routing.
 - Read root/applicable nested `AGENTS.md`, recomputing applicability if the affected module population changes.
 - When canonical `ADR_REQUIRED` applies, search only relevant ADR metadata/references and instantiate only from
   `${CLAUDE_PLUGIN_ROOT}/template/docs/adr/0000-template.md`.

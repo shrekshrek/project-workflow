@@ -10,7 +10,6 @@
 ## 0. 这本文档不是什么
 
 - **不是 GitHub Spec Kit 的复刻**:不上工具链(`.specify/` 目录、slash commands)
-- **不是 user story 写作教程**:本项目用场景化散文,不用 Agile 句式
 - **不要求每个改动都写 spec**:跳过条件见 [workflow.md §3.1 规划阶段](workflow.md#31-规划阶段) + [§9 何时偏离](workflow.md#9-何时偏离手册)
 
 ---
@@ -33,7 +32,7 @@
 | **A. 约定** — 项目级常识 / Tier 级约定 / 模块级反常 / 可选宿主私有详规则 | 根 `AGENTS.md` + tier `<tier>/AGENTS.md` + 模块 `<module>/AGENTS.md`;active host 可另有私有 scoped rules | §2 速查,详 workflow.md §1.3 |
 | **B. 变更** — 功能级 change spec / plan / tasks | `docs/specs/changes/<NNN>-<slug>/{spec,plan,tasks}.md` | **§3 起本文档主题** |
 | **C. 决策** — 架构选择 + trade-off | `docs/adr/NNNN-<title>.md` | 不在本文档,见 workflow.md §1.8 |
-| **D. 工具基础设施** — hook / lint / settings | 有已验证命令时才 materialize adapter hooks/settings;`.gitignore` 始终存在 | 不在本文档,见 workflow.md §1.6 / §1.7 |
+| **D. 工具基础设施** — lint / CI / settings | 项目维护真实检查命令与配置；baseline 提供 `.gitignore` | 不在本文档,见 workflow.md §1.7 |
 | **E. 产品事实** — 长周期产品域的当前现状 | `docs/specs/<area>.md`(可选 `docs/specs/index.md` 域索引) | **§5 生命周期部分**(current truth 与 spec 状态的关系) |
 
 > "Tier" 概念详见 [workflow.md §0.3](workflow.md#03-概念区分钉死再读后续)。简言之:**全栈/多端项目的架构性分层**(前后端、客户端服务端等);单 tier 项目不存在这层。
@@ -45,7 +44,7 @@
 本项目取轻量约定、change artifact 和 spec-as-contract 的共同部分，不引入完整 Spec Kit 工具链：
 
 - 项目约定写入 `AGENTS.md`；
-- 需要追踪的变更使用 `docs/specs/changes/<NNN>-<slug>/`，按风险选择轻车道或 full lane；
+- 需要追踪的变更使用 `docs/specs/changes/<NNN>-<slug>/`，按文档实际用途选择轻车道或 full lane；
 - 只有命中 `ADR_REQUIRED` 才创建 ADR；
 - spec 可以按正式流程修订，但实施时不能靠猜测补全契约。
 
@@ -64,7 +63,7 @@ A / B / C 三类的职责与寿命见 [workflow.md §1.8](workflow.md#18-adr-目
 - 嵌套层次:**用户 / 项目根 / 子目录(tier + 模块)/ 私有**(详细见 [workflow.md §1.4](workflow.md#14-agentsmd--claudemd-嵌套层次子级覆盖父级);系统级 `/etc/claude-code/CLAUDE.md` 为企业 IT 场景,project-workflow audience 不覆盖)
 - 模块级 AGENTS.md(`<module>/AGENTS.md` + 1 行 `CLAUDE.md` alias)是**可选**,仅模块"反常"时才写(见 [workflow.md §2.3](workflow.md#23-反常判定何时该写模块-agentsmd))
 - Guidance Placement:跨项目规则留 root;同 runtime 多个 sibling 的共同差量放 tier;只有真实父级例外放
-  module;产品/临时语义留 spec/plan/ADR,可机械规则优先 lint/hook/test。嵌套文件只写父级差量,不能因
+  module;产品/临时语义留 spec/plan/ADR,可机械规则优先 lint/test。嵌套文件只写父级差量,不能因
   根文件长或目录存在就创建/迁移
 - portable A 类入口是 root/nested `AGENTS.md`;Claude `.claude/rules/*.md` + `paths:` YAML-list frontmatter 是可选宿主私有增强,不在嵌套层次表里,也不要求其他 adapter 翻译
 
@@ -96,7 +95,7 @@ A / B / C 三类的职责与寿命见 [workflow.md §1.8](workflow.md#18-adr-目
 |---|---|---|---|
 | **Brownfield 瘦** | 已有实质 `docs/specs/<area>.md` 覆盖本范围 | Motivation + References + Delta + Constraints + Verification | Delta + Constraints + Verification |
 | **Greenfield 胖** | 尚无 domain 覆盖的新产品面 | §1–§4 全文 | §1–§4 |
-| **轻车道** | 小改 | 无 spec;`tasks.md` + `## 验证` | tasks 验证节 |
+| **轻车道** | 清单足以承载的变更 | 无 spec;只有 `tasks.md` | 按需审阅目标/边界、约束和验证 |
 
 E = `docs/specs/<area>.md`;B = `docs/specs/changes/<NNN>-*/`。domain doc 供 init/M6/L3 context,**不是** L3 全文对照基线。
 
@@ -125,11 +124,11 @@ docs/specs/changes/
 
 | 路径 | 何时使用 | Artifact |
 |---|---|---|
-| **直接做** | 局部、可逆、无契约且没有持久记录消费者;或已有 accepted spec 覆盖实施 | 无新 artifact |
-| **Light lane** | 低风险小改,但交接、多步验收、审计/发布或 current-truth 更新需要持久清单 | `tasks.md` |
-| **Full lane** | API/数据/安全/权限/架构/跨模块契约、新模块或其他高风险变更 | `spec.md + plan.md + tasks.md` |
+| **直接做** | 无新持久记录需要，或已有 accepted artifact 覆盖实施 | 无新 artifact |
+| **Light lane** | 需要追踪，目标、边界、约束和验证用清单即可说清 | `tasks.md` |
+| **Full lane** | 需要独立需求与设计承载重要决策、契约或发布协调 | `spec.md + plan.md + tasks.md` |
 
-改变 current truth 已声明的持久行为时至少进入 Light lane；实施中分类失效则停止并升级。创建
+改变 current truth 已声明的持久行为时至少进入 Light lane；实质边界变化时重新判断，不按技术关键词升级。创建
 artifact 前关闭会改变范围、所有权、授权、数据处置或发布耦合的未知项，规模本身不决定车道或拆分。
 可独立验收、上线和回滚且无强耦合的结果默认拆分，只创建当前 child；已有 Issue/PM 引用可复用，
 但外部 tracking 不是启动所选 child 的前置条件。完整判定只见 [`feature-init`](actions/feature-init.md)。
@@ -138,13 +137,13 @@ artifact 前关闭会改变范围、所有权、授权、数据处置或发布�
 
 **包含 4 节**:Outcomes / Scope boundaries / Constraints / Verification。
 
-#### Outcomes:场景化,不写 user story
+#### Outcomes:具体场景与成功结果
 
 | 好 ✅ | 坏 ❌ |
 |---|---|
 | 管理员在团队设置页输入邮箱发邀请,被邀请者收到邮件、点链接 24 小时内可注册并自动加入团队 | As a manager, I want to invite users so that they can join my team |
 
-**为什么**:user story 句式 AI 知道 want 但不知道**场景细节**(在哪个页面?用户怎么收到?)。
+**关键**:写清角色、场景、行为与成功结果，句式不限。
 
 #### Scope boundaries:**显式列做与不做**
 
@@ -154,7 +153,7 @@ artifact 前关闭会改变范围、所有权、授权、数据处置或发布�
 
 **为什么**:不写"不做"的部分,**AI 会自动加**。这是 scope creep 最大单一来源。
 
-#### Constraints:**硬数字**,不要模糊
+#### Constraints:具体、可判定
 
 | 好 ✅ | 坏 ❌ |
 |---|---|
@@ -375,7 +374,7 @@ plan/tasks，不人为裁剪必要上下文。
 
 **重开边界**:`已实现` 不是日常可编辑状态。只有 feature 仍在 active tree、尚未归档且发现会改变交付判断的重大契约、plan 或 Verification 遗漏时,才能运行 `/spec-revise`:保留旧 receipt、退回 `已确认`、修订后重新走交付门禁。若契约不变而实现回归,修复与复验遵循 [`feature-done` 的当前请求授权规则](actions/feature-done.md#reviewer-execution)。端点只审查稳定快照、保存旧 receipt、写新 verdict,非 READY 时退回 `已确认`。已进入 `archive/` 的 feature 永久只读,后续变化必须建立 successor change。
 
-**标记规则**:改状态标记 + 在文件顶部加一行指向替代物(新 spec / ADR / `docs/specs/<area>.md`)的链接,**不改正文、不删目录**。没有"历史基础"这类中间状态——若旧 spec 里的数据模型 / API / 基础设施仍有效,把这些**事实提炼进 `docs/specs/<area>.md`**,spec 本身照常归档;把旧 spec 留在活动区当参考,正是历史污染的入口。
+**标记规则**:改状态标记 + 在文件顶部加一行指向替代物(新 spec / ADR / `docs/specs/<area>.md`)的链接,**不改正文、不删目录**。仍有效的事实提炼进 current truth，原 spec 归档。
 
 ### 5.2 Current truth(E 类,产品域现状)
 
@@ -436,10 +435,10 @@ docs/specs/changes/
 **后果**:每次新 session 重新对齐,迭代成本暴涨,或无法判断旧决定是否已被取代
 **修正**:只把上述决定**当场**追加到 `plan.md` §3,带原因和稳定来源。普通 spec 契约不复制;确实没有此类决定时不需要占位符
 
-### 6.3 Outcomes 写成 user story
-**症状**:`spec.md` Outcomes 用"As a X I want Y so that Z"
-**后果**:AI 知道 want 不知道场景细节
-**修正**:用真实场景描述(谁、在哪、做什么、看到什么)
+### 6.3 Outcomes 缺少可观察结果
+**症状**:只写希望做什么，缺少具体场景或成功条件
+**后果**:实现方向和验收标准容易产生分歧
+**修正**:补清谁、在哪、做什么、看到什么
 
 ### 6.4 改老功能 spec 而不起新目录
 **症状**:在 `002-invitation/spec.md` 上加新需求

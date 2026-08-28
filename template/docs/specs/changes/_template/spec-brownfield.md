@@ -34,12 +34,12 @@
 
 ## Constraints
 
-> 性能 / 安全 / 兼容性等**硬数字**约束。
+> 写清性能、安全、兼容性等具体约束；适用时给出量化指标。
 
 - {{TODO}}
 
 ## Verification
 
-> 写“已声明 Delta/风险 + 最小可执行证据”,不是预排测试用例。不要从通用测试习惯派生未声明输入、边界或错误 case。一个证据可覆盖多个相关风险;只有交互维度、已有回归要求或发布/合规契约确实改变结果时才使用矩阵。用户可见验证按最短 actor-to-result 流程优先排序，无需额外标签。**本节 + Delta = L3 review 基线**(domain doc 只作 context,不作 L3 全文对照)。
+> 写已声明 Delta/风险及最小充分证据，一个证据可覆盖多个相关义务；矩阵用于真实交互风险或项目/发布约定。用户可见验证优先最短 actor-to-result 流程。L3 对照 Delta、Constraints 和 Verification，domain doc 提供背景。
 
 - {{TODO Delta/主要风险 → 最小 command / assertion;具体测试文件和 case 可在实施时决定}}

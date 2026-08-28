@@ -4,4 +4,4 @@
 
 | area | domain doc | 说明 |
 |---|---|---|
-| (none yet) | — | 首个持久产品域由 `feature-archive` 或明确的 `feature-init` 创建 |
+| (none yet) | — | 持久产品事实由 `feature-archive` 沉淀；存量冲突由 `spec-reconcile` 整理 |

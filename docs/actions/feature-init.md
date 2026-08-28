@@ -12,7 +12,7 @@ Absent an explicit feature-routing assessment, do not use this action when the t
 
 General discussion, reasonableness assessment, diagnosis, and implementation-status review that does not ask for feature routing does not invoke this action. When the user explicitly asks whether work needs a feature or asks for a routing assessment, invoke it and return a read-only route preview; that assessment never authorizes artifact creation. Automatic skill invocation is not write authorization. Artifact creation is authorized by an explicit request to start/create/initialize the feature artifact, or by an explicit implementation/change request for which the selected route requires a durable artifact as a normal prerequisite.
 
-An application-foundation or architecture request uses this same classification; there is no reserved `project-foundation` action, lane, or slug. Use the ordinary full lane when the work establishes or materially changes project-wide runtime tiers, module boundaries, data/API contracts, or other architecture. Keep minimal structure inside the first feature when it is inseparable from that outcome; create a separate architecture-shaped change only when it has its own durable consumer or governs several later features.
+Application-foundation and architecture work uses the same classification. Keep minimal structure inside the first feature when inseparable; track architecture separately only when it has its own durable consumer or governs several later features.
 
 **Behavior-change floor**: a change to user-visible behavior or a durable rule **already declared** in `docs/specs/<area>.md` takes **at least the light lane** — domain docs update only via `feature-done` → `feature-archive`. A local, low-risk user-visible change that is not declared in current truth does not by itself require an artifact.
 
@@ -39,8 +39,8 @@ Read the active tree only: `docs/specs/changes/archive/` is closed history — e
 Every completed classification returns exactly one route:
 
 - `DIRECT`: no new feature number or artifact. Continue the requested change directly under applicable project conventions and proportionate checks, or reuse an existing accepted feature without creating a duplicate.
-- `LIGHT`: create only `tasks.md` because a concrete durable consumer exists, such as cross-session or multi-person handoff, several retained acceptance steps, audit/release evidence, or a pending current-truth update, and no full-lane trigger applies.
-- `FULL`: create `spec.md`, `plan.md`, and `tasks.md` because the change is high-risk or contract-shaped. Triggers include API/schema/data migration, security/auth/permissions, multi-tenant behavior, evidence/data invariants, architecture/runtime boundaries, cross-module contracts, new-module ownership, project-declared high-blast-radius surfaces, or an accepted bundled-delivery risk. This is a risk class, not a closed keyword list.
+- `LIGHT`: create only `tasks.md` when durable tracking is useful and its goal, boundary, constraints, and verification can clearly carry the accepted change.
+- `FULL`: create `spec.md`, `plan.md`, and `tasks.md` when separate requirements and design are needed to preserve material decisions, coordinate contracts or rollout, or satisfy an explicit project requirement. Name what those extra artifacts resolve or preserve and who needs them.
 
 Also classify execution authorization independently:
 
@@ -53,22 +53,13 @@ A blocking impact/necessity, scope-viability, or selection decision remains `Rou
 
 ## Lane Classification
 
-First decide whether the task needs a new project-workflow artifact at all. If no durable artifact is useful, or an accepted spec already covers the work, return `DIRECT`; do not create a pseudo-lane. Skip this action's artifact work and implement directly under the applicable project conventions and checks. Direct work may include a bounded user-visible behavior change when it is local, reversible, not declared in current truth, contract-free, and finishable in the current task with proportionate checks.
+First decide whether the task needs a new project-workflow artifact at all. If no durable artifact is useful, or an accepted spec already covers the work, return `DIRECT`; do not create a pseudo-lane. Skip this action's artifact work and implement directly under the applicable project conventions and checks, respecting the behavior-change floor above.
 
 Create a light artifact only when its durable checklist has a consumer: cross-session or multi-person handoff, several acceptance steps worth retaining, an explicit audit/release need, or a pending current-truth update. Do not create `tasks.md` merely because code is user-visible or touches several closely related files.
 
-When an artifact is useful, choose between two lanes. Use full lane for high-risk or contract-shaped work. Use light lane only when all are true:
-
-- small change within one cohesive module or responsibility area; file count alone is not decisive
-- additive, bugfix, or polish; no API/schema/data migration/architecture contract change
-- no new module
-- no project-declared disaster-invariant or high-blast-radius path is touched, when the project uses such an optional declaration
-
-Uncertainty is graded:
-
-- uncertain about API/schema, DB/data migration, security, auth/permissions, multi-tenant behavior, cross-module contract, new module ownership, or high-blast-radius impact → full lane
-- uncertain about UI wording, styling, component splitting, local refactor shape, or how to write tests → do not force full lane for that reason alone
-- uncertain about business goal or user-visible outcome → ask the user before creating artifacts
+Choose the lightest sufficient route under explicit project requirements. Match documentation to decision
+and coordination needs, and verification to actual risk. `feature-done` determines reviewer applicability.
+Resolve material unknowns with the user before committing to a direction.
 
 Before lane selection or materialization, run an **impact and necessity preflight**. It is a bounded
 decision aid, not an implementation plan. Establish:
@@ -101,11 +92,9 @@ reopen one only when new evidence or a newly discovered material consequence cha
 explain why and ask the focused question needed to proceed. Ordinary implementation details continue without
 interruption.
 
-Before drafting a full-lane artifact, close the material decisions from the current conversation: normalize
-the latest explicitly accepted rule, retain the source and any explicit supersession or exclusion, and identify
-only contradictions or missing interpretations that could change the contract. Do not replay the conversation
-or ask for ceremonial reconfirmation. Consistent decisions proceed directly into the artifact; a materially
-ambiguous decision keeps the route pending until the smallest useful question is answered.
+Before drafting a full-lane artifact, normalize the latest accepted decisions, their sources, and explicit
+supersessions or exclusions. Carry consistent decisions into the artifact; resolve material contradictions
+or missing interpretations under the conversational-judgment rule above.
 
 Bundle related small changes into one tracked feature when they share a user goal and must ship together; do not create fragmentary specs for button state, table columns, and details drawer separately. Before materializing an artifact, run a **scope-viability check**:
 
@@ -113,7 +102,7 @@ Bundle related small changes into one tracked feature when they share a user goa
 - ask whether each outcome can be accepted, enabled, and reverted on its own
 - record the concrete transaction, contract, or release coupling when several outcomes truly must ship together
 
-Infer candidate outcomes from the requested actors, observable results, release boundaries, migrations, and responsibility areas even when the user does not say "independently shippable." Do not split merely because work spans several modules, contains many tasks, or is large. Keep an evident single-outcome decision internal and continue without extra gate narration, even when supplied coupling evidence explains why it stays together. Never report a nonblocking Scope Viability result.
+Infer candidate outcomes from the requested actors, observable results, release boundaries, migrations, and responsibility areas even when the user does not say "independently shippable." Do not split merely because work spans several modules, contains many tasks, or is large. Keep an evident single-outcome decision internal and continue without extra gate narration.
 
 When separability is materially unclear, several independent outcomes need a selection, or bundled delivery
 needs the user's acceptance, explain the current outcome, candidate outcomes, and concrete coupling evidence
@@ -128,8 +117,8 @@ When the user chooses decomposition, create only the selected child in this invo
 outcome and briefly identify deferred outcomes when that helps preserve the decision boundary. Reuse an
 existing issue/PM reference when one is already available or the user explicitly asks to preserve the deferred
 work there. Creating or updating an external item remains a separate write requiring explicit authorization and
-an available integration; it is not a prerequisite for starting the selected child. A later tracker change affects
-the active feature only after the user accepts it through `spec-revise`.
+an available integration; it is not a prerequisite for starting the selected child. Adopt a later tracker change
+through the Implementation Scope Stop below before it changes the accepted feature boundary.
 
 When the selected outcome creates or changes a tier/module boundary, introduces a durable local exception, or
 chooses `Codify` in Sibling Alignment, read and apply the canonical
@@ -142,7 +131,8 @@ freeze. Recheck them at `spec-quality-check`, after a material `spec-revise`, an
 discovers an undeclared persistent state, API, role, workflow, management surface, queue, runtime,
 Provider/responsibility area, contract, migration, authorization rule, or release boundary.
 
-If direct implementation or light-lane work later touches API/schema, DB/data migration, security, auth/permissions, multi-tenant behavior, evidence/data invariants, cross-module contracts, or high-blast-radius paths, stop and upgrade to the appropriate light/full artifact flow before continuing.
+Reassess the route through Implementation Scope Stop when the accepted boundary materially changes
+or the current artifact can no longer carry the decisions.
 
 ### Implementation Scope Stop
 
@@ -162,14 +152,14 @@ Classify the discovery before resuming:
   do not create a revision or follow-up merely to preserve it.
 - A material contract correction, inseparable wider boundary, or other direction concern: explain the
   discovered delta or concern, present necessity, and recommended direction. Ask the focused question needed
-  to resume; use `spec-revise` when the accepted artifact changes.
+  to resume.
 - A separable outcome or speculative capability: recommend excluding/removing it or routing it to a child
   only when the user wants it preserved. Do not silently implement it or create a backlog.
 
-While a material direction question is pending, do not continue unrelated parts of the same feature merely
-to stay busy when they could deepen rework. User acceptance of a material change is recorded with its source
-in the existing Prior decisions/revision trace. Ordinary details clearly inside the accepted boundary continue
-without a stop report.
+Pause work that could deepen rework while a material direction question is pending. Once accepted, revise FULL
+through `spec-revise`; for LIGHT, update `tasks.md` goal/boundary, constraints, verification, and decision source,
+reopen affected tasks, and move superseded evidence and any prior Proof Bundle to history before continuing.
+`feature-done` writes the next delivery receipt.
 
 Use a dependency-ordered phase at a real dependency or risk checkpoint. Each phase closes an inspectable
 responsibility, contract/state transition, or actor-to-result segment.
@@ -192,7 +182,7 @@ artifact disposition, and actual next step unambiguous; a fixed report layout is
 
 - `Route`: `DIRECT` / `LIGHT` / `FULL`, or `pending` while a blocking impact/necessity, scope-viability, or selection decision remains unresolved.
 - `Execution`: `PREVIEW` / `APPLY`.
-- `Reason`: concrete evidence for why `DIRECT` is sufficient, which durable consumer prevents `DIRECT` and triggers `LIGHT`, or which contract/high-risk condition triggers `FULL`. Do not use an unexplained label such as "durable change".
+- `Reason`: concrete evidence for why `DIRECT` is sufficient, which durable consumer needs `LIGHT`, or why separate requirements/design are needed for `FULL`. Do not use an unexplained risk or "durable change" label.
 - `Feature`: `none`, `create=<path>`, or `reuse=<path>`.
 - `Next gates`: the actual remaining sequence; every implementation path includes the execution preview and,
   when applicable, phase handoffs above. For `Feature: none`, use implementation →
@@ -314,7 +304,7 @@ When the auditor boundary applies, follow the canonical [reviewer execution cont
 - Scope viability uses outcome and coupling, never size proxies. Only clarification, decomposition, or
   bundled-risk decisions are surfaced; existing tracking references are reused when relevant.
 - The full-lane handoff tells the main session to create an ADR during conversational fill only when `ADR_REQUIRED` is satisfied; feature-init does not create speculative ADRs before the decision exists.
-- Architecture-shaped work remains ordinary FULL; do not force foundation artifacts, tiers, local architecture
+- Architecture-shaped work uses the same route decision; do not force foundation artifacts, tiers, local architecture
   docs, or nested guidance. Nested `AGENTS.md` is optional convention placement, never an ADR/spec substitute.
 - Full-lane features must pass [`spec-quality-check`](spec-quality-check.md) before implementation.
 

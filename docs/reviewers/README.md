@@ -7,7 +7,7 @@ Runtime agents and skills must reference these specs instead of redefining the r
 | Reviewer | Purpose |
 |---|---|
 | [`agents-md-reviewer`](agents-md-reviewer.md) | L2 project-convention compliance review |
-| [`spec-reviewer`](spec-reviewer.md) | L3 implementation-vs-spec compliance review |
+| [`spec-reviewer`](spec-reviewer.md) | L3 implementation-vs-accepted-feature compliance review |
 | [`spec-quality-reviewer`](spec-quality-reviewer.md) | requirements reconciliation plus subjective pre-implementation quality and conditional architecture adequacy |
 | [`decision-completeness-auditor`](decision-completeness-auditor.md) | generated-decision traceability audit |
 | [`tech-researcher`](tech-researcher.md) | stack/library/tool choice research |
@@ -17,7 +17,7 @@ If a runtime adapter conflicts with one of these specs, the spec wins. Update th
 
 ## Reviewer execution contract
 
-The owning action decides whether a reviewer, auditor, or researcher boundary is applicable. `N/A` is valid only when that action defines it, such as low-risk light-lane L2 or subjective review after failed mechanical prerequisites.
+The owning action decides whether a reviewer, auditor, or researcher boundary is applicable. `N/A` is valid only when that action defines it, such as light-lane review with no applicable concern. Failed mechanical prerequisites use the action's non-execution status, not an applicability exemption.
 
 At every applicable boundary, use an independent reviewer when the host can dispatch one. If the host cannot
 dispatch that role, use the main session under the same read-only role contract and evidence. Invoking the owning action requires no extra workflow confirmation; host security approvals

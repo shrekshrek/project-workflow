@@ -33,7 +33,7 @@ Create or move nested guidance only for a durable rule that applies to a clear e
 planned subtree, materially differs from inherited guidance, and is costly or unsafe to infer repeatedly.
 Place it at the narrowest scope that owns all consumers: root for a cross-project rule, tier for a shared
 runtime-local difference, and module only for a real parent exception. Keep feature/product semantics and
-durable design decisions in spec/plan/ADR, and prefer lint/hook/test when mechanical enforcement is the better
+durable design decisions in spec/plan/ADR, and prefer lint/test when mechanical enforcement is the better
 owner. Nested guidance states differences only; never create it for directory symmetry or temporary detail.
 `AGENTS.md` is canonical, and a project-adopted nested `CLAUDE.md` is exactly the one-line `@AGENTS.md` alias.
 
@@ -49,7 +49,7 @@ owner. Nested guidance states differences only; never create it for directory sy
    - nested `CLAUDE.md` files that are absent where the project adopted the alias pattern, contain anything
      other than `@AGENTS.md` plus a newline, or point to missing guidance;
    - nested guidance whose directory moved/disappeared; and
-   - prompt rules that objective lint/hook/test enforcement now owns better.
+   - prompt rules that objective lint/test enforcement now owns better.
    Apply the Guidance Placement Contract above. Never propose a file merely to reduce line count.
 5. For each mismatch, record the old text, observed state, evidence source, exact affected subtree, and a
    narrow keep/move/create/delete/mechanize patch. Exclude preferences and weak pattern guesses.

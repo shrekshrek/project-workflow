@@ -119,7 +119,7 @@ jobs:
         run: |
           node scripts/check-feature-init-fixtures.cjs
 
-      - name: Check rule templates and hook input contracts
+      - name: Check baseline and rule template contracts
         run: |
           node scripts/check-template-contracts.js
 

@@ -7,35 +7,30 @@ paths:
 <!--
 来源:此 starter 浓缩了 React 18+ / Vite / React Router 社区共识
 (参考 React 官方 docs / kentcdodds blog / Mark Erikson Redux+React 文章)。
-落地到具体项目时请筛 / 删 / 增,并写 docs/adr/000N-adopt-react-best-practices.md 留追溯。
+按项目实际选择适用规则，来源记录在采用它的约定中。
 本文件触发条件:Claude 读取 frontend/**/*.{ts,tsx} 任一文件时自动 inject。
 若 tier 命名不是 frontend(如 web / app),改上方 paths 列表。
 -->
 
 # React + Vite 项目约定
 
-> Tier-level critical rules 在 `frontend/AGENTS.md § React + Vite`(≤ 5 条);
-> 本文件是 detailed rules,path-scoped 加载,`frontend/*.{ts,tsx}` 编辑时才进 context。
+> 项目特有规则由适用的 AGENTS.md 与本文件分工维护。
 
 ## 组件设计
 
-- 函数组件 + hooks only,**禁** class 组件
-- 项目内统一普通函数或 `React.FC<Props>` 写法；React 18+ 类型不再隐式加入 `children`，不要把二者差异写成通用禁令
-- Props destructure 在函数签名:`function Foo({ name, age }: Props)` 而非 `props.name`
-- 单文件单组件;`PascalCase.tsx` 命名,文件内 `export default` 的组件名跟文件名一致
+- 组件形式、Props 类型与文件组织沿用项目约定
 
 ## Hooks 纪律
 
 - **Rules of Hooks** 严守:顶层调用,不在 condition / loop / nested function 里调
 - 自定义 hook 必 `useXxx` 命名(eslint-plugin-react-hooks 强制识别)
-- 自定义 hook 返回值用 array(数量 ≤ 2,如 `[state, setState]`)或 object(数量 ≥ 3,命名清晰)
 
 ## State 选型
 
 - 局部组件 state → `useState`
 - 多步状态机 / 多字段联动 → `useReducer`(避免多 useState 之间漂移)
-- 跨组件共享 → Zustand / Jotai / Redux Toolkit(选一,**不混用**)
-- 服务端数据缓存 → TanStack Query / SWR(**不**手写 fetch + useState + useEffect)
+- 跨组件共享 → 沿用项目已采用的状态管理方式
+- 服务端数据缓存 → 沿用项目已有的数据获取与缓存方案
 
 ## Effects(useEffect)
 
@@ -43,7 +38,7 @@ paths:
 - `// eslint-disable-next-line react-hooks/exhaustive-deps` **仅在**写明 reason 注释时允许
 - Cleanup function:订阅 / interval / abort controller 必返回 cleanup
 - Race condition:用 `AbortController` + 状态变量(`let cancelled = false`)防 stale 数据写入
-- **不**在 useEffect 里做派生计算(用 `useMemo`)或事件响应(用 event handler)
+- 派生值在渲染中计算，事件响应放在对应 handler
 
 ## Reactivity
 
@@ -54,8 +49,6 @@ paths:
 ## List 渲染
 
 - `key` prop 必 **stable id**(数据库 id / uuid),**禁** array index 作 key(增删时渲染错位)
-- 大列表(> 100 行)用 `@tanstack/react-virtual` virtualization
-- 列表项 component 用 `React.memo` 包,key 变才重渲染
 
 ## Routing(React Router v6+)
 
@@ -67,19 +60,17 @@ paths:
 
 - React DevTools Profiler 测了真有问题再优化,**禁** premature `useMemo` / `useCallback`
 - Code splitting:路由级别 + 大 lib(如 chart / editor)动态 import
-- `React.Suspense` + `lazy` 处理 code split;**不**用第三方 SuspenseList(v6 未稳)
 
 ## TypeScript
 
 - `strict: true` + `noImplicitAny`:`any` 必显式标注 reason
-- Props interface 用 `interface` 不 `type`(extend 友好)
 - Event handler 类型:`React.MouseEvent<HTMLButtonElement>` 等显式标注
-- Imports 走 `@/` alias(`vite.config.ts` `resolve.alias` + `tsconfig.json` `paths`)
+- Imports 使用项目已配置的路径与别名
 
 ## 测试(Vitest + React Testing Library)
 
 - `render(<Component />, { wrapper: AllProviders })`(BrowserRouter / store provider 等)
 - 查询优先级:`getByRole` > `getByLabelText` > `getByText` > `getByTestId`(最后兜底)
-- 用户交互用 `userEvent`(real interaction),**不**用 `fireEvent`(底层 API,不模拟 user flow)
+- 用户交互优先用 `userEvent` 模拟实际操作
 - Async assertion:`await screen.findByText(...)` 或 `waitFor(() => ...)`
 - Mock API:优先 service-worker level mock(如 msw / Mock Service Worker),避免在测试里直接 mock HTTP client 模块(`vi.mock('axios' / 'ofetch' / 'ky' / ...)` 或 `jest.mock(...)`)

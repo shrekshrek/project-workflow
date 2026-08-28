@@ -32,7 +32,7 @@ Ask only when repository evidence cannot answer a decision that affects generate
 - Which directory owns the change or runtime entry point?
 - Which observed command is authoritative for dev, test, lint, build, or migration?
 - Is an unusual module boundary intentional or stale scaffold structure?
-- Should an existing host-private rule/hook be preserved, repaired, or excluded?
+- Does a selected host-private convention need repair?
 - Is a proposed tier boundary durable enough for a nested `AGENTS.md`?
 
 Do not ask for framework, ORM, database, UI library, state manager, or test tool when manifests/configuration already answer it. Do not recommend creating ADRs for ordinary stack detection; use an ADR only under the canonical `ADR_REQUIRED` rule.
@@ -40,16 +40,7 @@ Do not ask for framework, ORM, database, UI library, state manager, or test tool
 ## Host-private assets
 
 - Existing `.claude/rules/` may be validated when selected; do not translate them into Codex policy.
-- Existing hooks are preserved by default. A new hook requires a user-selected, safe, sub-five-second per-file command that has been verified.
 - `_multi_tier_examples/` and other plugin examples remain reference assets; never copy them into a target by default.
-
-## Legacy default cleanup
-
-When old generated guidance contains unsupported defaults such as a fixed Git platform, branch pattern, commit convention, coverage percentage, Playwright, deployment placeholders, or type-vs-domain module layout:
-
-- keep it only when current repository evidence or an explicit user decision supports it;
-- otherwise remove it, mark it deferred, or present it as a decision;
-- never label it plugin policy.
 
 ## Optional high-impact path declarations
 

@@ -64,12 +64,11 @@ fields.
 - Never archive when the reviewed Git/non-Git state is known to have changed or its freshness cannot be established; rerun `feature-done` instead.
 - A resolvable reviewed commit SHA is immutable delivery evidence even after the current branch or PR head advances; current-truth conclusions still require independent present-state validation.
 - Explicit single-feature invocation needs no duplicate confirmation. Sweep candidates and uncertain lifecycle decisions remain visible to the user.
-- There is no "historical foundation" status: if parts of an archived spec remain valid (data model, API, pipeline), those facts belong in `docs/specs/<area>.md` — extract them during the merge instead of keeping the old spec in the active tree as a reference.
 - Do not edit implementation code.
 
 ## Validation
 
-- Confirm the current-truth document reflects present behavior rather than merely repeating the historically delivered spec, and respects the size cap.
+- Confirm the current-truth document is concise and reflects present behavior under the document discipline above.
 - Confirm each archived feature used a current-task READY result or another confidently unchanged reviewed Git/non-Git state; otherwise rerun `feature-done` and stop that candidate.
 - Confirm every archived spec's status line reflects its final state and superseded ones link their successor.
 - Confirm every local Markdown link in each archived directory resolves after relocation; do not report the archive complete with broken ADR, domain-doc, sibling, or reference-style links.

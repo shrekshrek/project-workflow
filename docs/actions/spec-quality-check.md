@@ -37,9 +37,8 @@ before this gate instead of using `spec-revise`.
   For a current-conversation correction or supersede decision, include the exact user statement, normalized
   replacement, and older rule it supersedes. A caller-authored "user confirmed" paraphrase alone is not an
   authoritative source.
-- The result of pre-draft decision closure when the current conversation contained multiple material decisions.
-  This gate verifies that the artifact faithfully carries those resolved decisions; it does not replay product
-  discovery, reopen a settled choice, or ask the user to confirm it again.
+- The result of pre-draft decision closure when the conversation contained multiple material decisions,
+  for the reviewer's requirements reconciliation.
 - Whether the current execution preview is accepted and the request asks to proceed when this gate passes.
 
 Do not rely on remembered chat as the only source across sessions. Before this gate can return `READY`, every
@@ -47,9 +46,8 @@ non-obvious material choice that interprets an external source, resolves a confl
 supersedes an older decision needs a durable why/source trace. Repository sources use a path and section; user
 decisions use a dated/current-feature reference. Outcomes, scope, constraints, and exclusions remain owned by
 `spec.md` and are not duplicated in Prior decisions. When no decision needs a durable why/source trace, the
-section may be absent, empty, or say so naturally. For an older accepted artifact, an equivalent stable source
-in the same decision entry, adjacent revision record, or cited current-truth section satisfies this evidence
-requirement.
+section may be absent, empty, or say so naturally. A stable source in the decision entry, revision record,
+or cited current-truth section satisfies this requirement.
 Use `SOURCE GAP` only when missing authority prevents resolution of a material external claim, contradiction,
 or supersede decision—not merely because ordinary contract prose has no duplicate plan row.
 

@@ -18,7 +18,7 @@ node scripts/check-reviewer-fixtures.cjs
   ordinary endpoint returns `NEEDS WORK` with L2 `not-run(awaiting final L3 candidate)`. Separately run the L2
   reviewer against the same snapshot and confirm it cites the matching-test-name and no-throw conventions; this
   checks L2 sensitivity without contradicting endpoint scheduling.
-- `light-clean` / `light-known-bad`: L1 remains green and L2 is explicitly `N/A(low-risk light lane; no L2 trigger)` in both; only the explicit `tasks.md` verification distinguishes READY from NEEDS WORK, proving that conditional L2 never skips light-lane acceptance.
+- `light-clean`: L1 and declared verification pass; no concrete convention/behavior concern requires a reviewer, so reasoned L2/L3 N/A is valid. `light-known-bad`: those same checks pass, but a new throwing guard violates the accepted whitespace-only no-throw boundary. L3 must cite `tasks.md` and return NEEDS WORK; L2 stays N/A. The fixture checker separately probes failed light verification and missing required reviewer evidence.
 - Run both Claude and Codex endpoint adapters when shared/canonical behavior changes. When only one adapter changes, run that adapter plus the deterministic fixture check.
 
 ## Completion-preflight smoke
@@ -119,7 +119,7 @@ If the host cannot expose or constrain reviewer capacity, record that limitation
 
 ## Spec-quality authorization smoke
 
-Materialize a mechanically complete, subjectively clean full-lane draft with status `草稿`, then run each Claude/Codex adapter in fresh tasks:
+Materialize a mechanically complete, subjectively clean full-lane draft with status `草稿`, concrete user-story outcomes, and an enforceable nonnumeric constraint, then run each Claude/Codex adapter in fresh tasks:
 
 - Pure check request: `READY`; status remains `草稿`; no implementation starts.
 - Explicit conditional request ("if this passes, proceed"): `READY`; only the top status marker changes to
@@ -205,16 +205,18 @@ Run `spec-quality-check` against two full-lane artifacts whose individual tasks 
   no outside consumer remains. Repeat with no explicit `Codify`: `feature-done` creates no implicit guidance
   requirement or suggestion and must not create or move guidance.
 - Put product behavior or a temporary feature decision into nested guidance and confirm it routes back to
-  spec/plan/ADR. Give the same rule an objective lint/hook/test implementation and confirm the preferred
+  spec/plan/ADR. Give the same rule an objective lint/test implementation and confirm the preferred
   proposal is `mechanize`, not another prompt file.
 
 ## Decision conversation smoke
 
 - Give `project-personalize` a manifest and CI file that agree on one test command. Confirm it carries the
   observed command into the draft and asks no question about it; a fixed label is optional.
+- Revise an ADR-backed contract with directly sourced, accepted decisions: use inline trace. Introduce a
+  conflicting source and confirm the decision-completeness auditor applies under its dispatch boundary.
 - Add two conflicting active lint commands with no ownership evidence. Confirm it explains the evidence,
   recommends the smallest adjustment, and asks only the questions needed to resolve the working agreement.
-- Answer, then expose a separate hook-policy gap and an objectively stale source path. Confirm the draft/source
+- Answer, then expose a separate convention-policy gap and an objectively stale source path. Confirm the draft/source
   trace updates, independent evidence work continues without restating settled facts, and later material evidence
   reopens only the affected choice with a reason.
 - Make the remaining uncertainty an architecture/product decision. Confirm it routes to `feature-init` instead
@@ -239,8 +241,8 @@ console, compatibility state, and second Provider:
   repository backlog, or `spec-revise` record merely to preserve them.
 - Instead discover a real material authorization correction. Confirm work on that delta waits for one user
   direction decision, records the source, runs `spec-revise`, and reruns `spec-quality-check` before resuming.
-- Repeat from `DIRECT` and `LIGHT`; confirm a high-risk trigger upgrades the lane. Repeat from `FULL`; confirm
-  full lane is not blanket permission for adjacent scope.
+- Repeat from `DIRECT` and `LIGHT`; reassess artifact needs for the accepted delta, retaining LIGHT when its
+  checklist remains sufficient. Repeat from `FULL`; confirm adjacent scope still needs a decision.
 
 ## Minimal-evidence smoke
 

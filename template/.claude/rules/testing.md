@@ -29,4 +29,4 @@ paths:
 
 - 变更范围检查:`{{TEST_RUN_COMMAND}}`
 - 覆盖率:`{{COVERAGE_COMMAND}}`(仅当项目已有门槛且本次适用)
-- E2E:`{{E2E_RUN_COMMAND}}`(仅当 spec、项目约定或发布风险要求;不进 hook)
+- E2E:`{{E2E_RUN_COMMAND}}`(仅当 spec、项目约定或发布风险要求)

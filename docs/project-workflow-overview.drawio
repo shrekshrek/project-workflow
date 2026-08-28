@@ -21,7 +21,7 @@
         <mxCell id="prop_c" value="&lt;b&gt;② Context-as-RAM&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:11px;&#39;&gt;上下文是有限预算,不是无底磁盘 —&lt;br/&gt;AGENTS.md 行数纪律 + 小 composable skill + @imports&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF3E0;strokeColor=#E65100;fontSize=12;align=left;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
           <mxGeometry x="580" y="110" width="520" height="70" as="geometry"/>
         </mxCell>
-        <mxCell id="prop_d" value="&lt;b&gt;③ Drift&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:11px;&#39;&gt;规范在时间 / 空间 / 演进 三向漂移 —&lt;br/&gt;hooks 机械强制 + AGENTS.md 单一 source + P4 主动 refresh&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3E5F5;strokeColor=#6A1B9A;fontSize=12;align=left;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
+        <mxCell id="prop_d" value="&lt;b&gt;③ Drift&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:11px;&#39;&gt;规范在时间 / 空间 / 演进 三向漂移 —&lt;br/&gt;lint / tests 机械检查 + AGENTS.md 单一 source + P4 主动 refresh&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3E5F5;strokeColor=#6A1B9A;fontSize=12;align=left;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
           <mxGeometry x="1120" y="110" width="540" height="70" as="geometry"/>
         </mxCell>
 
@@ -44,7 +44,7 @@
         <mxCell id="skill_projpers" value="&lt;b&gt;/project-personalize&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;project evidence / baseline conflict&lt;br/&gt;仓库证据 → 约定对齐&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1565C0;fontSize=11;align=center;" vertex="1" parent="1">
           <mxGeometry x="640" y="246" width="170" height="68" as="geometry"/>
         </mxCell>
-        <mxCell id="p0_out" value="&lt;b&gt;产出 (按文档类标记)&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:11px;&#39;&gt;&lt;b&gt;project-init&lt;/b&gt;:AGENTS.md alias / .gitignore / specs index / ADR guide / gotchas&lt;br/&gt;&lt;b&gt;project-personalize&lt;/b&gt;:从证据补真实命令、路径、tier;仅经确认加入 host-private rules/hooks&lt;br/&gt;&lt;b&gt;feature-init&lt;/b&gt; 后续按需创建 concrete feature artifacts&lt;/span&gt;" style="text;html=1;strokeColor=#90A4AE;fillColor=#FAFAFA;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=11;spacing=8;rounded=0;dashed=1;" vertex="1" parent="1">
+        <mxCell id="p0_out" value="&lt;b&gt;产出 (按文档类标记)&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:11px;&#39;&gt;&lt;b&gt;project-init&lt;/b&gt;:AGENTS.md alias / .gitignore / specs index / ADR guide / gotchas&lt;br/&gt;&lt;b&gt;project-personalize&lt;/b&gt;:从证据补真实命令、路径、tier;仅经确认加入 host-private rules&lt;br/&gt;&lt;b&gt;feature-init&lt;/b&gt; 后续按需创建 concrete feature artifacts&lt;/span&gt;" style="text;html=1;strokeColor=#90A4AE;fillColor=#FAFAFA;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=11;spacing=8;rounded=0;dashed=1;" vertex="1" parent="1">
           <mxGeometry x="840" y="240" width="800" height="80" as="geometry"/>
         </mxCell>
 
@@ -81,7 +81,7 @@
         <mxCell id="featdone_decompose" value="&lt;span style=&#39;font-size:10px;color:#558B2F;&#39;&gt;= 机械 Feature 边界 + 稳定 snapshot + L1 + 适用 L2/L3 + receipt；不在 gate 内修实现&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=10;fontColor=#558B2F;" vertex="1" parent="1">
           <mxGeometry x="600" y="450" width="930" height="20" as="geometry"/>
         </mxCell>
-        <mxCell id="lightlane_note" value="🔀 &lt;b&gt;轻车道(确有持久清单消费者的低风险小改)&lt;/b&gt;:/feature-init 分流 → 仅 tasks.md(免 frozen spec/plan)· 跳 /spec-quality-check · L2 按风险触发 · L3=N/A。判据/安全闸见 spec-driven §3.2.1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F8E9;strokeColor=#558B2F;dashed=1;fontSize=9;align=left;verticalAlign=middle;spacing=4;fontColor=#558B2F;" vertex="1" parent="1">
+        <mxCell id="lightlane_note" value="🔀 &lt;b&gt;轻车道(清单足以承载的追踪变更)&lt;/b&gt;:/feature-init 分流 → 仅 tasks.md · 跳 /spec-quality-check · L1 与必要验证不减 · L2/L3 按 /feature-done 的实际适用性执行。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F8E9;strokeColor=#558B2F;dashed=1;fontSize=9;align=left;verticalAlign=middle;spacing=4;fontColor=#558B2F;" vertex="1" parent="1">
           <mxGeometry x="200" y="446" width="395" height="28" as="geometry"/>
         </mxCell>
 
@@ -104,7 +104,7 @@
         <mxCell id="lane_p3_label" value="&lt;b&gt;P3&lt;/b&gt;&lt;br/&gt;Continuous Maintenance&lt;br/&gt;&lt;span style=&#39;font-size:10px;color:#546E7A;&#39;&gt;开发期间常驻 (跟 P2 重叠)&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=14;fontStyle=1;fontColor=#E65100;" vertex="1" parent="1">
           <mxGeometry x="50" y="556" width="140" height="80" as="geometry"/>
         </mxCell>
-        <mxCell id="p3_mech1" value="&lt;b&gt;可选 verified hooks&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;仅在项目已有安全、快速命令&lt;br/&gt;且用户确认启用时机械校验&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#E65100;fontSize=11;align=center;" vertex="1" parent="1">
+        <mxCell id="p3_mech1" value="&lt;b&gt;阶段检查&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;使用项目真实检查命令&lt;br/&gt;验证当前阶段的相关改动&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#E65100;fontSize=11;align=center;" vertex="1" parent="1">
           <mxGeometry x="210" y="565" width="280" height="65" as="geometry"/>
         </mxCell>
         <mxCell id="p3_mech2" value="&lt;b&gt;端点 review (= /feature-done)&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;认为完成时显式调用;每次一个 terminal verdict&lt;br/&gt;receipt 仅保留下游需要的证据&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#E65100;fontSize=11;align=center;" vertex="1" parent="1">
@@ -113,7 +113,7 @@
         <mxCell id="p3_mech3" value="&lt;b&gt;协作走平台原生&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;backlog / 讨论 → GitHub Issues / Discussions&lt;br/&gt;不进 repo 文件 (§4.4 / §7.8)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#E65100;fontSize=11;align=center;" vertex="1" parent="1">
           <mxGeometry x="810" y="565" width="280" height="65" as="geometry"/>
         </mxCell>
-        <mxCell id="p3_note" value="&lt;span style=&#39;font-size:10px;color:#546E7A;&#39;&gt;P3 由 hooks (D) + P2 端点 review (/feature-done) 形成&lt;b&gt;持续运行态&lt;/b&gt;&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=10;" vertex="1" parent="1">
+        <mxCell id="p3_note" value="&lt;span style=&#39;font-size:10px;color:#546E7A;&#39;&gt;P3 由阶段检查 + P2 端点 review (/feature-done) 形成&lt;b&gt;持续运行态&lt;/b&gt;&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=10;" vertex="1" parent="1">
           <mxGeometry x="1110" y="572" width="530" height="50" as="geometry"/>
         </mxCell>
 
@@ -176,7 +176,7 @@
         <mxCell id="pillar_62" value="&lt;b&gt;§6.2 Context Budget&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;AGENTS.md 行数纪律 + @imports + 小 skill&lt;br/&gt;主服务:② Context&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECEFF1;strokeColor=#455A64;fontSize=11;align=left;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
           <mxGeometry x="445" y="815" width="395" height="70" as="geometry"/>
         </mxCell>
-        <mxCell id="pillar_63" value="&lt;b&gt;§6.3 Env-Enforced Rules&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;hooks 把 review 自动化、不依赖人类记得&lt;br/&gt;主服务:③ Drift (实时)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECEFF1;strokeColor=#455A64;fontSize=11;align=left;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
+        <mxCell id="pillar_63" value="&lt;b&gt;§6.3 Env-Enforced Rules&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;lint / tests 提供可重复的检查证据&lt;br/&gt;主服务:③ Drift (实时)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECEFF1;strokeColor=#455A64;fontSize=11;align=left;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
           <mxGeometry x="850" y="815" width="395" height="70" as="geometry"/>
         </mxCell>
         <mxCell id="pillar_64" value="&lt;b&gt;§6.4 Three-Layer Review&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;按规则源分层 L1 / L2 / L3 — 正交不互感&lt;br/&gt;主服务:① Verification + ③ Drift (端点)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECEFF1;strokeColor=#455A64;fontSize=11;align=left;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
@@ -195,7 +195,7 @@
         <mxCell id="doc_c" value="&lt;b&gt;C · 决策 (ADR)&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;docs/adr/NNNN-&lt;title&gt;.md  (扁平,不嵌套)&lt;br/&gt;时间维度:&lt;b&gt;Accepted 后正文冻结;新 ADR 取代旧决定&lt;/b&gt; — 当时为什么这么选?trade-off?&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF8E1;strokeColor=#F57F17;fontSize=11;align=left;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
           <mxGeometry x="688" y="930" width="314" height="90" as="geometry"/>
         </mxCell>
-        <mxCell id="doc_d" value="&lt;b&gt;D · 工具基础设施 (Infra)&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;.claude / .codex host-private hooks + .gitignore&lt;br/&gt;时间维度:&lt;b&gt;跟项目演化&lt;/b&gt; — 工具自动跑什么?&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3E5F5;strokeColor=#6A1B9A;fontSize=10;align=left;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
+        <mxCell id="doc_d" value="&lt;b&gt;D · 工具基础设施 (Infra)&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;项目检查配置 + .gitignore&lt;br/&gt;时间维度:&lt;b&gt;跟项目演化&lt;/b&gt; — 工具自动跑什么?&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3E5F5;strokeColor=#6A1B9A;fontSize=10;align=left;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
           <mxGeometry x="1012" y="930" width="314" height="90" as="geometry"/>
         </mxCell>
         <mxCell id="doc_e" value="&lt;b&gt;E · 产品事实 (Domain Docs)&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;docs/specs/index.md + docs/specs/&lt;area&gt;.md&lt;br/&gt;时间维度:&lt;b&gt;当前态&lt;/b&gt; — 产品/系统域现在怎么工作?&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FCE4EC;strokeColor=#AD1457;fontSize=10;align=left;verticalAlign=middle;spacing=8;" vertex="1" parent="1">

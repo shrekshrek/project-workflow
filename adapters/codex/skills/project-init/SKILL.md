@@ -12,4 +12,4 @@ Match the user's language. Read [`../../../../docs/actions/project-init.md`](../
    template and `scripts/materialize-project-baseline.cjs`.
 3. Run the canonical staging, preview, no-clobber apply, validation, and result handoff with that materializer.
 
-Preserve incidental content without interpreting or merging it. Do not ask stack questions, generate code/rules/hooks/tier files, run agents, or commit.
+Preserve incidental content without interpreting or merging it. Generate only the canonical six-file baseline; do not run agents or commit.

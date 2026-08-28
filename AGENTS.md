@@ -62,7 +62,7 @@ scripts/
 ├── check-all.cjs  run the complete local validation suite and summarize failures
 ├── build-plugin-packages.cjs  generate/check Claude + Codex self-contained packages
 ├── check-adapter-parity.js  check 9+9 action parity + runtime isolation
-├── check-template-contracts.js  check Claude rule frontmatter + shared hook input handling
+├── check-template-contracts.js  check baseline safety + Claude rule frontmatter
 ├── check-reviewer-fixtures.cjs  check reviewer smoke fixture inputs + verdict truth tables
 ├── check-feature-init-fixtures.cjs  check/grade feature-init behavior scenario matrix
 ├── materialize-feature-artifact.cjs  atomically create a no-clobber feature artifact from the selected lane template
@@ -70,7 +70,7 @@ scripts/
 ├── relocate-markdown-links.cjs  preserve local links after feature archive moves
 ├── check-lifecycle-links.cjs  regression-check archive link relocation
 ├── check-markdown-links.cjs  verify local Markdown destinations across source + runtime adapters + release docs
-└── check-workflow-contracts.cjs  check lane / retrofit / verdict / hook / neutral-template semantics
+└── check-workflow-contracts.cjs  check lane / retrofit / verdict / neutral-template semantics
 ```
 
 ## 修改纪律
@@ -81,9 +81,9 @@ scripts/
 - **Generated release artifacts**:主分支不保留自包含安装包副本;运行 `node scripts/build-plugin-packages.cjs --check` 验证两端生成包,版本化 release commit 通过全部 CI 后发布到 `plugin-dist`
 - **双端 native adapter**:`adapters/claude/skills/` 是 Claude-native;`adapters/codex/skills/` 是 Codex-native。两边必须保持同一 9-action 集合并引用同名 `docs/actions/`,但 runtime 交互 / subagent / 命令写法分别维护;禁止把一边的 SKILL.md 原样同步到另一边
 - **Adapter parity**:修改任一端 skill 或 action 后运行 `node scripts/check-adapter-parity.js`;Codex skill 不得出现 Claude-only 交互、具名 agent dispatch 或 `/project-workflow:*` 命令
-- **Template contracts**:修改 `.claude/rules/` 模板或共享 hook 后运行 `node scripts/check-template-contracts.js`;规则只接受官方 `paths:` YAML list,description 无字符硬门槛,malformed hook input 必须安全退出
+- **Template contracts**:修改 baseline 或 `.claude/rules/` 模板后运行 `node scripts/check-template-contracts.js`;保留 no-clobber 安全检查，规则使用 `paths:` YAML list
 - **Lifecycle links**:修改 `feature-archive` / `spec-reconcile` 后运行 `node scripts/check-lifecycle-links.cjs`;归档移动必须重定位并验证本地 Markdown links
-- **Workflow contracts**:修改 lane classification / retrofit / verdict / hook activation / feature templates 后运行 `node scripts/check-workflow-contracts.cjs`
+- **Workflow contracts**:修改 lane classification / retrofit / verdict / feature templates 后运行 `node scripts/check-workflow-contracts.cjs`
 - **Docs links**:修改或移动 Markdown 后运行 `node scripts/check-markdown-links.cjs`
 - **不在方法论正文塞栈细节**:workflow.md §0-§7/§9-§10、`docs/actions/`、`docs/reviewers/`、`template/` 保持栈中立;`template/docs/gotchas.md` 是生成项目用的空 ledger,必须栈中立。两处显式豁免:`docs/gotchas.md` 是 plugin 自身的 example-of-one 证据库(允许栈偏向,只收真实复现过的坑);workflow.md §8 是栈适配示范附录(换栈只重写该节)
 - **plugin skill 简洁**:每个 SKILL.md < 200 行,职责单一;超长的静态查表** relocation** 到同目录 `reference.md`—— 不是删内容;SKILL.md 标出强制 Read 点,执行时必须先读对应节再填表

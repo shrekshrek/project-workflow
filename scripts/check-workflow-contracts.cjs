@@ -40,19 +40,22 @@ requirePatterns("docs/actions/README.md", [
 requirePatterns("docs/actions/feature-init.md", [
   ["route decision", /^## Route Decision$/m],
   ["three routes", /`DIRECT`[\s\S]*`LIGHT`[\s\S]*`FULL`/],
+  ["lightest sufficient route", /Choose the lightest sufficient route under explicit project requirements/i],
+  ["verification independent of documents", /Match documentation to decision\s+and coordination needs, and verification to actual risk/i],
   ["preview and apply", /`PREVIEW`[\s\S]*`APPLY`/],
   ["scope stop", /Implementation Scope Stop/],
   ["phase check", /dependency or risk checkpoint[\s\S]*smallest\s+relevant check/i],
   ["phase handoff", /After a meaningful phase[\s\S]*compact handoff[\s\S]*Wait for the user/i],
   ["repair convergence handoff", /During implementation and post-gate repair[\s\S]*cycling without converging[\s\S]*pause[\s\S]*recommended next step[\s\S]*wait for the user's decision/i],
   ["tracking is not a child prerequisite", /External tracking is never a prerequisite/i],
-  ["pre-draft decision closure", /Before drafting a full-lane artifact[\s\S]*ceremonial reconfirmation/i],
+  ["pre-draft decision closure", /Before drafting a full-lane artifact[\s\S]*accepted decisions[\s\S]*sources[\s\S]*supersessions or exclusions/i],
   ["pre-implementation execution preview", /Before the first implementation edit[\s\S]*execution preview[\s\S]*current outcome and consumer[\s\S]*included and excluded change boundary[\s\S]*current facts[\s\S]*minimum sufficient approach[\s\S]*operating-cost boundaries[\s\S]*verification direction[\s\S]*meaningful phases[\s\S]*user's acceptance/i],
 ]);
 forbidPatterns("docs/actions/feature-init.md", [
   ["mandatory risk-size labels", /small, medium, large, or extra-large/i],
   ["legacy required handoff blocker", /required decision, selection, or handoff/i],
   ["legacy automatic implementation continuation", /returns control to that request without another confirmation/i],
+  ["keyword-driven full routing", /no full-lane trigger applies|Use light lane only when all are true|Architecture-shaped work remains ordinary FULL/i],
 ]);
 
 requirePatterns("docs/actions/spec-quality-check.md", [
@@ -62,7 +65,7 @@ requirePatterns("docs/actions/spec-quality-check.md", [
   ["smallest proof obligations", /smallest non-redundant proof obligations/i],
   ["frozen correction handoff", /`N\/A\(route: spec-revise\)`[\s\S]*before mechanical checks or reviewer dispatch/i],
   ["direct correction evidence", /exact user statement[\s\S]*normalized[\s\S]*supersedes/i],
-  ["quality consumes decision closure", /decision closure[\s\S]*does not replay product[\s\S]*reopen a settled choice/i],
+  ["quality consumes decision closure", /decision closure[\s\S]*reviewer's requirements reconciliation/i],
   ["quality preserves execution preview", /Continue into implementation only[\s\S]*execution preview[\s\S]*accepted/i],
 ]);
 forbidPatterns("docs/actions/spec-quality-check.md", [
@@ -74,14 +77,14 @@ requirePatterns("docs/actions/spec-revise.md", [
   ["implicit latest-user correction trigger", /latest user instruction materially corrects, rejects, removes, or replaces/i],
   ["stale quality gate forbidden", /do not run[\s\S]*`spec-quality-check` against the stale artifact/i],
   ["supersession trace", /exact current user[\s\S]*normalized replacement rule[\s\S]*older rule/i],
-  ["revision decision closure", /close the material correction set[\s\S]*ceremonial reconfirmation/i],
+  ["revision decision closure", /Close the material correction set[\s\S]*conversational-judgment rule[\s\S]*accepted replacements/i],
 ]);
 
 requirePatterns("docs/reviewers/spec-quality-reviewer.md", [
   ["correction source gap", /caller-authored "user confirmed"[\s\S]*`SOURCE GAP`/i],
   ["exclusion semantic remnant", /"remove"[\s\S]*optional, conditional, fallback, or compatibility path[\s\S]*`superseded-remnant`/i],
   ["endpoint-owned task rejection", /READY[\s\S]*endpoint\/lifecycle[\s\S]*circular[\s\S]*fails Q7a/i],
-  ["reviewer does not reopen closure", /decision-closure result[\s\S]*Do not reopen a resolved product choice/i],
+  ["reviewer consumes resolved decisions", /decision-closure result[\s\S]*faithful representation of resolved material decisions/i],
 ]);
 
 requirePatterns("docs/actions/feature-done.md", [
@@ -103,6 +106,8 @@ requirePatterns("docs/actions/feature-done.md", [
   ["endpoint-owned checklist boundary", /checklists limited to implementation, review, and check outcomes[\s\S]*archive eligibility[\s\S]*circular checklist item/i],
   ["non-ready next route", /`Next`:[\s\S]*`direct-repair`[\s\S]*`spec-revise`[\s\S]*`user-decision`[\s\S]*`separate-boundary`/i],
   ["delivery artifact baseline", /accepted feature artifact as the requirements baseline/i],
+  ["conditional light L3", /L3 Change-spec compliance:[\s\S]*For light lane, run when[\s\S]*otherwise record a reasoned N\/A[\s\S]*light-lane `tasks\.md`/i],
+  ["compact repair reporting", /Keep repair reporting to the blocker, fix, changed evidence, and next result/i],
 ]);
 requireTerms("docs/actions/feature-done.md", "mechanical feature boundary", [
   "Git-derived feature population",
@@ -119,6 +124,10 @@ forbidPatterns("docs/actions/feature-done.md", [
   ["duplicated review-execution receipt", /- `Review execution`:/],
   ["stale reviewer-result reuse after L1 failure", /preserve (?:any )?(?:still-valid )?(?:same-task )?reviewer (?:results|evidence)/i],
   ["same-run implementation repair", /bounded repair|same-run repair-delta|one permitted repair/i],
+  ["blanket light review skip or lane upgrade", /L3 remains N\/A|N\/A\(light lane\)|a match is a misclassification/i],
+]);
+requirePatterns("docs/reviewers/spec-reviewer.md", [
+  ["light artifact baseline", /\| Light \| Goal\/boundary, constraints, verification in `tasks\.md` \|/],
 ]);
 
 requirePatterns("docs/spec-driven.md", [

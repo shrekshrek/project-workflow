@@ -7,7 +7,7 @@ description: "Revise a materially wrong accepted or delivered-but-unarchived ful
 
 Match the user's language and preserve file language. Read [`../../../../docs/actions/spec-revise.md`](../../../../docs/actions/spec-revise.md) completely before acting; it owns the revision workflow and contract.
 
-- Require an accepted spec, or an active unarchived delivered spec whose contract/plan/Verification is materially wrong and must reopen, in the full lane. An implementation regression under an unchanged contract is repaired directly and reruns `$feature-done`; it does not invoke this skill. Read applicable root/nested `AGENTS.md`, recomputing applicability when module scope changes.
+- Resolve the feature under canonical lane/lifecycle rules. Read applicable root/nested `AGENTS.md`, recomputing applicability when module scope changes.
 - Resolve the plugin root as the nearest ancestor of this skill containing `.codex-plugin/plugin.json`; when
   canonical `ADR_REQUIRED` applies, search only relevant ADR metadata/references and instantiate the bundled
   `template/docs/adr/0000-template.md`.

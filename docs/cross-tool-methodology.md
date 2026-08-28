@@ -11,7 +11,7 @@ project-workflow 分两层:
 | 层 | 定义 | 是否工具绑定 | 例 |
 |---|---|---|---|
 | **Methodology core** | 项目长期资产和流程契约 | 否 | `AGENTS.md`, `docs/specs/`, `docs/specs/changes/`, conditional ADR, delivery receipt, L1/L2/L3 review model, `docs/actions/`, `docs/reviewers/` |
-| **Runtime adapter** | 把 core 自动化到某个工具里的封装 | 是 | Claude Code plugin skills, Codex skills/plugins/hooks, shell scripts |
+| **Runtime adapter** | 把 core 自动化到某个工具里的封装 | 是 | Claude Code plugin skills, Codex skills/plugins, shell scripts |
 
 **判断规则**:
 
@@ -26,10 +26,10 @@ project-workflow 分两层:
 无论使用 Claude Code、Codex,还是手工执行,以下不变量保持不变:
 
 1. **A 类约定是项目当前规则源**
-   `AGENTS.md` 是跨工具 canonical 入口。工具私有的 rules/hooks 可以增强本地体验,但不构成第二套 portable core,其他 adapter 也不必翻译或读取它们。
+   `AGENTS.md` 是跨工具 canonical 入口。项目自有的工具配置 可以增强本地体验,但不构成第二套 portable core,其他 adapter 也不必翻译或读取它们。
 
 2. **无需新 artifact 的任务不启动 project-workflow**
-   小 bugfix、文案、样式、局部测试修复、低风险文档编辑、未被 current truth 声明且局部/可逆/无契约/可在当前任务完成的行为小改,以及已确认 spec 下的实施任务,不新建 feature artifact;直接做时仍遵守适用的 `AGENTS.md` 和相关检查。复用已确认 FULL 时先通过语义实施就绪度复查，再按原 tasks 实施。只有持久清单存在交接、多步验收、审计/发布或 current-truth 消费者时,低风险小改才进入 light lane。
+   是否需要新 artifact 及其车道由 [`feature-init`](actions/feature-init.md) 判断；直接实施仍遵守适用的 `AGENTS.md` 和相关检查，复用已有 feature 时沿用其车道与生命周期。
 
 3. **Feature artifact 只有 Full / Light 两类**
    full lane feature 使用 `docs/specs/changes/<NNN>-<slug>/{spec,plan,tasks}.md`;轻车道使用同目录下的 `tasks.md`。
@@ -67,17 +67,16 @@ project-workflow 分两层:
 | Persistent project guidance | `AGENTS.md` + `CLAUDE.md` 1 行 alias | `AGENTS.md` discovery | 读 `AGENTS.md` |
 | Host-specific scoped rules | 可选 `.claude/rules/*.md`;由 Claude adapter 原生加载 | 使用 root/nested `AGENTS.md`;不读取或翻译 Claude-private rules | 在 `AGENTS.md` 放置 portable guidance |
 | Reusable workflows | Generated Claude package from `adapters/claude/`, with skills referencing `docs/actions/` | Generated Codex package from `adapters/codex/`; skills reference bundled copies of the same `docs/actions/` semantics | 按 `docs/actions/` 手工执行 |
-| Hooks | `.claude/settings.json` + `.claude/hooks/` | `.codex/hooks.json` or `.codex/config.toml` | 端点手动跑 check |
 | Sub-agent review | Applicable boundary 必须 dispatch `adapters/claude/agents/` 的具名 agent;不可用/失败/无容量时有据 fallback | Applicable boundary 必须由 Codex general subagent 跑 bundled `docs/reviewers/`;不要求 custom-agent name | 无 dispatch capability 时主会话按 `docs/reviewers/` 执行并记录原因 |
 | Plugin distribution | Claude plugin marketplace | Codex plugin marketplace | Copy `template/` and docs |
 
-Codex supports additional instruction override filenames, but project-workflow does not generate or recommend them. Native persistent guidance remains the `AGENTS.md` hierarchy. Claude-private `.claude/rules/` and hooks remain optional project-owned adapter assets; Codex does not treat them as portable convention input. Codex `.codex/rules/*.rules` files remain command-approval policy and are not an A-class coding-convention carrier.
+Codex supports additional instruction override filenames, but project-workflow does not generate or recommend them. Native persistent guidance remains the `AGENTS.md` hierarchy. Claude-private `.claude/rules/` remain optional project-owned convention files; Codex does not treat them as portable convention input. Codex `.codex/rules/*.rules` files remain command-approval policy and are not an A-class coding-convention carrier.
 
-Adapter 设计必须遵守一个约束:**不要复制 methodology core**。例如 Claude 和 Codex 可以各有 hook 配置,但 action 的触发/输入/输出/不变量只能在 `docs/actions/` 定义一次;reviewer 的任务方法只能在 `docs/reviewers/` 定义一次;L1/L2/L3 的含义只能在 core 文档定义一次。
+Adapter 设计必须遵守一个约束:**不要复制 methodology core**。例如 Claude 和 Codex 各有原生 skill 入口,但 action 的触发/输入/输出/不变量只能在 `docs/actions/` 定义一次;reviewer 的任务方法只能在 `docs/reviewers/` 定义一次;L1/L2/L3 的含义只能在 core 文档定义一次。
 
 Runtime adapter 本身则应保持 **host-native 且薄**:`adapters/claude/skills/` 使用 Claude Code 的交互、具名 agent 和 slash-command 语义;`adapters/codex/skills/` 使用 Codex 的 `$skill`、通用 subagent 和 Codex 工具语义。两端在 canonical dispatch boundary 都遵守“能力与容量存在则必须调度;否则有据 fallback;缺证据 fail closed”,同时保持同一 action 集合并引用同名 canonical spec,但不得把一端 SKILL.md 原样复制给另一端。源仓库的 [`scripts/check-adapter-parity.js`](../scripts/check-adapter-parity.js) 机械校验 action parity、canonical 引用、行数和 runtime marker 隔离。
 
-Adapter 不设 helper 命令层:`feature-done` 是端点的唯一入口。每次交付从完整 worktree diff 或精确 commit range 建立机械 Feature 边界,审查一个稳定最终快照并返回一个终态，不在 gate 内修实现。端点外的修复、复验和证据复用遵循 [`feature-done`](actions/feature-done.md) 的原请求授权与验证规则。历史上 Claude Code 曾有 `/l1-review` / `/l2-review` / `/l3-review` / `/proof-bundle` 四个 helper skill,已在 v3.0 合并进 `feature-done`。
+`feature-done` 是交付端点的唯一入口。快照、修复、复验和证据复用遵循其 [canonical action](actions/feature-done.md)。
 
 ---
 
@@ -107,7 +106,7 @@ The action is the method. The command is just one runtime entry point.
 
 ## 5. Portability checklist
 
-Before adding or changing a skill, hook, or plugin feature, answer:
+Before adding or changing a skill or plugin feature, answer:
 
 1. Which methodology action or invariant does this automate?
 2. Is the action already documented in `docs/actions/`?

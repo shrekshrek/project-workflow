@@ -16,7 +16,7 @@ Match the user's language and preserve file language. Read [`../../../../docs/ac
   [`decision-completeness-auditor`](../../../../docs/reviewers/decision-completeness-auditor.md) boundaries.
   Each subagent reads its canonical spec; the main session reads it only for fallback.
 - Read [`../../../../docs/actions/project-personalize-reference.md`](../../../../docs/actions/project-personalize-reference.md) only when repository evidence or a user decision makes one section relevant. It supplies examples, never defaults.
-- Preserve host-private rules/hooks unless explicitly selected. Do not copy host-private rules/hooks/tier examples by default.
+- Include host-private conventions only when selected; preserve unrelated project configuration.
 - Preflight and apply staged changes under the current request's authorization. Conflict, symlink, or blocking
   audit leaves the target unchanged.
 - Do not rewrite feature history or commit.

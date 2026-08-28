@@ -14,7 +14,7 @@ If all six baseline files match the bundled template and any remaining content i
 
 - Target directory, defaulting to the current working directory.
 
-Do not ask for language, framework, package manager, tier layout, test tools, hooks, hosting, or deployment. A baseline-compatible target has no repository evidence for those decisions. Optional research and tier/rule/hook assets remain available after repository evidence or an explicit need exists.
+Do not ask for language, framework, package manager, tier layout, test tools, hosting, or deployment. A baseline-compatible target has no repository evidence for those decisions. Optional research and tier/rule assets remain available after repository evidence or an explicit need exists.
 
 ## Outputs
 
@@ -25,7 +25,7 @@ Do not ask for language, framework, package manager, tier layout, test tools, ho
 - `docs/adr/README.md`
 - `docs/gotchas.md`
 
-Do not generate application code, nested/tier instructions, scoped rules, hooks, settings, concrete ADRs, or domain documents by default.
+Generate only the six baseline files; preserve all other project content.
 
 ## Workflow
 
@@ -43,5 +43,5 @@ Do not generate application code, nested/tier instructions, scoped rules, hooks,
 - Optional plugin assets remain installed but are not copied into the project.
 - Rejection or failure leaves pre-existing files untouched.
 - Successful completion means the neutral workflow baseline is ready. The target can proceed to a code scaffold, direct work, or [`feature-init`](feature-init.md); application structure may still be undecided.
-- When application structure is undecided, report two optional next paths without choosing or invoking either: keep the minimum necessary architecture inside the first feature, or start a separate architecture-shaped full-lane change only when it will govern several later features or has its own durable consumer.
+- When application structure is undecided, explain the relevant next step; `feature-init` owns whether architecture belongs inside the first feature or a separate change and which artifact it needs.
 - `project-personalize` may enrich deferred conventions after repository evidence exists, but it is not required to complete `project-init`.

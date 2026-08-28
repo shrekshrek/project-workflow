@@ -37,7 +37,7 @@ An implementation regression under an unchanged accepted contract does not use t
 
 ## Workflow
 
-1. Resolve the active full-lane feature and read `spec.md`, `plan.md`, and `tasks.md`. Light-lane work has no frozen spec; upgrade it only when the discovered risk requires a contract. A full-lane `已实现` feature may be revised only while it remains active and unarchived; an archived feature requires a successor change instead of rewriting history.
+1. Resolve the active feature: LIGHT follows [feature-init's Scope Stop](feature-init.md#implementation-scope-stop); FULL continues with `spec.md`, `plan.md`, and `tasks.md`. A delivered FULL feature may reopen while active and unarchived; archived work requires a successor change.
 2. Confirm that the discovery is a material contract, verification, scope, plan, or module-boundary error.
    Stop implementation work for the discovered delta while its direction is unresolved; do not keep adding
    code, tests, migrations, or compatibility paths that could deepen the rework.
@@ -51,13 +51,9 @@ An implementation regression under an unchanged accepted contract does not use t
    fresh-read applicable conventions. Do not treat already-written implementation as evidence that the
    expansion belongs in the feature.
 4. Classify `ADR_REQUIRED`: yes only for architecture/module boundaries, durable cross-feature technical decisions, or superseding an ADR. When yes, search ADR filenames, titles, status fields, and existing references first, then open only candidates relevant to the affected area or decision.
-5. Before drafting, close the material correction set from the current conversation: normalize the latest
-   explicitly accepted replacement, preserve each explicit supersession/exclusion, and identify only conflicts
-   whose interpretation could change the revised contract. Apply `feature-init`'s conversational-judgment rule;
-   settled corrections proceed without ceremonial reconfirmation.
-   When a decision is required, naturally explain the discovered delta, mismatch with the accepted boundary,
-   current necessity, recommended remove/narrow/child/revise direction, and the smallest useful decision set.
-   Do not continue the delta until the user decides.
+5. Close the material correction set under `feature-init`'s conversational-judgment rule. Resolve material
+   interpretation conflicts before drafting; preserve accepted replacements and explicit supersessions or
+   exclusions in the trace below.
 6. When the accepted boundary, current need, or delivery shape changes, proportionately reapply only the
    affected `feature-init` questions and keep routing and unrelated settled decisions intact. Record a child
    boundary or accepted bundle when durable handoff is useful. Reuse an existing or explicitly requested
@@ -79,7 +75,7 @@ An implementation regression under an unchanged accepted contract does not use t
    Codify. At that boundary, read and apply the canonical
    [Guidance Placement Contract](agents-md-revise.md#guidance-placement-contract) and name the exact owner and
    source; otherwise do not load it.
-9. Run an inline trace for repository- or user-sourced corrections; use the decision-completeness auditor only for an ADR, unconfirmed high-impact choices, or conflicting/weak evidence.
+9. Use inline trace or independent audit under the [decision-completeness auditor's dispatch boundary](../reviewers/decision-completeness-auditor.md#dispatch-boundary).
 10. Apply the synchronized revision when the user's request already authorizes it. Ask only for an unresolved
     material decision or an external write; rejection or a blocking audit leaves the worktree unchanged.
 
@@ -109,8 +105,6 @@ When the auditor boundary applies, follow the canonical [reviewer execution cont
 
 - Apply the canonical conversational-judgment rule to decision questions. Draft and audit the synchronized
   contents before apply; the current request's revision authorization remains in effect.
-- Decision closure applies `feature-init`'s conversational judgment: reconcile material corrections before
-  drafting, carry settled decisions forward, and keep unresolved material decisions pending.
 - Confirm the next implementation step. Rerun [`spec-quality-check`](spec-quality-check.md) whenever scope
   viability, current necessity, impact baseline, or a high-impact rule changed; otherwise state why it is
   unnecessary.
