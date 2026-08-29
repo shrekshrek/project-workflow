@@ -13,9 +13,9 @@ copying its decision table or inventing a second gate.
 
 | Concern | Normative owner | Downstream use |
 |---|---|---|
-| Impact/necessity, DIRECT/LIGHT/FULL routing, scope viability, the execution preview and phase handoffs, implementation scope stop, and planning-time minimum evidence | [`feature-init`](feature-init.md) | `spec-quality-check` verifies the full-lane artifact applied the accepted boundary and preserves the preview handoff; `feature-done` compares the actual change with it |
-| Bidirectional requirements reconciliation and pre-implementation full-lane quality | [`spec-quality-check`](spec-quality-check.md) | The spec-quality reviewer supplies the assessment method; pending frozen-contract corrections route to `spec-revise` before review |
-| Frozen-contract correction, reopening, and synchronized scope-delta handling | [`spec-revise`](spec-revise.md) | It reuses `feature-init` viability rules only when the accepted boundary changes |
+| Conversation, discovery, record need, authorization, context continuity, implementation scope stop and minimum evidence | [`feature-init`](feature-init.md) | `spec-quality-check` checks the record against accepted decisions; `feature-done` compares the actual change with it |
+| Bidirectional requirements reconciliation and semantic implementation readiness | [`spec-quality-check`](spec-quality-check.md) | The spec-quality reviewer supplies the assessment method; pending accepted-contract corrections route to `spec-revise` before review |
+| Accepted-contract correction, reopening, and synchronized scope-delta handling | [`spec-revise`](spec-revise.md) | It reuses `feature-init` viability rules only when the accepted boundary changes |
 | Actual-diff completion preflight, L1/L2/L3 aggregation, current-truth decision, and delivery receipt | [`feature-done`](feature-done.md) | Reviewers consume the action-owned snapshot and never add a delivery layer |
 | Archive eligibility, current-truth merge, and physical lifecycle closure | [`feature-archive`](feature-archive.md) | It consumes the complete `feature-done` receipt and never infers READY from partial or historical fields |
 | Durable root/tier/module guidance maintenance | [`agents-md-revise`](agents-md-revise.md) | Feature actions may select or verify a placement, but do not run a convention-maintenance sweep |
@@ -51,12 +51,12 @@ Single authoritative home for rules that several actions need. Action specs and 
 |---|---|
 | [`project-init`](project-init.md) | Create the neutral baseline when its destinations are absent and existing content needs no personalization |
 | [`project-personalize`](project-personalize.md) | Establish or adapt project-workflow from repository evidence |
-| [`feature-init`](feature-init.md) | Choose no artifact, light tracking, or a full contract and carry its accepted boundary into implementation |
-| [`spec-quality-check`](spec-quality-check.md) | Reconcile accepted requirements and gate a completed full-lane artifact before implementation |
-| [`spec-revise`](spec-revise.md) | Correct and synchronize a materially wrong frozen contract |
+| [`feature-init`](feature-init.md) | Clarify the change and create, reuse or omit its record |
+| [`spec-quality-check`](spec-quality-check.md) | Reconcile accepted requirements and check an actionable record before implementation |
+| [`spec-revise`](spec-revise.md) | Correct and synchronize a materially wrong accepted contract |
 | [`feature-done`](feature-done.md) | Validate the actual delivery, aggregate applicable review, and write the delivery receipt |
 | [`feature-archive`](feature-archive.md) | Close delivered features: merge durable conclusions into current truth, move directories to `docs/specs/changes/archive/` (default sweep mode) |
 | [`spec-reconcile`](spec-reconcile.md) | Repair conflicts across accumulated specs in one area (retrofit tool): pick source of truth, mark and archive losing specs |
 | [`agents-md-revise`](agents-md-revise.md) | Refresh evidence-backed project conventions and their placement |
 
-Architecture-shaped full-lane work remains part of `feature-init` and conditionally reads the shared [`architecture-design` guidance](../architecture-design.md).
+Architecture work remains part of `feature-init` and conditionally reads the shared [`architecture-design` guidance](../architecture-design.md).

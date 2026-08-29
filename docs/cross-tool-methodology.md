@@ -29,19 +29,19 @@ project-workflow 分两层:
    `AGENTS.md` 是跨工具 canonical 入口。项目自有的工具配置 可以增强本地体验,但不构成第二套 portable core,其他 adapter 也不必翻译或读取它们。
 
 2. **无需新 artifact 的任务不启动 project-workflow**
-   是否需要新 artifact 及其车道由 [`feature-init`](actions/feature-init.md) 判断；直接实施仍遵守适用的 `AGENTS.md` 和相关检查，复用已有 feature 时沿用其车道与生命周期。
+   是否需要新 artifact由 [`feature-init`](actions/feature-init.md) 判断；直接实施仍遵守适用的 `AGENTS.md` 和相关检查，复用已有 feature 时沿用其接受规则与生命周期。
 
-3. **Feature artifact 只有 Full / Light 两类**
-   full lane feature 使用 `docs/specs/changes/<NNN>-<slug>/{spec,plan,tasks}.md`;轻车道使用同目录下的 `tasks.md`。
+3. **默认一份功能记录**
+   需要追踪时只创建 `docs/specs/changes/<NNN>-<slug>/spec.md`；可复用已有记录，长内容确有用途才拆出。不按文档套餐分类。
 
-4. **Spec quality gate 在实施前发生**
-   full lane feature 开始实现前必须通过 7 问质量检查。Failed 项阻断实施;borderline 项允许继续,但要显式记录风险和修法。
+4. **实施依据先澄清**
+   先沟通，关键未知按需试验，再确认方案与验收。就绪检查关注语义、来源和可验证性，独立审查按风险/项目要求，缺少可选文件不构成失败。
 
-5. **中途改 frozen spec 走修订 SOP**
-   已确认并开始实施后,修改 `spec.md` 必须有修订记录和 plan/tasks 同步;只有架构/模块边界、持久跨功能技术决定或取代既有 ADR 时才创建 ADR。Draft 阶段自由编辑。
+5. **实现中继续发现与沟通**
+   普通细节直接推进；重要新发现先暂停相关工作，解释影响和建议，确认后局部更新再继续。文档更新保留上下文，不逐轮打断或重开整个流程。
 
 6. **交付验证按规则源分层**
-   先建立机械 Feature 边界并完成 L1 机械检查;必要 L1 通过后,适用的 L2 项目约定与 L3 feature spec 独立运行。高风险 full lane 并行调度,普通 full lane 先 L3 后 L2;紧凑 delivery receipt 负责聚合证据和 verdict。
+   必要 L1 先行，适用的独立 L2/L3 依据实际风险运行；一份最终收据记录真实结果，不以文档数量决定验证深度。
 
 7. **Drift refresh 只处理 A 类约定**
    P4 更新 `AGENTS.md` 以及本次明确纳入范围的 host-specific convention files,不回写历史 spec,也不把 backlog 放进 repo 文件。
@@ -53,7 +53,7 @@ project-workflow 分两层:
    `docs/reviewers/` 定义 reviewer、auditor、researcher 的任务边界、输入、检查方法和输出形状。Claude `adapters/claude/agents/` 与 Codex plugin skills 只是 adapter,不能各自维护一套 reviewer 方法。
 
 10. **所有 adapter 暴露同一组 public action,没有第二套 surface**
-   默认跨工具 action 是 `project-init` / `project-personalize` / `feature-init` / `spec-quality-check` / `spec-revise` / `feature-done` / `feature-archive` / `spec-reconcile` / `agents-md-revise`。`feature-init` 把 DIRECT/LIGHT/FULL 路由与 PREVIEW/APPLY 写入授权分开;显式 feature 路由评估触发只读 PREVIEW,普通讨论、诊断和检查不触发。`feature-done` 内聚交付门禁和 receipt,不再设独立 helper 命令;其复查与证据规则由 canonical action 定义。
+   默认跨工具 action 是 `project-init` / `project-personalize` / `feature-init` / `spec-quality-check` / `spec-revise` / `feature-done` / `feature-archive` / `spec-reconcile` / `agents-md-revise`。`feature-init` 把记录需要与 PREVIEW/APPLY 写入授权分开;显式 feature 路由评估触发只读 PREVIEW,普通讨论、诊断和检查不触发。`feature-done` 内聚交付门禁和 receipt,不再设独立 helper 命令;其复查与证据规则由 canonical action 定义。
 
 11. **`已实现` 不等于"仍是产品现状"**
    交付后的生命周期语义是跨工具的:`docs/specs/changes/` 活动区只放进行中的变更,已交付的整目录归档到 `docs/specs/changes/archive/`(检索现状时排除);被取代的 change 标 `已取代` / `已废弃`;current truth(`docs/specs/<area>.md`)是产品域现状的唯一权威。任何 adapter 在长周期产品域取 context 时,应优先读 current truth,不把 archive 内容当有效基线。

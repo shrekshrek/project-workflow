@@ -1,13 +1,13 @@
 # spec-revise
 
-Canonical action for changing a frozen feature contract after implementation has started.
+Canonical action for changing an accepted feature contract after implementation has started.
 
 ## Use When
 
-- A confirmed `spec.md` needs to change during implementation.
+- An accepted `spec.md` needs to change during implementation.
 - The latest user instruction materially corrects, rejects, removes, or replaces behavior in an accepted
   contract, even when the user does not name this action and phrases the request as "fix it" or "continue".
-- A delivered-but-unarchived full-lane feature needs to reopen because a material contract, scope, plan, or Verification omission was discovered after `feature-done`.
+- A delivered-but-unarchived feature needs to reopen because a material contract, scope, plan, or Verification omission was discovered after `feature-done`.
 - Implementation discovers a material scope delta: an undeclared persistent state, API, role, workflow,
   management surface, queue, runtime, Provider/responsibility area, contract, migration, authorization
   rule, release boundary, or a simpler outcome that removes speculative capability.
@@ -19,25 +19,32 @@ An implementation regression under an unchanged accepted contract does not use t
 
 ## Inputs
 
+Implementation can reveal new tasks and better boundaries. Ordinary details under unchanged acceptance
+continue directly; material findings first pause affected work and get a user decision. After the confirmed
+local revision, return to the already authorized implementation rather than restarting initialization or
+reconfirming unchanged choices. Preserve valid unaffected tests and evidence; rerun only affected checks and
+their dependency closure. A test failure alone is not a requirement change.
+
+
 - Feature directory.
 - Requested change and reason.
 - For a current-conversation contract correction: the exact user statement, its normalized decision, and the
   older accepted rule it supersedes. A caller-authored "user confirmed" paraphrase alone is not authority.
-- Existing `spec.md`, `plan.md`, `tasks.md`.
+- The accepted record and any existing linked design/work notes affected by the change; do not create optional files to revise it.
 - ADR directory state.
 
 ## Outputs
 
-- Updated `spec.md` with changed text and a revision record.
-- Updated `plan.md` prior decisions and affected module/architecture sections.
-- Updated `tasks.md` if task order, scope, or validation changed.
-- The accepted Scope, Constraints, Module Impact, any conditional delivery boundary, and the actual discovered impact delta.
+- Updated `spec.md`, the active feature's sole accepted record, with changed text and a revision record.
+- Updated affected decisions/design notes where they already live, without duplicating the accepted rules.
+- Updated affected implementation/checklist items if task order, scope, or validation changed; the checklist may be inline.
+- The accepted scope, constraints, affected responsibilities, any conditional delivery boundary, and the actual discovered impact delta.
 - New ADR only when the revision changes architecture/module boundaries, establishes a durable cross-feature technical decision, or supersedes an existing ADR.
 - For a reopened delivery: status returned to `已确认`, the prior receipt preserved under a uniquely named `## Previous Proof Bundle (superseded <date-or-sequence>)`, and a fresh empty canonical `## Proof Bundle` ready for the next `feature-done`.
 
 ## Workflow
 
-1. Resolve the active feature: LIGHT follows [feature-init's Scope Stop](feature-init.md#implementation-scope-stop); FULL continues with `spec.md`, `plan.md`, and `tasks.md`. A delivered FULL feature may reopen while active and unarchived; archived work requires a successor change.
+1. Resolve the active accepted record under [feature-init's record rules](feature-init.md#record-and-authorization). A delivered feature may reopen while active and unarchived; archived work requires a successor change. Neither a new task nor a different file layout requires a new feature.
 2. Confirm that the discovery is a material contract, verification, scope, plan, or module-boundary error.
    Stop implementation work for the discovered delta while its direction is unresolved; do not keep adding
    code, tests, migrations, or compatibility paths that could deepen the rework.
@@ -51,7 +58,7 @@ An implementation regression under an unchanged accepted contract does not use t
    fresh-read applicable conventions. Do not treat already-written implementation as evidence that the
    expansion belongs in the feature.
 4. Classify `ADR_REQUIRED`: yes only for architecture/module boundaries, durable cross-feature technical decisions, or superseding an ADR. When yes, search ADR filenames, titles, status fields, and existing references first, then open only candidates relevant to the affected area or decision.
-5. Close the material correction set under `feature-init`'s conversational-judgment rule. Resolve material
+5. Close the material correction set under `feature-init`'s conversation rules. Resolve material
    interpretation conflicts before drafting; preserve accepted replacements and explicit supersessions or
    exclusions in the trace below.
 6. When the accepted boundary, current need, or delivery shape changes, proportionately reapply only the
@@ -60,11 +67,11 @@ An implementation regression under an unchanged accepted contract does not use t
    issue/PM reference, but never make external tracking a prerequisite.
 7. For every contract correction, build a compact supersession trace before drafting: exact current user
    statement when available, normalized replacement rule, older rule being replaced, and affected
-   spec/plan/tasks/ADR locations. Preserve exclusion and exclusivity semantics such as "remove", "no longer",
+   record/optional attachment/ADR locations. Preserve exclusion and exclusivity semantics such as "remove", "no longer",
    "only", and "single source"; do not narrow them into an optional or conditional fallback without explicit
-   authority. Then draft final spec/plan/tasks contents without changing the worktree. Add the dated revision record;
-   synchronize plan decisions, any conditional delivery boundary, risks, current-truth follow-up, tasks, and
-   validation. Update the Prior decisions source trace for each material correction and explicitly identify
+   authority. Then draft only the affected record content without changing the worktree. Add the dated revision record;
+   synchronize affected decisions, delivery boundary, risks, current-truth follow-up, work and
+   validation where they already live; leave unrelated sections and evidence untouched. Update the existing decision source trace for each material correction and explicitly identify
    the older decision it supersedes; never rely on chat memory as the only durable source. Any completed task or proof obligation whose contract, inputs, or affected scope changed
    becomes incomplete again; retain prior evidence only as explicitly superseded history, never as current
    proof. Draft the conditional ADR from the packaged template when required. For a delivered-but-unarchived
@@ -85,9 +92,9 @@ When the auditor boundary applies, follow the canonical [reviewer execution cont
 
 ## Invariants
 
-- Do not silently rewrite a frozen spec.
+- Do not silently rewrite an accepted spec.
 - Every material spec change has a dated revision record with reason and decision source. ADRs are conditional, not a generic change log.
-- `spec.md`, `plan.md`, and `tasks.md` stay consistent after the revision.
+- The accepted record and any affected existing attachments stay consistent after the revision; no optional file is mandatory.
 - Reopening preserves historical evidence but makes it ineligible for archive until a new `feature-done` writes READY; there is exactly one canonical `## Proof Bundle` and any superseded receipt uses a differently named heading.
 - A material scope expansion, contraction, or semantic correction rechecks delivery coherence, current
   necessity, and impact completeness. `spec-quality-check` must rerun when the revision changes scope

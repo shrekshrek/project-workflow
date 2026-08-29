@@ -23,8 +23,10 @@ fields.
 
 ## Inputs
 
+Resolve the canonical `spec.md` receipt using [feature-done](feature-done.md#delivery-receipt--proof-bundle-on-disk). Do not require optional attachments or duplicate the receipt.
+
 - Feature directory/slug, or nothing (sweep mode).
-- Each candidate's delivery receipt must contain every required archive-eligibility field above and one valid Git identity (or explicit non-Git inputs): exact reviewed commit SHA with `dirty=no`, or current worktree with `dirty=yes`. Other pairings are invalid. A dirty-worktree coordinate is eligible only as a current-task result while the reviewed state remains unchanged; reuse across tasks requires an immutable reviewed commit SHA. Committing a dirty-worktree receipt later does not re-anchor it. When `spec.md` exists, its status must be `已实现`, or `已取代`/`已废弃` as set by `spec-reconcile`; light-lane candidates have no `spec.md` and rely on the READY receipt. Missing or invalid required receipt fields are ineligible and require `feature-done`.
+- Each candidate's `spec.md` receipt must contain every required archive-eligibility field above and one valid Git identity (or explicit non-Git inputs): exact reviewed commit SHA with `dirty=no`, or current worktree with `dirty=yes`. Other pairings are invalid. A dirty-worktree coordinate is eligible only as a current-task result while the reviewed state remains unchanged; reuse across tasks requires an immutable reviewed commit SHA. Committing a dirty-worktree receipt later does not re-anchor it. Its status must be `已实现`, or `已取代`/`已废弃` as set by `spec-reconcile`. Missing or invalid required receipt fields are ineligible and require `feature-done`.
 - Related current-truth documents (`docs/specs/<area>.md`), if any.
 - Related earlier specs and ADRs in the same product area.
 - Present implementation evidence and later active/successor changes when current truth is pending or the reviewed delivery is no longer the latest change in that area.
@@ -32,10 +34,10 @@ fields.
 ## Outputs
 
 1. **Current truth merge** (only for features whose receipt `Current truth` is `update pending`, or that change behavior already declared in a domain document): update `docs/specs/<area>.md`. `project-init` creates only `docs/specs/index.md`; create a new area document from the plugin domain template only when the delivered feature establishes a durable domain truth.
-2. **Physical archive**: move `docs/specs/changes/<NNN>-<slug>/` to `docs/specs/changes/archive/<NNN>-<slug>/` for every closed feature — full lane and light lane alike. Use an ordinary filesystem rename so tracked and untracked artifacts both work; Git can record the rename when the result is committed. Numbering stays unique across active and archive. After each move, recompute local Markdown destinations from the old file location to the new one so links outside the feature keep the same semantic target while links within the moved directory remain local. Missing local targets block completion and the directory is moved back before stopping.
+2. **Physical archive**: move `docs/specs/changes/<NNN>-<slug>/` to `docs/specs/changes/archive/<NNN>-<slug>/` for every closed feature — regardless of optional attachments. Use an ordinary filesystem rename so tracked and untracked artifacts both work; Git can record the rename when the result is committed. Numbering stays unique across active and archive. After each move, recompute local Markdown destinations from the old file location to the new one so links outside the feature keep the same semantic target while links within the moved directory remain local. Missing local targets block completion and the directory is moved back before stopping.
 3. **Lifecycle status on superseded older specs**: when this delivery replaces an earlier feature's direction, mark that spec `已取代` (superseded, link the successor) or `已废弃` (abandoned) and archive it in the same pass.
 4. **ADR consistency check**: if a merged conclusion contradicts an `Accepted` ADR, stop and resolve — either a new ADR supersedes the old one, or the conclusion is wrong. Current-truth documents link the ADRs governing the area.
-5. A closing note in the feature's `tasks.md` recording what was merged and when it was archived.
+5. A closing note in the feature's canonical receipt record recording what was merged and when it was archived.
 6. Updated `docs/specs/changes/index.md` (optional, if the project keeps one): a flat list mapping `NNN` → title/status/location, so links to archived specs stay resolvable.
 
 ## Workflow
@@ -60,7 +62,7 @@ fields.
 
 - A READY feature is not current truth until its durable conclusions are merged.
 - Archiving is a directory move, never deletion; archived directories are read-only history.
-- Never archive an in-flight feature (full-lane spec status `草稿`/`已确认`, or delivery receipt missing/non-READY in either lane).
+- Never archive an in-flight feature (`spec.md` status `草稿`/`已确认`, or its delivery receipt is missing/non-READY).
 - Never archive when the reviewed Git/non-Git state is known to have changed or its freshness cannot be established; rerun `feature-done` instead.
 - A resolvable reviewed commit SHA is immutable delivery evidence even after the current branch or PR head advances; current-truth conclusions still require independent present-state validation.
 - Explicit single-feature invocation needs no duplicate confirmation. Sweep candidates and uncertain lifecycle decisions remain visible to the user.

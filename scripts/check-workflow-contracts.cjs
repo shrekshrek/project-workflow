@@ -38,35 +38,43 @@ requirePatterns("docs/actions/README.md", [
   ["single normative owner", /one normative definition/i],
 ]);
 requirePatterns("docs/actions/feature-init.md", [
-  ["route decision", /^## Route Decision$/m],
-  ["three routes", /`DIRECT`[\s\S]*`LIGHT`[\s\S]*`FULL`/],
-  ["lightest sufficient route", /Choose the lightest sufficient route under explicit project requirements/i],
-  ["verification independent of documents", /Match documentation to decision\s+and coordination needs, and verification to actual risk/i],
+  ["discovery before records", /^## Conversation and discovery$/m],
+  ["bounded authorized experiments", /specifically authorized trial[\s\S]*isolated trial is not authorization to implement/i],
+  ["observations distinct from acceptance", /observed results separately from accepted expected behavior/i],
+  ["unchanged criteria", /do not rewrite the criterion to make it pass/i],
+  ["record need independent of verification", /Decide whether to create, reuse or omit a record independently of verification depth/i],
   ["preview and apply", /`PREVIEW`[\s\S]*`APPLY`/],
-  ["scope stop", /Implementation Scope Stop/],
-  ["phase check", /dependency or risk checkpoint[\s\S]*smallest\s+relevant check/i],
-  ["phase handoff", /After a meaningful phase[\s\S]*compact handoff[\s\S]*Wait for the user/i],
-  ["repair convergence handoff", /During implementation and post-gate repair[\s\S]*cycling without converging[\s\S]*pause[\s\S]*recommended next step[\s\S]*wait for the user's decision/i],
-  ["tracking is not a child prerequisite", /External tracking is never a prerequisite/i],
-  ["pre-draft decision closure", /Before drafting a full-lane artifact[\s\S]*accepted decisions[\s\S]*sources[\s\S]*supersessions or exclusions/i],
-  ["pre-implementation execution preview", /Before the first implementation edit[\s\S]*execution preview[\s\S]*current outcome and consumer[\s\S]*included and excluded change boundary[\s\S]*current facts[\s\S]*minimum sufficient approach[\s\S]*operating-cost boundaries[\s\S]*verification direction[\s\S]*meaningful phases[\s\S]*user's acceptance/i],
+  ["single record default", /Default new record:[\s\S]*\/spec\.md`[\s\S]*Do not precreate `plan\.md`, `tasks\.md`/],
+  ["optional useful split", /Only split[\s\S]*materially helps reading or handoff/i],
+  ["single active accepted record", /active feature uses `spec\.md` as its accepted record[\s\S]*Archived directories remain history/i],
+  ["preview without duplicate approval", /execution preview[\s\S]*accepted preview is reused[\s\S]*do not insert duplicate confirmation/i],
+  ["batched context-preserving updates", /Answer the current question first[\s\S]*Batch writeback[\s\S]*exclusions, unresolved questions, permission limits/i],
+  ["no bookkeeping context reset", /Do not[\s\S]*clear the session merely because a document changed/i],
+  ["ordinary discoveries proceed", /Discovery continues during implementation[\s\S]*can proceed without approval/i],
+  ["affected work stops for material discovery", /Stop the affected implementation[\s\S]*authorization, data disposition, operating cost[\s\S]*ask the smallest useful question/i],
+  ["local revision and continuation", /After confirmation[\s\S]*spec-revise[\s\S]*update only affected[\s\S]*continue the authorized implementation/i],
+  ["checkpoints not per-file pauses", /smallest relevant check[\s\S]*Wait for the user only at an agreed phase boundary/i],
+  ["repair convergence handoff", /cycling without converging[\s\S]*recommended next[\s\S]*wait for the user's decision/i],
+  ["external tracking optional", /External tracking is never a prerequisite/i],
+  ["decision closure before drafting", /Normalize accepted material decisions and explicit supersessions before drafting/i],
 ]);
 forbidPatterns("docs/actions/feature-init.md", [
   ["mandatory risk-size labels", /small, medium, large, or extra-large/i],
   ["legacy required handoff blocker", /required decision, selection, or handoff/i],
-  ["legacy automatic implementation continuation", /returns control to that request without another confirmation/i],
-  ["keyword-driven full routing", /no full-lane trigger applies|Use light lane only when all are true|Architecture-shaped work remains ordinary FULL/i],
+  ["keyword-driven routing", /no full-lane trigger applies|Use light lane only when all are true|Architecture-shaped work remains ordinary FULL/i],
 ]);
-
 requirePatterns("docs/actions/spec-quality-check.md", [
+  ["semantic rather than form gate", /Check meaning, not template completion/i],
   ["requirements reconciliation", /^## Requirements Reconciliation$/m],
   ["reconciliation statuses", /`ALIGNED`[\s\S]*`MISMATCH`[\s\S]*`SOURCE GAP`/],
-  ["conditional sibling alignment", /Merely touching several modules does not require an alignment table/i],
-  ["smallest proof obligations", /smallest non-redundant proof obligations/i],
-  ["frozen correction handoff", /`N\/A\(route: spec-revise\)`[\s\S]*before mechanical checks or reviewer dispatch/i],
-  ["direct correction evidence", /exact user statement[\s\S]*normalized[\s\S]*supersedes/i],
-  ["quality consumes decision closure", /decision closure[\s\S]*reviewer's requirements reconciliation/i],
-  ["quality preserves execution preview", /Continue into implementation only[\s\S]*execution preview[\s\S]*accepted/i],
+  ["conditional sibling alignment", /Merely touching several modules does not require[\s\S]*an alignment table/i],
+  ["minimum sufficient proof", /smallest non-redundant proof obligations/i],
+  ["correction handoff", /`N\/A\(route: spec-revise\)` before mechanical checks or[\s\S]*reviewer dispatch/i],
+  ["direct correction evidence", /exact user statement[\s\S]*normalized replacement[\s\S]*supersedes/i],
+  ["reuse decision closure", /Preserve the decision-closure result/i],
+  ["conditional independent review", /main session performs[\s\S]*fresh independent[\s\S]*when requested[\s\S]*security\/authorization/i],
+  ["no file count readiness", /cannot establish clarity or readiness from heading counts, file[\s\S]*counts/i],
+  ["quality preserves authorization", /Continue into implementation only with an accepted approach[\s\S]*previously accepted execution preview/i],
 ]);
 forbidPatterns("docs/actions/spec-quality-check.md", [
   ["forced empty decision token", /N\/A\(no durable why\/source decision\)/i],
@@ -77,7 +85,7 @@ requirePatterns("docs/actions/spec-revise.md", [
   ["implicit latest-user correction trigger", /latest user instruction materially corrects, rejects, removes, or replaces/i],
   ["stale quality gate forbidden", /do not run[\s\S]*`spec-quality-check` against the stale artifact/i],
   ["supersession trace", /exact current user[\s\S]*normalized replacement rule[\s\S]*older rule/i],
-  ["revision decision closure", /Close the material correction set[\s\S]*conversational-judgment rule[\s\S]*accepted replacements/i],
+  ["revision decision closure", /Close the material correction set[\s\S]*conversation rules[\s\S]*accepted replacements/i],
 ]);
 
 requirePatterns("docs/reviewers/spec-quality-reviewer.md", [
@@ -95,7 +103,7 @@ requirePatterns("docs/actions/feature-done.md", [
   ["terminal endpoint handoff", /Each gate run reviews one stable final snapshot[\s\S]*never repairs[\s\S]*non-READY verdict returns control/i],
   ["repair authorization", /review-only request stops[\s\S]*already authorized implementation or delivery request[\s\S]*ordinary repairs within the accepted scope without another confirmation, outside this action[\s\S]*operations requiring separate approval still wait for it/i],
   ["L1 L2 L3", /L1 Mechanical:[\s\S]*L2 Project conventions:[\s\S]*L3 Change-spec compliance:/],
-  ["full review scheduling", /L2 Project conventions: required for full lane[\s\S]*parallel-scheduled full-lane review[\s\S]*dispatch L2 and L3 together[\s\S]*ordinary full-lane work[\s\S]*dispatch L3 first[\s\S]*dispatch L2[\s\S]*same snapshot/i],
+  ["risk-based review scheduling", /When both reviews apply, dispatch L2 and L3 together[\s\S]*security\/authorization[\s\S]*Otherwise dispatch L3 first[\s\S]*same snapshot/i],
   ["review input separation", /authoritative convention population from the filesystem[\s\S]*`AGENTS\.md`[\s\S]*Caller-supplied[\s\S]*hints only[\s\S]*Route convention sources to L2 and the change-spec package to L3/i],
   ["archive boundary", /close, archive, or submit[\s\S]*feature-archive[\s\S]*without asking again/i],
   ["compact failed history", /explicit rerun of an active `已实现` feature preserves[\s\S]*prior[\s\S]*READY receipt[\s\S]*Ordinary non-READY reruns replace[\s\S]*full Previous Proof Bundles are reserved/i],
@@ -106,7 +114,8 @@ requirePatterns("docs/actions/feature-done.md", [
   ["endpoint-owned checklist boundary", /checklists limited to implementation, review, and check outcomes[\s\S]*archive eligibility[\s\S]*circular checklist item/i],
   ["non-ready next route", /`Next`:[\s\S]*`direct-repair`[\s\S]*`spec-revise`[\s\S]*`user-decision`[\s\S]*`separate-boundary`/i],
   ["delivery artifact baseline", /accepted feature artifact as the requirements baseline/i],
-  ["conditional light L3", /L3 Change-spec compliance:[\s\S]*For light lane, run when[\s\S]*otherwise record a reasoned N\/A[\s\S]*light-lane `tasks\.md`/i],
+  ["conditional L3 without coverage waiver", /L3 Change-spec compliance: required for a concrete[\s\S]*Otherwise record a[\s\S]*reasoned N\/A[\s\S]*execute or mechanically check every applicable obligation/i],
+  ["single spec delivery receipt", /append the receipt to `spec\.md` only at delivery[\s\S]*single canonical receipt/i],
   ["compact repair reporting", /Keep repair reporting to the blocker, fix, changed evidence, and next result/i],
 ]);
 requireTerms("docs/actions/feature-done.md", "mechanical feature boundary", [
@@ -127,12 +136,12 @@ forbidPatterns("docs/actions/feature-done.md", [
   ["blanket light review skip or lane upgrade", /L3 remains N\/A|N\/A\(light lane\)|a match is a misclassification/i],
 ]);
 requirePatterns("docs/reviewers/spec-reviewer.md", [
-  ["light artifact baseline", /\| Light \| Goal\/boundary, constraints, verification in `tasks\.md` \|/],
+  ["actual accepted baseline", /accepted observable behavior[\s\S]*feature record[\s\S]*Missing optional files/i],
 ]);
 
 requirePatterns("docs/spec-driven.md", [
-  ["external tracking is not a child prerequisite", /外部 tracking 不是启动所选 child 的前置条件/],
-  ["active revision versus successor boundary", /活动且未归档[\s\S]*`spec-revise`[\s\S]*已归档[\s\S]*successor feature/],
+  ["observations and acceptance distinct", /试验观察[\s\S]*接受规则[\s\S]*交付证据/],
+  ["active revision versus successor boundary", /活动且未归档[\s\S]*spec-revise[\s\S]*已归档[\s\S]*successor feature/],
 ]);
 forbidPatterns("docs/spec-driven.md", [
   ["legacy mandatory deferred tracking", /先把暂缓结果持久化到既有 Issue\/PM/],
@@ -167,28 +176,19 @@ forbidPatterns("docs/reviewers/README.md", [
 ]);
 
 for (const relative of [
+  "template/docs/specs/changes/_template/spec.md",
+  "template/docs/specs/changes/_template/plan.md",
   "template/docs/specs/changes/_template/tasks.md",
-  "template/docs/specs/changes/_template/tasks-light.md",
 ]) {
-  requirePatterns(relative, [
-    ["proof bundle", /^## Proof Bundle$/m],
-    ["verdict", /^- Verdict:/m],
-    ["change identity", /^- Change:/m],
-    ["checks", /^- Checks/m],
-    ["compact reviews", /^- Reviews:/m],
-    ["current truth", /^- Current truth:/m],
+  forbidPatterns(relative, [
+    ["premature receipt fields", /^## Proof Bundle$|^- Verdict:|^- Reviews:/m],
+    ["literal filler decision", /\{\{TODO\}\}/],
+    ["numeric exclusion quota", /至少\s*2-3\s*条/],
+    ["forced decision N/A", /N\/A\(no durable why\/source decision\)/i],
   ]);
-  forbidPatterns(relative, [["duplicated review execution", /^- Review execution:/m]]);
 }
-forbidPatterns("template/docs/specs/changes/_template/spec-greenfield.md", [
-  ["numeric exclusion quota", /\u81f3\u5c11\s*2-3\s*\u6761/],
-]);
-forbidPatterns("template/docs/specs/changes/_template/plan.md", [
-  ["mandatory all-multi-module alignment", /\u6d89\u53ca\u591a\u6a21\u5757\u65f6\u5fc5\u586b/],
-  ["forced decision N\/A", /N\/A\(no durable why\/source decision\)/i],
-]);
-forbidPatterns("template/docs/specs/changes/_template/tasks.md", [
-  ["forced verification N\/A", /N\/A\(all spec \u00a74 obligations already covered\)/i],
+requirePatterns("template/docs/specs/changes/_template/spec.md", [
+  ["expected and actual evidence", /预期结果[\s\S]*实际检查/],
 ]);
 
 for (const relative of [
@@ -196,10 +196,8 @@ for (const relative of [
   "docs/actions/spec-quality-check.md",
   "docs/actions/feature-done.md",
   "template/docs/specs/changes/_template/plan.md",
-  "template/docs/specs/changes/_template/spec-brownfield.md",
-  "template/docs/specs/changes/_template/spec-greenfield.md",
+  "template/docs/specs/changes/_template/spec.md",
   "template/docs/specs/changes/_template/tasks.md",
-  "template/docs/specs/changes/_template/tasks-light.md",
   "tests/fixtures/feature-init-scenarios/base-numbered/docs/specs/changes/001-approved-feature/plan.md",
   "tests/fixtures/feature-init-scenarios/base-numbered/docs/specs/changes/001-approved-feature/spec.md",
   "tests/fixtures/reviewer-smoke/base/docs/specs/changes/001-normalize-key/plan.md",
@@ -235,7 +233,7 @@ for (const host of ["claude", "codex"]) {
   ]);
 }
 
-forbidPatterns("docs/examples/full-feature-artifact.md", [
+forbidPatterns("docs/examples/feature-record.md", [
   ["legacy risk-size field", /Delivery risk signal/i],
 ]);
 forbidPatterns("docs/examples/feature-init-scenario-matrix.md", [
@@ -266,16 +264,6 @@ for (const host of ["claude", "codex"]) {
   ]);
 }
 
-for (const relative of [
-  "template/docs/specs/changes/_template/tasks.md",
-  "template/docs/specs/changes/_template/tasks-light.md",
-]) {
-  requirePatterns(relative, [
-    ["endpoint-owned task boundary", /READY[\s\S]*Proof Bundle[\s\S]*不写成 checkbox/i],
-    ["non-ready next route", /Next:[\s\S]*direct-repair[\s\S]*spec-revise[\s\S]*user-decision[\s\S]*separate-boundary/i],
-  ]);
-}
-
 requirePatterns("docs/examples/reviewer-mutation-smoke.md", [
   ["endpoint-owned task smoke", /run feature-done and become READY[\s\S]*endpoint\/lifecycle[\s\S]*cleanup before review/i],
   ["non-ready route smoke", /non-READY receipt[\s\S]*`direct-repair`[\s\S]*`spec-revise`/i],
@@ -286,7 +274,7 @@ requirePatterns("docs/examples/reviewer-mutation-smoke.md", [
 ]);
 
 requirePatterns("docs/examples/feature-init-scenario-matrix.md", [
-  ["decision closure interaction", /multi-turn full-feature conversation[\s\S]*no duplicate confirmation[\s\S]*before any artifact is materialized/i],
+  ["decision closure interaction", /multi-turn feature conversation[\s\S]*no[\s\S]*duplicate confirmation[\s\S]*before any artifact is materialized/i],
 ]);
 
 requirePatterns("adapters/codex/.codex-plugin/plugin.json", [
@@ -298,4 +286,4 @@ if (problems.length) {
   for (const problem of problems) console.error(`- ${problem}`);
   process.exit(1);
 }
-console.log("Workflow structure OK: canonical ownership, lightweight adapters, safe materialization, risk-scheduled review, compact receipts, and flexible phase execution.");
+console.log("Workflow structure OK: canonical ownership, conversation and evidence, single-record defaults, safe materialization, conditional review, and truthful receipts (structural checks, not model execution).");

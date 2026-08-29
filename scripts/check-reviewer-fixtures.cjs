@@ -4,23 +4,28 @@ const fs = require("node:fs");
 const os = require("node:os");
 const path = require("node:path");
 const { spawnSync } = require("node:child_process");
-const { validateFullFixtureAgainstCurrentPreflight } = require("./lib/fixture-contracts.cjs");
+const { validateAcceptedFixture } = require("./lib/fixture-contracts.cjs");
 
 const root = path.resolve(__dirname, "..");
 const fixtureRoot = path.join(root, "tests/fixtures/reviewer-smoke");
 const expected = JSON.parse(fs.readFileSync(path.join(fixtureRoot, "expected.json"), "utf8"));
 const problems = [];
 
-problems.push(...validateFullFixtureAgainstCurrentPreflight(
+problems.push(...validateAcceptedFixture(
   path.join(fixtureRoot, "base/docs/specs/changes/001-normalize-key"),
-  { label: "reviewer-smoke full base", userVisible: false, requireComplete: true },
+  { label: "reviewer-smoke record with optional attachments", requireComplete: true },
 ));
 
-function aggregateVerdict({ l1Available = true, l1Passed, l2Blocking, l3Blocking, lightVerificationPassed, receiptReliable, reviewerExecutionApplicable = true, reviewerExecutionReliable }) {
+problems.push(...validateAcceptedFixture(
+  path.join(fixtureRoot, "compact-base/docs/specs/changes/002-normalize-key"),
+  { label: "reviewer-smoke single record", requireComplete: true },
+));
+
+function aggregateVerdict({ l1Available = true, l1Passed, l2Blocking, l3Blocking, acceptanceVerificationPassed, receiptReliable, reviewerExecutionApplicable = true, reviewerExecutionReliable }) {
   if (!receiptReliable || !l1Available) return "BLOCKED";
   if (!l1Passed) return "NEEDS WORK";
   if (reviewerExecutionApplicable && reviewerExecutionReliable !== true) return "BLOCKED";
-  if (l2Blocking || l3Blocking || lightVerificationPassed === false) return "NEEDS WORK";
+  if (l2Blocking || l3Blocking || acceptanceVerificationPassed === false) return "NEEDS WORK";
   return "READY";
 }
 
@@ -28,7 +33,7 @@ const missingExecutionEvidenceVerdict = aggregateVerdict({
   l1Passed: true,
   l2Blocking: false,
   l3Blocking: false,
-  lightVerificationPassed: true,
+  acceptanceVerificationPassed: true,
   receiptReliable: true,
   reviewerExecutionApplicable: true,
   reviewerExecutionReliable: false,
@@ -41,7 +46,7 @@ const failedL1WithoutReviewerVerdict = aggregateVerdict({
   l1Passed: false,
   l2Blocking: false,
   l3Blocking: false,
-  lightVerificationPassed: true,
+  acceptanceVerificationPassed: true,
   receiptReliable: true,
   reviewerExecutionApplicable: true,
   reviewerExecutionReliable: false,
@@ -55,7 +60,7 @@ const unavailableL1WithoutReviewerVerdict = aggregateVerdict({
   l1Passed: false,
   l2Blocking: false,
   l3Blocking: false,
-  lightVerificationPassed: true,
+  acceptanceVerificationPassed: true,
   receiptReliable: true,
   reviewerExecutionApplicable: true,
   reviewerExecutionReliable: false,
@@ -64,21 +69,21 @@ if (unavailableL1WithoutReviewerVerdict !== "BLOCKED") {
   problems.push(`unavailable L1 must yield BLOCKED without reviewer dispatch, got ${unavailableL1WithoutReviewerVerdict}`);
 }
 
-const allowedLightNATestVerdict = aggregateVerdict({
+const allowedNATestVerdict = aggregateVerdict({
   l1Passed: true,
   l2Blocking: false,
   l3Blocking: false,
-  lightVerificationPassed: true,
+  acceptanceVerificationPassed: true,
   receiptReliable: true,
   reviewerExecutionApplicable: false,
   reviewerExecutionReliable: false,
 });
-if (allowedLightNATestVerdict !== "READY") {
-  problems.push(`an inapplicable light-lane reviewer must not block READY, got ${allowedLightNATestVerdict}`);
+if (allowedNATestVerdict !== "READY") {
+  problems.push(`an inapplicable reviewer must not block READY, got ${allowedNATestVerdict}`);
 }
 if (aggregateVerdict({ l1Passed: true, receiptReliable: true, reviewerExecutionApplicable: false,
-  lightVerificationPassed: false }) !== "NEEDS WORK") {
-  problems.push("failed light verification must block READY even with no applicable reviewers");
+  acceptanceVerificationPassed: false }) !== "NEEDS WORK") {
+  problems.push("failed acceptance verification must block READY even with no applicable reviewers");
 }
 
 function materialize(name, config) {
@@ -97,6 +102,12 @@ for (const [name, config] of Object.entries(expected)) {
     problems.push(`${name}: l2EndpointStatus must be explicit`);
     continue;
   }
+  if (!config.reviewReason?.trim()) problems.push(`${name}: review applicability needs a reason`);
+  if (config.verificationArgs && (!Array.isArray(config.verificationArgs) ||
+      !config.verificationArgs.length || !config.verificationArgs.every((v) => typeof v === "string"))) {
+    problems.push(`${name}: verificationArgs must be a nonempty string array`);
+    continue;
+  }
   const target = materialize(name, config);
   try {
     const test = spawnSync(process.execPath, ["--test"], { cwd: target, encoding: "utf8" });
@@ -105,12 +116,12 @@ for (const [name, config] of Object.entries(expected)) {
     const source = fs.readFileSync(path.join(target, "src/normalize-key.js"), "utf8");
     const tests = fs.readdirSync(path.join(target, "test"));
     const concepts = [];
-    let lightVerificationPassed = null;
-    if (name.startsWith("light-")) {
-      const verification = spawnSync(process.execPath, ["-e", "const {normalizeKey}=require('./src/normalize-key'); if (normalizeKey('') !== '') process.exit(1)"], { cwd: target, encoding: "utf8" });
-      if (verification.status !== 0) problems.push(`${name}: light verification must stay green to test independent behavioral review`);
-      lightVerificationPassed = verification.status === 0;
-      if (!lightVerificationPassed) concepts.push("light-lane verification");
+    let acceptanceVerificationPassed = null;
+    if (config.verificationArgs) {
+      const verification = spawnSync(process.execPath, config.verificationArgs, { cwd: target, encoding: "utf8" });
+      if (verification.status !== 0) problems.push(`${name}: focused acceptance verification must stay green to test independent behavioral review`);
+      acceptanceVerificationPassed = verification.status === 0;
+      if (!acceptanceVerificationPassed) concepts.push("acceptance verification");
     }
     if (config.endpointVerdict === "READY") {
       if (source.includes("throw new Error")) problems.push("clean: source retains planted throw");
@@ -119,7 +130,7 @@ for (const [name, config] of Object.entries(expected)) {
         problems.push("clean: empty-input verification missing");
       }
     } else {
-      if (name === "light-known-bad") {
+      if (name === "compact-known-bad") {
         if (!source.includes('input.trim() === ""')) problems.push(`${name}: planted whitespace guard missing`);
         const blank = spawnSync(process.execPath, ["-e", "require('./src/normalize-key').normalizeKey('   ')"], { cwd: target, encoding: "utf8" });
         if (blank.status !== 1) problems.push(`${name}: planted whitespace-only failure missing`);
@@ -158,7 +169,7 @@ for (const [name, config] of Object.entries(expected)) {
       l1Passed: test.status === 0,
       l2Blocking: config.l2EndpointStatus === "completed" && concepts.includes("matching test filename"),
       l3Blocking,
-      lightVerificationPassed,
+      acceptanceVerificationPassed,
       receiptReliable: true,
       reviewerExecutionApplicable: config.l2Applicable || config.l3Applicable,
       reviewerExecutionReliable: true,
@@ -175,4 +186,4 @@ if (problems.length) {
   process.exit(1);
 }
 
-console.log("Endpoint fixture inputs OK: full semantic preflight, full/light mutations, reviewer sensitivity concepts, and scheduling/verdict truth tables are coherent (model reviewers not executed)." );
+console.log("Endpoint fixture inputs OK: accepted records with or without optional attachments, planted behavioral mutations, reviewer sensitivity concepts, and scheduling/verdict truth tables are coherent (model reviewers not executed)." );

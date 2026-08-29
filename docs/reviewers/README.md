@@ -17,7 +17,7 @@ If a runtime adapter conflicts with one of these specs, the spec wins. Update th
 
 ## Reviewer execution contract
 
-The owning action decides whether a reviewer, auditor, or researcher boundary is applicable. `N/A` is valid only when that action defines it, such as light-lane review with no applicable concern. Failed mechanical prerequisites use the action's non-execution status, not an applicability exemption.
+The owning action decides whether a reviewer, auditor, or researcher boundary is applicable. `N/A` is valid only when that action defines it, such as a review with no applicable independent-judgment concern. Failed mechanical prerequisites use the action's non-execution status, not an applicability exemption.
 
 At every applicable boundary, use an independent reviewer when the host can dispatch one. If the host cannot
 dispatch that role, use the main session under the same read-only role contract and evidence. Invoking the owning action requires no extra workflow confirmation; host security approvals

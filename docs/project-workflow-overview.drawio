@@ -57,13 +57,13 @@
         <mxCell id="p2_lane_label" value="主流程 →" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=11;fontColor=#546E7A;" vertex="1" parent="1">
           <mxGeometry x="210" y="358" width="80" height="20" as="geometry"/>
         </mxCell>
-        <mxCell id="e_current_truth_loop" value="&lt;b&gt;[E] current truth loop&lt;/b&gt;: /feature-init 读 E 定 brownfield → /spec-quality-check 校验引用 → /feature-done 查冲突/待更新 → /feature-archive 写回 E; /spec-reconcile 修复历史冲突与 E gaps" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FCE4EC;strokeColor=#AD1457;dashed=1;fontSize=10;align=center;verticalAlign=middle;spacing=4;fontColor=#6A1B3D;" vertex="1" parent="1">
+        <mxCell id="e_current_truth_loop" value="&lt;b&gt;[E] current truth loop&lt;/b&gt;: /feature-init 读取 E 与本次差异 → /spec-quality-check 校验引用 → /feature-done 查冲突/待更新 → /feature-archive 写回 E; /spec-reconcile 修复历史冲突与 E gaps" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FCE4EC;strokeColor=#AD1457;dashed=1;fontSize=10;align=center;verticalAlign=middle;spacing=4;fontColor=#6A1B3D;" vertex="1" parent="1">
           <mxGeometry x="420" y="352" width="1170" height="24" as="geometry"/>
         </mxCell>
-        <mxCell id="skill_featinit" value="&lt;b&gt;/feature-init&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;no artifact / light / full 分流&lt;br/&gt;复用 accepted full 先复查 semantic readiness&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2E7D32;fontSize=11;align=center;" vertex="1" parent="1">
+        <mxCell id="skill_featinit" value="&lt;b&gt;/feature-init&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;先沟通与必要试验&lt;br/&gt;按需创建或复用单份 spec&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2E7D32;fontSize=11;align=center;" vertex="1" parent="1">
           <mxGeometry x="210" y="382" width="180" height="60" as="geometry"/>
         </mxCell>
-        <mxCell id="skill_specqc" value="&lt;b&gt;/spec-quality-check&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;new / draft full 的 pre-impl gate&lt;br/&gt;机械前置 + 7 问 + &lt;b&gt;[E]&lt;/b&gt; 对账&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2E7D32;fontSize=11;align=center;" vertex="1" parent="1">
+        <mxCell id="skill_specqc" value="&lt;b&gt;/spec-quality-check&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;语义就绪检查，按风险独立审查&lt;br/&gt;验收案例与 &lt;b&gt;[E]&lt;/b&gt; 对账&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2E7D32;fontSize=11;align=center;" vertex="1" parent="1">
           <mxGeometry x="430" y="382" width="180" height="60" as="geometry"/>
         </mxCell>
         <mxCell id="step_impl" value="&lt;b&gt;Implement&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;真实依赖/风险检查点&lt;br/&gt;可检查结果 → focused check → 依赖工作&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F8E9;strokeColor=#558B2F;dashed=1;fontSize=11;align=center;" vertex="1" parent="1">
@@ -81,14 +81,14 @@
         <mxCell id="featdone_decompose" value="&lt;span style=&#39;font-size:10px;color:#558B2F;&#39;&gt;= 机械 Feature 边界 + 稳定 snapshot + L1 + 适用 L2/L3 + receipt；不在 gate 内修实现&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=10;fontColor=#558B2F;" vertex="1" parent="1">
           <mxGeometry x="600" y="450" width="930" height="20" as="geometry"/>
         </mxCell>
-        <mxCell id="lightlane_note" value="🔀 &lt;b&gt;轻车道(清单足以承载的追踪变更)&lt;/b&gt;:/feature-init 分流 → 仅 tasks.md · 跳 /spec-quality-check · L1 与必要验证不减 · L2/L3 按 /feature-done 的实际适用性执行。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F8E9;strokeColor=#558B2F;dashed=1;fontSize=9;align=left;verticalAlign=middle;spacing=4;fontColor=#558B2F;" vertex="1" parent="1">
+        <mxCell id="record_note" value="&lt;b&gt;按需记录&lt;/b&gt;：默认单份 spec；小修可不建档。实施中重要发现先沟通确认，再局部修订继续；普通细节直接推进，验证不减。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F8E9;strokeColor=#558B2F;dashed=1;fontSize=9;align=left;verticalAlign=middle;spacing=4;fontColor=#558B2F;" vertex="1" parent="1">
           <mxGeometry x="200" y="446" width="395" height="28" as="geometry"/>
         </mxCell>
 
-        <mxCell id="callout_specrevise" value="&lt;b&gt;⚠ /spec-revise&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;Mid-impl 发现 spec/plan/module 错&lt;br/&gt;&lt;b&gt;[B]&lt;/b&gt; 修订记录 + tasks rebalance · &lt;b&gt;[C]&lt;/b&gt; ADR 按条件&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF8E1;strokeColor=#F57F17;fontSize=10;align=center;dashed=1;" vertex="1" parent="1">
+        <mxCell id="callout_specrevise" value="&lt;b&gt;⚠ /spec-revise&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;Mid-impl 发现已确认内容有误&lt;br/&gt;&lt;b&gt;[B]&lt;/b&gt; 局部修订记录与工作 · &lt;b&gt;[C]&lt;/b&gt; ADR 按条件&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF8E1;strokeColor=#F57F17;fontSize=10;align=center;dashed=1;" vertex="1" parent="1">
           <mxGeometry x="210" y="475" width="220" height="55" as="geometry"/>
         </mxCell>
-        <mxCell id="callout_subflow" value="&lt;b&gt;⚙ Module Setup sub-flow&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;/feature-init 自动检测 → 加边界进 &lt;b&gt;[B]&lt;/b&gt; plan.md / 骨架进 &lt;b&gt;[B]&lt;/b&gt; tasks.md&lt;br/&gt;&amp;quot;反常&amp;quot;时 + &lt;b&gt;[A]&lt;/b&gt; &amp;lt;module&amp;gt;/AGENTS.md (workflow §2.3)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF8E1;strokeColor=#F57F17;fontSize=10;align=center;dashed=1;" vertex="1" parent="1">
+        <mxCell id="callout_subflow" value="&lt;b&gt;⚙ Module Setup sub-flow&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;/feature-init 按需明确边界与下一步，留在 &lt;b&gt;[B]&lt;/b&gt; spec 或已有附件&lt;br/&gt;&amp;quot;反常&amp;quot;时 + &lt;b&gt;[A]&lt;/b&gt; &amp;lt;module&amp;gt;/AGENTS.md (workflow §2.3)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF8E1;strokeColor=#F57F17;fontSize=10;align=center;dashed=1;" vertex="1" parent="1">
           <mxGeometry x="450" y="475" width="500" height="55" as="geometry"/>
         </mxCell>
         <mxCell id="p2_out" value="&lt;b&gt;产出 (按文档类标记)&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;&lt;b&gt;[B]&lt;/b&gt; feature artifact + delivery receipt · 代码&lt;br/&gt;&lt;b&gt;[E]&lt;/b&gt; current truth pending → /feature-archive&lt;/span&gt;" style="text;html=1;strokeColor=#90A4AE;fillColor=#FAFAFA;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=11;spacing=8;rounded=0;dashed=1;" vertex="1" parent="1">

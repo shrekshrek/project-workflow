@@ -1,6 +1,6 @@
 ---
 name: spec-revise
-description: Revise a materially wrong accepted or delivered-but-unarchived full-lane contract, including when the user corrects, rejects, removes, or replaces accepted behavior, while synchronizing spec, plan, tasks, and any conditional ADR.
+description: Revise a materially wrong accepted or delivered-but-unarchived contract, including when the user corrects, rejects, removes, or replaces accepted behavior, while updating affected decisions, acceptance, optional work notes, and any conditional ADR.
 ---
 
 # Spec Revise
@@ -9,7 +9,7 @@ Match the user's language and preserve file language. Read `${CLAUDE_PLUGIN_ROOT
 
 Claude execution details:
 
-- Resolve `$ARGUMENTS` through the shared active-feature rules and apply the canonical lane/lifecycle routing.
+- Resolve `$ARGUMENTS` through the shared active-feature rules and apply the canonical record/lifecycle routing.
 - Read root/applicable nested `AGENTS.md`, recomputing applicability if the affected module population changes.
 - When canonical `ADR_REQUIRED` applies, search only relevant ADR metadata/references and instantiate only from
   `${CLAUDE_PLUGIN_ROOT}/template/docs/adr/0000-template.md`.

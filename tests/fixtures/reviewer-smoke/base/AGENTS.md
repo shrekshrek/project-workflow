@@ -13,3 +13,7 @@
 
 - `src/` contains implementation.
 - `test/` contains tests.
+
+## Review requirement
+
+This fixture project requires independent convention and behavior reviews before delivery.

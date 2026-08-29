@@ -9,8 +9,8 @@ function parseArgs(argv) {
   for (let index = 0; index < argv.length; index += 2) {
     const key = argv[index];
     const value = argv[index + 1];
-    if (!key?.startsWith("--") || value === undefined) {
-      throw new Error("Usage: materialize-feature-artifact.cjs --target <root> --number <NNN> --slug <slug> --lane <full|light> [--shape <greenfield|brownfield>]");
+    if (!["--target", "--number", "--slug"].includes(key) || value === undefined || key.slice(2) in values) {
+      throw new Error("Usage: materialize-feature-artifact.cjs --target <root> --number <NNN> --slug <slug>");
     }
     values[key.slice(2)] = value;
   }
@@ -26,23 +26,9 @@ function existingNumbers(changesRoot) {
   });
 }
 
-function sourceMap(lane, shape) {
-  if (lane === "light") {
-    if (shape) throw new Error("Light lane must omit --shape");
-    return [["tasks-light.md", "tasks.md"]];
-  }
-  if (lane !== "full" || !["greenfield", "brownfield"].includes(shape)) {
-    throw new Error("Full lane requires --shape greenfield|brownfield; light lane must omit --shape");
-  }
-  return [
-    [`spec-${shape}.md`, "spec.md"],
-    ["plan.md", "plan.md"],
-    ["tasks.md", "tasks.md"],
-  ];
-}
-
-function materializeFeature({ target, number, slug, lane, shape }) {
-  if (!target || !number || !slug || !lane) throw new Error("Missing required argument");
+function materializeFeature({ target, number, slug, ...unsupported }) {
+  if (Object.keys(unsupported).length) throw new Error("Unsupported materializer argument");
+  if (!target || !number || !slug) throw new Error("Missing required argument");
   if (!/^\d{3}$/.test(number)) throw new Error(`Invalid feature number: ${number}`);
   if (slug.length < 2 || slug.length > 40 || !/^[a-z0-9](?:[a-z0-9-]*[a-z0-9])$/.test(slug)) {
     throw new Error(`Invalid feature slug: ${slug}`);
@@ -76,7 +62,7 @@ function materializeFeature({ target, number, slug, lane, shape }) {
   if (featureState.exists) throw new Error(`Refusing to overwrite existing feature directory: ${featureState.target}`);
 
   const templateRoot = path.resolve(__dirname, "..", "template", "docs", "specs", "changes", "_template");
-  const mappings = sourceMap(lane, shape);
+  const mappings = [["spec.md", "spec.md"]];
   const copied = [];
   fs.mkdirSync(featureState.target); // Atomic no-clobber gate for the final path.
   try {
@@ -94,7 +80,7 @@ function materializeFeature({ target, number, slug, lane, shape }) {
     throw error;
   }
 
-  return { directory: featureState.target, files: copied.sort(), lane, shape: lane === "full" ? shape : null };
+  return { directory: featureState.target, files: copied.sort() };
 }
 
 if (require.main === module) {

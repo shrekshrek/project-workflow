@@ -41,7 +41,7 @@ const sharedFiles = [
   ["docs/gotchas.md", "docs/gotchas.md"],
   ["docs/tooling.md", "docs/tooling.md"],
   ["docs/quickstart.md", "docs/quickstart.md"],
-  ["docs/examples/full-feature-artifact.md", "docs/examples/full-feature-artifact.md"],
+  ["docs/examples/feature-record.md", "docs/examples/feature-record.md"],
   ["scripts/relocate-markdown-links.cjs", "scripts/relocate-markdown-links.cjs"],
   ["scripts/materialize-project-baseline.cjs", "scripts/materialize-project-baseline.cjs"],
   ["scripts/materialize-feature-artifact.cjs", "scripts/materialize-feature-artifact.cjs"],

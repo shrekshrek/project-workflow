@@ -18,19 +18,13 @@ This file is the cross-tool source of truth for working in this repository. Keep
 
 ## Change Workflow
 
-- Make tiny, local, low-risk fixes directly, including reversible behavior work not declared in current truth, and report the checks run.
-- Before the first implementation edit, give the user a proportionate preview of the intended outcome,
-  approach, boundary, rationale, verification, and meaningful phases; wait for the user's acceptance. After each phase, report its result,
-  evidence, deviations, and next phase, then wait before continuing.
-- When a proposed implementation may need tracked acceptance, cross-session handoff, current-truth synchronization, or contract/risk protection, use the host's `feature-init` action to check whether the request is one independently deliverable outcome or needs decomposition before returning DIRECT/no artifact, LIGHT/tasks-only, or FULL/spec-plan-tasks. An explicit feature-routing question uses read-only PREVIEW; general discussion/review/diagnosis without that question does not invoke the action. Only authorized LIGHT/FULL APPLY creates an artifact; DIRECT creates none and an enclosing implementation request continues.
+- Discuss the problem and resolve consequential unknowns before implementation. Use bounded, authorized trials when evidence is missing; distinguish observed results from user-accepted expectations.
+- Make tiny local fixes directly and report the checks run. When acceptance, handoff, current-truth synchronization, or risk needs a durable record, use the host's `feature-init` action: reuse an active record or default to one `spec.md`; split only useful supporting detail.
+- Before implementation, explain outcome, approach, boundary, rationale and verification proportionately. Reuse an already accepted approach; ask only about unresolved material choices or required permissions. Report meaningful checkpoints and wait at agreed phase boundaries.
 - Resolve current behavior from `docs/specs/` and the selected active feature; exclude `docs/specs/changes/archive/` unless tracing history.
-- Choose the lightest sufficient artifact via `feature-init`; reassess when the accepted boundary or decision needs change, not merely when a risk category is touched. Verification remains proportionate to actual risk.
-- For every lane, stop before extending implementation when work discovers an outcome, persistent state,
-  API, role, workflow, management surface, queue, runtime, responsibility area, contract, migration,
-  authorization rule, or release boundary outside the accepted scope/impact baseline. Full lane is not
-  blanket permission for adjacent capability. Report the discovered delta, why it is or is not necessary
-  now, the recommended remove/narrow/child/revise direction, and ask the smallest useful set of material questions. Continue
-  only after a required direction is confirmed and recorded; already-written code is never a reason to absorb it.
+- Batch document updates at conclusions, before implementation and at handoffs. Preserve decisions, exclusions, open questions, permission limits and next steps; do not interrupt every exchange or reset context for bookkeeping.
+- Continue ordinary implementation discoveries within the accepted behavior. When new evidence changes direction, scope, contracts, data, authorization, material cost or acceptance, pause affected work, explain the finding, confirm the change, update the affected record through `spec-revise`, then continue. Existing code never justifies absorbing scope.
+- Match checks and independent review to actual risk and project requirements, not the number of documents. A failed test with unchanged requirements calls for repair, not lower expectations.
 
 ## Working Rules
 

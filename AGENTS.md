@@ -5,10 +5,10 @@
 
 ## 仓库性质
 
-**project-workflow v3** —— spec-driven feature development blueprint + runtime adapters。
+**project-workflow v3** —— conversation-and-evidence-led feature development workflow + runtime adapters。
 
 四层资产(本仓库):
-1. `docs/` —— 方法论文档(四个运行阶段、4 支柱、canonical actions、spec 三件套、gotchas 示范 ledger)
+1. `docs/` —— 方法论文档(四个运行阶段、4 支柱、canonical actions、按需单份 spec、gotchas 示范 ledger)
 2. `template/` —— starter scaffold(方法论核心 + Claude compatibility assets,语言中立但非 tool-empty)
 3. `adapters/claude/` —— Claude Code-native skills / named agents / manifest
 4. `adapters/codex/` —— Codex-native skills / manifest;两端安装包由构建脚本生成
@@ -33,8 +33,8 @@ adapters/
 adapters/claude/skills/
 ├── project-init/         /project-workflow:project-init        (P0 baseline-compatible / already-initialized target)
 ├── project-personalize/  /project-workflow:project-personalize (P0 project evidence / partial-custom baseline)
-├── feature-init/         /project-workflow:feature-init        (P2 起 feature spec/plan/tasks)
-├── spec-quality-check/   /project-workflow:spec-quality-check  (P2 pre-impl gate,§3.7 7 问 + M6 current-truth)
+├── feature-init/         /project-workflow:feature-init        (P2 沟通、试验与按需记录)
+├── spec-quality-check/   /project-workflow:spec-quality-check  (P2 语义就绪与需求对账)
 ├── spec-revise/          /project-workflow:spec-revise         (P2 mid-impl 修订,§3.5/§2.6)
 ├── feature-done/         /project-workflow:feature-done        (P2 端点:L1/L2/L3/current-truth/proof 一体,幂等)
 ├── feature-archive/      /project-workflow:feature-archive     (交付后生命周期收尾:current truth + 老 spec 标记)
@@ -51,11 +51,11 @@ adapters/claude/agents/ Claude Code sub-agent adapters(thin wrappers over docs/r
 docs/                  方法论文档
 ├── actions/           workflow action canonical specs
 ├── reviewers/         reviewer/auditor/researcher canonical specs
-├── architecture-design.md  architecture-shaped full change 的按需设计指南
+├── architecture-design.md  architecture change 的按需设计指南
 ├── workflow.md        ⭐ 四个运行阶段 + 4 支柱(核心)
 ├── cross-tool-methodology.md  core vs runtime adapter 边界
 ├── gotchas.md         example-of-one gotchas 证据库(示范短版)
-├── spec-driven.md     spec/plan/tasks 详解
+├── spec-driven.md     沟通、记录与验证详解
 └── tooling.md         工具链对比
 template/              starter scaffold(core files + Claude compatibility assets)
 scripts/
@@ -65,12 +65,12 @@ scripts/
 ├── check-template-contracts.js  check baseline safety + Claude rule frontmatter
 ├── check-reviewer-fixtures.cjs  check reviewer smoke fixture inputs + verdict truth tables
 ├── check-feature-init-fixtures.cjs  check/grade feature-init behavior scenario matrix
-├── materialize-feature-artifact.cjs  atomically create a no-clobber feature artifact from the selected lane template
+├── materialize-feature-artifact.cjs  atomically create a no-clobber feature artifact from the single spec template
 ├── materialize-project-baseline.cjs  stage/apply P0 baseline (used by project-init / project-personalize)
 ├── relocate-markdown-links.cjs  preserve local links after feature archive moves
 ├── check-lifecycle-links.cjs  regression-check archive link relocation
 ├── check-markdown-links.cjs  verify local Markdown destinations across source + runtime adapters + release docs
-└── check-workflow-contracts.cjs  check lane / retrofit / verdict / neutral-template semantics
+└── check-workflow-contracts.cjs  check conversation / records / retrofit / verdict / neutral-template semantics
 ```
 
 ## 修改纪律
@@ -83,7 +83,7 @@ scripts/
 - **Adapter parity**:修改任一端 skill 或 action 后运行 `node scripts/check-adapter-parity.js`;Codex skill 不得出现 Claude-only 交互、具名 agent dispatch 或 `/project-workflow:*` 命令
 - **Template contracts**:修改 baseline 或 `.claude/rules/` 模板后运行 `node scripts/check-template-contracts.js`;保留 no-clobber 安全检查，规则使用 `paths:` YAML list
 - **Lifecycle links**:修改 `feature-archive` / `spec-reconcile` 后运行 `node scripts/check-lifecycle-links.cjs`;归档移动必须重定位并验证本地 Markdown links
-- **Workflow contracts**:修改 lane classification / retrofit / verdict / feature templates 后运行 `node scripts/check-workflow-contracts.cjs`
+- **Workflow contracts**:修改 conversation / record rules / retrofit / verdict / feature templates 后运行 `node scripts/check-workflow-contracts.cjs`
 - **Docs links**:修改或移动 Markdown 后运行 `node scripts/check-markdown-links.cjs`
 - **不在方法论正文塞栈细节**:workflow.md §0-§7/§9-§10、`docs/actions/`、`docs/reviewers/`、`template/` 保持栈中立;`template/docs/gotchas.md` 是生成项目用的空 ledger,必须栈中立。两处显式豁免:`docs/gotchas.md` 是 plugin 自身的 example-of-one 证据库(允许栈偏向,只收真实复现过的坑);workflow.md §8 是栈适配示范附录(换栈只重写该节)
 - **plugin skill 简洁**:每个 SKILL.md < 200 行,职责单一;超长的静态查表** relocation** 到同目录 `reference.md`—— 不是删内容;SKILL.md 标出强制 Read 点,执行时必须先读对应节再填表

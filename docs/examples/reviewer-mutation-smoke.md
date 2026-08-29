@@ -1,6 +1,6 @@
 # Known-bad mutation smoke
 
-Use the fixed fixtures under `tests/fixtures/reviewer-smoke/` to verify the complete `feature-done` endpoint: scope assembly, reviewer dispatch, verdict aggregation, and delivery-receipt writing. The deterministic CI check validates current completion-preflight fixture shape, planted mutations, required finding concepts, and the verdict truth table; it does **not** execute a model reviewer or receipt writer. Run the actual model endpoint smoke whenever canonical reviewer behavior or the affected runtime adapter changes.
+Use the fixed fixtures under `tests/fixtures/reviewer-smoke/` to verify the complete `feature-done` endpoint: scope assembly, reviewer dispatch, verdict aggregation, and delivery-receipt writing. The deterministic CI check validates current completion-preflight fixture inputs, planted mutations, required finding concepts, and the verdict truth table; it does **not** execute a model reviewer or receipt writer. Run the actual model endpoint smoke whenever canonical reviewer behavior or the affected runtime adapter changes.
 
 ## Materialize a case
 
@@ -18,16 +18,16 @@ node scripts/check-reviewer-fixtures.cjs
   ordinary endpoint returns `NEEDS WORK` with L2 `not-run(awaiting final L3 candidate)`. Separately run the L2
   reviewer against the same snapshot and confirm it cites the matching-test-name and no-throw conventions; this
   checks L2 sensitivity without contradicting endpoint scheduling.
-- `light-clean`: L1 and declared verification pass; no concrete convention/behavior concern requires a reviewer, so reasoned L2/L3 N/A is valid. `light-known-bad`: those same checks pass, but a new throwing guard violates the accepted whitespace-only no-throw boundary. L3 must cite `tasks.md` and return NEEDS WORK; L2 stays N/A. The fixture checker separately probes failed light verification and missing required reviewer evidence.
+- `compact-clean`: L1 and declared verification pass; no concrete convention/behavior concern requires a reviewer, so reasoned L2/L3 N/A is valid. `compact-known-bad`: those same checks pass, but a new throwing guard violates the accepted whitespace-only no-throw boundary. L3 is explicitly requested in this case and must cite the accepted `spec.md` and return NEEDS WORK; L2 stays N/A. The fixture checker separately probes failed acceptance verification and missing required reviewer evidence.
 - Run both Claude and Codex endpoint adapters when shared/canonical behavior changes. When only one adapter changes, run that adapter plus the deterministic fixture check.
 
 ## Completion-preflight smoke
 
 - Leave one required task unchecked and confirm the endpoint returns `NEEDS WORK` before expanded L1 or reviewer dispatch, records current truth `not-run(non-READY prerequisite)`, and does not preserve the failed receipt as a full Previous Proof Bundle on the next ordinary rerun.
-- Reuse or invoke `feature-done` directly on an accepted full-lane artifact whose Prior decisions lacks the
-  semantic source column (or its explicit N/A). Confirm implementation/expanded L1 does not start and the
+- Reuse or invoke `feature-done` directly on an accepted artifact whose material supersession claim lacks
+  the supporting accepted source. Confirm implementation/expanded L1 does not start and the
   artifact routes through repair/`spec-revise` plus `spec-quality-check`.
-- Use a reused full-lane feature whose tasks omit a focused check that its accepted plan explicitly declares before
+- Use a reused feature whose tasks omit a focused check that its accepted plan explicitly declares before
   dependent work. Confirm completion preflight returns `NEEDS WORK`. Complete and record that declared check and
   confirm normal preflight resumes from the artifact's declared boundary and evidence.
 - For a user-visible fixture, make its declared primary-flow smoke fail while lower-level checks remain green; confirm expensive L1 and L2/L3 do not start. Restore it and confirm the same result is reused as ordinary L1 evidence rather than run twice.
@@ -35,8 +35,8 @@ node scripts/check-reviewer-fixtures.cjs
   requests a clearer evidence order without inventing another smoke.
 - Add an unrelated active-feature change to the same dirty repository and confirm the endpoint returns `BLOCKED` instead of manually subtracting paths. Restore a clean single-feature boundary and confirm the receipt writes one `git=[base=...; reviewed=...; dirty=...]` identity.
 - Add a new persistent state/API/responsibility area outside the accepted Scope / Constraints / Module Impact and
-  confirm preflight returns `NEEDS WORK` before expanded L1, routing to `spec-revise`, lane upgrade, or a
-  child feature. Make ownership of that extra change ambiguous and confirm the verdict becomes `BLOCKED`.
+  confirm preflight returns `NEEDS WORK` before expanded L1, routing to `spec-revise`, a clarified accepted boundary, or a
+  user-requested child feature. Make ownership of that extra change ambiguous and confirm the verdict becomes `BLOCKED`.
 - For multi-boundary or materially high-risk work, remove the recorded coupling/rollback boundary and confirm
   preflight returns `NEEDS WORK`; ordinary same-boundary work does not require that conditional section.
 - Leave the canonical `## Proof Bundle` fields empty and add a non-empty superseded Proof Bundle history; confirm completion preflight ignores both receipt regions rather than treating them as unfinished placeholders.
@@ -44,12 +44,12 @@ node scripts/check-reviewer-fixtures.cjs
 
 ## Endpoint-summary smoke
 
-- Confirm the endpoint response contains verdict, `Lifecycle: READY; archive pending` when READY, the first declared actor-to-result result when applicable, aggregate checks, L2/L3, current truth, non-empty blockers, and a repository-relative `tasks.md#proof-bundle` link. Under finish/delivery intent, confirm it stops at READY; under close/archive/submit intent, confirm READY continues to explicit-candidate archive without another question.
+- Confirm the endpoint response contains verdict, `Lifecycle: READY; archive pending` when READY, the first declared actor-to-result result when applicable, aggregate checks, L2/L3, current truth, non-empty blockers, and a repository-relative canonical receipt link (default `spec.md#proof-bundle`). Under finish/delivery intent, confirm it stops at READY; under close/archive/submit intent, confirm READY continues to explicit-candidate archive without another question.
 - Confirm the full receipt remains on disk and the endpoint response does not inline it or repeat every passing command.
 
 ## Reopen smoke
 
-- Start from an active, unarchived full-lane READY feature. Run `spec-revise` for a material contract/plan/Verification omission and confirm status returns from `已实现` to `已确认`, the exact prior receipt moves under a uniquely named dated-or-numbered superseded heading, and exactly one empty canonical `## Proof Bundle` remains.
+- Start from an active, unarchived READY feature. Run `spec-revise` for a material contract/plan/Verification omission and confirm status returns from `已实现` to `已确认`, the exact prior receipt moves under a uniquely named dated-or-numbered superseded heading, and exactly one empty canonical `## Proof Bundle` remains.
 - Start from an ordinary non-READY feature, rerun the gate, and confirm the canonical receipt is replaced without a full Previous Proof Bundle; at most one dated single-line attempt summary is added to the implementation record.
 - With the accepted contract unchanged, introduce a pure implementation regression, repair it, and explicitly rerun `feature-done`. Confirm the old receipt is preserved before replacement; a non-READY result returns status to `已确认`, while READY keeps `已实现`. A completion-preflight stop writes the new receipt with reviewers `not-run(completion preflight)` rather than leaving the old READY active.
 - Confirm `feature-archive` rejects the reopened feature until a new `feature-done` writes READY. Confirm an already archived feature requires a successor change instead of reopening history.
@@ -58,9 +58,9 @@ node scripts/check-reviewer-fixtures.cjs
 
 ## Runtime scheduling smoke
 
-Run an ordinary full-lane `clean` case and a convention-risk case with each adapter and record dispatch timing/mode:
+Run an ordinary `clean` case and a convention-risk case with each adapter and record dispatch timing/mode:
 
-- Ordinary full lane dispatches pure L3 first, then dispatches L2 once only when L3 passes and the snapshot remains unchanged; READY requires both PASS.
+- When both reviews apply without a parallel-risk trigger, the endpoint dispatches pure L3 first, then dispatches L2 once only when L3 passes and the snapshot remains unchanged; READY requires both PASS.
 - In the convention-risk case, with capacity for both reviewers, L2 and L3 fresh dispatches start before either result returns; both retain independent reviewed-scope and coverage evidence.
 - In the convention-risk case with only one reviewer slot available, L2 and L3 run as sequential fresh dispatches; reserve `main-session fallback` for execution failure.
 - A failure in one reviewer does not cancel or erase the independently executable result from the other reviewer.
@@ -119,21 +119,24 @@ If the host cannot expose or constrain reviewer capacity, record that limitation
 
 ## Spec-quality authorization smoke
 
-Materialize a mechanically complete, subjectively clean full-lane draft with status `草稿`, concrete user-story outcomes, and an enforceable nonnumeric constraint, then run each Claude/Codex adapter in fresh tasks:
+Materialize a mechanically complete, subjectively clean draft with status `草稿`, concrete user-story outcomes, and an enforceable nonnumeric constraint, then run each Claude/Codex adapter in fresh tasks:
 
 - Pure check request: `READY`; status remains `草稿`; no implementation starts.
 - Explicit conditional request ("if this passes, proceed"): `READY`; only the top status marker changes to
-  `已确认`. Implementation continues only when the current execution preview was also accepted; otherwise
-  the host returns that preview and waits without editing implementation files.
+  `已确认`. Implementation continues when its approach is already accepted and authorized; unresolved material
+  choices need discussion, but the check does not create a duplicate approval requirement.
 - `BORDERLINE` result under a pass-only conditional request: status remains `草稿`; the adapter reports the concrete risk/follow-up and asks for explicit acceptance.
 - `BLOCKED` result: status and implementation remain unchanged; subjective review is N/A when mechanical prerequisites failed.
-- A mechanically complete but substantively mostly empty artifact dispatches the reviewer and returns blocking
-  Q findings; it never reports reviewer N/A after dispatch.
+- A mechanically readable but substantively empty artifact is BLOCKED by the semantic check. If a reviewer
+  was dispatched, its result must be recorded; it never reports reviewer N/A after dispatch.
+- Repeat a complete short spec with different headings and no plan/tasks: missing optional structure is not a finding.
+  Repeat a one-file security change: independent review still applies despite its small record.
 
 ## Requirements-reconciliation smoke
 
-Run `spec-quality-check` on a mechanically complete artifact with an exact Requirements Source Map and confirm
-one fresh reviewer performs reconciliation first and Q3-Q7 second; there is no second dispatch:
+Run `spec-quality-check` with traceable accepted sources. The main session performs semantic reconciliation;
+when independent review is requested or required, one fresh reviewer also applies the canonical method with
+no second review dispatch:
 
 - Clean bidirectional mapping returns `Requirements Reconciliation: ALIGNED`, then the ordinary quality
   verdict is evaluated.
@@ -160,7 +163,7 @@ one fresh reviewer performs reconciliation first and Q3-Q7 second; there is no s
 
 ## Delivery-shape smoke
 
-Run `spec-quality-check` against two full-lane artifacts whose individual tasks are concrete:
+Run `spec-quality-check` against two artifacts whose individual tasks are concrete:
 
 - A large artifact with several outcomes that can be accepted, shipped, and reverted independently and no mandatory coupling returns `BLOCKED` with a decomposition finding.
 - A similarly large but atomic migration returns `READY` when coupling, verification, and material rollback risk are resolved. It is `BORDERLINE` only while a material coordination/rollback risk still requires acceptance; size and breadth signals alone never change the verdict.
@@ -175,7 +178,7 @@ Run `spec-quality-check` against two full-lane artifacts whose individual tasks 
 
 ## Architecture-shaped spec-quality smoke
 
-- Use a full-lane artifact that materially changes module responsibility, cross-component state/contract,
+- Use a artifact that materially changes module responsibility, cross-component state/contract,
   durable trust/authorization ownership, or deployment ownership. Confirm the existing single
   `spec-quality-reviewer` folds architecture adequacy into Q5/Q7c/Q7d with no second dispatch or output field.
 - Remove an applicable responsibility owner, contract/state boundary, trust/deployment owner, or material
@@ -227,7 +230,7 @@ Run `spec-quality-check` against two full-lane artifacts whose individual tasks 
 
 ## Implementation Scope Stop smoke
 
-Start implementing an accepted full-lane artifact whose accepted scope excludes a generic admin
+Start implementing an accepted artifact whose accepted scope excludes a generic admin
 console, compatibility state, and second Provider:
 
 - Discover that the simplest implementation needs an ordinary private helper inside an already declared
@@ -241,8 +244,8 @@ console, compatibility state, and second Provider:
   repository backlog, or `spec-revise` record merely to preserve them.
 - Instead discover a real material authorization correction. Confirm work on that delta waits for one user
   direction decision, records the source, runs `spec-revise`, and reruns `spec-quality-check` before resuming.
-- Repeat from `DIRECT` and `LIGHT`; reassess artifact needs for the accepted delta, retaining LIGHT when its
-  checklist remains sufficient. Repeat from `FULL`; confirm adjacent scope still needs a decision.
+- Repeat with no record, one spec, and a spec with useful optional attachments. Reassess only useful record needs;
+  confirm adjacent scope still needs a decision regardless of file layout.
 
 ## Minimal-evidence smoke
 
@@ -260,7 +263,7 @@ console, compatibility state, and second Provider:
 
 ## Phase-focused validation smoke
 
-Start with one accepted medium, multi-boundary full-lane outcome whose plan and tasks describe three meaningful
+Start with one accepted multi-boundary outcome whose accepted record describes three meaningful
 dependency-ordered results: domain/state, public contract, and actor operation:
 
 - Complete the domain/state result, run its smallest focused check, and record the result on the existing task.
@@ -281,8 +284,7 @@ dependency-ordered results: domain/state, public contract, and actor operation:
 - Add a material dependency/rollback risk and confirm important dependent phases name an inspectable
   exit, next consumer, and smallest focused evidence where that information helps execution.
 - Map phase-focused checks to applicable spec Verification obligations. Confirm the final Verification checklist
-  contains only remaining cross-phase/endpoint evidence, or an explicit N/A when all obligations are already
-  covered; completed phase checks remain valid evidence for the endpoint.
+  contains only remaining cross-phase/endpoint evidence, or is omitted when all obligations are already covered; completed phase checks remain valid evidence for the endpoint.
 - Make one result independently acceptable, enableable, and revertible. Confirm scope viability is rechecked and
   it remains bundled only when concrete coupling requires one delivery.
 - Complete all declared focused checks, then invoke `feature-done`. Confirm it reuses still-valid same-task evidence,

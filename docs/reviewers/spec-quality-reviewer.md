@@ -1,11 +1,11 @@
 # spec-quality-reviewer
 
 Canonical reviewer for pre-implementation requirements reconciliation and subjective quality checks on
-`spec.md`, `plan.md`, and `tasks.md`.
+the accepted/proposed record and any relevant existing attachments.
 
 ## Scope
 
-Assess whether a full-lane feature artifact still matches its accepted requirement sources and is good enough
+Assess whether a feature record still matches its accepted requirement sources and is good enough
 to implement. In one fresh invocation, perform Requirements Reconciliation first and then the subjective
 checks from the seven-question gate:
 
@@ -44,10 +44,13 @@ For a current-conversation correction or supersede decision, require the caller 
 statement, normalized replacement, and older rule it supersedes. A caller-authored "user confirmed" summary
 without that direct statement or a stable external/durable source is `SOURCE GAP`, not authority.
 
-Before Q3-Q7, read both directions:
+Before Q3-Q7, read both directions. Also distinguish an observed trial result, an accepted expected result,
+and delivery evidence. A failed/unavailable trial cannot silently become an accepted outcome. Check that
+condensed records preserve exclusions, unresolved questions and the authorization boundary:
+
 
 - Requirements to artifacts: locate every material accepted outcome, rule, constraint, exclusion, fallback,
-  and supersede decision in spec/plan/tasks.
+  and supersede decision in the record and any affected attachments.
 - Artifacts to requirements: identify every material business behavior, ownership/authorization/data state,
   durable workflow, or scope commitment that is neither explicitly user-supplied/confirmed, traceable to an
   applicable external source, nor surfaced as a proposed decision requiring acceptance. Ordinary implementation
@@ -76,9 +79,9 @@ Q3-Q7 in the same invocation so the caller receives one consolidated repair set.
 
 ## Review
 
-Fresh-read the three artifacts and assess every relevant item:
+Fresh-read the relevant record and assess every applicable item. These questions are lenses, not mandatory sections or a demand for three files:
 
-- Q3 verification: a compact, traceable behavior/risk → executable evidence mapping = pass; subjective evidence = fail; concrete without an execution anchor = borderline. Remove obligations invented from generic edge/error habits or unspecified inputs unless a contract, project convention, or concrete risk requires them. One command may prove several related obligations. Every test layer or matrix required by the artifact must name risk coverage not already supplied by cheaper evidence, an owned regression contract, or an explicit release/compliance requirement; an unjustified required layer/matrix fails Q3 and should be deleted or consolidated. Optional implementation ideas that are not contract obligations remain nonblocking suggestions. For user-visible work, order the shortest meaningful actor-to-result journey first when one is declared; no label or duplicate smoke is required.
+- Q3 verification: a compact, traceable behavior/risk → executable evidence mapping = pass; uncheckable assertions = fail; documented repeatable manual observation can be evidence; concrete without an execution anchor = borderline. Remove obligations invented from generic edge/error habits or unspecified inputs unless a contract, project convention, or concrete risk requires them. One command may prove several related obligations. Every test layer or matrix required by the artifact must name risk coverage not already supplied by cheaper evidence, an owned regression contract, or an explicit release/compliance requirement; an unjustified required layer/matrix fails Q3 and should be deleted or consolidated. Optional implementation ideas that are not contract obligations remain nonblocking suggestions. For user-visible work, order the shortest meaningful actor-to-result journey first when one is declared; no label or duplicate smoke is required.
 - Q4 outcomes: actor/system + action + success condition = pass; vague aspiration = fail; missing success condition = borderline.
 - Q5 constraints: hard/external/measurable = pass; wish = fail; preference belongs in plan/risk and is borderline.
   For architecture-shaped work, a material quality constraint without an applicable responsibility,
@@ -90,19 +93,19 @@ Fresh-read the three artifacts and assess every relevant item:
   [Guidance Placement Contract](../actions/agents-md-revise.md#guidance-placement-contract); otherwise do not
   load it. A violation, missing promised target/alias task, or uncertain owner is fail or borderline according
   to whether it can change implementation.
-- Q7a tasks: independently actionable or reviewable output/check that can finish before `feature-done` = pass;
+- Q7a next work: an exhaustive task list or tasks.md is not required. When a checklist is useful, independently actionable or reviewable output/check that can finish before `feature-done` = pass;
   a broad bucket that hides separate decisions or a material dependency checkpoint = fail; work without
   verification = borderline. READY, Proof Bundle/status writes, and archive eligibility are endpoint/lifecycle
   outputs rather than task checkboxes; a checklist item that depends on them is circular and fails Q7a. Each
   real dependency or risk checkpoint should close an inspectable result and own its smallest relevant check
   before dependent work.
-- Q7b delivery coherence: one independently demonstrable/acceptable/revertible outcome with resolved material risks = pass regardless of size; several separable outcomes with no coupling or traceable bundled-risk decision in the plan = fail; an explicitly accepted bundle, or one coherent delivery with material unresolved coordination/rollback risk, = borderline.
+- Q7b delivery coherence: one independently demonstrable/acceptable/revertible outcome with resolved material risks = pass regardless of size; several separable outcomes with no coupling or traceable bundled-risk decision in the record = fail; an explicitly accepted bundle, or one coherent delivery with material unresolved coordination/rollback risk, = borderline.
 - Q7c current necessity: every persistent state, API, role, workflow, management surface, queue, runtime
   component, or architecture responsibility names a present actor/consumer and a selected-outcome necessity =
   pass; a capability justified only by possible future need = fail; an unclear present consumer or simpler
   safe alternative = borderline.
   Prefer removing or deferring speculative capability over making its implementation more complete.
-- Q7d impact completeness: Scope, Constraints, Module Impact, and Verification agree across spec/plan/tasks =
+- Q7d impact completeness: Scope, constraints, affected responsibilities, and acceptance agree across the record and any affected attachments =
   pass for ordinary same-boundary work. Multi-boundary, architecture-shaped, or materially high-risk work also
   records the relevant coupling, rollback boundary, and scope-growth triggers; omitting an applicable
   cross-boundary contract/state, durable trust/authorization ownership, deployment, or material
@@ -120,8 +123,8 @@ is not a reliable pass.
 - Cite exact file/section/line when possible.
 - Cite the Requirements Source Map entry as well as the artifact location for every reconciliation mismatch.
 - Suggest rewrites but do not edit files.
-- Treat TODO placeholders as not ready for implementation.
+- A material unresolved decision blocks affected implementation; a safely deferred low-level detail does not. Do not require empty chapters or reject clear prose solely for lacking template headings.
 - Treat broad responsibility, migration, and external-contract surfaces as review signals, not automatic verdict thresholds.
 - If a dispatched artifact is mechanically complete but substantively mostly empty, mark the applicable Q
   items `fail` with blocking evidence. Never return `N/A` after dispatch; the owning action alone records N/A
-  when light-lane applicability or failed mechanical prerequisites prevent this reviewer from running.
+  when no independent review is needed or required inputs are unavailable.

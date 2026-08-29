@@ -6,7 +6,8 @@
     "l2EndpointStatus": "completed",
     "requiredFindingConcepts": [],
     "l2Applicable": true,
-    "l3Applicable": true
+    "l3Applicable": true,
+    "reviewReason": "Project requires independent convention and behavior review."
   },
   "known-bad": {
     "base": "base",
@@ -19,26 +20,37 @@
       "empty input verification"
     ],
     "l2Applicable": true,
-    "l3Applicable": true
+    "l3Applicable": true,
+    "reviewReason": "Project requires independent convention and behavior review."
   },
-  "light-clean": {
-    "base": "light-base",
-    "case": "light-clean",
+  "compact-clean": {
+    "base": "compact-base",
+    "case": "compact-clean",
     "endpointVerdict": "READY",
     "l2EndpointStatus": "N/A",
     "requiredFindingConcepts": [],
     "l2Applicable": false,
-    "l3Applicable": false
+    "l3Applicable": false,
+    "verificationArgs": [
+      "-e",
+      "const {normalizeKey}=require('./src/normalize-key'); if (normalizeKey('') !== '') process.exit(1)"
+    ],
+    "reviewReason": "Bounded change with directly executable acceptance; no independent review required."
   },
-  "light-known-bad": {
-    "base": "light-base",
-    "case": "light-known-bad",
+  "compact-known-bad": {
+    "base": "compact-base",
+    "case": "compact-known-bad",
     "endpointVerdict": "NEEDS WORK",
     "l2EndpointStatus": "N/A",
     "requiredFindingConcepts": [
       "whitespace-only behavior"
     ],
     "l2Applicable": false,
-    "l3Applicable": true
+    "l3Applicable": true,
+    "verificationArgs": [
+      "-e",
+      "const {normalizeKey}=require('./src/normalize-key'); if (normalizeKey('') !== '') process.exit(1)"
+    ],
+    "reviewReason": "Explicit request for independent whitespace behavior review."
   }
 }

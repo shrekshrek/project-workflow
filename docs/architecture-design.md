@@ -1,6 +1,6 @@
 # Architecture design guidance
 
-Conditional methodology reference consumed by `feature-init` for architecture-shaped full-lane changes.
+Conditional methodology reference consumed by `feature-init` for changes to durable architecture.
 
 ## Use boundary
 
@@ -16,7 +16,7 @@ rule inside an unchanged trust and responsibility boundary does not trigger this
 
 ## Evidence and conversation
 
-Use explicit user decisions, accepted current truth/ADRs, and observed repository evidence. Generic best practice and directory names are not project decisions. Ask only questions whose answers change the selected artifact; dependent decisions proceed in sequence and closely related independent choices may be grouped. When a high-impact choice needs help, present 2-3 compatible options with constraints and trade-offs, but let the user decide. Carry settled choices forward under `feature-init`'s conversational-judgment rule. After the artifact exists, continue the question → user decision → artifact update loop across user turns. Stop only when no high-impact TODO remains or the user explicitly pauses or defers; when paused, report the blockers and do not claim handoff readiness.
+Use explicit user decisions, accepted current truth/ADRs, and observed repository evidence. Generic best practice and directory names are not project decisions. Ask only questions whose answers change the selected artifact; dependent decisions proceed in sequence and closely related independent choices may be grouped. When a high-impact choice needs help, present 2-3 compatible options with constraints and trade-offs, but let the user decide. Carry settled choices forward under `feature-init`'s conversation rules. Batch useful writeback at conclusions or handoffs; do not require a file update on every conversational turn. Stop only when no high-impact TODO remains or the user explicitly pauses or defers; when paused, report the blockers and do not claim handoff readiness.
 
 Work from outcomes toward structure:
 
@@ -33,13 +33,11 @@ Runtime component, module, deployment unit, and tier are distinct concepts. Mult
 
 ## Existing artifact mapping
 
-Record the design in the ordinary full-lane files:
-
-- `spec.md`: outcomes, include/exclude scope, externally meaningful constraints, and verification.
-- `plan.md`: module/tier impact, ownership, sibling alignment, contracts/state, runtime decisions, prior decisions, risks, and unresolved items.
-- `tasks.md`: decision-resolution work, implementation steps, migrations when applicable, and executable verification.
-
-Keep unresolved choices as TODOs. Create an ADR only after an actual decision satisfies `ADR_REQUIRED`.
+Record relevant design decisions and acceptance in the feature record. Split a long technical design or
+work list only when it helps reading or handoff; do not precreate a package or copy accepted rules. Keep
+important reasons, sources and unresolved questions. Create an ADR only after an actual decision satisfies
+`ADR_REQUIRED`. Low-level details may be learned during implementation; material discoveries follow the
+[scope-stop rule](actions/feature-init.md#implementation-scope-stop), then a local confirmed revision.
 
 ## Handoff readiness
 

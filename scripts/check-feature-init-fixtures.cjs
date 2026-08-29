@@ -14,7 +14,7 @@ const fs = require("node:fs");
 const os = require("node:os");
 const path = require("node:path");
 const { spawnSync } = require("node:child_process");
-const { validateFullFixtureAgainstCurrentPreflight } = require("./lib/fixture-contracts.cjs");
+const { validateAcceptedFixture } = require("./lib/fixture-contracts.cjs");
 
 const root = path.resolve(__dirname, "..");
 const fixtureRoot = path.join(root, "tests/fixtures/feature-init-scenarios");
@@ -66,7 +66,7 @@ function gradeScenario(name, config, runDir) {
   const runDirs = listChangeDirs(runDir);
   const newDirs = runDirs.filter((dir) => !baseDirs.includes(dir));
 
-  if (config.lane === "none") {
+  if (!config.expectDir) {
     if (newDirs.length !== 0) problems.push(`${name}: expected no new artifact, found ${JSON.stringify(newDirs)}`);
     const baseSnapshot = snapshotTree(path.join(fixtureRoot, config.base));
     const runSnapshot = snapshotTree(runDir);
@@ -83,37 +83,20 @@ function gradeScenario(name, config, runDir) {
 
     const featureDir = path.join(runDir, config.expectDir);
     const files = fs.readdirSync(featureDir).sort();
-    if (config.lane === "full") {
-      const expectedFiles = ["plan.md", "spec.md", "tasks.md"];
-      if (JSON.stringify(files) !== JSON.stringify(expectedFiles)) {
-        problems.push(`${name}: full lane files must be exactly ${JSON.stringify(expectedFiles)}, found ${JSON.stringify(files)}`);
-      }
-    } else if (config.lane === "light") {
-      const expectedFiles = ["tasks.md"];
-      if (JSON.stringify(files) !== JSON.stringify(expectedFiles)) {
-        problems.push(`${name}: light lane files must be exactly ${JSON.stringify(expectedFiles)}, found ${JSON.stringify(files)}`);
-      }
+    const expectedFiles = [...(config.expectedFiles || ["spec.md"])].sort();
+    if (JSON.stringify(files) !== JSON.stringify(expectedFiles)) {
+      problems.push(`${name}: expected only purposeful files ${JSON.stringify(expectedFiles)}, found ${JSON.stringify(files)}`);
     }
 
-    const specPath = path.join(featureDir, "spec.md");
-    if (config.shape && fs.existsSync(specPath)) {
-      const spec = read(specPath);
-      const isBrownfield = ["## Motivation", "## Domain References", "## Delta"].every((heading) => spec.includes(heading));
-      const isGreenfield = spec.includes("## 1. Outcomes");
-      if (config.shape === "brownfield" && (!isBrownfield || isGreenfield)) {
-        problems.push(`${name}: spec.md is not exclusively brownfield-shaped`);
-      }
-      if (config.shape === "greenfield" && (!isGreenfield || isBrownfield)) {
-        problems.push(`${name}: spec.md is not exclusively greenfield-shaped`);
-      }
+    const outsideRecord = (entry) => entry[1] !== config.expectDir && !entry[1].startsWith(`${config.expectDir}${path.sep}`);
+    if (JSON.stringify(snapshotTree(runDir).filter(outsideRecord)) !==
+        JSON.stringify(snapshotTree(path.join(fixtureRoot, config.base)))) {
+      problems.push(`${name}: record preparation changed paths outside the selected record`);
     }
 
     const artifactText = files
       .map((file) => read(path.join(featureDir, file)))
       .join("\n");
-    if (config.mustRetainTodoMarker && !artifactText.includes("{{TODO")) {
-      problems.push(`${name}: no {{TODO ...}} markers retained — undiscussed details must stay deferred`);
-    }
     for (const pattern of config.forbiddenPlantPatterns || []) {
       if (artifactText.includes(pattern)) {
         problems.push(`${name}: planted specific ${JSON.stringify(pattern)} without user-provided source`);
@@ -145,45 +128,10 @@ function validateFixtures() {
     fixtureRoot,
     "base-numbered/docs/specs/changes/001-approved-feature",
   );
-  problems.push(...validateFullFixtureAgainstCurrentPreflight(approvedFeature, {
+  problems.push(...validateAcceptedFixture(approvedFeature, {
     label: "feature-init accepted reuse base",
-    userVisible: true,
     requireComplete: false,
   }));
-
-  const staleRoot = fs.mkdtempSync(path.join(os.tmpdir(), "project-workflow-older-reuse-"));
-  try {
-    const staleFeature = path.join(staleRoot, "001-approved-feature");
-    fs.cpSync(approvedFeature, staleFeature, { recursive: true });
-    const stalePlan = path.join(staleFeature, "plan.md");
-    fs.writeFileSync(
-      stalePlan,
-      read(stalePlan).replace(
-        /^\s*(?:N\/A\(no durable why\/source decision\)|- 无。)\s*$/m,
-        "- 决定：使用现有 auth 契约；为什么：这是已确认的展示行为；来源：AGENTS.md#Auth。",
-      ),
-    );
-    const staleProblems = validateFullFixtureAgainstCurrentPreflight(staleFeature, {
-      label: "feature-init older accepted reuse",
-      userVisible: true,
-      requireComplete: false,
-    });
-    if (staleProblems.some((problem) => problem.includes("Prior decisions"))) {
-      problems.push("feature-init older accepted reuse: equivalent decision/why/source semantics were rejected");
-    }
-
-    fs.writeFileSync(stalePlan, read(stalePlan).replace("；来源：AGENTS.md#Auth。", "。"));
-    const sourceGapProblems = validateFullFixtureAgainstCurrentPreflight(staleFeature, {
-      label: "feature-init older accepted reuse source gap",
-      userVisible: true,
-      requireComplete: false,
-    });
-    if (!sourceGapProblems.some((problem) => problem.includes("Prior decisions"))) {
-      problems.push("feature-init older accepted reuse: missing durable source was not rejected");
-    }
-  } finally {
-    fs.rmSync(staleRoot, { recursive: true, force: true });
-  }
 
  for (const scenario of [
    "scope-viability-implicit-ask",
@@ -228,12 +176,21 @@ function validateFixtures() {
     if (config.expectedBehavior !== undefined && (typeof config.expectedBehavior !== "string" || !config.expectedBehavior.trim())) {
       problems.push(`${name}: expectedBehavior must be a non-empty string when provided`);
     }
+    if (typeof config.prompt !== "string" || !config.prompt.trim()) {
+      problems.push(`${name}: prompt must be a non-empty string`);
+    }
+    if (config.followUpPrompts !== undefined) {
+      if (!config.interactionOnly || !Array.isArray(config.followUpPrompts)
+        || config.followUpPrompts.length === 0
+        || config.followUpPrompts.some((prompt) => typeof prompt !== "string" || !prompt.trim())) {
+        problems.push(`${name}: followUpPrompts requires an interaction-only scenario and non-empty user turns`);
+      }
+    }
     if (config.interactionOnly) {
       if (!config.expectedBehavior) problems.push(`${name}: interaction-only scenario needs expectedBehavior`);
       continue;
     }
-    if (!["full", "light", "none"].includes(config.lane)) problems.push(`${name}: invalid lane ${config.lane}`);
-    if (config.lane !== "none") {
+    if (config.expectDir) {
       if (!/^docs\/specs\/changes\/\d{3}-[a-z0-9-]+$/.test(config.expectDir || "")) {
         problems.push(`${name}: expectDir must be docs/specs/changes/<NNN>-<slug>`);
       }
@@ -249,8 +206,10 @@ function validateFixtures() {
         problems.push(`${name}: expectDir number ${expectedNumber} disagrees with base numbering (next=${String(next).padStart(3, "0")}, active+archive shared sequence)`);
       }
     }
-    if (config.lane === "full" && !["brownfield", "greenfield"].includes(config.shape)) {
-      problems.push(`${name}: full lane needs shape brownfield|greenfield`);
+    if (config.expectedFiles && (!Array.isArray(config.expectedFiles)
+      || !config.expectedFiles.includes("spec.md")
+      || config.expectedFiles.some((file) => !["spec.md", "plan.md", "tasks.md"].includes(file)))) {
+      problems.push(`${name}: expectedFiles must describe the intended record and any requested attachments`);
     }
     const required = config.requiredArtifactPatterns;
     if (required && (!Array.isArray(required) || required.length === 0 || required.some((pattern) => typeof pattern !== "string" || !pattern))) {
@@ -274,63 +233,45 @@ async function validateMaterializer() {
     const runDir = path.join(tempRoot, "target");
     fs.cpSync(path.join(fixtureRoot, "base-numbered"), runDir, { recursive: true });
 
-    const lightArgs = ["--number", "004", "--slug", "materializer-smoke", "--lane", "light"];
-    const first = runMaterializer(runDir, lightArgs);
-    if (first.status !== 0) problems.push(`materializer light create failed: ${first.stderr.trim()}`);
-    const lightDir = path.join(runDir, "docs/specs/changes/004-materializer-smoke");
-    const lightTask = path.join(lightDir, "tasks.md");
-    if (!fs.existsSync(lightTask)) problems.push("materializer light create missing tasks.md");
-    if (fs.existsSync(lightTask) && read(lightTask) !== read(path.join(root, "template/docs/specs/changes/_template/tasks-light.md"))) {
-      problems.push("materializer light create differs from the selected template");
+    const args = ["--number", "004", "--slug", "materializer-smoke"];
+    const beforeInvalid = JSON.stringify(snapshotTree(runDir));
+    for (const invalid of [
+      [...args, "--lane", "full"], [...args, "--shape", "greenfield"],
+      [...args, "--number", "005"], [...args, "--slug"],
+    ]) {
+      const result = runMaterializer(runDir, invalid);
+      if (result.status === 0) problems.push("materializer accepted an unsupported/duplicate/incomplete option");
+      if (JSON.stringify(snapshotTree(runDir)) !== beforeInvalid) problems.push("invalid options mutated the project");
     }
-    if (fs.existsSync(path.join(lightDir, "spec.md")) || fs.existsSync(path.join(lightDir, "plan.md"))) {
-      problems.push("materializer light create emitted full-lane files");
+    const first = runMaterializer(runDir, args);
+    if (first.status !== 0) problems.push(`materializer create failed: ${first.stderr.trim()}`);
+    const featureDir = path.join(runDir, "docs/specs/changes/004-materializer-smoke");
+    const specPath = path.join(featureDir, "spec.md");
+    if (!fs.existsSync(specPath)) problems.push("materializer missing spec.md");
+    else {
+      if (JSON.stringify(fs.readdirSync(featureDir)) !== JSON.stringify(["spec.md"])) problems.push("materializer precreated optional files");
+      if (read(specPath) !== read(path.join(root, "template/docs/specs/changes/_template/spec.md"))) problems.push("materializer differs from its template");
+      fs.appendFileSync(specPath, "\nSENTINEL-NO-CLOBBER\n");
     }
-
-    if (fs.existsSync(lightTask)) fs.appendFileSync(lightTask, "\nSENTINEL-NO-CLOBBER\n");
-    const beforeRetry = fs.existsSync(lightTask) ? read(lightTask) : "";
-    const retry = runMaterializer(runDir, lightArgs);
-    if (retry.status === 0) problems.push("materializer accepted an existing feature directory");
-    if (fs.existsSync(lightTask) && read(lightTask) !== beforeRetry) problems.push("materializer modified an existing feature directory on refusal");
-
-    const reusedNumber = runMaterializer(runDir, ["--number", "002", "--slug", "different-slug", "--lane", "light"]);
-    if (reusedNumber.status === 0) problems.push("materializer accepted an active/archive NNN collision");
-
-    const full = runMaterializer(runDir, ["--number", "005", "--slug", "materializer-full", "--lane", "full", "--shape", "greenfield"]);
-    if (full.status !== 0) problems.push(`materializer full create failed: ${full.stderr.trim()}`);
-    const fullDir = path.join(runDir, "docs/specs/changes/005-materializer-full");
-    for (const file of ["spec.md", "plan.md", "tasks.md"]) {
-      if (!fs.existsSync(path.join(fullDir, file))) problems.push(`materializer full create missing ${file}`);
+    const beforeRetry = JSON.stringify(snapshotTree(runDir));
+    const retry = runMaterializer(runDir, args);
+    if (retry.status === 0) problems.push("materializer accepted an existing directory");
+    if (JSON.stringify(snapshotTree(runDir)) !== beforeRetry) problems.push("materializer changed the tree on refusal");
+    for (const number of ["002", "003"]) {
+      const collision = runMaterializer(runDir, ["--number", number, "--slug", "different-slug"]);
+      if (collision.status === 0) problems.push("materializer accepted an active/archive NNN collision");
+      if (JSON.stringify(snapshotTree(runDir)) !== beforeRetry) problems.push("number collision mutated the tree");
     }
-    for (const [output, template] of [["spec.md", "spec-greenfield.md"], ["plan.md", "plan.md"], ["tasks.md", "tasks.md"]]) {
-      const outputPath = path.join(fullDir, output);
-      if (fs.existsSync(outputPath) && read(outputPath) !== read(path.join(root, "template/docs/specs/changes/_template", template))) {
-        problems.push(`materializer full create ${output} differs from ${template}`);
-      }
-    }
-    if (fs.existsSync(path.join(fullDir, "spec.md")) && !read(path.join(fullDir, "spec.md")).includes("## 1. Outcomes")) {
-      problems.push("materializer full create selected the wrong spec shape");
-    }
-
-    const brownfield = runMaterializer(runDir, ["--number", "006", "--slug", "materializer-brownfield", "--lane", "full", "--shape", "brownfield"]);
-    if (brownfield.status !== 0) problems.push(`materializer brownfield create failed: ${brownfield.stderr.trim()}`);
-    const brownfieldDir = path.join(runDir, "docs/specs/changes/006-materializer-brownfield");
-    for (const [output, template] of [["spec.md", "spec-brownfield.md"], ["plan.md", "plan.md"], ["tasks.md", "tasks.md"]]) {
-      const outputPath = path.join(brownfieldDir, output);
-      if (!fs.existsSync(outputPath)) {
-        problems.push(`materializer brownfield create missing ${output}`);
-      } else if (read(outputPath) !== read(path.join(root, "template/docs/specs/changes/_template", template))) {
-        problems.push(`materializer brownfield create ${output} differs from ${template}`);
-      }
-    }
+    const next = runMaterializer(runDir, ["--number", "005", "--slug", "next-record"]);
+    if (next.status !== 0) problems.push(`next record failed: ${next.stderr.trim()}`);
 
     const symlinkRoot = path.join(tempRoot, "symlink-root-real");
     fs.cpSync(path.join(fixtureRoot, "base-empty"), symlinkRoot, { recursive: true });
     const symlinkAlias = path.join(tempRoot, "symlink-root-alias");
     fs.symlinkSync(symlinkRoot, symlinkAlias, "dir");
-    const symlinkRootAttempt = runMaterializer(symlinkAlias, ["--number", "001", "--slug", "symlink-root", "--lane", "light"]);
+    const symlinkRootAttempt = runMaterializer(symlinkAlias, ["--number", "001", "--slug", "symlink-root"]);
     if (symlinkRootAttempt.status !== 0) problems.push(`materializer rejected an existing symlinked project root: ${symlinkRootAttempt.stderr.trim()}`);
-    if (!fs.existsSync(path.join(symlinkRoot, "docs/specs/changes/001-symlink-root/tasks.md"))) problems.push("materializer did not normalize an existing symlinked project root");
+    if (!fs.existsSync(path.join(symlinkRoot, "docs/specs/changes/001-symlink-root/spec.md"))) problems.push("materializer did not normalize an existing symlinked project root");
 
     const ancestorOutside = path.join(tempRoot, "symlink-ancestor-outside");
     fs.mkdirSync(ancestorOutside);
@@ -338,9 +279,9 @@ async function validateMaterializer() {
     fs.cpSync(path.join(fixtureRoot, "base-empty"), ancestorProject, { recursive: true });
     const ancestorLink = path.join(tempRoot, "symlink-ancestor-link");
     fs.symlinkSync(ancestorOutside, ancestorLink, "dir");
-    const ancestorAttempt = runMaterializer(path.join(ancestorLink, "project"), ["--number", "001", "--slug", "symlink-ancestor", "--lane", "light"]);
+    const ancestorAttempt = runMaterializer(path.join(ancestorLink, "project"), ["--number", "001", "--slug", "symlink-ancestor"]);
     if (ancestorAttempt.status !== 0) problems.push(`materializer rejected an existing project below a symlinked ancestor: ${ancestorAttempt.stderr.trim()}`);
-    if (!fs.existsSync(path.join(ancestorProject, "docs/specs/changes/001-symlink-ancestor/tasks.md"))) problems.push("materializer did not normalize an existing project below a symlinked ancestor");
+    if (!fs.existsSync(path.join(ancestorProject, "docs/specs/changes/001-symlink-ancestor/spec.md"))) problems.push("materializer did not normalize an existing project below a symlinked ancestor");
 
     const rollbackRun = path.join(tempRoot, "rollback-target");
     fs.cpSync(path.join(fixtureRoot, "base-empty"), rollbackRun, { recursive: true });
@@ -351,10 +292,10 @@ async function validateMaterializer() {
     try {
       fs.copyFileSync = (...args) => {
         copyCount += 1;
-        if (copyCount === 2) throw new Error("injected copy failure");
+        if (copyCount === 1) throw new Error("injected copy failure");
         return originalCopyFileSync(...args);
       };
-      materializeFeature({ target: rollbackRun, number: "001", slug: "rollback", lane: "full", shape: "greenfield" });
+      materializeFeature({ target: rollbackRun, number: "001", slug: "rollback" });
     } catch {
       rollbackThrew = true;
     } finally {
@@ -371,12 +312,42 @@ async function validateMaterializer() {
     fs.mkdirSync(externalChanges);
     fs.rmSync(path.join(symlinkRun, "docs/specs/changes"), { recursive: true, force: true });
     fs.symlinkSync(externalChanges, path.join(symlinkRun, "docs/specs/changes"), "dir");
-    const symlinkAttempt = runMaterializer(symlinkRun, ["--number", "001", "--slug", "symlink-refusal", "--lane", "light"]);
+    const symlinkAttempt = runMaterializer(symlinkRun, ["--number", "001", "--slug", "symlink-refusal"]);
     if (symlinkAttempt.status === 0) problems.push("materializer accepted a symlinked changes destination");
     if (fs.readdirSync(externalChanges).length !== 0) problems.push("materializer wrote through a symlinked changes destination");
 
   } finally {
     fs.rmSync(tempRoot, { recursive: true, force: true });
+  }
+}
+
+function validateGrading() {
+  // Synthetic file-grader checks, never evidence that an AI followed the conversation.
+  const target = fs.mkdtempSync(path.join(os.tmpdir(), "project-workflow-grade-"));
+  const scenario = "tracked-existing-contract-ui-handoff";
+  const config = expected[scenario];
+  const expectGrade = (name, shouldPass, reason) => {
+    const result = spawnSync(process.execPath, [__filename, "--grade", name, target], { encoding: "utf8" });
+    if ((result.status === 0) !== shouldPass) problems.push(`grader regression: ${reason}\n${result.stdout}${result.stderr}`);
+  };
+  try {
+    fs.cpSync(path.join(fixtureRoot, config.base), target, { recursive: true });
+    expectGrade("no-artifact-typo", true, "unchanged action output");
+    fs.writeFileSync(path.join(target, "unexpected.txt"), "unauthorized output");
+    expectGrade("no-artifact-typo", false, "no-record action must preserve the tree");
+    fs.unlinkSync(path.join(target, "unexpected.txt"));
+    const record = path.join(target, config.expectDir);
+    fs.mkdirSync(record);
+    fs.copyFileSync(path.join(root, "template/docs/specs/changes/_template/spec.md"), path.join(record, "spec.md"));
+    expectGrade(scenario, true, "single-file output (not semantic readiness)");
+    fs.writeFileSync(path.join(record, "tasks.md"), "unrequested file");
+    expectGrade(scenario, false, "no precreated optional file");
+    fs.unlinkSync(path.join(record, "tasks.md"));
+    fs.appendFileSync(path.join(target, "AGENTS.md"), "\nUnauthorized rule\n");
+    expectGrade(scenario, false, "record creation cannot rewrite project rules");
+    expectGrade("conversation-batched-recording", false, "files alone cannot grade a conversation");
+  } finally {
+    fs.rmSync(target, { recursive: true, force: true });
   }
 }
 
@@ -398,16 +369,17 @@ async function main() {
       for (const problem of problems) console.error(`- ${problem}`);
       process.exit(1);
     }
-    console.log(`Scenario ${scenario} OK: lane/numbering/shape/no-clobber/TODO-retention/plant/trace/sentinel assertions hold.`);
+    console.log(`Scenario ${scenario} OK: record/numbering/no-clobber/plant/trace/sentinel assertions hold.`);
   } else {
     validateFixtures();
     await validateMaterializer();
+    validateGrading();
     if (problems.length) {
       console.error("Feature-init fixture check failed:");
       for (const problem of problems) console.error(`- ${problem}`);
       process.exit(1);
     }
-    console.log("Feature-init scenario fixtures OK: accepted/older semantic reuse, bases, expectations, and materializer lane/shape/NNN/no-clobber/rollback/symlink checks passed (no model executed).");
+    console.log("Feature-init scenario fixtures OK: accepted records with optional attachments, file-grader refusal cases, and single-spec materializer/NNN/no-clobber/rollback/symlink checks passed (no model executed).");
   }
 }
 

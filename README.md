@@ -24,7 +24,7 @@ Full framing with sources: [`docs/workflow.md §0.1`](docs/workflow.md).
 
 project-workflow helps real projects move from **chat-driven AI coding** to **spec-driven, reviewable, maintainable AI-assisted development**.
 
-Personal and team development use the same per-change workflow. A team does not need a project-workflow collaboration layer: each contributor applies the same DIRECT/LIGHT/FULL classification, verification, and archive rules to their own change before submitting it.
+Personal and team development use the same per-change workflow. A team does not need a project-workflow collaboration layer: each contributor uses the same discussion, evidence, verification, and archive rules to their own change before submitting it.
 
 v3 separates **methodology core** from **runtime adapters**:
 
@@ -36,7 +36,7 @@ See [`docs/cross-tool-methodology.md`](docs/cross-tool-methodology.md).
 | Need | project-workflow answer |
 |---|---|
 | Set up a project without guessing | Use `project-init` when the neutral baseline can be added without conflict or personalization; use `project-personalize` when project evidence or a partial/custom baseline must shape the agreement |
-| Start a feature without losing requirements in chat | Tracked `spec.md` / `plan.md` / `tasks.md` |
+| Start a feature without losing requirements in chat | One `spec.md` by default, with optional supporting detail |
 | Keep implementation aligned while coding | spec revise SOP, module-boundary handling, environment-enforced rules |
 | Know whether a feature is ready | Completion preflight + proportionate L1 + applicable L2/L3 + delivery receipt |
 | Keep the codebase from drifting over months | `agents-md-revise` refresh of project conventions |
@@ -165,7 +165,7 @@ $agents-md-revise
 
 Run `$project-init` once when all six neutral baseline destinations are absent and existing content, if any, is merely incidental: `AGENTS.md`, the one-line `CLAUDE.md` alias, `.gitignore`, `docs/specs/index.md`, `docs/adr/README.md`, and `docs/gotchas.md`. It preserves unrelated references, exports, or notes without interpreting them. A matching baseline plus only incidental content is already initialized. Use `$project-personalize` when code, configuration, or project-specific documentation establishes commands, paths, conventions, architecture, product/current truth, or when a baseline destination is partial, custom, or occupied. If a scaffold generator requires an empty target, run it first. `project-init` leaves the workflow baseline ready even when application structure is undecided; `project-personalize` leaves the evidence-backed working agreement aligned without claiming the architecture is suitable.
 
-Application-foundation and architecture work follows [`feature-init`](docs/actions/feature-init.md)'s lightest sufficient route, without a separate action or lane. Keep minimal setup inside the first feature when inseparable; track architecture separately only when it has its own durable consumer. Read [`architecture-design`](docs/architecture-design.md) when the action calls for it.
+Application-foundation and architecture work follows [`feature-init`](docs/actions/feature-init.md)'s conversation and record rules, without a separate action or lane. Keep minimal setup inside the first feature when inseparable; track architecture separately only when it has its own durable consumer. Read [`architecture-design`](docs/architecture-design.md) when the action calls for it.
 
 ### Manual fallback
 
@@ -200,9 +200,9 @@ Most work does **not** use all nine actions. Initialize once, then use the daily
 |---|---|---|
 | Once, baseline-compatible target | `project-init` | Create the neutral six-file project baseline without disturbing incidental content. |
 | Once, project evidence or partial/custom baseline exists | `project-personalize` | Establish or adapt the evidence-backed project agreement; when structure/guidance scope is selected, propose evidence-backed root/tier/module placement without creating files for symmetry. |
-| Per proposed change | `feature-init` | Choose DIRECT, LIGHT, or FULL, discuss only direction-changing uncertainty, and carry the accepted boundary into implementation. Reused accepted FULL artifacts retain their lane/lifecycle gates after a semantic readiness recheck. |
-| Full lane only | `spec-quality-check` | Reconcile accepted requirements and gate the completed artifact before implementation. |
-| End of tracked change | `feature-done` | Establish the Git feature boundary, validate one stable snapshot with proportionate L1 and risk-scheduled full-lane L2/L3, and write one compact receipt. |
+| Per proposed change | `feature-init` | Discuss the problem, test consequential assumptions when needed, and create or reuse only the acceptance record needed. Continue from settled decisions without repeated approval. |
+| Before implementation | `spec-quality-check` | Reconcile accepted requirements and gate the completed artifact before implementation. |
+| End of tracked change | `feature-done` | Establish the Git feature boundary, validate one stable snapshot with proportionate L1 and risk-based applicable L2/L3, and write one compact receipt. |
 | Periodic sweep | `feature-archive` | Merge pending current truth and move delivered changes out of the active tree. |
 
 Finish/delivery stops at READY with archive pending; enclosing close/archive/submit intent continues to
@@ -227,7 +227,7 @@ not add gates, reviewers, artifacts, or trigger conditions.
 
 ## Reviewer methodology
 
-[`docs/reviewers/`](docs/reviewers/) is canonical for the six reviewer, auditor, and research roles. Full-lane READY requires independent L2 and L3; risk changes their scheduling, not their contracts. Reviewers consume L1 evidence, and an execution failure permits one fresh same-contract fallback. See the [reviewer index](docs/reviewers/README.md).
+[`docs/reviewers/`](docs/reviewers/) is canonical for the six reviewer, auditor, and research roles. Actual risk and project requirements determine whether independent review is needed; applicable L2 and L3 retain their distinct contracts. Every acceptance obligation still needs verification. Reviewers consume L1 evidence, and an execution failure permits one fresh same-contract fallback. See the [reviewer index](docs/reviewers/README.md).
 
 ## Maintaining generated plugin packages
 

@@ -19,11 +19,9 @@ const retainedOptionalAssets = [
   "template/_multi_tier_examples/ui-tier.AGENTS.md.example",
   "template/docs/adr/0000-template.md",
   "template/docs/specs/_template/domain.md",
-  "template/docs/specs/changes/_template/spec-greenfield.md",
-  "template/docs/specs/changes/_template/spec-brownfield.md",
+  "template/docs/specs/changes/_template/spec.md",
   "template/docs/specs/changes/_template/plan.md",
   "template/docs/specs/changes/_template/tasks.md",
-  "template/docs/specs/changes/_template/tasks-light.md",
 ];
 for (const relative of retainedOptionalAssets) {
   if (!fs.existsSync(path.join(repoRoot, relative))) problems.push(`optional capability asset missing: ${relative}`);

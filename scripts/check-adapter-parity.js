@@ -60,10 +60,10 @@ const canonicalOwnership = {
   "agents-md-revise": ["## Workflow", "## Invariants", "## Validation"],
   "feature-archive": ["## Workflow", "## Invariants", "## Validation"],
   "feature-done": ["## Review Layers", "## Delivery Receipt", "## Verdict", "## Invariants"],
-  "feature-init": ["## Lane Classification", "## Workflow", "## Invariants", "## Validation"],
+  "feature-init": ["## Conversation and discovery", "## Record and authorization", "## Document updates and context", "## Implementation Scope Stop", "## Verification", "## Outputs and validation"],
   "project-init": ["## Workflow", "## Invariants"],
   "project-personalize": ["## Workflow", "## Invariants", "## Validation"],
-  "spec-quality-check": ["## Checks", "### Mechanical check table", "## Workflow", "## Verdict"],
+  "spec-quality-check": ["## Requirements Reconciliation", "## Checks", "## Reviewer Execution", "## Verdict", "## Invariants"],
   "spec-reconcile": ["## Workflow", "## Verdict", "## Invariants"],
   "spec-revise": ["## Workflow", "## Invariants", "## Validation"],
 };
@@ -72,7 +72,8 @@ const adapterOwnedSectionHeadings = [
   "## Workflow",
   "## Verdict",
   "## Failure modes",
-  "## Lane Classification",
+  "## Record and authorization",
+  "## Document updates and context",
   "## Delivery Receipt",
   "## Mechanical check table",
 ];

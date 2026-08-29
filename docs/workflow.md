@@ -6,7 +6,7 @@
 >
 > 风格:opinionated 但可 hack —— 任何一条都可以为具体场景偏离,只要清楚为什么。
 >
-> **统一流程原则**:个人开发与团队开发使用同一条 per-change 流程。每个人在自己的工作范围内按相同的 DIRECT / LIGHT / FULL 分流、验证、归档后提交即可;project-workflow 不要求额外 team mode、协作层或并发协调协议。
+> **统一流程原则**:个人开发与团队开发使用同一条 per-change 流程。每个人在自己的工作范围内按相同的按需记录、风险验证、归档后提交即可;project-workflow 不要求额外 team mode、协作层或并发协调协议。
 
 ---
 
@@ -23,7 +23,7 @@ AI 协作开发有**三个 Tier 1 工程痛点**,本手册的四个运行阶段�
 **社群证据**:Boris Cherny(Anthropic / Claude Code lead):*"The most important thing is to give Claude a way to verify."*(更多见 [§参考与延伸](#参考与延伸))
 
 **v3 主力支撑**:
-- **输入侧**:[§6.1 Spec-driven](#61-规约先于代码spec-driven) —— 用 spec.md 把"做什么"冻结成契约
+- **输入侧**:[§6.1 共识与验证](#61-共识与验证先于正式实现) —— 用 spec.md 保存已确认的行为与验收依据
 - **输出侧**:[§6.4 三层 review](#64-按规则源分层验证three-layer-review-separation)(L1 机械 / L2 项目约定 / L3 spec 合规)+ [§3.3 delivery receipt](#33-交付阶段delivery-receipt)
 
 #### 命题 2:Context-as-RAM —— 上下文是有限预算,不是无底磁盘
@@ -65,17 +65,17 @@ AI 协作开发有**三个 Tier 1 工程痛点**,本手册的四个运行阶段�
 │ ─ 工具:project-init action(Claude / Codex / manual adapters) │
 ├─────────────────────────────────────────────────────────────┤
 │ P2: Tracked Feature Development                             │
-│ ─ /feature-init <slug> → full:spec/plan/tasks 或 light:tasks │
+│ ─ 先沟通/按需试验 → 确认 → 一份 spec → 实施 │
 │ ─ 跨 tier 契约先确定 → 按依赖实施 → receipt → archive 收尾   │
 │ ─ 存量 spec 冲突/旧 spec 污染 → /spec-reconcile retrofit    │
 │                                                             │
 │   ↳ Module Setup sub-flow(P2 内嵌触发,非独立 phase)        │
-│      ─ spec 阶段识别"需新模块" → plan 加边界 → tasks 加骨架  │
+│      ─ 发现模块需要 → 在功能记录中明确边界与接入步骤  │
 │      ─ 仅"反常"时加 <module>/AGENTS.md(见 §2.3)             │
 ├─────────────────────────────────────────────────────────────┤
 │ P3: Continuous Maintenance(开发期间常驻)                    │
-│ ─ 阶段 focused 验证;端点 L1 + FULL 必需 L2/L3          │
-│ ─ 高风险并行;普通变更 L3 PASS 后再做一次最终 L2            │
+│ ─ 阶段 focused 验证;端点 L1 + 按风险适用的独立 L2/L3          │
+│ ─ 两种审查均适用时:高风险并行,否则先 L3 后 L2            │
 │ ─ backlog / discussions 走平台原生(Issues / Discussions)   │
 ├─────────────────────────────────────────────────────────────┤
 │ P4: Drift Refresh(信号触发)                               │
@@ -92,9 +92,9 @@ AI 协作开发有**三个 Tier 1 工程痛点**,本手册的四个运行阶段�
 
 | 阶段 | 主要服务的 Tier 1 命题 | 关键支柱 |
 |---|---|---|
-| **P0** Project Setup | Drift(锚定基线)+ Verification(契约模板) | §6.1 spec-driven / §6.3 env-enforced |
-| **P2** Feature Dev | Verification(每个功能交付前验证) | §6.1 spec-driven / §6.4 three-layer review |
-| Module Setup(P2 sub-flow) | Drift(模块边界、空间一致) | §6.1 spec-driven |
+| **P0** Project Setup | Drift(锚定基线)+ Verification(契约模板) | §6.1 共识与验证 / §6.3 env-enforced |
+| **P2** Feature Dev | Verification(每个功能交付前验证) | §6.1 共识与验证 / §6.4 three-layer review |
+| Module Setup(P2 sub-flow) | Drift(模块边界、空间一致) | §6.1 共识与验证 |
 | **P3** Continuous Maintenance | Verification(实时)+ Drift(实时拦截)+ Context(预算管理) | §6.2 context / §6.3 env-enforced / §6.4 review |
 | **P4** Drift Refresh | Drift(信号触发修正、演进维度) | §6.3 env-enforced(规则更新) |
 
@@ -136,10 +136,10 @@ AI 协作开发有**三个 Tier 1 工程痛点**,本手册的四个运行阶段�
 | **项目级** | `AGENTS.md` + `CLAUDE.md` | 必然 |
 | **Tier 级**(可选,嵌套) | `<tier>/AGENTS.md` + `CLAUDE.md`(如 `backend/`、`frontend/`) | 仅多 tier 项目 |
 | **模块级**(可选,嵌套) | `<module>/AGENTS.md` + `CLAUDE.md` | 仅模块"反常"时(见 [§2.3](#23-反常判定何时该写模块-agentsmd)) |
-| **功能级** | `docs/specs/changes/<NNN>-<slug>/` 或轻车道 `tasks.md`;archive 在 `docs/specs/changes/archive/` | `/feature-init` |
+| **功能级** | `docs/specs/changes/<NNN>-<slug>/` ;archive 在 `docs/specs/changes/archive/` | `/feature-init` |
 | **产品域级**(扁平) | `docs/specs/index.md` + 按需 `docs/specs/<area>.md` | P0 `project-init` 建索引;正文 `/feature-archive` merge |
 | **宿主私有路径规则**(可选) | 例如 Claude `.claude/rules/*.md`;不是 portable core | plugin 保留示例和机制说明;仅在具体宿主、具体项目需要时启用,其他 adapter 无需读取或翻译 |
-| **跨功能决策**(扁平,不嵌套) | `docs/adr/NNNN-<title>.md` | 重大架构选择 / spec-revise 满足 `ADR_REQUIRED`([§3.5](#35-开发中发现-specplan-错怎么办))/ 模块边界变更([§2.6](#26-module-中途变更feature-实施中发现边界要调整)) 时 |
+| **跨功能决策**(扁平,不嵌套) | `docs/adr/NNNN-<title>.md` | 重大架构选择 / spec-revise 满足 `ADR_REQUIRED`([§3.5](#35-开发中发现已确认内容有误怎么办))/ 模块边界变更([§2.6](#26-module-中途变更feature-实施中发现边界要调整)) 时 |
 | **工具基础设施**(扁平,不嵌套) | `.gitignore` 与项目自有检查配置 | P0 仅提供中立 baseline |
 
 #### 文档职责 5 类(总框架)
@@ -149,7 +149,7 @@ AI 协作开发有**三个 Tier 1 工程痛点**,本手册的四个运行阶段�
 | 类别 | 文件 | 回答什么问题 | 时间维度 | 何时存在 |
 |---|---|---|---|---|
 | **A. 约定**(Conventions) | portable core 是 `AGENTS.md`(项目 / tier / 模块嵌套)+ adapter alias;宿主私有 scoped rules 可选 | "我们**现在**怎么工作?"(规则 / 风格 / 最佳实践) | 当前态;AGENTS.md 频率梯度见 [§1.3](#13-agentsmd-的内容标准),Claude 可选规则见 [§1.6](#16-路径级规则claude-rules官方支持) | 项目级必然;tier / 模块级与宿主私有资产可选 |
-| **B. 变更**(Changes) | `docs/specs/changes/<NNN>-<slug>/{spec,plan,tasks}.md` 或轻车道 `tasks.md`;交付后移入 `docs/specs/changes/archive/` | "这次 tracked change **做什么 + 怎么做 + 步骤**?" | per-change 生命周期,完成后**物理归档** | `/feature-init` 或行为变更下限(轻车道) |
+| **B. 变更**(Changes) | `docs/specs/changes/<NNN>-<slug>/spec.md` ;交付后移入 `docs/specs/changes/archive/` | "这次 tracked change **做什么 + 怎么做 + 步骤**?" | per-change 生命周期,完成后**物理归档** | `/feature-init` 或当前事实变更需追踪 |
 | **C. 决策**(ADR) | `docs/adr/NNNN-<title>.md` | "**当时为什么**这么选?+ trade-off?" | Accepted 后正文冻结;取代时只改状态并新建 ADR | 重大架构选择 / spec-revise 满足 `ADR_REQUIRED` / 模块边界变更时(§3.5 / §2.6)|
 | **D. 工具基础设施**(Infra) | `.gitignore` + 项目检查配置 | "工具**运行什么检查**?" | 普通 repo 代码生命周期 | 按项目实际需要维护 |
 | **E. 产品事实**(Domain docs) | `docs/specs/index.md` + 按需 `docs/specs/<area>.md`;变更在 `docs/specs/changes/` | "这个产品/系统域**现在**怎么工作?" | 当前态;`feature-archive` merge 更新 | P0 建索引;area doc 在有当前事实可沉淀时创建 |
@@ -158,14 +158,14 @@ AI 协作开发有**三个 Tier 1 工程痛点**,本手册的四个运行阶段�
 - 代码组织维度只影响 **A. 约定** 中 AGENTS.md 的嵌套层数(根 / tier / 模块);宿主私有规则只增强对应宿主,不要求跨 adapter 映射
 - B / C / D / E 四类与代码组织维度独立,**不按 tier / 模块嵌套**
 
-**A vs E 分界**(都是"当前态",别混):A 回答**工程上怎么干活**(命令 / 风格 / 边界),E 回答**产品现在长什么样**(IA / 行为 / 契约现状)。工程约定永远进 A,产品域现状进 E;E 不存在时,B 类历史 spec 只是审计材料,不是实施基线(见 [spec-driven.md §5](spec-driven.md#5-spec-生命周期))。
+**A vs E 分界**(都是"当前态",别混):A 回答**工程上怎么干活**(命令 / 风格 / 边界),E 回答**产品现在长什么样**(IA / 行为 / 契约现状)。工程约定永远进 A,产品域现状进 E;E 不存在时,B 类历史 spec 只是审计材料,不是实施基线(见 [spec-driven.md §5](spec-driven.md))。
 
 **A–E 生命周期归口**:
 
 | 类别 | 创建 | 正常演化 | 关闭 / 修复 |
 |---|---|---|---|
 | **A 约定** | 可无冲突建立中立 baseline 的 `project-init` / 有项目证据或 partial/custom baseline 的 `project-personalize` | feature 内发现的新约定随该 change 更新;客观 drift 才用 `agents-md-revise` | 不归档,始终维护当前态;L2/Drift 提供反馈 |
-| **B 变更** | `feature-init` 先判 no artifact / light / full;仅 light/full 创建 | draft 自由填;冻结契约真错才 `spec-revise`;`feature-done` 判兑现 | `feature-archive` 物理归档;历史混乱才 `spec-reconcile` |
+| **B 变更** | `feature-init` 判断是否需要记录；默认只建 spec | draft 自由填;冻结契约真错才 `spec-revise`;`feature-done` 判兑现 | `feature-archive` 物理归档;历史混乱才 `spec-reconcile` |
 | **C 决策** | 规划或 `spec-revise` 中仅 `ADR_REQUIRED=yes` 时创建 | Accepted 后正文不改;新决定用新 ADR,旧 ADR 只改为 `Superseded by NNNN` | `feature-archive` 做一致性检查;`spec-reconcile` 经用户确认修冲突,不做按年龄清扫 |
 | **D 基础设施** | baseline 提供 `.gitignore`；检查配置由项目维护 | 按普通项目变更处理并验证真实执行 | 随项目需要维护 |
 | **E 产品事实** | P0 只建索引;首个持久事实由 `feature-archive` 创建 area doc | `feature-done` 标 pending,`feature-archive` 替换式合并当前事实 | 历史冲突才 `spec-reconcile`;核对日期是读者信号,不由 A 类 drift action 代管 |
@@ -230,7 +230,7 @@ Core docs 只定义"应该发生什么";adapter docs 定义"在某个工具里�
 3. **Plugin / skill 工具的角色:scaffold + 条件性框架问 + 提醒 + 兜底,不当 interviewer 替 user 决策业务细节**。
 
    Plugin 应该做的:
-   - **Scaffold** ── 空项目只起中立六文件 baseline;feature 按需起 light/full artifact;现有代码用 personalize 补真实约定
+   - **Scaffold** ── 空项目只起中立六文件 baseline;feature 按需创建一份 spec;现有代码用 personalize 补真实约定
    - **条件性框架 Q&A** ── 只问 user **当下能答 + audit 无法替代 + 延后成本极高** 的 branch 决策(如 slug / module 边界 / tier 归属);这些 once-and-done,不属"反复提醒"
    - **Reminders** ── 把 mission-critical checkpoint(如 Scope "不做" / Sibling Alignment)前置作提醒,让 user 在 conversational fill 时主动注意,不预问
    - **按需研究** ── 被动触发(user 提到选型不确定 → 按需研究;外部库行为不确定 → 查当前权威文档),不预设题
@@ -289,7 +289,7 @@ P0 产出物分**两层**(职责严格不重叠):
 │   ├── adr/README.md               # ADR 使用说明;模板留在 plugin
 │   └── gotchas.md                  # project-local 已验证工程陷阱 ledger(初始为空)
 │   # docs/specs/changes/<NNN>-<slug>/ 由 /feature-init 按需创建;
-│   # spec/plan/tasks 模板由 /feature-init 提供,项目本地默认不持有
+│   # 默认 spec 模板由 /feature-init 提供,项目本地默认不持有
 └── .gitignore                      # 预防性含 CLAUDE.local.md、.env*
 ```
 
@@ -517,7 +517,7 @@ docs/adr/
 
 **立场**:project-workflow P0 starter **默认不预置** `.github/ISSUE_TEMPLATE/` 或 `.github/PULL_REQUEST_TEMPLATE.md`。原因:
 
-- 单人项目 / 小团队不需要模板约束,delivery receipt 走 [`tasks.md` 末尾的 `## Proof Bundle` 节](#33-交付阶段delivery-receipt)即可
+- 单人项目 / 小团队不需要模板约束,delivery receipt 走 [默认 spec 末尾的 `## Proof Bundle` 节](#33-交付阶段delivery-receipt)即可
 - 平台协作的**原则**(人类协作走平台、不进 repo 文件)由 [§4.4](#44-backlog-与讨论走平台不进-repo-文件) 承接,不需要模板
 - 模板是**团队场景才付得起的复杂度**——出现外部 contributor / 多人协作时再加,P0 不预付
 
@@ -590,10 +590,10 @@ P0 写入前，每个项目特定的命令、路径、名称、端口、归属�
 当 feature 需要新的长期责任边界，或现有边界已无法清楚承载该责任时，在 P2 规划中展开 module
 sub-flow。仅新增文件、调整模块内部结构或普通移动/重命名不单独展开。
 
-### 2.2 产出物(写进 P2 spec 三件套,不另起文档)
+### 2.2 产出物(写入现有功能记录,按需展开)
 
-不创建额外 module 文档：spec 记录可见范围，plan 记录责任、契约和与现有模块的关系，tasks 记录
-建立与接入步骤。只有 §2.3 的持久父级例外成立时才创建模块级 guidance。
+不创建额外 module 文档：在现有功能记录中明确可见范围、责任、契约、与现有模块的关系及必要的
+建立与接入步骤。已有设计/任务附件有用时继续引用。只有 §2.3 的持久父级例外成立时才创建模块级 guidance。
 
 ### 2.3 "反常"判定:何时该写模块 AGENTS.md
 
@@ -604,7 +604,7 @@ sub-flow。仅新增文件、调整模块内部结构或普通移动/重命名�
 
 ### 2.4 谁做 & 校验
 
-由 feature 的 plan 驱动，不是独立 action。校验责任边界、父子 guidance 无重复，以及任何 alias
+由 feature 的已确认方案驱动，不是独立 action。校验责任边界、父子 guidance 无重复，以及任何 alias
 仍指向同一 canonical AGENTS.md。
 
 ### 2.5 模块组织建议:领域优先,不要技术分层
@@ -616,7 +616,7 @@ sub-flow。仅新增文件、调整模块内部结构或普通移动/重命名�
 ### 2.6 Module 中途变更(feature 实施中发现边界要调整)
 
 实施中发现模块应拆分、合并、迁移责任或新增持久边界时，先按 `feature-init` 的 Scope Stop 判断是否
-仍在接受范围内。改变已确认 artifact 时用 [`spec-revise`](actions/spec-revise.md) 同步 spec/plan/tasks；
+仍在接受范围内。改变已确认 artifact 时用 [`spec-revise`](actions/spec-revise.md) 同步受影响的记录与已有附件；
 只有满足 `ADR_REQUIRED` 或 Guidance Placement 时才增加相应持久资产。完成必要复查后再恢复依赖工作。
 
 ---
@@ -627,98 +627,30 @@ sub-flow。仅新增文件、调整模块内部结构或普通移动/重命名�
 
 ### 3.0 P2 流程全景(skill 视角)
 
-```
-[项目约定已建立]
-   ├─ 无需持久 artifact → 直接实施并验证
-   └─ 需要追踪 → feature-init(Impact/Necessity + Scope Viability → no artifact / light / full)
-          ├─ reuse accepted full → semantic readiness 复查
-          │      ├─ pass → 沿用现有 tasks
-          │      └─ fail → repair/spec-revise → spec-quality-check
-          ├─ light → materialize tasks
-          └─ new/draft full → 先关闭高影响未知项 → materialize/fill spec/plan/tasks → spec-quality-check
-                         ↓
-             实施(FULL 按需可验证阶段 / LIGHT 任务清单)+ focused 验证
-             (契约真错才 spec-revise)
-                         ↓
-              ├─ 明确要求做完:feature-done(机械 Feature 边界 + 一个稳定快照 + 一个终态；non-READY 按原授权处理) → READY,archive pending
-              ├─ 明确关闭/归档/提交:READY 后自动衔接 feature-archive → PR/merge
-              └─ 延后:提交实现并记录 commit SHA(可来自 PR head) → feature-done
-                       → 提交 endpoint outputs → feature-archive sweep
-
-例外:历史 active specs 冲突才 spec-reconcile;客观约定 drift 才 agents-md-revise。
-```
-
-**两类 "spec review" 别混淆**:
-
-| Skill | 何时 | 检查什么 |
-|---|---|---|
-| `/spec-quality-check` | **实施前** | **spec 本身**够不够好(7 问质量) |
-| `/feature-done` 的 L3 层 | **实施后端点，按适用性** | **代码**符合已接受 feature artifact 的行为和边界吗 |
-
-Artifact 写法和 7 问自检见 [`spec-driven.md`](spec-driven.md);运行时局部复查、证据复用和 fallback 规则见 [`feature-done`](actions/feature-done.md) 与 [`reviewer execution contract`](reviewers/README.md#reviewer-execution-contract)。
+沟通问题 → 必要时调查/试验 → 确认方案和验收 → 实现并验证。
+实现中的重要新发现会回到沟通，不要求事先发现全部任务。无需记录的小改直接做，需要追踪时默认一份 spec，已有记录优先复用。
 
 ### 3.1 规划阶段
 
-[`feature-init`](actions/feature-init.md) 统一负责 Impact/Necessity、scope viability、DIRECT/LIGHT/FULL
-和 Implementation Scope Stop。先关闭会改变方向的未知项，再按需建立一个可独立验收和回退的
-artifact；普通低层选择留给实施。AI 发现继续推进可能走错方向时，说明顾虑和建议并自然追问；已有
-选择通常沿用，只有新证据或新发现的重要后果使当前建议发生实质变化时才重新沟通。spec/plan/tasks 分别拥有 WHAT/HOW/STEPS，
-Prior decisions 只保存需要 why/source 的非显然选择，不复制 spec。复用 accepted FULL 只做语义实施
-就绪度复查；精确判定留在 action。
-
-应用基础或架构设计也按 `feature-init` 选择最轻的充分路径，不另起 action / lane / 保留 slug；最小结构与首个功能不可分时留在一起，有独立持久消费者才单独追踪。需要设计时按需读取 [`architecture-design.md`](architecture-design.md)，结论写回现有 artifact。多 tier 真正适用时才读取 §0.3 / §1.4 与 tier examples；单 tier 不生成 tier 文件。
-
-Full lane 填完后运行 [`spec-quality-check`](actions/spec-quality-check.md)；它拥有需求对账、质量、verdict
-和状态转换规则，本文不复制判定表。
+[feature-init](actions/feature-init.md) 拥有沟通、记录需要、授权、上下文和范围暂停规则；[spec-quality-check](actions/spec-quality-check.md) 检查依据是否足以开始。文档内容是否有用比章节是否齐全重要，独立审查按风险和项目要求决定。普通讨论不强制启动命令或创建文件。
 
 ### 3.2 实现阶段:机械细节不中断,方向风险及时沟通
 
-| 角色 | 工作 |
-|---|---|
-| **你** | 看 spec.md / 看最终 PR / 决定方向是否对 |
-| **AI** | 写代码 / 跑测试 / 自纠 lint 错误 / 主动列开放问题 |
-| **环境(lint / tests / LSP)** | 自动监督代码符合规范 |
+普通实现细节和任务细化由 AI 按已有约定处理。影响范围、方案、成本、数据、权限或验收的新发现，先暂停相关实施、说明影响与建议，用户确认后局部更新并继续。已写代码不构成扩大范围的理由。
 
-不要逐文件打断，也不要把方向漂移拖到 `feature-done`。多边界 FULL 仅在真实依赖或风险检查点使用
-少量可验证阶段：关闭一个可检查结果，运行最小 focused check，交接结果和下一阶段，经用户继续后再进入依赖工作；同一失败无新诊断
-证据地重复时报告 blocker。L2/L3 与 Proof Bundle 仍由 `feature-done` 执行。
-
-实现中的沟通沿用 §3.1。变量命名、普通实现细节和已接受边界内的简化由 AI + L1 自行收敛。
-范围暂停的判断只见 [`feature-init`](actions/feature-init.md)；测试层、矩阵和 case 也只在证明不同实质风险时增加。
-
-**底层逻辑**:机械细节上的中途打断会制造反复解释;方向漂移上的延迟打断会制造大量返工和冗余。
-环境层(§6.3)接管机械合规,阶段 focused check 提前暴露局部失败,Implementation Scope Stop 管方向,
-端点 review(§3.3)作为最后安全网。
+在真实依赖或风险检查点验证并汇报；按事先约定的阶段边界等待用户，不增加逐文件审批。先回应当前问题，在自然节点写回有用结论，保留否定约束、未决问题和授权范围。精确执行边界只见 [feature-init](actions/feature-init.md#implementation-scope-stop)。
 
 ### 3.3 交付阶段:delivery receipt
 
-`feature-done` 是端点组合点:低成本 completion preflight 先拦截未完成、混杂、实际范围越界或主流程
-失败;通过后再汇合 L1、适用 L2/L3、current-truth 和交付证据。完整 receipt 写入 `tasks.md` 的
-`## Proof Bundle`,端点只返回业务摘要和链接。Snapshot、证据复用、Git identity、复查资格和 verdict
-全部只由 [`feature-done`](actions/feature-done.md) 定义,本文不复制其 schema。
-
-> 团队 / 外部协作场景:可自行加 `.github/PULL_REQUEST_TEMPLATE.md`,内容同 5 项 —— 见 [§1.9](#19-平台协作默认不铺模板)。project-workflow 默认不预置。
+[feature-done](actions/feature-done.md) 在一个稳定快照上检查实际改动、L1、适用的独立 L2/L3 和当前事实，汇总真实证据。新记录的收据位于 spec.md，外部报告引用它，不复制整段日志。小文件不减免必要验证，多文件不自动增加审查。
 
 ### 3.4 与平台流程的协作
 
-| 节点 | 平台动作 |
-|---|---|
-| spec 起草 | 可选:开 GitHub Issue,标 label `feature`,描述放 outcomes 摘要 |
-| 实施开始 | git branch `feat/<NNN>-<slug>` |
-| 交付 | 完整 delivery receipt 写入 `tasks.md` 的 `## Proof Bundle`;PR 描述使用同一业务摘要并链接该节,不复制逐条命令证据 |
-| review | PR 评论;reviewer agent 结果可贴到 PR |
-| 合并 | spec/plan/tasks 目录归档(不删),Issue 关闭引用 PR |
+已有 Issue/PR 可引用同一记录。平台写入仍需授权，不是讨论或开始实现的前置条件。明确关闭/归档/提交时，READY 后由 [feature-archive](actions/feature-archive.md) 合并有效的当前事实、移动目录并验证链接；只要求交付时可停在 READY、archive pending。
 
-### 3.5 开发中发现 spec/plan 错怎么办
+### 3.5 开发中发现已确认内容有误怎么办
 
-实施后发现契约或边界错误，只暂停会加深返工的部分并自然说明问题、建议方向和需要用户决定的
-事项；已写代码不构成收编理由。完整范围判断见 [`feature-init`](actions/feature-init.md)，冻结契约的
-修订与证据保留见 [`spec-revise`](actions/spec-revise.md)，正文不维护第二套分类表。
-
-实现回归但契约正确时修代码并显式重跑 `feature-done`；已交付未归档的重大 artifact 遗漏才由
-`spec-revise` 正式重开，已归档则起 successor change。精确修订和 receipt 历史规则只见 action。
-
-预防比修订便宜:full lane 实施前先跑 [`spec-driven.md §3.7`](spec-driven.md#37-specplan-写完后的质量自检7-问-checklist)。
+重要新发现通过 [spec-revise](actions/spec-revise.md) 更新受影响的已确认内容、任务和验收；未受影响的决定和有效证据保留。不需要重建 feature 或重新走全部访谈。普通任务拆分不改变验收；实现回归修实现，不能改预期掩盖失败。已归档的后续变化使用 successor change。
 
 ---
 
@@ -827,54 +759,26 @@ feature artifact 走自身生命周期，spec/代码偏差由端点处理；不�
 每条原则都由两侧共同支撑,**缺一不可**:
 
 - **蓝图侧**(Blueprint —— 本项目提供):skill / template / proof bundle workflow 等
-- **纪律侧**(Discipline —— 用户协作行为):在任务边界重置上下文 / 真去写 spec / 端点 review 不偷懒等
+- **纪律侧**(Discipline —— 用户协作行为):按需保存结论 / 保留上下文中的约束与未决问题 / 完成必要验证等
 
 **4 条原则的蓝图/纪律平衡很不一样**,真实预期对照表:
 
 | 原则 | 蓝图侧提供 | 纪律侧实践 | 主要依赖 |
 |---|---|---|---|
-| **6.1** Spec-driven | `feature-init` artifact 模板 + `project-init` baseline + P4 refresh | 真去写、维护必要 artifact | 工具与用户共同完成 |
+| **6.1** 共识与验证 | 沟通、按需试验与功能记录 | 保留确认的例子和实际证据 | 工具与用户共同完成 |
 | **6.2** Context budget | AGENTS.md 预算纪律 + 可选检查 | 在长会话中主动收敛上下文、一会话聚焦一项任务 | 主要依赖使用纪律 |
 | **6.3** Environment-enforced | 阶段验证与交付 L1 | 维护真实命令、处理检查结果 | 项目工具与工作流共同完成 |
 | **6.4** 三层验证错位 | delivery receipt workflow + adapter reviewer + reviewer context 注入 | 不跳过端点 review,处理 finding | 工具与用户共同闭环 |
 
 **读后续 4 条原则时记住**:有些保障启用后适合工具持续执行,有些仍依赖使用者保持上下文和验收纪律;不使用伪精确比例描述两者关系。
 
-### 6.1 规约先于代码(Spec-driven)
+### 6.1 共识与验证先于正式实现
 
-> **Serves Tier 1 命题**:Verification(**输入侧** —— 把"做什么"冻结成契约,让验证有对照物)。参见 [§0.1 命题 1](#01-这本手册解决什么)。
+对问题、范围和怎样算正确形成足够共识，再正式实现。关键假设可以先通过获准的有限试验验证；简单明确的工作不需要额外试验或完整文档。
 
-#### 主张
+记录保存已确认行为和有用证据，使实施与交付有依据。默认一份简短 spec，不把文件数量、固定章节或一次试验成功当成理解充分。实施中继续学习，重要变化先沟通再修订，普通细节不打断。
 
-规约(spec)承载行为契约，代码是其实现。需要持久追踪的变更由 [`feature-init`](actions/feature-init.md) 选择最轻充分的 artifact；其余改动直接实施并说明验证。
-
-#### 底层逻辑
-
-AI 输出质量 ≈ AI 能力 × 输入清晰度。AI 能力是常量(模型版本固定),**输入清晰度是变量**(你能控制)。spec 是输入清晰度的载体 —— 没有 spec,你给 AI 的就是一段对话碎片;有 spec,你给的是契约。
-
-#### 依据
-
-| 类型 | 内容 |
-|---|---|
-| 量化 | 2026/02 arXiv 2602.00180 统计 AI 引入并残留在生产仓库的 issue 已 > 11 万,根因不是模型,是输入模糊 |
-| 业界共识 | GitHub Spec Kit / Addy Osmani agents.md / amux SDD 三家流派都把 spec 作为一等公民 |
-| 官方信号 | Anthropic best-practices 推荐 "Explore first, then plan, then code",plan 模式存在的原因之一 |
-
-#### 怎么用
-
-| 场景 | 动作 |
-|---|---|
-| Full lane | 需要独立需求与设计承载重要决策、契约或发布协调时使用，分流由 `feature-init` 判断 |
-| 六要素分布 | spec.md = Outcomes / Scope / Constraints / Verification;plan.md = Prior decisions / 模块影响 / 架构 / 风险 |
-| Scope 必写"不做" | 不写"不做",AI 会自动加 → scope creep 最大单一来源 |
-| Prior decisions 选择性写回 | 非显然选择、外部解释、冲突/bundled-risk 裁决和 supersede 决定才追加到 plan.md §3，带原因和稳定来源；没有此类决定时可省略或自然说明无 |
-| Sibling Alignment 条件启用 | 只有真正存在 sibling-convention 选择时才用 Align / Deviate / Codify；多模块本身不触发 |
-
-#### 失效情形(Boundary Conditions)
-
-通用跳过场景(tiny/local 低风险、探索性 spike、玩具)见 [§9 何时偏离](#9-何时偏离手册)。本原则特有的:
-
-- **存在多个可独立验收、启用和回滚且无强耦合的 outcome** → 拆 child feature；文档长度本身不是拆分阈值
+这一原则借鉴 [BDD 的具体例子](https://cucumber.io/docs/bdd/) 和 [Shape Up 的按需结构](https://basecamp.com/shapeup/4.1-appendix-02)。详细执行规则只有 [feature-init](actions/feature-init.md) 一个所有者；写法见 [功能记录指南](spec-driven.md)。
 
 ---
 
@@ -903,7 +807,7 @@ LLM 的 attention 是 quadratic 或 sub-linear cost over context length。当 co
 
 | 场景 | 动作 |
 |---|---|
-| 长 session 跨多任务 | 在任务边界新开会话或使用宿主的 context reset,**一会话一任务** |
+| 长 session 跨多任务 | 只在切换独立任务或上下文确有需要时新开会话；先保留决策、限制、未决问题和下一步，不因文档更新清空上下文 |
 | CLAUDE.md / AGENTS.md | 只保留常驻事实；共享长尾用引用组织，路径相关长尾优先放宿主支持的 scoped rules |
 | 多模块项目 | sub-agent 隔离上下文(每个 sub-agent 独立窗口) |
 | 长文档参考 | progressive disclosure —— 用 `@` 按需拉,不全塞 |
@@ -963,7 +867,7 @@ LLM 的 attention 是 quadratic 或 sub-linear cost over context length。当 co
 |---|---|---|---|
 | **L1** 通用规则 | language defaults + 团队全局规则(Claude adapter 可放 `~/.claude/rules/*`) | 代码规范吗? | 通用工程错误 |
 | **L2** 项目约定 | `AGENTS.md` + 路径级项目规则(Claude adapter 为 `.claude/rules/`) | 长得像这个项目吗? | 风格/结构错 |
-| **L3** 功能规约 | 已接受的 `spec.md` 或轻车道 `tasks.md` | 做了说要做的事吗? | 行为/范围错 |
+| **L3** 功能规约 | 已接受的功能记录  | 做了说要做的事吗? | 行为/范围错 |
 
 三层失败模式正交：通用工程错误、项目约定偏离、功能契约偏离不能互相证明通过。分层能缩短
 review context、避免一层结果掩盖另一层，并让修复指向明确规则源。
@@ -976,8 +880,7 @@ review context、避免一层结果掩盖另一层，并让修复指向明确规
 | L2 | reviewer agent + AGENTS.md 作 context | 端点(P3 proof bundle) |
 | L3 | reviewer agent + accepted feature artifact + 已有测试证据 | 端点，按适用性 |
 
-`feature-done` 是唯一端点组合点：必要 L1 之后，full lane READY 需要独立 L2/L3；风险决定并行或
-先 L3 后 L2。每个 gate run 只审一个稳定快照并返回一个终态；端点外的修复与复验按原请求授权和 `feature-done` 规则继续。
+`feature-done` 是唯一端点组合点：必要 L1 之后，实际风险和项目要求决定独立 L2/L3 的适用性与调度。每个 gate run 只审一个稳定快照并返回一个终态；端点外的修复与复验按原请求授权和 `feature-done` 规则继续。
 Reviewers 遵守 cite-or-skip、fresh read、完整适用范围和 ambiguity feedback；精确授权、调度、规则源、fallback、证据、漂移、去重及复审规则只见
 [`feature-done`](actions/feature-done.md)、[`agents-md-reviewer`](reviewers/agents-md-reviewer.md) 和
 [`spec-reviewer`](reviewers/spec-reviewer.md)。
@@ -994,9 +897,9 @@ Reviewers 遵守 cite-or-skip、fresh read、完整适用范围和 ambiguity fee
 
 ## 7. 反模式(明确说"不要")
 
-### 7.1 不要用中途反思代替前置 spec
-**症状**:没写 spec → AI 写一半你发现不对 → "反思一下再写"→ 重复 N 轮
-**修正**:出现第二次反思时停,回去补 spec.md 把决策固化,然后 AI 重启写
+### 7.1 不要把文档齐全当成理解充分
+
+模板不能替代沟通和证据。出现重要新发现时，及时解释、确认并局部更新；不要因为已有 spec 而继续错误方向，也不要每发现一个实现细节就重启流程。
 
 ### 7.2 不要叠加两个 process-owning 框架
 **症状**:同时装 superpowers + project-workflow / ECC + project-workflow 等
@@ -1009,8 +912,9 @@ Reviewers 遵守 cite-or-skip、fresh read、完整适用范围和 ambiguity fee
 **症状**:改动 < 5 行且你脑子里有答案,还非要让 AI 写
 **修正**:AI 不是宗教,小改自己来更快
 
-### 7.5 不要让 spec.md 和 plan.md 内容混淆
-**核心**:WHAT 进 spec(用户视角,冻结);HOW 进 plan(技术视角,可补)。详见 [`spec-driven.md §6.7`](spec-driven.md#67-specmd-和-planmd-内容混淆)。
+### 7.5 不要重复维护同一个决定
+
+默认一份 spec 可以同时说明行为、必要理由和简短进度。只有确有阅读/交接需要才拆出设计或清单，其他文件引用接受规则，不再复制一份。
 
 ### 7.6 不要把上层投资沉到底层工具
 **症状**:把项目规则只写进单一工具私有格式(如 `.cursor/rules/` 只 Cursor 读)而不是 AGENTS.md
@@ -1046,7 +950,7 @@ P0-P4 不绑定语言或框架。项目个性化时从仓库事实识别 formatt
 
 ### 8.1 全栈项目的契约先行(Contract-First Tactic)
 
-**仅适用全栈项目**(前端依赖后端 API 的项目)。这是 §6.1 spec-driven 在全栈场景的时间维度落地。
+**仅适用全栈项目**(前端依赖后端 API 的项目)。这是 §6.1 共识与验证 在全栈场景的时间维度落地。
 
 **主张**:全栈功能开发时,先确定跨 tier 契约,再按真实依赖和可验证阶段安排实现顺序;不固定要求后端代码先写。
 
