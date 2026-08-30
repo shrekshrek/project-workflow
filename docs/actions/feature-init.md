@@ -7,8 +7,9 @@ Canonical action for understanding a proposed change and preparing only the dura
 Use when a requested implementation needs tracked acceptance, cross-session handoff, current-truth
 synchronization, or contract/risk protection, or the user explicitly asks whether a feature record is useful.
 Ordinary questions, diagnosis and discussion remain conversation; do not force an action invocation or
-artifact just to answer them. Tiny local fixes can proceed under existing conventions and checks. Reuse an
-accepted active feature that already covers the request instead of assigning another number.
+artifact just to answer them. A feature name, several files or multiple implementation steps do not by
+themselves require a record. Proceed directly when outcome and acceptance are clear and no tracked acceptance,
+handoff, current-truth synchronization or material risk protection is needed. Reuse a compatible active record.
 
 A change to durable behavior already declared in `docs/specs/` needs a traceable record and eventual
 current-truth synchronization. This does not require additional files or a document-size category.
@@ -31,6 +32,12 @@ ask only what can change the outcome, approach, boundary, material cost, risk or
 remain settled unless new evidence exposes a material consequence. Do not re-interview the user to fill a
 form, choose a lane, invent a slug during discussion, or satisfy a fixed question count.
 
+Assume no prior knowledge of the repository, workflow or testing vocabulary, while preserving the user's
+authority over product intent, risk and cost. Explain the observable consequence first and introduce technical
+labels only when they help the decision. Before asking for a decision, make the available choices, material
+trade-offs and recommendation understandable; do not hide scope behind terms such as unit, integration, E2E,
+shadow or regression testing, and do not patronize the user or replace their business judgment.
+
 When uncertain, compare the smallest useful alternatives. If a consequential assumption can be checked,
 propose a bounded trial with a question, inputs and a success/failure criterion before executing it. Reuse
 existing tests, scripts and synthetic fixtures. Perform only the specifically authorized trial; external
@@ -43,9 +50,10 @@ criterion informs the next decision; do not rewrite the criterion to make it pas
 existing evidence already settles the relevant question. Low-level implementation details can be discovered
 later without making every idea an upfront experiment.
 
-Consider whether requested outcomes can be accepted and reverted independently. Split only when useful;
-keep a coupled transaction, security outcome or rollout together. Explain real coupling/rollback risks and
-ask when the choice changes the requested delivery. Do not infer scope from file count or technical keywords.
+When several outcomes can deliver value, be accepted or be reverted independently, explain the natural
+decomposition and recommend the smallest useful first feature; let the user choose when it is not already
+clear. Keep a coupled transaction, security outcome or rollout together. Explain real coupling/rollback risks;
+do not infer scope from file count or technical keywords.
 Every new persistent state, API, role, workflow, management surface, queue or runtime component needs a
 present consumer. Exclude speculative capability. External tracking is never a prerequisite for the selected
 outcome; creating external items requires separate authorization.
@@ -88,6 +96,16 @@ phases if those have not already been explained and accepted. An accepted previe
 again. A clear request may already state and authorize that approach; do not insert duplicate confirmation.
 A genuinely unresolved material choice needs the user's decision. Explain consequences rather than a form.
 
+The preview distinguishes pre-implementation decision evidence, implementation feedback and delivery evidence;
+it does not present every planned check as an upfront gate. For a materially long, paid, external, opaque,
+high-volume or restart-costly run, give a plain-language execution envelope before starting: the decision it
+supports, what it does and does not cover, knowable units/calls/rounds, a rough duration and uncertainty,
+external cost or permission, observable progress, partial-result persistence, failure/restart consequence,
+stop rule and the smallest useful canary or sample alternative. Fast local checks need no such ceremony.
+An accepted envelope covers ordinary work inside the current useful slice; do not manufacture micro-phases
+merely to ask the user to continue. It does not suppress informative handoffs or a stop for separate
+permission/cost, material discovery, a meaningful slice boundary or a non-converging cycle.
+
 ## Document updates and context
 
 Answer the current question first. Batch writeback when a conclusion is reached, before implementation or at
@@ -119,11 +137,22 @@ then continue the authorized implementation. Do not restart the feature or rewri
 independent outcome becomes a successor/child only if the user wants it; do not automatically create a backlog.
 A failed test with unchanged requirements calls for implementation repair, not changed expectations.
 
-At a real dependency or risk checkpoint run the smallest relevant check and give a compact handoff: result,
-evidence, deviations and next step. Wait for the user only at an agreed phase boundary, a material decision
-or a required permission; no automatic per-file checkpoints. During implementation and post-gate repair,
-if repair/verification keeps cycling without converging, explain the unresolved problem and recommended next
-step, then wait for the user's decision. Preserve unaffected valid evidence; rerun the affected closure.
+Within a useful slice, ordinary implementation, expected repair and focused checks continue without another
+approval. A material problem or consequential uncertainty still stops the affected work immediately, even mid-slice, under
+the rules above. At a meaningful user-judgeable slice boundary, run the smallest relevant check and hand off
+the intended result, actual behavior and evidence, whether they remain aligned, material deviations or risks,
+and the next slice with its reason. Wait before beginning that next slice. Do not create a slice boundary for
+each file, function or ordinary step; a small direct task may be one slice.
+
+During implementation and post-gate repair, if repair/verification keeps cycling without converging, explain
+the unresolved problem and recommended next step, then wait for the user's decision. Preserve unaffected valid
+evidence; rerun the affected closure.
+
+Progress reports must help the user judge the work, not merely announce activity. Report a new relevant fact:
+completed work, evidence and its meaning against the intended result, a real completed/total count, deviation,
+risk, next action or changed forecast. If the runtime cannot observe exact progress, disclose that limitation
+before a long run and report only observable milestones; never invent percentages or repeat empty "still
+running" updates. State whether interruption preserves partial results when that changes the user's choice.
 
 ## Readiness and conditional guidance
 
@@ -143,11 +172,21 @@ blocks a reliable handoff, not permission to invent the decision.
 
 ## Verification
 
-Acceptance describes concrete examples, expected behavior and the smallest sufficient executable evidence.
-One command can prove several obligations. Preserve meaningful regression, security, recovery and privacy
-checks. Add layers or matrices only for distinct risk or project/release requirements, not symmetry. Start
-user-visible verification with the shortest useful actor-to-result path. Testing guidance is not permission
-to delete a failing test or lower its expectation without a confirmed behavior change.
+Match verification to its stage and proof obligation:
+
+- Before implementation, use existing evidence or the smallest bounded trial needed for a consequential
+  decision. Use E2E only when it is the smallest reliable baseline, reproduction or decision evidence.
+- During implementation, use focused checks for the changed boundary and the shortest useful actor-to-result
+  path only when it adds a distinct signal.
+- Before delivery, let accepted obligations, actual scope and project/release conventions select the necessary
+  acceptance, integration, E2E, regression and risk-specific evidence.
+
+Focused evidence is the default. A matrix, E2E and a repository-wide suite are independent escalation options,
+never a package; use only the necessary type and narrowest scope when cheaper evidence cannot prove a distinct
+remaining risk or a project/release requirement selects it. Record presence, size, file count and step count
+are not escalation reasons. A necessary lower-cost failure stops unrelated costlier expansion unless needed
+for diagnosis or an explicitly requested full sweep; a final READY candidate still completes every applicable
+delivery obligation without lowering a failed expectation absent a confirmed behavior change.
 
 ## Outputs and validation
 

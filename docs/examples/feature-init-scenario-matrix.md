@@ -36,12 +36,23 @@ Shared behavior needs affected cases on both hosts. In particular:
 - Provide a multi-turn feature conversation whose final decision replaces an earlier alternative. Expect no
   duplicate confirmation and explicit supersession with no fallback remnant. Conflicting sources without a
   resolution need a useful question before any artifact is materialized.
-- Give independent outcomes versus a coupled transaction: explain separability or coupling, and ask only when
-  the choice changes delivery. Do not create an epic/backlog or external tracking without a request.
+- Give independent outcomes versus a coupled transaction: recommend the smallest useful first feature and ask
+  only when the choice changes delivery. Do not create a total feature, epic or external tracker by default.
 - Compare a repository-aligned local change with a queue/worker or multiple inference paths having no present
   consumer: continue ordinary details, but explain material operating cost and resolve the unnecessary scope.
-- Begin agreed multi-phase work: give evidence at the phase handoff and wait as agreed. A single small task
-  needs no artificial phase; a newly discovered material change uses the existing Scope Stop.
+- Within a useful slice, continue ordinary work without another approval. A material problem stops affected
+  work even mid-slice; after a meaningful slice, give evidence and alignment at the handoff and wait. A small
+  direct task needs no artificial slice.
+- Explain verification as three different proof responsibilities: pre-implementation decision evidence,
+  implementation feedback and delivery evidence. Do not require delivery-level E2E to begin ordinary work;
+  explain the observable meaning before technical labels. Treat matrix, E2E and repository-wide suites as
+  independent escalation choices, never a package.
+- Before a long, paid or opaque verification, give an execution envelope with purpose, scale, rough duration,
+  progress visibility, partial-result/restart behavior, stop rule and a smaller canary. When a lower-cost necessary
+  check fails, stop costlier expansion unless it is needed for diagnosis or explicitly requested. A non-READY
+  endpoint ends; a permitted repair uses one focused slice and waits after its handoff before another full gate.
+- During a long run, report real counts or milestones. When exact progress is unavailable, disclose that limit
+  and the interruption consequence; do not invent a percentage or repeat empty status.
 
 ## Equivalence interpretation
 

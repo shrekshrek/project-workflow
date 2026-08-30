@@ -35,8 +35,13 @@ Check meaning, not template completion:
 2. Critical unknowns affecting the chosen direction, contract or acceptance have adequate evidence or an
    explicit user decision. A trial that did not run or failed its criterion is not validated evidence. Ordinary
    details that can safely be discovered during implementation remain open without blocking the whole change.
+   Pre-implementation evidence is scoped to the decision it settles; do not require delivery-level E2E when a
+   cheaper existing fact or bounded trial is sufficient.
 3. Concrete acceptance examples and expected results have the smallest non-redundant proof obligations and
-   executable evidence. Preserve actual regression/risk coverage; do not require generic test-layer quotas.
+   an executable verification path. Before implementation this is a credible plan plus any decision evidence,
+   not completed delivery evidence. Distinguish implementation feedback from delivery proof and order costlier
+   layers only for distinct remaining risk. Matrix, E2E and repository-wide checks are independent options,
+   not a package; require each only when smaller evidence cannot cover its risk or a project/release rule does.
 4. The approach is necessary for the current outcome and addresses applicable responsibilities, data,
    authorization, recovery, cost and rollout constraints. Scope is coherent; independent outcomes are not
    silently bundled. Size alone is not a failure and a bundle does not need a new document category.
@@ -45,8 +50,9 @@ Check meaning, not template completion:
    Added/Modified/Removed subsections when prose already states the change.
 6. The next implementation step and its verification are actionable. Do not require an exhaustive task list,
    module table or optional files. When useful steps exist, their dependency checkpoints and accepted changes
-   agree. READY, receipt/status writes and archive eligibility are endpoint outputs, not prerequisites that
-   must be checked off before the endpoint itself can run.
+   agree. Known material cost or permission constraints are explicit; operational details that are only
+   knowable at execution time remain runtime decisions. READY, receipt/status writes and archive eligibility
+   are endpoint outputs, not prerequisites that must be checked off before the endpoint itself can run.
 7. Explicit project/convention commitments can be satisfied. Merely touching several modules does not require
    an alignment table. A promised Codify decision needs its owner/source/enforcement; only then read the
    [Guidance Placement Contract](agents-md-revise.md#guidance-placement-contract).
@@ -86,6 +92,7 @@ this check ran. Neither a review verdict nor a template status creates user appr
 
 - This checks the implementation basis, not whether the code is delivered.
 - No format quota, fixed section list, extra document or planned-test count establishes readiness.
+- Verification depth is stage- and risk-matched; more layers or cases do not establish readiness by volume.
 - Unchanged settled decisions and evidence remain valid; new material discoveries use
   [Implementation Scope Stop](feature-init.md#implementation-scope-stop).
 - Findings cite the affected decision and evidence; source authority is fail-closed.

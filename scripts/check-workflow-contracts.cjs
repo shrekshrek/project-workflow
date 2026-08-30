@@ -42,19 +42,29 @@ requirePatterns("docs/actions/feature-init.md", [
   ["bounded authorized experiments", /specifically authorized trial[\s\S]*isolated trial is not authorization to implement/i],
   ["observations distinct from acceptance", /observed results separately from accepted expected behavior/i],
   ["unchanged criteria", /do not rewrite the criterion to make it pass/i],
+  ["direct work does not require a record by shape", /feature name, several files or multiple implementation steps[\s\S]*do not by[\s\S]*themselves require a record/i],
+  ["natural independent outcome decomposition", /several outcomes can deliver value[\s\S]*recommend the smallest useful first feature[\s\S]*Keep a coupled transaction/i],
+  ["zero-context respectful explanation", /Assume no prior knowledge[\s\S]*preserving the user's[\s\S]*authority[\s\S]*do not patronize/i],
+  ["pre-implementation evidence is not delivery E2E", /Before implementation[\s\S]*smallest bounded trial[\s\S]*Use E2E only when it is the smallest reliable/i],
   ["record need independent of verification", /Decide whether to create, reuse or omit a record independently of verification depth/i],
   ["preview and apply", /`PREVIEW`[\s\S]*`APPLY`/],
   ["single record default", /Default new record:[\s\S]*\/spec\.md`[\s\S]*Do not precreate `plan\.md`, `tasks\.md`/],
   ["optional useful split", /Only split[\s\S]*materially helps reading or handoff/i],
   ["single active accepted record", /active feature uses `spec\.md` as its accepted record[\s\S]*Archived directories remain history/i],
   ["preview without duplicate approval", /execution preview[\s\S]*accepted preview is reused[\s\S]*do not insert duplicate confirmation/i],
+  ["long-run execution envelope", /materially long, paid, external, opaque[\s\S]*execution envelope[\s\S]*partial-result persistence[\s\S]*canary or sample alternative/i],
+  ["accepted envelope preserves useful handoffs", /accepted envelope covers ordinary work[\s\S]*does not suppress informative handoffs/i],
   ["batched context-preserving updates", /Answer the current question first[\s\S]*Batch writeback[\s\S]*exclusions, unresolved questions, permission limits/i],
   ["no bookkeeping context reset", /Do not[\s\S]*clear the session merely because a document changed/i],
   ["ordinary discoveries proceed", /Discovery continues during implementation[\s\S]*can proceed without approval/i],
   ["affected work stops for material discovery", /Stop the affected implementation[\s\S]*authorization, data disposition, operating cost[\s\S]*ask the smallest useful question/i],
   ["local revision and continuation", /After confirmation[\s\S]*spec-revise[\s\S]*update only affected[\s\S]*continue the authorized implementation/i],
-  ["checkpoints not per-file pauses", /smallest relevant check[\s\S]*Wait for the user only at an agreed phase boundary/i],
+  ["slice execution and judgment handoff", /Within a useful slice[\s\S]*material problem[\s\S]*even mid-slice[\s\S]*meaningful user-judgeable slice boundary[\s\S]*Wait before beginning that next slice[\s\S]*small direct task may be one slice/i],
   ["repair convergence handoff", /cycling without converging[\s\S]*recommended next[\s\S]*wait for the user's decision/i],
+  ["judgment-useful progress observability", /Progress reports must help the user judge[\s\S]*evidence and its meaning[\s\S]*cannot observe exact progress[\s\S]*never invent percentages/i],
+  ["stage-matched verification", /Before implementation[\s\S]*During implementation[\s\S]*Before delivery[\s\S]*E2E/i],
+  ["independent verification escalation", /Focused evidence is the default[\s\S]*matrix, E2E and a repository-wide suite are independent escalation options[\s\S]*never a package[\s\S]*not escalation reasons/i],
+  ["progressive verification fail-fast", /lower-cost failure stops[\s\S]*costlier expansion/i],
   ["external tracking optional", /External tracking is never a prerequisite/i],
   ["decision closure before drafting", /Normalize accepted material decisions and explicit supersessions before drafting/i],
 ]);
@@ -68,7 +78,9 @@ requirePatterns("docs/actions/spec-quality-check.md", [
   ["requirements reconciliation", /^## Requirements Reconciliation$/m],
   ["reconciliation statuses", /`ALIGNED`[\s\S]*`MISMATCH`[\s\S]*`SOURCE GAP`/],
   ["conditional sibling alignment", /Merely touching several modules does not require[\s\S]*an alignment table/i],
-  ["minimum sufficient proof", /smallest non-redundant proof obligations/i],
+  ["minimum sufficient planned proof", /smallest non-redundant proof obligations[\s\S]*executable verification path[\s\S]*not completed delivery evidence/i],
+  ["stage-matched quality gate", /Before implementation[\s\S]*decision evidence[\s\S]*Distinguish implementation feedback from delivery proof/i],
+  ["independent quality escalation", /Matrix, E2E and repository-wide checks are independent options[\s\S]*not a package/i],
   ["correction handoff", /`N\/A\(route: spec-revise\)` before mechanical checks or[\s\S]*reviewer dispatch/i],
   ["direct correction evidence", /exact user statement[\s\S]*normalized replacement[\s\S]*supersedes/i],
   ["reuse decision closure", /Preserve the decision-closure result/i],
@@ -101,7 +113,7 @@ requirePatterns("docs/actions/feature-done.md", [
   ["delivery receipt", /^## Delivery Receipt/m],
   ["stable snapshot", /stable final snapshot/i],
   ["terminal endpoint handoff", /Each gate run reviews one stable final snapshot[\s\S]*never repairs[\s\S]*non-READY verdict returns control/i],
-  ["repair authorization", /review-only request stops[\s\S]*already authorized implementation or delivery request[\s\S]*ordinary repairs within the accepted scope without another confirmation, outside this action[\s\S]*operations requiring separate approval still wait for it/i],
+  ["focused repair before endpoint retry", /non-READY verdict[\s\S]*ends this gate[\s\S]*direct-repair[\s\S]*one focused repair slice[\s\S]*hand off the blocker, fix, changed evidence and remaining risk[\s\S]*wait before a fresh endpoint run/i],
   ["L1 L2 L3", /L1 Mechanical:[\s\S]*L2 Project conventions:[\s\S]*L3 Change-spec compliance:/],
   ["risk-based review scheduling", /When both reviews apply, dispatch L2 and L3 together[\s\S]*security\/authorization[\s\S]*Otherwise dispatch L3 first[\s\S]*same snapshot/i],
   ["review input separation", /authoritative convention population from the filesystem[\s\S]*`AGENTS\.md`[\s\S]*Caller-supplied[\s\S]*hints only[\s\S]*Route convention sources to L2 and the change-spec package to L3/i],
@@ -116,7 +128,10 @@ requirePatterns("docs/actions/feature-done.md", [
   ["delivery artifact baseline", /accepted feature artifact as the requirements baseline/i],
   ["conditional L3 without coverage waiver", /L3 Change-spec compliance: required for a concrete[\s\S]*Otherwise record a[\s\S]*reasoned N\/A[\s\S]*execute or mechanically check every applicable obligation/i],
   ["single spec delivery receipt", /append the receipt to `spec\.md` only at delivery[\s\S]*single canonical receipt/i],
-  ["compact repair reporting", /Keep repair reporting to the blocker, fix, changed evidence, and next result/i],
+  ["cost-tier fail-fast", /Order necessary evidence by cost and discrimination[\s\S]*lower-cost failure makes READY impossible[\s\S]*skip unrelated higher-cost checks/i],
+  ["final candidate completes required evidence", /final READY candidate must finish all independently executable required checks/i],
+  ["independent endpoint escalation", /Matrix, E2E and[\s\S]*repository-wide\/release suites are independent escalation options, not a bundle/i],
+  ["endpoint long-run handoff", /Long-run execution:[\s\S]*actual next run[\s\S]*does not skip that handoff or its wait[\s\S]*observable counts or milestones[\s\S]*inventing it/i],
 ]);
 requireTerms("docs/actions/feature-done.md", "mechanical feature boundary", [
   "Git-derived feature population",
@@ -142,6 +157,7 @@ requirePatterns("docs/reviewers/spec-reviewer.md", [
 requirePatterns("docs/spec-driven.md", [
   ["observations and acceptance distinct", /试验观察[\s\S]*接受规则[\s\S]*交付证据/],
   ["active revision versus successor boundary", /活动且未归档[\s\S]*spec-revise[\s\S]*已归档[\s\S]*successor feature/],
+  ["stage-matched verification guide", /开发前只解决[\s\S]*开发中用聚焦检查[\s\S]*开发后/],
 ]);
 forbidPatterns("docs/spec-driven.md", [
   ["legacy mandatory deferred tracking", /先把暂缓结果持久化到既有 Issue\/PM/],
@@ -159,15 +175,23 @@ requirePatterns("docs/reviewers/README.md", [
 ]);
 requireTerms("docs/project-workflow-overview.drawio", "current feature-done overview", [
   "机械 Feature 边界",
-  "non-READY 按原授权处理",
+  "non-READY → 聚焦修复切片",
   "不在 gate 内修实现",
   "高风险并行,普通先 L3 后 L2",
   "READY → archive pending",
   "明确关闭/归档/提交 → /feature-archive",
 ]);
+requireTerms("docs/project-workflow-overview.drawio", "progressive verification overview", [
+  "开发前决策证据",
+  "开发中 focused check",
+  "完整交付 gate",
+  "矩阵 / E2E / 全仓库",
+  "独立选用",
+  "必要低层失败",
+  "长跑前执行预告",
+]);
 forbidPatterns("docs/project-workflow-overview.drawio", [
   ["legacy parallel scheduling", /L2\/L3 容量允许时并行/],
-  ["legacy explicit-rerun-only flow", /用户再次要求时复审|非 READY 不自动重跑/],
 ]);
 forbidPatterns("docs/reviewers/README.md", [
   ["status-only protocol", /status-only/i],
@@ -275,6 +299,13 @@ requirePatterns("docs/examples/reviewer-mutation-smoke.md", [
 
 requirePatterns("docs/examples/feature-init-scenario-matrix.md", [
   ["decision closure interaction", /multi-turn feature conversation[\s\S]*no[\s\S]*duplicate confirmation[\s\S]*before any artifact is materialized/i],
+  ["stage-matched verification interactions", /pre-implementation decision evidence[\s\S]*implementation feedback[\s\S]*delivery evidence/i],
+  ["long-run and fail-fast interactions", /execution envelope[\s\S]*lower-cost necessary\s+check fails[\s\S]*exact progress is unavailable/i],
+]);
+
+requirePatterns("template/AGENTS.md", [
+  ["plain-language collaboration", /plain language that requires no repository or testing knowledge[\s\S]*user's decision authority/i],
+  ["cost-aware independent verification", /cheapest useful evidence[\s\S]*Matrix, E2E and repository-wide suites are independent options[\s\S]*not a package[\s\S]*observable facts/i],
 ]);
 
 requirePatterns("adapters/codex/.codex-plugin/plugin.json", [

@@ -72,16 +72,16 @@
         <mxCell id="skill_featdone" value="&lt;b&gt;/feature-done&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;completion preflight → L1 → 单轮适用 L2/L3&lt;br/&gt;&lt;b&gt;[E]&lt;/b&gt; check → current delivery receipt&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2E7D32;strokeWidth=2;fontSize=11;align=center;fontStyle=1;" vertex="1" parent="1">
           <mxGeometry x="870" y="382" width="220" height="60" as="geometry"/>
         </mxCell>
-        <mxCell id="step_deliver" value="&lt;b&gt;READY / NEEDS WORK / BLOCKED&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;一个稳定快照，一个终态&lt;br/&gt;non-READY 按原授权处理&lt;/span&gt;" style="text;html=1;strokeColor=#90A4AE;fillColor=#FAFAFA;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=11;rounded=0;dashed=1;" vertex="1" parent="1">
+        <mxCell id="step_deliver" value="&lt;b&gt;READY / NEEDS WORK / BLOCKED&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;一个稳定快照，一个终态&lt;br/&gt;non-READY → 聚焦修复切片&lt;/span&gt;" style="text;html=1;strokeColor=#90A4AE;fillColor=#FAFAFA;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=11;rounded=0;dashed=1;" vertex="1" parent="1">
           <mxGeometry x="1120" y="386" width="235" height="56" as="geometry"/>
         </mxCell>
         <mxCell id="skill_featarchive" value="&lt;b&gt;/feature-archive&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;完整 READY receipt 才可清扫;dirty 仅同任务&lt;br/&gt;&lt;b&gt;[E]&lt;/b&gt; 当前事实 + &lt;b&gt;[B]&lt;/b&gt; archive&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2E7D32;fontSize=11;align=center;" vertex="1" parent="1">
           <mxGeometry x="1390" y="382" width="220" height="60" as="geometry"/>
         </mxCell>
-        <mxCell id="featdone_decompose" value="&lt;span style=&#39;font-size:10px;color:#558B2F;&#39;&gt;= 机械 Feature 边界 + 稳定 snapshot + L1 + 适用 L2/L3 + receipt；不在 gate 内修实现&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=10;fontColor=#558B2F;" vertex="1" parent="1">
+        <mxCell id="featdone_decompose" value="&lt;span style=&#39;font-size:10px;color:#558B2F;&#39;&gt;开发前决策证据 → 开发中 focused check → 完整交付 gate；矩阵 / E2E / 全仓库按剩余风险独立选用，不成套升级；必要低层失败即停止扩张&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=10;fontColor=#558B2F;" vertex="1" parent="1">
           <mxGeometry x="600" y="450" width="930" height="20" as="geometry"/>
         </mxCell>
-        <mxCell id="record_note" value="&lt;b&gt;按需记录&lt;/b&gt;：默认单份 spec；小修可不建档。实施中重要发现先沟通确认，再局部修订继续；普通细节直接推进，验证不减。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F8E9;strokeColor=#558B2F;dashed=1;fontSize=9;align=left;verticalAlign=middle;spacing=4;fontColor=#558B2F;" vertex="1" parent="1">
+        <mxCell id="record_note" value="&lt;b&gt;按需记录&lt;/b&gt;：默认单份 spec；小修可不建档。普通细节切片内推进；实质问题立即暂停；有意义的切片以实际证据交接后再继续。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F8E9;strokeColor=#558B2F;dashed=1;fontSize=9;align=left;verticalAlign=middle;spacing=4;fontColor=#558B2F;" vertex="1" parent="1">
           <mxGeometry x="200" y="446" width="395" height="28" as="geometry"/>
         </mxCell>
 
@@ -104,16 +104,16 @@
         <mxCell id="lane_p3_label" value="&lt;b&gt;P3&lt;/b&gt;&lt;br/&gt;Continuous Maintenance&lt;br/&gt;&lt;span style=&#39;font-size:10px;color:#546E7A;&#39;&gt;开发期间常驻 (跟 P2 重叠)&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=14;fontStyle=1;fontColor=#E65100;" vertex="1" parent="1">
           <mxGeometry x="50" y="556" width="140" height="80" as="geometry"/>
         </mxCell>
-        <mxCell id="p3_mech1" value="&lt;b&gt;阶段检查&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;使用项目真实检查命令&lt;br/&gt;验证当前阶段的相关改动&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#E65100;fontSize=11;align=center;" vertex="1" parent="1">
+        <mxCell id="p3_mech1" value="&lt;b&gt;聚焦验证默认&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;矩阵 / E2E / 全仓库独立按需&lt;br/&gt;低层必要检查失败即停止扩大&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#E65100;fontSize=11;align=center;" vertex="1" parent="1">
           <mxGeometry x="210" y="565" width="280" height="65" as="geometry"/>
         </mxCell>
-        <mxCell id="p3_mech2" value="&lt;b&gt;端点 review (= /feature-done)&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;认为完成时显式调用;每次一个 terminal verdict&lt;br/&gt;receipt 仅保留下游需要的证据&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#E65100;fontSize=11;align=center;" vertex="1" parent="1">
+        <mxCell id="p3_mech2" value="&lt;b&gt;完整交付 gate (= /feature-done)&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;READY 候选完成全部适用义务&lt;br/&gt;不在 gate 内修实现；修复切片交接等待&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#E65100;fontSize=11;align=center;" vertex="1" parent="1">
           <mxGeometry x="510" y="565" width="280" height="65" as="geometry"/>
         </mxCell>
         <mxCell id="p3_mech3" value="&lt;b&gt;协作走平台原生&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;backlog / 讨论 → GitHub Issues / Discussions&lt;br/&gt;不进 repo 文件 (§4.4 / §7.8)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#E65100;fontSize=11;align=center;" vertex="1" parent="1">
           <mxGeometry x="810" y="565" width="280" height="65" as="geometry"/>
         </mxCell>
-        <mxCell id="p3_note" value="&lt;span style=&#39;font-size:10px;color:#546E7A;&#39;&gt;P3 由阶段检查 + P2 端点 review (/feature-done) 形成&lt;b&gt;持续运行态&lt;/b&gt;&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=10;" vertex="1" parent="1">
+        <mxCell id="p3_note" value="&lt;span style=&#39;font-size:10px;color:#546E7A;&#39;&gt;&lt;b&gt;长跑前执行预告&lt;/b&gt;:目的/规模/时长/成本/进度/中间结果/停止与重启；只报告真实计数或里程碑&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=10;" vertex="1" parent="1">
           <mxGeometry x="1110" y="572" width="530" height="50" as="geometry"/>
         </mxCell>
 

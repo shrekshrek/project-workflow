@@ -75,14 +75,18 @@ useful, keep a dated one-line attempt summary in the implementation record. A no
 
 ## Review Layers
 
-- L1 Mechanical: run explicit Verification plus standard commands for each changed project. Repository-wide,
-  release, or duplicate test layers require distinct evidence from the spec, an applicable convention, or a
-  defined shared-surface risk.
+- L1 Mechanical: run explicit Verification plus standard commands for each changed project. Matrix, E2E and
+  repository-wide/release suites are independent escalation options, not a bundle. Each requires a distinct
+  risk not proven by smaller evidence or an explicit project/release requirement; use its narrowest useful scope.
 - L1 execution: reuse a passing same-task check only while its command, relevant inputs, and scope classification
   are unchanged. After a fix, rerun affected checks and their dependency closure; expand only when the fix changes
   a shared surface, contract, dependency, or build configuration. Sequence cache-sharing heavyweight commands.
-- L1 prerequisite: finish all independently executable required checks before review. Failure yields `NEEDS WORK`,
-  unavailability yields `BLOCKED`, and applicable reviewer slots record `not-run(L1 prerequisite)`.
+  Order necessary evidence by cost and discrimination; batch independent checks at the current cost tier.
+  Once a necessary lower-cost failure makes READY impossible, skip unrelated higher-cost checks unless needed
+  for diagnosis or an explicitly requested full sweep.
+- L1 prerequisite: a final READY candidate must finish all independently executable required checks before
+  review. An early necessary failure may return `NEEDS WORK` without unrelated higher-cost checks; unavailability
+  yields `BLOCKED`, and applicable reviewer slots record `not-run(L1 prerequisite)`.
 - L2 Project conventions: required when the project/user asks for it, convention sources change, or a
   qualitative convention/architecture concern cannot be settled by mechanical checks. Otherwise record a
   reasoned N/A. Documentation size does not determine applicability.
@@ -93,8 +97,11 @@ useful, keep a dated one-line attempt summary in the implementation record. A no
   reviewers apply or not. An unverified or failed obligation blocks READY. Optional files and headings do not
   create or remove obligations. A failed test is not permission to rewrite an expected result.
 - Evidence deduplication: when one command/assertion proves several related Verification items, execute it once and
-  map that result to each obligation. A matrix runs only while its declared dimensions remain applicable and prove
-  distinct risk.
+  map that result to each obligation.
+- Long-run execution: before a materially long, paid, external, opaque, high-volume or restart-costly endpoint
+  check, present the actual next run at `feature-init`'s slice handoff, reusing its concise execution envelope.
+  Prior acceptance avoids re-deciding unchanged details; it does not skip that handoff or its wait. Report
+  observable counts or milestones and disclose unavailable progress rather than inventing it.
 - Domain doc check: defer it until L1 and applicable L2/L3 and acceptance verification form a READY candidate. Earlier
   failures record `not-run(non-READY prerequisite)`. For a candidate, compare only a declared/relevant
   `docs/specs/<area>.md`: resolved durable behavior with no existing area document is `update pending`; genuinely
@@ -108,13 +115,13 @@ Run applicable review only after L1 passes, under the shared
 evidence blocks `READY`; an allowed N/A is an applicability decision. Finish implementation and non-receipt
 artifact edits first. Reviewers and this action are read-only outside endpoint-owned receipt/status writes.
 A non-READY verdict reports its blockers and `Next` routes, then ends this gate. A review-only request stops
-at the verdict. For a current, already authorized implementation or delivery request, the enclosing workflow reports
-and performs ordinary repairs within the accepted scope without another confirmation, outside this action.
-Apply [feature-init's Scope Stop](feature-init.md#implementation-scope-stop) to direction/scope changes and
-non-converging repair/verification; operations requiring separate approval still wait for it. After repair, invoke this action
-again on a fresh snapshot, reuse only unchanged same-task L1 evidence, and rerun affected checks and applicable
-reviews. Keep repair reporting to the blocker, fix, changed evidence, and next result; reference valid evidence
-instead of restating the plan or copying earlier failed receipts.
+at the verdict. For a current authorized implementation or delivery request, a `direct-repair` blocker may
+continue outside the gate as one focused repair slice after that report; other routes keep their decision and
+permission boundaries. Apply [feature-init's Scope Stop](feature-init.md#implementation-scope-stop) to material
+changes and non-converging repair/verification. At the repair-slice boundary, rerun only the affected closure,
+hand off the blocker, fix, changed evidence and remaining risk, then wait before a fresh endpoint run. A later
+authorized run creates a fresh snapshot, reuses only unchanged same-task L1 evidence, and reruns affected checks
+and applicable reviews; reference valid evidence instead of restating the plan or copying failed receipts.
 
 Treat the accepted feature artifact as the requirements baseline; handle later material decisions through
 [Implementation Scope Stop](feature-init.md#implementation-scope-stop) before reviewing implementation fidelity.

@@ -144,8 +144,13 @@ function validateFixtures() {
     "direction-concern-ask",
     "project-evidence-conflict-before-spec-ask",
     "operating-envelope-before-implementation-ask",
+    "conversation-stage-matched-verification",
+    "conversation-expensive-verification-envelope",
+    "conversation-progressive-verification-fail-fast",
+    "conversation-long-run-progress-limits",
+    "conversation-no-micro-approval",
  ]) {
-    if (!expected[scenario]) problems.push(`missing required scope/impact scenario ${scenario}`);
+    if (!expected[scenario]) problems.push(`missing required scope/impact/conversation scenario ${scenario}`);
  }
 
   const checkedNumberingBases = new Set();

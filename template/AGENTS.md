@@ -19,8 +19,8 @@ This file is the cross-tool source of truth for working in this repository. Keep
 ## Change Workflow
 
 - Discuss the problem and resolve consequential unknowns before implementation. Use bounded, authorized trials when evidence is missing; distinguish observed results from user-accepted expectations.
-- Make tiny local fixes directly and report the checks run. When acceptance, handoff, current-truth synchronization, or risk needs a durable record, use the host's `feature-init` action: reuse an active record or default to one `spec.md`; split only useful supporting detail.
-- Before implementation, explain outcome, approach, boundary, rationale and verification proportionately. Reuse an already accepted approach; ask only about unresolved material choices or required permissions. Report meaningful checkpoints and wait at agreed phase boundaries.
+- Make well-understood local changes directly and report focused checks; a feature name, file count or step count does not require a record. When acceptance, handoff, current-truth synchronization or material risk needs one, use `feature-init`: reuse an active record or default to one `spec.md`.
+- Before implementation, explain outcome, approach, boundary, rationale and verification in plain language that requires no repository or testing knowledge while preserving the user's decision authority. Reuse an accepted approach; within a useful slice continue ordinary work, stop for a material discovery, and at its meaningful boundary hand off actual evidence and alignment, then wait before the next slice.
 - Resolve current behavior from `docs/specs/` and the selected active feature; exclude `docs/specs/changes/archive/` unless tracing history.
 - Batch document updates at conclusions, before implementation and at handoffs. Preserve decisions, exclusions, open questions, permission limits and next steps; do not interrupt every exchange or reset context for bookkeeping.
 - Continue ordinary implementation discoveries within the accepted behavior. When new evidence changes direction, scope, contracts, data, authorization, material cost or acceptance, pause affected work, explain the finding, confirm the change, update the affected record through `spec-revise`, then continue. Existing code never justifies absorbing scope.
@@ -49,6 +49,11 @@ This file is the cross-tool source of truth for working in this repository. Keep
   project/release conventions. Run a repository-wide or release suite only when one of those inputs requires
   it, and execute each unchanged final evidence source once. Update necessary documentation before the final
   affected checks; do not rerun a focused check separately when unchanged final evidence subsumes it.
+- Start with the cheapest useful evidence and expand only for remaining risk; a blocking low-cost failure stops
+  unrelated expensive checks until repaired. Matrix, E2E and repository-wide suites are independent options,
+  not a package; use only a necessary type and narrow scope. Before a long, paid, external or opaque check, explain the scale,
+  cost/permission, observable progress and restart consequence, and use a smaller canary when it can answer first.
+  Report progress from observable facts, never invented percentages.
 - Cite concrete evidence when a required check cannot run.
 
 ## Boundaries

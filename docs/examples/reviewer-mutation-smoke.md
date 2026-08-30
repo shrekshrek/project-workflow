@@ -72,8 +72,9 @@ Run an ordinary `clean` case and a convention-risk case with each adapter and re
 - Mix another active feature or unrelated work into that population; confirm completion preflight returns
   `BLOCKED` before L1 instead of subtracting paths or asking reviewers to infer ownership.
 - After a non-READY verdict, confirm no implementation repair or reviewer rerun occurs inside that gate.
-  After repair outside the gate, invoke `feature-done` again and confirm it creates a fresh final snapshot,
-  reruns affected checks and applicable reviews, and reuses only unchanged same-task L1 evidence.
+  A permitted direct repair runs outside it as one focused slice, reruns only the affected closure, hands off
+  its result and waits. A later user continuation may invoke `feature-done` on a fresh final snapshot, rerun
+  affected checks and applicable reviews, and reuse only unchanged same-task L1 evidence.
 
 If the host cannot expose or constrain reviewer capacity, record that limitation instead of claiming the scheduling branch passed.
 
@@ -87,9 +88,10 @@ If the host cannot expose or constrain reviewer capacity, record that limitation
   later explicit invocation may start the new cycle after inputs stabilize.
 - Complete the initial `known-bad` report and confirm implementation and non-receipt artifacts remain unchanged
   inside the gate. With an existing implementation/delivery request, confirm the owning workflow reports and
-  repairs ordinary defects within the accepted scope without another confirmation, then runs a fresh gate.
-  Let repair and review keep cycling without converging, including when findings change between runs; confirm
-  it explains the remaining problems and recommended next step, then waits for the user's decision.
+  repairs an ordinary direct blocker as one focused slice, hands off its affected evidence, and waits before
+  another full gate.
+  If the focused repair cannot resolve the blocker or its affected checks repeat without new evidence, confirm
+  that slice explains the remaining problem and recommended next step, then waits for the user's decision.
   With a review-only request, confirm it stops at the verdict. A material direction/scope change or an operation
   requiring separate approval still waits for the user. Change the feature boundary, convention source,
   accepted spec, or reviewer contract and confirm the later gate runs the standard full review of the new snapshot.
