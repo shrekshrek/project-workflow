@@ -13,29 +13,35 @@ const read = (relative) => {
   }
   return fs.readFileSync(absolute, "utf8");
 };
+// Assertions are prose phrases, so a pure Markdown reflow must not fail them. Testing the collapsed copy
+// tolerates a moved line break while still requiring the exact word sequence.
+const collapse = (text) => text.replace(/[ \t]*\r?\n[ \t]*/g, " ");
+const present = (term, content) => (typeof term === "string"
+  ? content.includes(term) || collapse(content).includes(term)
+  : term.test(content) || term.test(collapse(content)));
 const requirePatterns = (relative, entries) => {
   const content = read(relative);
   for (const [label, pattern] of entries) {
-    if (!pattern.test(content)) problems.push(`${relative}: missing ${label}`);
+    if (!present(pattern, content)) problems.push(`${relative}: missing ${label}`);
   }
 };
 const forbidPatterns = (relative, entries) => {
   const content = read(relative);
   for (const [label, pattern] of entries) {
-    if (pattern.test(content)) problems.push(`${relative}: contains forbidden ${label}`);
+    if (present(pattern, content)) problems.push(`${relative}: contains forbidden ${label}`);
   }
 };
 const requireTerms = (relative, label, terms) => {
   const content = read(relative);
-  const missing = terms.filter((term) => (
-    typeof term === "string" ? !content.includes(term) : !term.test(content)
-  ));
+  const missing = terms.filter((term) => !present(term, content));
   if (missing.length > 0) problems.push(`${relative}: incomplete ${label}`);
 };
 
 requirePatterns("docs/actions/README.md", [
   ["contract ownership section", /^## Contract ownership$/m],
   ["single normative owner", /one normative definition/i],
+  ["shared declarable surface", /\*\*Declarable surface\*\*[\s\S]*not a declarable surface[\s\S]*ordinary implementation rules/i],
+  ["shared verification escalation", /\*\*Verification escalation\*\*[\s\S]*independent escalation options, never a package[\s\S]*not escalation reasons/i],
 ]);
 requirePatterns("docs/actions/feature-init.md", [
   ["discovery before records", /^## Conversation and discovery$/m],
@@ -43,6 +49,7 @@ requirePatterns("docs/actions/feature-init.md", [
   ["observations distinct from acceptance", /observed results separately from accepted expected behavior/i],
   ["unchanged criteria", /do not rewrite the criterion to make it pass/i],
   ["direct work does not require a record by shape", /feature name, several files or multiple implementation steps[\s\S]*do not by[\s\S]*themselves require a record/i],
+  ["record-need anchors", /No record:[\s\S]*Record:[\s\S]*Volume never decides/i],
   ["natural independent outcome decomposition", /several outcomes can deliver value[\s\S]*recommend the smallest useful first feature[\s\S]*Keep a coupled transaction/i],
   ["zero-context respectful explanation", /Assume no prior knowledge[\s\S]*preserving the user's[\s\S]*authority[\s\S]*do not patronize/i],
   ["pre-implementation evidence is not delivery E2E", /Before implementation[\s\S]*smallest bounded trial[\s\S]*Use E2E only when it is the smallest reliable/i],
@@ -63,7 +70,7 @@ requirePatterns("docs/actions/feature-init.md", [
   ["repair convergence handoff", /cycling without converging[\s\S]*recommended next[\s\S]*wait for the user's decision/i],
   ["judgment-useful progress observability", /Progress reports must help the user judge[\s\S]*evidence and its meaning[\s\S]*cannot observe exact progress[\s\S]*never invent percentages/i],
   ["stage-matched verification", /Before implementation[\s\S]*During implementation[\s\S]*Before delivery[\s\S]*E2E/i],
-  ["independent verification escalation", /Focused evidence is the default[\s\S]*matrix, E2E and a repository-wide suite are independent escalation options[\s\S]*never a package[\s\S]*not escalation reasons/i],
+  ["shared escalation reference", /Focused evidence is the default[\s\S]*verification escalation\]\(README\.md#shared-runtime-conventions\)/i],
   ["progressive verification fail-fast", /lower-cost failure stops[\s\S]*costlier expansion/i],
   ["external tracking optional", /External tracking is never a prerequisite/i],
   ["decision closure before drafting", /Normalize accepted material decisions and explicit supersessions before drafting/i],
@@ -80,7 +87,7 @@ requirePatterns("docs/actions/spec-quality-check.md", [
   ["conditional sibling alignment", /Merely touching several modules does not require[\s\S]*an alignment table/i],
   ["minimum sufficient planned proof", /smallest non-redundant proof obligations[\s\S]*executable verification path[\s\S]*not completed delivery evidence/i],
   ["stage-matched quality gate", /Before implementation[\s\S]*decision evidence[\s\S]*Distinguish implementation feedback from delivery proof/i],
-  ["independent quality escalation", /Matrix, E2E and repository-wide checks are independent options[\s\S]*not a package/i],
+  ["shared escalation reference", /verification escalation\]\(README\.md#shared-runtime-conventions\)/i],
   ["correction handoff", /`N\/A\(route: spec-revise\)` before mechanical checks or[\s\S]*reviewer dispatch/i],
   ["direct correction evidence", /exact user statement[\s\S]*normalized replacement[\s\S]*supersedes/i],
   ["reuse decision closure", /Preserve the decision-closure result/i],
@@ -130,7 +137,7 @@ requirePatterns("docs/actions/feature-done.md", [
   ["single spec delivery receipt", /append the receipt to `spec\.md` only at delivery[\s\S]*single canonical receipt/i],
   ["cost-tier fail-fast", /Order necessary evidence by cost and discrimination[\s\S]*lower-cost failure makes READY impossible[\s\S]*skip unrelated higher-cost checks/i],
   ["final candidate completes required evidence", /final READY candidate must finish all independently executable required checks/i],
-  ["independent endpoint escalation", /Matrix, E2E and[\s\S]*repository-wide\/release suites are independent escalation options, not a bundle/i],
+  ["shared escalation reference", /verification escalation\]\(README\.md#shared-runtime-conventions\)/i],
   ["endpoint long-run handoff", /Long-run execution:[\s\S]*actual next run[\s\S]*does not skip that handoff or its wait[\s\S]*observable counts or milestones[\s\S]*inventing it/i],
 ]);
 requireTerms("docs/actions/feature-done.md", "mechanical feature boundary", [

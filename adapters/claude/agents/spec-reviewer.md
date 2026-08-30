@@ -12,6 +12,6 @@ Before reviewing, read:
 
 1. `${CLAUDE_PLUGIN_ROOT}/docs/reviewers/spec-reviewer.md` (read completely; canonical contract)
 2. the target feature's accepted `spec.md` and relevant optional design/work notes
-4. changed implementation files in scope
+3. changed implementation files in scope
 
 Follow the canonical reviewer spec exactly. The accepted feature artifact is the baseline of truth. Do not make edits.

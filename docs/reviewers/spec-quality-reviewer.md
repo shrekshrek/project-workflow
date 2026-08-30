@@ -81,7 +81,7 @@ Q3-Q7 in the same invocation so the caller receives one consolidated repair set.
 
 Fresh-read the relevant record and assess every applicable item. These questions are lenses, not mandatory sections or a demand for three files:
 
-- Q3 verification: a compact, traceable behavior/risk → executable verification path = pass; uncheckable assertions = fail; planned proof and already-run evidence remain distinct, and documented repeatable manual observation can be evidence. Remove obligations invented from generic edge/error habits or unspecified inputs unless a contract, project convention, or concrete risk requires them. Matrix, E2E and repository-wide checks are independent options, not a package; each must cover risk not proven by smaller evidence or an explicit release/compliance requirement. One command may prove several obligations; unjustified or duplicate layers fail Q3 and should be deleted or consolidated. Optional implementation ideas remain nonblocking suggestions. For user-visible work, order the shortest meaningful actor-to-result journey first when one is declared.
+- Q3 verification: a compact, traceable behavior/risk → executable verification path = pass; uncheckable assertions = fail; planned proof and already-run evidence remain distinct, and documented repeatable manual observation can be evidence. Remove obligations invented from generic edge/error habits or unspecified inputs unless a contract, project convention, or concrete risk requires them. Apply the shared [verification escalation](../actions/README.md#shared-runtime-conventions) rule. One command may prove several obligations; unjustified or duplicate layers fail Q3 and should be deleted or consolidated. Optional implementation ideas remain nonblocking suggestions. For user-visible work, order the shortest meaningful actor-to-result journey first when one is declared.
 - Q4 outcomes: actor/system + action + success condition = pass; vague aspiration = fail; missing success condition = borderline.
 - Q5 constraints: hard/external/measurable = pass; wish = fail; preference belongs in plan/risk and is borderline.
   For architecture-shaped work, a material quality constraint without an applicable responsibility,
@@ -100,9 +100,9 @@ Fresh-read the relevant record and assess every applicable item. These questions
   real dependency or risk checkpoint should close an inspectable result and own its smallest relevant check
   before dependent work.
 - Q7b delivery coherence: one independently demonstrable/acceptable/revertible outcome with resolved material risks = pass regardless of size; several separable outcomes with no coupling or traceable bundled-risk decision in the record = fail; an explicitly accepted bundle, or one coherent delivery with material unresolved coordination/rollback risk, = borderline.
-- Q7c current necessity: every persistent state, API, role, workflow, management surface, queue, runtime
-  component, or architecture responsibility names a present actor/consumer and a selected-outcome necessity =
-  pass; a capability justified only by possible future need = fail; an unclear present consumer or simpler
+- Q7c current necessity: every [declarable surface](../actions/README.md#shared-runtime-conventions) names a
+  present actor, owner or consumer and a selected-outcome necessity =
+  pass; a capability justified only by possible future need = fail; an unclear current need, affected party or simpler
   safe alternative = borderline.
   Prefer removing or deferring speculative capability over making its implementation more complete.
 - Q7d impact completeness: Scope, constraints, affected responsibilities, and acceptance agree across the record and any affected attachments =

@@ -16,6 +16,18 @@ current-truth synchronization. This does not require additional files or a docum
 The action owns discovery and record preparation, not production implementation. Returning from it preserves
 the enclosing request and its existing authorization.
 
+These anchors calibrate that judgment; match the reason, not the surface resemblance:
+
+- No record: fixing a bug whose correct behavior is already declared; renaming, extracting or reorganizing
+  internals with unchanged behavior; adding a test for existing behavior; a routine dependency refresh or
+  internal documentation edit that changes no accepted behavior or operational boundary.
+- Record: adding or changing persistent data; changing a default, limit or error that existing users or
+  callers can observe; a new endpoint, permission or scheduled job; work that must survive a session break or
+  be handed off; anything that makes an existing statement in `docs/specs/` wrong.
+
+Volume never decides: a one-line change to an authorization default needs a record, and a large mechanical
+refactor with unchanged behavior does not. When both lists seem to apply, the durable consequence decides.
+
 ## Inputs
 
 Resolve the explicit target root and applicable `AGENTS.md` before writes; never use an incidental cwd.
@@ -54,8 +66,8 @@ When several outcomes can deliver value, be accepted or be reverted independentl
 decomposition and recommend the smallest useful first feature; let the user choose when it is not already
 clear. Keep a coupled transaction, security outcome or rollout together. Explain real coupling/rollback risks;
 do not infer scope from file count or technical keywords.
-Every new persistent state, API, role, workflow, management surface, queue or runtime component needs a
-present consumer. Exclude speculative capability. External tracking is never a prerequisite for the selected
+Every new [declarable surface](README.md#shared-runtime-conventions) must serve the selected outcome and name
+its affected actor, owner or consumer. Exclude speculative capability. External tracking is never a prerequisite for the selected
 outcome; creating external items requires separate authorization.
 
 ## Record and authorization
@@ -141,8 +153,10 @@ Within a useful slice, ordinary implementation, expected repair and focused chec
 approval. A material problem or consequential uncertainty still stops the affected work immediately, even mid-slice, under
 the rules above. At a meaningful user-judgeable slice boundary, run the smallest relevant check and hand off
 the intended result, actual behavior and evidence, whether they remain aligned, material deviations or risks,
-and the next slice with its reason. Wait before beginning that next slice. Do not create a slice boundary for
-each file, function or ordinary step; a small direct task may be one slice.
+and the next slice with its reason. Call out material choices made inside the slice that the user did not decide
+and could reasonably judge differently. Wait before beginning that next slice.
+Do not create a slice boundary for each file, function or ordinary step; a small direct task may be one slice.
+Prefer a boundary where the user can observe a result when one exists.
 
 During implementation and post-gate repair, if repair/verification keeps cycling without converging, explain
 the unresolved problem and recommended next step, then wait for the user's decision. Preserve unaffected valid
@@ -181,10 +195,9 @@ Match verification to its stage and proof obligation:
 - Before delivery, let accepted obligations, actual scope and project/release conventions select the necessary
   acceptance, integration, E2E, regression and risk-specific evidence.
 
-Focused evidence is the default. A matrix, E2E and a repository-wide suite are independent escalation options,
-never a package; use only the necessary type and narrowest scope when cheaper evidence cannot prove a distinct
-remaining risk or a project/release requirement selects it. Record presence, size, file count and step count
-are not escalation reasons. A necessary lower-cost failure stops unrelated costlier expansion unless needed
+Focused evidence is the default; follow the shared
+[verification escalation](README.md#shared-runtime-conventions) rule.
+A necessary lower-cost failure stops unrelated costlier expansion unless needed
 for diagnosis or an explicitly requested full sweep; a final READY candidate still completes every applicable
 delivery obligation without lowering a failed expectation absent a confirmed behavior change.
 

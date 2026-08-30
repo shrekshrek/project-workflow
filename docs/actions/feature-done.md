@@ -37,9 +37,8 @@ Run this cheap completion check before expanded L1 commands or reviewer dispatch
   committed and uncommitted work. A clean state uses one exact `base..reviewed` commit range. Treat the resulting
   population as indivisible and require it all to belong to the selected feature. An ambiguous base/ownership or
   mixed feature/unrelated population returns `BLOCKED` before expanded L1 and asks for isolation or a commit range.
-- Compare the actual changed responsibility areas and high-impact surfaces with the accepted behavior, constraints and any applicable delivery boundary. A new persistent state, API,
-  role, workflow, management surface, queue, runtime, Provider/responsibility area, contract, migration,
-  authorization rule, or release boundary that was not declared returns `NEEDS WORK` before expanded L1
+- Compare the actual changed responsibility areas and high-impact surfaces with the accepted behavior, constraints and any applicable delivery boundary. An undeclared
+  [declarable surface](README.md#shared-runtime-conventions) returns `NEEDS WORK` before expanded L1
   and routes through [Implementation Scope Stop](feature-init.md#implementation-scope-stop).
   If ownership of the extra change is ambiguous, return `BLOCKED`.
 - Close every explicit Guidance Placement commitment before expanded L1. When plan Sibling Alignment or an
@@ -75,9 +74,8 @@ useful, keep a dated one-line attempt summary in the implementation record. A no
 
 ## Review Layers
 
-- L1 Mechanical: run explicit Verification plus standard commands for each changed project. Matrix, E2E and
-  repository-wide/release suites are independent escalation options, not a bundle. Each requires a distinct
-  risk not proven by smaller evidence or an explicit project/release requirement; use its narrowest useful scope.
+- L1 Mechanical: run explicit Verification plus standard commands for each changed project. Follow the shared
+  [verification escalation](README.md#shared-runtime-conventions) rule.
 - L1 execution: reuse a passing same-task check only while its command, relevant inputs, and scope classification
   are unchanged. After a fix, rerun affected checks and their dependency closure; expand only when the fix changes
   a shared surface, contract, dependency, or build configuration. Sequence cache-sharing heavyweight commands.
@@ -170,7 +168,9 @@ these facts unambiguous:
   obligations, or ambiguities only when non-empty. READY needs valid completed coverage for each applicable reviewer;
   a non-READY sequential run may record L2 `not-run(awaiting final L3 candidate)`. Record actual applicability,
   never infer a review exemption from the presence or absence of a file.
-  Reviewer identifiers and dispatch mode are optional diagnostics; coverage evidence remains
+  Record for each completed review whether it ran as an independent dispatch or in the main session; the
+  mechanism does not change applicability or block the gate, but a main-session review is never presented as
+  an independent one. Reviewer identifiers remain optional diagnostics; coverage evidence remains
   required.
 - `Current truth`: `not-run(non-READY prerequisite)` / no relevant domain doc / aligned / update pending / area
   unresolved. Use `area unresolved` only for durable behavior whose ownership is genuinely unknown.

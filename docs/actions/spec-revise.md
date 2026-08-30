@@ -8,9 +8,9 @@ Canonical action for changing an accepted feature contract after implementation 
 - The latest user instruction materially corrects, rejects, removes, or replaces behavior in an accepted
   contract, even when the user does not name this action and phrases the request as "fix it" or "continue".
 - A delivered-but-unarchived feature needs to reopen because a material contract, scope, plan, or Verification omission was discovered after `feature-done`.
-- Implementation discovers a material scope delta: an undeclared persistent state, API, role, workflow,
-  management surface, queue, runtime, Provider/responsibility area, contract, migration, authorization
-  rule, release boundary, or a simpler outcome that removes speculative capability.
+- Implementation discovers a material scope delta: an undeclared
+  [declarable surface](README.md#shared-runtime-conventions), or a simpler outcome that removes speculative
+  capability.
 - A module boundary or architecture decision must be adjusted after the original plan.
 - The change would otherwise rewrite history or hide a requirement shift.
 

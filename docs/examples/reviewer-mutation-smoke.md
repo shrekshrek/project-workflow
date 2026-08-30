@@ -123,8 +123,8 @@ If the host cannot expose or constrain reviewer capacity, record that limitation
 
 Materialize a mechanically complete, subjectively clean draft with status `草稿`, concrete user-story outcomes, and an enforceable nonnumeric constraint, then run each Claude/Codex adapter in fresh tasks:
 
-- Pure check request: `READY`; status remains `草稿`; no implementation starts.
-- Explicit conditional request ("if this passes, proceed"): `READY`; only the top status marker changes to
+- Pure check request: `APPROVED`; status remains `草稿`; no implementation starts.
+- Explicit conditional request ("if this passes, proceed"): `APPROVED`; only the top status marker changes to
   `已确认`. Implementation continues when its approach is already accepted and authorized; unresolved material
   choices need discussion, but the check does not create a duplicate approval requirement.
 - `BORDERLINE` result under a pass-only conditional request: status remains `草稿`; the adapter reports the concrete risk/follow-up and asks for explicit acceptance.
@@ -168,7 +168,7 @@ no second review dispatch:
 Run `spec-quality-check` against two artifacts whose individual tasks are concrete:
 
 - A large artifact with several outcomes that can be accepted, shipped, and reverted independently and no mandatory coupling returns `BLOCKED` with a decomposition finding.
-- A similarly large but atomic migration returns `READY` when coupling, verification, and material rollback risk are resolved. It is `BORDERLINE` only while a material coordination/rollback risk still requires acceptance; size and breadth signals alone never change the verdict.
+- A similarly large but atomic migration returns `APPROVED` when coupling, verification, and material rollback risk are resolved. It is `BORDERLINE` only while a material coordination/rollback risk still requires acceptance; size and breadth signals alone never change the verdict.
 - A bundled-delivery risk already accepted and sourced in the plan remains `BORDERLINE`, but satisfies its risk-acceptance prerequisite while the outcomes and risk remain unchanged; the adapter does not ask twice.
 - Add a Pending state, management surface, queue, or CAS workflow justified only by possible future use;
   confirm Q7c returns `BLOCKED` until it is removed, durably deferred, or given a traceable current

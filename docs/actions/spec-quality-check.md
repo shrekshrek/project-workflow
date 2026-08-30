@@ -40,8 +40,8 @@ Check meaning, not template completion:
 3. Concrete acceptance examples and expected results have the smallest non-redundant proof obligations and
    an executable verification path. Before implementation this is a credible plan plus any decision evidence,
    not completed delivery evidence. Distinguish implementation feedback from delivery proof and order costlier
-   layers only for distinct remaining risk. Matrix, E2E and repository-wide checks are independent options,
-   not a package; require each only when smaller evidence cannot cover its risk or a project/release rule does.
+   layers only for distinct remaining risk, following the shared
+   [verification escalation](README.md#shared-runtime-conventions) rule.
 4. The approach is necessary for the current outcome and addresses applicable responsibilities, data,
    authorization, recovery, cost and rollout constraints. Scope is coherent; independent outcomes are not
    silently bundled. Size alone is not a failure and a bundle does not need a new document category.
@@ -71,19 +71,21 @@ another review merely because it has a spec. Reconciliation remains required whe
 
 Dispatch only after required inputs and source decisions are available, under the shared
 [reviewer execution contract](../reviewers/README.md#reviewer-execution-contract). Record applicable review
-execution truthfully; missing required execution blocks READY. Do not dispatch a reviewer to invent a missing
+execution truthfully, including whether it ran as an independent dispatch or in the main session; missing
+required execution blocks `APPROVED`. Do not dispatch a reviewer to invent a missing
 user decision. Review the affected boundary, not every project document or unrelated historical decision.
 
 ## Verdict and continuation
 
-- `READY`: required checks pass, critical direction questions are resolved, acceptance is actionable and
-  any applicable independent review completed reliably.
+- `APPROVED`: required checks pass, critical direction questions are resolved, acceptance is actionable and
+  every applicable review boundary completed reliably. This verdict clears implementation to start; the
+  delivery verdict `READY` belongs to [`feature-done`](feature-done.md).
 - `BORDERLINE`: a concrete residual risk is identified with an explicit decision needed before affected
   implementation; reuse existing unchanged risk acceptance instead of asking twice.
 - `BLOCKED`: a material mismatch, unsupported decision, unexecutable acceptance or missing required evidence
   prevents reliable implementation. State the specific gap and next useful action.
 
-A pure check remains read-only. For an already authorized implementation request, READY can mark the record
+A pure check remains read-only. For an already authorized implementation request, `APPROVED` can mark the record
 `已确认` and return to the enclosing workflow. Continue into implementation only with an accepted approach;
 reuse a previously accepted execution preview. Do not make the user repeat authorization merely because
 this check ran. Neither a review verdict nor a template status creates user approval.
