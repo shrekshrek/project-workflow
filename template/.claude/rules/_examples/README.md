@@ -18,7 +18,7 @@
 
 ## 写新 starter 的格式约定
 
-- path-scoped rule frontmatter 使用 `paths:` YAML 列表；global rule 不写 `paths:`。`description:` 保持简洁、具体即可，见 [`workflow.md §1.6`](../../../../docs/workflow.md#16-路径级规则claude-rules官方支持)
+- path-scoped rule frontmatter 使用 `paths:` YAML 列表；global rule 不写 `paths:`。`description:` 保持简洁、具体即可，见 [`workflow.md §1.6`](https://github.com/shrekshrek/project-workflow/blob/main/docs/workflow.md#16-路径级规则claude-rules官方支持)
 - `description:` 写**这条规则管什么**(范围 + 关键栈名),不写"是什么 / 怎么用"——后者写在正文 `<!-- 来源 -->` 注释里
 - 规则按"违反频率"排序:最常违反的写最前
 - 保持单文件职责聚焦；过长时按规则职责拆分

@@ -85,73 +85,20 @@ Codex/Claude/manual 的完整 capability mapping 与不可变边界由 [`cross-t
 
 ### 3.1 主流框架横向对比
 
-| 框架 | 哲学 | Skill 数量 | 适合谁 | 风险 |
+| 框架 | 哲学 | 适合谁 | 风险 | 本项目决定 |
 |---|---|---|---|---|
-| **Matt Pocock skills** | small composable,你拥有工具 | 小型独立 skills | 实战工程师,要灵活 | 自己得有判断力 |
-| **Superpowers**(Jesse Vincent) | 方法论先行,流程完整 | 多步骤 workflow | 团队要严格流程 | process-owning,出问题难排查 |
-| **Everything Claude Code (ECC)** | kitchen-sink,跨 harness 能力包 | 大型 catalog | 多语言、覆盖广 | 大部分用不到,膨胀 |
-| **GitHub Spec Kit** | spec/plan/tasks 工具链 | command suite | 流程纪律强的团队 | 工具链开销大 |
-| **OpenSpec** | spec delta / change lifecycle | CLI / slash | 想把每个 change 显式规格化的项目 | 主要解决 change 层,不覆盖项目规则长期治理 |
-| **OpenAI Symphony** | manage work, not agents | spec + experimental reference implementation | 高自动化场景 | engineering preview,需可信环境验证 |
-
-详细对比与适用场景判断:
-
-#### Matt Pocock skills(本项目精神最近)
-
-- **核心**:小、独立、可 hack
-- **优点**:每个 skill 几十行,你能完全读懂、改、删
-- **缺点**:覆盖窄;需要你自己决定怎么用
-- **本项目用法**:只按已出现的真实痛点选择少量独立 skill,不绑定固定清单
-
-#### Superpowers(反向参考)
-
-- **核心**:六步法(brainstorm → worktree → plan → subagent → TDD → review)
-- **优点**:方法论完整、有理论根基(Jesse Vincent ex-Anthropic)
-- **缺点**:**process-owning** —— 它管你怎么干活,出问题黑盒
-- **本项目决定**:不装。我们的 [workflow.md](workflow.md) 是"轻量版的 Superpowers",借它的哲学,不要它的束缚
-- **价值**:作为对照样本,理解"重型方法论框架长什么样"
-
-#### Everything Claude Code (ECC)
-
-- **核心**:大而全,且 catalog / installer surface 持续变化
-- **优点**:Go / Python / Java / Django / Spring Boot 等多语言专项,覆盖广
-- **缺点**:大部分跟你栈无关,装着膨胀,且本身是 process-owning
-- **本项目决定**:不把整套 ECC 设为依赖;需要专项能力时单独评估并安装最小集合
-
-#### GitHub Spec Kit
-
-- **核心**:把 spec-driven 落到 slash commands(`/speckit.specify` / `.plan` / `.tasks` / `.clarify` / 等)
-- **优点**:跟 [spec-driven.md](spec-driven.md) 三文件结构原生对齐
-- **缺点**:`.specify/` 目录工具链,小项目偏重
-- **本项目决定**:不装工具链,只借鉴结构化澄清思路;project-workflow 分别由 [`spec-quality-check`](actions/spec-quality-check.md) 与 [`agents-md-revise`](actions/agents-md-revise.md) 处理实施前规格质量和客观约定漂移
-
-#### Fission-AI OpenSpec
-
-- **核心**:把每个 change 的意图、设计、任务显式化,避免需求只留在聊天记录里
-- **优点**:轻量、偏 brownfield、原生关注 AGENTS.md,跟 project-workflow 的 per-feature `docs/specs/changes/<NNN>-<slug>/` 思路相近
-- **缺点**:主要覆盖 change/spec lifecycle;项目启动、项目约定长期漂移、端点三层 review、proof bundle 这几块不是它的主战场
-- **本项目决定**:借鉴 spec delta / change lifecycle 思想,但不复制 CLI 或目录结构。project-workflow 的边界更宽:从 P0 项目基线到 P2 feature spec,再到 P3 交付验证和 P4 规则刷新
-
-#### OpenAI Symphony
-
-- **核心**:managed work item / handoff state / isolated autonomous runs
-- **优点**:"manage work, not agents" 哲学影响深远(本项目 [workflow §3.3 delivery receipt](workflow.md#33-交付阶段delivery-receipt) 受其工作交接思想启发)
-- **缺点**:当前仍是 engineering preview;虽有实验性 reference implementation,生产实证有限
-- **本项目决定**:借哲学(end-of-task gate / handoff artifacts),不装工具
+| **Matt Pocock skills** | small composable,你拥有工具 | 实战工程师,要灵活 | 覆盖窄,自己得有判断力 | 精神最近;只按已出现的真实痛点选少量独立 skill,不绑定固定清单 |
+| **Superpowers**(Jesse Vincent) | 方法论先行,六步法完整 | 团队要严格流程 | process-owning,出问题黑盒 | 不装。[workflow.md](workflow.md) 是"轻量版 Superpowers",借哲学不要束缚;留作重型框架的对照样本 |
+| **Everything Claude Code (ECC)** | kitchen-sink,跨 harness 能力包 | 多语言、覆盖广 | 大部分跟你栈无关,且本身 process-owning | 不设为依赖;需要专项能力时单独评估并装最小集合 |
+| **GitHub Spec Kit** | 把 spec-driven 落到 slash commands | 流程纪律强的团队 | `.specify/` 工具链对小项目偏重 | 不装;只借鉴结构化澄清,由 [`spec-quality-check`](actions/spec-quality-check.md) 和 [`agents-md-revise`](actions/agents-md-revise.md) 承接 |
+| **OpenSpec** | spec delta / change lifecycle | 想显式规格化每个 change | 只覆盖 change 层,不管项目基线与规则长期治理 | 借鉴 change lifecycle,不复制 CLI 或目录结构;本项目边界从 P0 一直到 P4 |
+| **OpenAI Symphony** | manage work, not agents | 高自动化场景 | engineering preview,生产实证有限 | 借哲学不装工具;[§3.3 delivery receipt](workflow.md#33-交付阶段delivery-receipt) 受其交接思想启发 |
 
 ### 3.2 决策原则
 
 > **Matt-派核心警告**:不要在没有真实痛点反馈前抽象成框架。先在对话/手动流程里跑顺,再固化。
 
-加入新 skill 框架前问自己:
-
-```
-1. 现有工具能解决吗?(可能只是没用对)
-2. 我能完整读懂这个框架吗?能则可考虑
-3. 它是否 process-owning?是则要警惕
-4. 与我已装的有冲突吗?(同名 skill / hook 互覆盖)
-5. 没有它我会怎么做?如果手动 5 分钟搞定,可能不需要框架化
-```
+加入任何新工具前的完整判定见 [§5 决策清单](#5-加新工具前的决策清单);中层框架尤其要看它是否 process-owning。
 
 ---
 
@@ -189,24 +136,28 @@ Codex adapter 复用 methodology core,但用 Codex 原生的 `AGENTS.md` discove
    - 偶发且可手动处理:先记录
    - 持续重复并产生明显成本:进入后续评估
 
-2. 它属于哪一层?
+2. 现有工具能解决吗?没有它你会怎么做?
+   - 现有工具用对了就够 → 不装
+   - 手动 5 分钟能搞定 → 可能不需要框架化
+
+3. 它属于哪一层?
    - 上层(协作约定):优先,自己写
-   - 中层(skill / plugin):谨慎,看 §3.2 五条
+   - 中层(skill / plugin):谨慎,重点看下一条
    - 底层(IDE):非核心,稳定即可
 
-3. 它是 process-owning 吗?
+4. 它是 process-owning 吗?
    - 是 → 跟我们 workflow.md 冲突,不装
-   - 否 → 进 §3.2 评估
+   - 否 → 继续评估
 
-4. 跟你已装的冲突吗?
+5. 跟你已装的冲突吗?
    - 同名 skill / hook 互覆盖 → 不装,先卸老的
    - 命名空间不同 → 可装
 
-5. 你能在合理时间内读懂它的核心边界和失败模式吗?
+6. 你能在合理时间内读懂它的核心边界和失败模式吗?
    - 不能 → 不装(Matt-派精神)
    - 能 → 可考虑
 
-6. 它依赖具体某个 IDE / 模型吗?
+7. 它依赖具体某个 IDE / 模型吗?
    - 是 → 你的"上层资产"就被锁定了,慎重
    - 否 → 加分项
 ```
@@ -216,9 +167,7 @@ Codex adapter 复用 methodology core,但用 Codex 原生的 `AGENTS.md` discove
 ## 6. 反模式
 
 ### 6.1 叠加两个 process-owning 框架
-**症状**:同时装 Superpowers + ECC,或 Superpowers + 自建 project-workflow
-**后果**:skill 命名冲突 / hook 互覆盖 / 心智负担,出问题难排查
-**修正**:挑一个 process-owning 工具(或自己写),其他用 Matt-派 small composable 补
+在工具层的典型形态是同时装 Superpowers + ECC,或 Superpowers + 自建 project-workflow;症状与修正见 [`workflow.md §7.2`](workflow.md#72-不要叠加两个-process-owning-框架)。
 
 ### 6.2 装一堆从不调用的 skill
 **症状**:安装了大量 skill,长期实际使用的只有少数
@@ -226,9 +175,7 @@ Codex adapter 复用 methodology core,但用 Codex 原生的 `AGENTS.md` discove
 **修正**:定期审查；没有明确使用场景且长期未调用的归档
 
 ### 6.3 把上层投资沉在底层工具
-**症状**:把项目规则只写进 Cursor 的 `.cursor/rules/` 或 Claude 的 `CLAUDE.md`,而不是项目根 `AGENTS.md`
-**后果**:换工具就丢,失去工具无关性
-**修正**:**协作约定写在工具无关位置**(`AGENTS.md` / `docs/`),工具特定位置只放工具特异配置
+在工具层的典型形态是项目规则只写进 `.cursor/rules/` 或 `CLAUDE.md` 而非根 `AGENTS.md`;症状与修正见 [`workflow.md §7.6`](workflow.md#76-不要把上层投资沉到底层工具)。
 
 ### 6.4 给框架开 admin 权限
 **症状**:把 process-owning 框架的所有 hook 都启用,所有命令都允许

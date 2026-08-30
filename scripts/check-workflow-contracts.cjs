@@ -55,8 +55,8 @@ requirePatterns("docs/actions/feature-init.md", [
   ["pre-implementation evidence is not delivery E2E", /Before implementation[\s\S]*smallest bounded trial[\s\S]*Use E2E only when it is the smallest reliable/i],
   ["record need independent of verification", /Decide whether to create, reuse or omit a record independently of verification depth/i],
   ["preview and apply", /`PREVIEW`[\s\S]*`APPLY`/],
-  ["single record default", /Default new record:[\s\S]*\/spec\.md`[\s\S]*Do not precreate `plan\.md`, `tasks\.md`/],
-  ["optional useful split", /Only split[\s\S]*materially helps reading or handoff/i],
+  ["single record default", /Default new record:[\s\S]*\/spec\.md`, and only that file[\s\S]*Do not precreate any\s+attachment/],
+  ["optional useful attachment", /Add or split[\s\S]*materially helps reading or handoff[\s\S]*explicit\s+request for a separate handoff document qualifies/i],
   ["single active accepted record", /active feature uses `spec\.md` as its accepted record[\s\S]*Archived directories remain history/i],
   ["preview without duplicate approval", /execution preview[\s\S]*accepted preview is reused[\s\S]*do not insert duplicate confirmation/i],
   ["long-run execution envelope", /materially long, paid, external, opaque[\s\S]*execution envelope[\s\S]*partial-result persistence[\s\S]*canary or sample alternative/i],
@@ -208,8 +208,6 @@ forbidPatterns("docs/reviewers/README.md", [
 
 for (const relative of [
   "template/docs/specs/changes/_template/spec.md",
-  "template/docs/specs/changes/_template/plan.md",
-  "template/docs/specs/changes/_template/tasks.md",
 ]) {
   forbidPatterns(relative, [
     ["premature receipt fields", /^## Proof Bundle$|^- Verdict:|^- Reviews:/m],
@@ -226,9 +224,7 @@ for (const relative of [
   "docs/actions/feature-init.md",
   "docs/actions/spec-quality-check.md",
   "docs/actions/feature-done.md",
-  "template/docs/specs/changes/_template/plan.md",
   "template/docs/specs/changes/_template/spec.md",
-  "template/docs/specs/changes/_template/tasks.md",
   "tests/fixtures/feature-init-scenarios/base-numbered/docs/specs/changes/001-approved-feature/plan.md",
   "tests/fixtures/feature-init-scenarios/base-numbered/docs/specs/changes/001-approved-feature/spec.md",
   "tests/fixtures/reviewer-smoke/base/docs/specs/changes/001-normalize-key/plan.md",

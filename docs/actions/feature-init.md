@@ -85,22 +85,25 @@ to actual risk.
   accepted boundary. Automatic skill invocation is not write authorization. A request only to record a
   decision does not authorize coding. A separately approved temporary trial follows its own narrow scope.
 
-Default new record: `docs/specs/changes/<NNN>-<slug>/spec.md`. Do not precreate `plan.md`, `tasks.md`, an evidence
-directory, an empty domain document or an index for it. Use the packaged materializer with `--target`,
-`--number` and `--slug`; it creates only spec.md and preserves no-clobber, numbering and symlink safety.
+Default new record: `docs/specs/changes/<NNN>-<slug>/spec.md`, and only that file. Do not precreate any
+attachment, evidence directory, domain document or index that has no content yet. Use the packaged
+materializer with `--target`, `--number` and `--slug`; it creates only spec.md and preserves no-clobber,
+numbering and symlink safety.
 Use the shared [NNN numbering](README.md#shared-runtime-conventions) rule. Confirm a requested unused number
 above the computed next number; an occupied/older number cannot be reused via a different slug.
 
 The record explains what changes, why this approach, concrete acceptance examples and expected outcomes,
 and later the actual verification. Headings are writing prompts, not mandatory forms. Preserve references
 and the actual delta when current truth already explains the unchanged behavior. Keep meaningful negative
-constraints. Only split a long design or checklist when it materially helps reading or handoff, name its
-purpose, and link it without duplicating accepted rules. Test code belongs in existing project test locations.
+constraints. Add or split a design or work note only when it materially helps reading or handoff; an explicit
+request for a separate handoff document qualifies. Name each purpose and link it without duplicating accepted
+rules. Test code belongs in existing project test locations.
 Long reproducible trial material can live separately when needed; keep conclusions and references in spec.
 
 An active feature uses `spec.md` as its accepted record. Optional design/work notes may support it but do not
-own acceptance or delivery status. Archived directories remain history and do not participate in active
-execution. The canonical delivery receipt location is owned by `feature-done`.
+own acceptance or delivery status; `READY`, the delivery receipt, status writes and archive eligibility are
+endpoint and lifecycle outputs, so do not restate them as checklist items. Archived directories remain history
+and do not participate in active execution. The canonical delivery receipt location is owned by `feature-done`.
 
 Before implementation, resolve any question that can change the accepted direction, scope or acceptance.
 Give a proportionate execution preview of outcome, approach, boundary, rationale, verification and useful

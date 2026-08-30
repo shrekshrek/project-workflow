@@ -20,8 +20,6 @@ const retainedOptionalAssets = [
   "template/docs/adr/0000-template.md",
   "template/docs/specs/_template/domain.md",
   "template/docs/specs/changes/_template/spec.md",
-  "template/docs/specs/changes/_template/plan.md",
-  "template/docs/specs/changes/_template/tasks.md",
 ];
 for (const relative of retainedOptionalAssets) {
   if (!fs.existsSync(path.join(repoRoot, relative))) problems.push(`optional capability asset missing: ${relative}`);
@@ -116,7 +114,7 @@ if (/High-Blast-Radius Paths|None declared yet/.test(baselineAgents)) {
 }
 for (const forbidden of [
   "docs/specs/_template/domain.md",
-  "docs/specs/changes/_template/tasks.md",
+  "docs/specs/changes/_template/spec.md",
   "docs/adr/0000-template.md",
 ]) {
   if (baselineFiles.includes(forbidden)) problems.push(`materialized baseline retains plugin-only asset ${forbidden}`);

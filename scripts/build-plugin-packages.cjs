@@ -33,14 +33,14 @@ const sharedDirectories = [
   ["template", "template"],
 ];
 
+// Explanatory documents no skill reads. Shipping them next to the canonical layer offers a second
+// normative source at runtime for no benefit, so they stay in the repository and links rewrite to it.
+const repositoryOnlyDocs = ["workflow", "tooling", "cross-tool-methodology", "quickstart"];
+
 const sharedFiles = [
   ["docs/architecture-design.md", "docs/architecture-design.md"],
-  ["docs/workflow.md", "docs/workflow.md"],
   ["docs/spec-driven.md", "docs/spec-driven.md"],
-  ["docs/cross-tool-methodology.md", "docs/cross-tool-methodology.md"],
   ["docs/gotchas.md", "docs/gotchas.md"],
-  ["docs/tooling.md", "docs/tooling.md"],
-  ["docs/quickstart.md", "docs/quickstart.md"],
   ["docs/examples/feature-record.md", "docs/examples/feature-record.md"],
   ["scripts/relocate-markdown-links.cjs", "scripts/relocate-markdown-links.cjs"],
   ["scripts/materialize-project-baseline.cjs", "scripts/materialize-project-baseline.cjs"],
@@ -92,6 +92,13 @@ function transformDocumentation(content, host) {
     .replace(/\]\(\.\.\/README\.md([^)#]*)?(#[^)]+)?\)/g, `](${sourceRepoUrl}/README.md$2)`)
     .replace(/\]\(\.\.\/scripts\/([^)]+)\)/g, `](${sourceRepoUrl}/scripts/$1)`)
     .replace(/\]\(\.\.\/examples\/reviewer-mutation-smoke\.md([^)#]*)?(#[^)]+)?\)/g, `](${sourceRepoUrl}/docs/examples/reviewer-mutation-smoke.md$2)`);
+
+  for (const name of repositoryOnlyDocs) {
+    transformed = transformed.replace(
+      new RegExp(`\\]\\((?:\\.\\./)*${name}\\.md(#[^)]+)?\\)`, "g"),
+      `](${sourceRepoUrl}/docs/${name}.md$1)`,
+    );
+  }
 
   if (host === "claude") {
     transformed = transformed
@@ -151,7 +158,14 @@ function validatePackage(packageRoot, host) {
     "scripts/materialize-project-baseline.cjs",
     "scripts/relocate-markdown-links.cjs",
     "docs/actions/project-personalize-reference.md",
+    "docs/README.md",
   ]) requirePath(packageRoot, relative);
+
+  for (const name of repositoryOnlyDocs) {
+    if (fs.existsSync(path.join(packageRoot, `docs/${name}.md`))) {
+      throw new Error(`${host} package must not ship explanatory doc docs/${name}.md`);
+    }
+  }
 
   if (host === "claude") {
     const reviewers = fs.readdirSync(path.join(packageRoot, "agents"))
@@ -212,7 +226,26 @@ function buildHost(host, outputRoot) {
       : (value) => value;
     copyFile(path.join(repoRoot, sourceRelative), path.join(packageRoot, targetRelative), transform);
   }
+  writePackageDocsIndex(packageRoot);
   return packageRoot;
+}
+
+function writePackageDocsIndex(packageRoot) {
+  const content = [
+    "# Bundled documentation",
+    "",
+    "This package ships only what its skills read while running:",
+    "",
+    "- `actions/` — the canonical contract for each workflow action, and the only normative source.",
+    "- `reviewers/` — the contract for each reviewer role.",
+    "- `architecture-design.md`, `spec-driven.md`, `gotchas.md`, `examples/` — referenced on demand by those contracts.",
+    "",
+    "The methodology manual, tool survey, cross-tool invariants and quick start explain the reasoning",
+    "rather than drive execution, so they stay in the repository instead of competing with the canonical",
+    `layer here: <${sourceRepoUrl}/docs>.`,
+    "",
+  ].join("\n");
+  fs.writeFileSync(path.join(packageRoot, "docs", "README.md"), content);
 }
 
 function writeGeneratedMarketplaces(outputRoot) {

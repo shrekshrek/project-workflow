@@ -13,6 +13,7 @@ failed-copy rollback and symlink safety. It does not prove model behavior or sem
 1. `node scripts/check-feature-init-fixtures.cjs` — deterministic coherence check (CI-safe, no model).
 2. Select the smallest model-smoke set that covers the changed behavior. Shared behavior runs at least one affected scenario on each supported host; host-only behavior runs on that host. Run the full matrix only when the affected behavior cannot be bounded.
 3. For each selected scenario, copy its base into a temp directory, `git init && git add -A && git commit`, then run the `feature-init` runtime adapter there with the scenario `prompt` (from the scenario `cwd` when set). When the adapter asks a question covered by `prescribedAnswers`, answer exactly that; any other business question stays unanswered (the run must not need it). Grade file-level outcomes with `node scripts/check-feature-init-fixtures.cjs --grade <scenario> <temp-dir>` only at the record-action boundary, before any enclosing implementation. If the host cannot expose that snapshot, grade the transcript and report file-level coverage unavailable; do not force a user pause just for the harness.
+
 4. Interaction-only scenarios are judged from the transcript against `expectedBehavior`: they must ask when required, must not fabricate ownership, tracking references, a repository backlog, or an epic artifact, and must create no files before the required answer. Grade the behavior and decision boundary rather than exact headings or status words. Any materialized scenario with `expectedBehavior` is mechanically graded for its files and manually graded for the stated transcript behavior, including its decomposition decision and coupling rationale.
 5. Record scenarios, hosts, and selection reason in the release task; state any known coverage limitation.
 
@@ -62,9 +63,9 @@ Shared behavior needs affected cases on both hosts. In particular:
 
 ## Conversation-first change acceptance
 
-The `conversation-*` entries in `expected.json` are target acceptance cases for the
-[confirmed workflow change](../plans/2026-08-29-conversation-first-workflow.md), not evidence that the
-current adapters implement it. Safety fixtures remain required as record behavior changes; do not weaken them to make conversation cases appear green.
+The `conversation-*` entries in `expected.json` are target acceptance cases for the conversation-first
+behavior defined in [`feature-init`](../actions/feature-init.md), not evidence that the current adapters
+implement it. Safety fixtures remain required as record behavior changes; do not weaken them to make conversation cases appear green.
 
 Use the existing temporary-project protocol above. Send `prompt` as the first user message and each
 `followUpPrompts` entry as a separate later user message, after the previous turn completes. Do not give

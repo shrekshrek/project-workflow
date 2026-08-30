@@ -160,15 +160,11 @@ AI 协作开发有**三个 Tier 1 工程痛点**,本手册的四个运行阶段�
 
 **A vs E 分界**(都是"当前态",别混):A 回答**工程上怎么干活**(命令 / 风格 / 边界),E 回答**产品现在长什么样**(IA / 行为 / 契约现状)。工程约定永远进 A,产品域现状进 E;E 不存在时,B 类历史 spec 只是审计材料,不是实施基线(见 [spec-driven.md §5](spec-driven.md))。
 
-**A–E 生命周期归口**:
-
-| 类别 | 创建 | 正常演化 | 关闭 / 修复 |
-|---|---|---|---|
-| **A 约定** | 可无冲突建立中立 baseline 的 `project-init` / 有项目证据或 partial/custom baseline 的 `project-personalize` | feature 内发现的新约定随该 change 更新;客观 drift 才用 `agents-md-revise` | 不归档,始终维护当前态;L2/Drift 提供反馈 |
-| **B 变更** | `feature-init` 判断是否需要记录；默认只建 spec | draft 自由填;冻结契约真错才 `spec-revise`;`feature-done` 判兑现 | `feature-archive` 物理归档;历史混乱才 `spec-reconcile` |
-| **C 决策** | 规划或 `spec-revise` 中仅 `ADR_REQUIRED=yes` 时创建 | Accepted 后正文不改;新决定用新 ADR,旧 ADR 只改为 `Superseded by NNNN` | `feature-archive` 做一致性检查;`spec-reconcile` 经用户确认修冲突,不做按年龄清扫 |
-| **D 基础设施** | baseline 提供 `.gitignore`；检查配置由项目维护 | 按普通项目变更处理并验证真实执行 | 随项目需要维护 |
-| **E 产品事实** | P0 只建索引;首个持久事实由 `feature-archive` 创建 area doc | `feature-done` 标 pending,`feature-archive` 替换式合并当前事实 | 历史冲突才 `spec-reconcile`;核对日期是读者信号,不由 A 类 drift action 代管 |
+**A–E 生命周期归口**:A 由 `project-init` / `project-personalize` 建立,feature 内随改动更新,客观 drift 才走
+`agents-md-revise`,始终维护当前态不归档;B 由 `feature-init` 按需创建,`feature-done` 判兑现,`feature-archive`
+物理归档;C 只在 `ADR_REQUIRED` 成立时创建,Accepted 后正文冻结,新决定用新 ADR;D 随项目需要维护;E 由
+`feature-archive` 替换式合并当前事实。历史层面的 spec 冲突由 `spec-reconcile` 修。每类的精确触发与条件见
+[actions 契约归属表](actions/README.md#contract-ownership)。
 
 > **`docs/gotchas.md` 归口**(A 类附属证据 ledger):职责上属 A——回答"工程上怎么干活",L2 review 把它并入 A 类约定全集消费;但它不是 A 的 core 载体,记录的是**已复现事故的证据**(反例 → 正例 → 为什么)而非强制规范,P4 drift refresh 不管它。生命周期:P0 生成空 ledger(文件头自带写入门槛与出口纪律),只有真实复现并验证过的故障才追加;出口两条——**升格即删条**(正例提炼进 AGENTS.md / path rules 后删除原条)与**前提失效即删条**(依赖的栈/基建移除后删除),git history 即归档。只进不出的 ledger 必然腐化成下一个污染源。
 
@@ -491,23 +487,7 @@ docs/adr/
 └── 0001-<title>.md                 # 需要时由 action 从 plugin template 实例化
 ```
 
-**Plugin 内模板**(基于 Michael Nygard 简化;项目目录不保留空模板):
-
-```markdown
-# NNNN. 标题
-
-- 状态:Proposed / Accepted / Deprecated / Superseded by NNNN
-- 日期:YYYY-MM-DD
-
-## Context
-我们为什么需要做这个决策?有什么约束?
-
-## Decision
-我们决定做什么?
-
-## Consequences
-这个决策带来什么好处与代价?
-```
+**Plugin 内模板**(基于 Michael Nygard 简化,Context / Decision / Consequences 三节;项目目录不保留空模板):见 [`template/docs/adr/0000-template.md`](../template/docs/adr/0000-template.md)。
 
 **ADR 与其他文档的关系**:5 类文档(A 约定 / B 任务 / C 决策 / D 基础设施 / E 产品事实)总框架见 [§0.3 文档职责 5 类](#03-概念区分钉死再读后续)。ADR 是 C 类,**唯一回答"当时为什么这么选"**——跟 AGENTS.md(A 类规则)/ spec.md(B 类 WHAT)/ plan.md(B 类 HOW)/ current truth(E 类现状)分工正交,不重叠。
 
@@ -534,28 +514,11 @@ docs/adr/
 待应用方案,不复述已确认内容。tech-researcher、codebase-explorer、decision-completeness-auditor 仍按复杂度
 条件调用,而不是每次初始化固定运行。
 
-#### 不问什么(故意省的题,每项都有原则)
+#### 不问什么(故意省的题)
 
-| 项 | 怎么处理 | 为什么不问 |
-|---|---|---|
-| 项目名 | 不收集 | A 层不存项目名(那是 B 层 `package.json` / `pyproject.toml` 的事,见 §1.2) |
-| 起服务 / 测试 / lint 命令 | `project-init` 留 deferred;`project-personalize` 从 manifest/配置验证 | baseline-compatible 目标没有这类证据,不能推断 |
-| 部署命令 | `project-init` 不写;`project-personalize` 仅记录仓库已声明且可验证的命令 | B 层未起时拍脑袋写 = aspirational(违 §0.5 信念 1) |
-| 目录组织模式 | `project-init` 不写;`project-personalize` 描述仓库现状 | baseline-compatible 目标没有这类证据,不预设 feature/domain 或 type layout |
-| 代码风格 | `project-init` 不写;`project-personalize` 只记录已有 formatter/linter/config 与稳定代码模式 | 通用 default 不是项目事实 |
-| 测试门槛 | 不设通用数字 default | 由项目现有 CI/配置或用户明确决定 |
-| Boundaries 三档 | baseline 只放通用安全边界;项目特有边界由 `project-personalize` 从证据补 | 不为未知项目虚构 API/迁移/权限政策 |
-| 分支命名 | baseline 不写;沿用仓库已有约定 | feature 编号不要求固定 branch pattern |
-| Git 平台 | baseline 不写平台政策;平台协作由项目自己决定 | workflow 不把 GitHub/GitLab 设为运行前提 |
-| 特殊约束(性能 / 合规 / 安全) | 不问 | P0 无基线数据,拍脑袋写 = aspirational;真需要的项目 P0 后写 ADR + 加节(见 §1.8) |
+项目名、启动 / 测试 / lint / 部署命令、目录组织模式、代码风格、测试门槛、分支命名、Git 平台、性能 / 合规 / 安全约束——这些 `project-init` 一律不问,保持 deferred。`project-personalize` 只在仓库已有 manifest、配置或稳定代码模式能证明时才记录,证明不了就继续 deferred。
 
-> 这些**省掉的**都对应一个反 aspirational 信念:**让 AI 凭训练即兴生成"看起来对"的内容,比保留中立 deferred 或不写更糟**(详 §0.5 信念 1)。没有仓库证据或用户决定时,**不让 LLM 编**。
-
-#### 关键纪律
-
-- 只把仓库无法证明、不能安全 deferred、且会改变命令/路径/规则/归属的事项放入“待确认”
-- 问题集保持最小，二选一/填空优先;技术选型需外部证据时才运行 [`tech-researcher`](reviewers/tech-researcher.md)
-- 所有目标文件先在 staging/内存形成一个变更摘要并预检；当前请求已授权的范围直接应用，新增政策或外部写入再确认
+> 省掉它们对应同一个反 aspirational 信念:**让 AI 凭训练即兴生成"看起来对"的内容,比保留中立 deferred 或不写更糟**(详 §0.5 信念 1)。没有仓库证据或用户决定时,**不让 LLM 编**。逐项处理方式与提问纪律见 [`project-init`](actions/project-init.md) 和 [`project-personalize`](actions/project-personalize.md)。
 
 ### 1.11 校验
 
@@ -569,13 +532,9 @@ P0 写入前，每个项目特定的命令、路径、名称、端口、归属�
 或适用的已接受 spec/ADR。生态惯例只能作为待选择建议，不能伪装成项目事实；内部来源追踪不写成
 `Q&A 轮 N` 等标记污染最终文件。
 
-处理顺序保持简单：
-
-1. 仓库已经证明的直接采用并保留来源；同一事实跨文件出现时检查一致性。
-2. 未被证明但可安全暂缓的省略或明确 deferred，不为占位而虚构 ADR、命令或目录。
-3. 只有答案会改变 working agreement 且不能安全暂缓时才询问；依赖问题顺序推进，相关独立问题可合并。
-4. 简单单源同步用 inline trace；新 ownership/port/package/path/infra、弱证据、冲突证据或跨文件高影响同步才调用 `decision-completeness-auditor`。
-5. 阻塞审计或未解决的实质决定保持目标不变；没有阻塞时预检 staged changes，并在当前请求已授权范围内应用，不再增加形式化审批。
+优先级是"证明 > 暂缓 > 询问"：能证明的直接采用并保留来源，不能证明但可安全暂缓的保持 deferred，
+只有答案会改变 working agreement 且不能暂缓时才询问。执行顺序、审计触发条件和应用时机见
+[`project-personalize`](actions/project-personalize.md)。
 
 `project-init` 因缺少项目证据而保持中立；`project-personalize` 先读仓库再补最小 working agreement。
 产品或架构方向不在 P0 猜测，交给 `feature-init`。本节是生成时的来源约束，不是 P3 的第 4 层 review，
@@ -679,7 +638,8 @@ PR / 发布   人审与发布级自动化     CI / release checks
 每层只承担与成本和风险匹配的检查。阶段验证尽早暴露局部问题，交付与 CI 承担适用的完整检查；
 主观判断交给 reviewer 和用户，有效机械证据按端点规则复用。
 
-层级之间不是自动全跑，而是从低成本有效证据开始，按剩余风险渐进扩大。矩阵、E2E、全仓库测试是独立选项，不联动升级；最终 READY 候选仍需完成全部适用交付义务。
+层级之间不是自动全跑，而是从低成本有效证据开始，按剩余风险渐进扩大;升级规则见
+[verification escalation](actions/README.md#shared-runtime-conventions)。最终 READY 候选仍需完成全部适用交付义务。
 
 长时间、付费、外部或不透明的检查在启动前说明范围、成本、可见进度、中断后果和较小替代方案，让用户能够判断是否开始或继续。进度只使用可观察事实，不猜测。
 
@@ -738,9 +698,8 @@ feature artifact 走自身生命周期，spec/代码偏差由端点处理；不�
 
 ### 5.3 工具流程概览
 
-精确流程见 canonical [`agents-md-revise` action](actions/agents-md-revise.md):比较 A 类约定与客观仓库
-状态,检查 root/tier/module 放置、父子重复、一行 alias、孤立 guidance 和可机械化出口,只提出有证据的
-窄 patch;物质歧义先澄清,其余改动在当前请求授权范围内应用。它不评价架构是否正确。
+[`agents-md-revise`](actions/agents-md-revise.md) 比较 A 类约定与客观仓库状态,只提出有证据的窄 patch,
+不评价架构是否正确。审计项、歧义处理和应用时机由该 action 定义。
 
 ### 5.4 与平台流程的协作
 
@@ -880,16 +839,10 @@ review context、避免一层结果掩盖另一层，并让修复指向明确规
 
 #### 怎么用
 
-| 层 | 工具 | 时机 |
-|---|---|---|
-| L1 | 阶段 focused checks + `feature-done` 的 Verification 与变更项目标准命令；全仓/发布套件按实际需要运行，有效证据按端点规则复用 | 阶段 + 端点 |
-| L2 | reviewer agent + AGENTS.md 作 context | 端点(P3 proof bundle) |
-| L3 | reviewer agent + accepted feature artifact + 已有测试证据 | 端点，按适用性 |
-
-`feature-done` 是唯一端点组合点：必要 L1 之后，实际风险和项目要求决定独立 L2/L3 的适用性与调度。每个 gate run 只审一个稳定快照并返回一个终态；端点外的修复与复验按原请求授权和 `feature-done` 规则继续。
-Reviewers 遵守 cite-or-skip、fresh read、完整适用范围和 ambiguity feedback；精确授权、调度、规则源、fallback、证据、漂移、去重及复审规则只见
-[`feature-done`](actions/feature-done.md)、[`agents-md-reviewer`](reviewers/agents-md-reviewer.md) 和
-[`spec-reviewer`](reviewers/spec-reviewer.md)。
+L1 在阶段和端点都跑机械检查;L2 与 L3 由 reviewer 在端点执行,分别以 AGENTS.md 和已接受的功能记录为规则源。
+`feature-done` 是唯一端点组合点:必要 L1 之后,实际风险和项目要求决定独立 L2/L3 的适用性与调度。精确授权、
+调度、fallback、证据、漂移、去重及复审规则只见 [`feature-done`](actions/feature-done.md)、
+[`agents-md-reviewer`](reviewers/agents-md-reviewer.md) 和 [`spec-reviewer`](reviewers/spec-reviewer.md)。
 
 #### 失效情形
 
