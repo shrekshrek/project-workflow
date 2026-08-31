@@ -152,14 +152,14 @@ then continue the authorized implementation. Do not restart the feature or rewri
 independent outcome becomes a successor/child only if the user wants it; do not automatically create a backlog.
 A failed test with unchanged requirements calls for implementation repair, not changed expectations.
 
+Plan small, focused, verifiable slices around functional logic and real dependencies; module boundaries support
+that sequence. A small direct task may be one slice.
 Within a useful slice, ordinary implementation, expected repair and focused checks continue without another
 approval. A material problem or consequential uncertainty still stops the affected work immediately, even mid-slice, under
 the rules above. At a meaningful user-judgeable slice boundary, run the smallest relevant check and hand off
 the intended result, actual behavior and evidence, whether they remain aligned, material deviations or risks,
 and the next slice with its reason. Call out material choices made inside the slice that the user did not decide
 and could reasonably judge differently. Wait before beginning that next slice.
-Do not create a slice boundary for each file, function or ordinary step; a small direct task may be one slice.
-Prefer a boundary where the user can observe a result when one exists.
 
 During implementation and post-gate repair, if repair/verification keeps cycling without converging, explain
 the unresolved problem and recommended next step, then wait for the user's decision. Preserve unaffected valid

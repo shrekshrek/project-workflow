@@ -66,7 +66,7 @@ requirePatterns("docs/actions/feature-init.md", [
   ["ordinary discoveries proceed", /Discovery continues during implementation[\s\S]*can proceed without approval/i],
   ["affected work stops for material discovery", /Stop the affected implementation[\s\S]*authorization, data disposition, operating cost[\s\S]*ask the smallest useful question/i],
   ["local revision and continuation", /After confirmation[\s\S]*spec-revise[\s\S]*update only affected[\s\S]*continue the authorized implementation/i],
-  ["slice execution and judgment handoff", /Within a useful slice[\s\S]*material problem[\s\S]*even mid-slice[\s\S]*meaningful user-judgeable slice boundary[\s\S]*Wait before beginning that next slice[\s\S]*small direct task may be one slice/i],
+  ["slice planning and judgment handoff", /Plan small, focused, verifiable slices[\s\S]*functional logic and real dependencies[\s\S]*small direct task may be one slice[\s\S]*Within a useful slice[\s\S]*material problem[\s\S]*even mid-slice[\s\S]*meaningful user-judgeable slice boundary[\s\S]*Wait before beginning that next slice/i],
   ["repair convergence handoff", /cycling without converging[\s\S]*recommended next[\s\S]*wait for the user's decision/i],
   ["judgment-useful progress observability", /Progress reports must help the user judge[\s\S]*evidence and its meaning[\s\S]*cannot observe exact progress[\s\S]*never invent percentages/i],
   ["stage-matched verification", /Before implementation[\s\S]*During implementation[\s\S]*Before delivery[\s\S]*E2E/i],
