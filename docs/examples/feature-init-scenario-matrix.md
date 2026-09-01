@@ -41,9 +41,9 @@ Shared behavior needs affected cases on both hosts. In particular:
   only when the choice changes delivery. Do not create a total feature, epic or external tracker by default.
 - Compare a repository-aligned local change with a queue/worker or multiple inference paths having no present
   consumer: continue ordinary details, but explain material operating cost and resolve the unnecessary scope.
-- Within a useful slice, continue ordinary work without another approval. A material problem stops affected
-  work even mid-slice; after a meaningful slice, give evidence and alignment at the handoff and wait. A small
-  direct task needs no artificial slice.
+- Carry one functional outcome through its ordinary implementation, tests, documentation and verification,
+  reporting useful progress without turning it into a handoff. A material problem stops affected work even
+  mid-slice; after the coherent outcome, give evidence and alignment at the handoff and wait.
 - Explain verification as three different proof responsibilities: pre-implementation decision evidence,
   implementation feedback and delivery evidence. Do not require delivery-level E2E to begin ordinary work;
   explain the observable meaning before technical labels. Treat matrix, E2E and repository-wide suites as

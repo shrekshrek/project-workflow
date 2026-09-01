@@ -81,7 +81,7 @@
         <mxCell id="featdone_decompose" value="&lt;span style=&#39;font-size:10px;color:#558B2F;&#39;&gt;开发前决策证据 → 开发中 focused check → 完整交付 gate；矩阵 / E2E / 全仓库按剩余风险独立选用，不成套升级；必要低层失败即停止扩张&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=10;fontColor=#558B2F;" vertex="1" parent="1">
           <mxGeometry x="600" y="450" width="930" height="20" as="geometry"/>
         </mxCell>
-        <mxCell id="record_note" value="&lt;b&gt;按需记录&lt;/b&gt;：默认单份 spec；小修可不建档。普通细节切片内推进；实质问题立即暂停；有意义的切片以实际证据交接后再继续。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F8E9;strokeColor=#558B2F;dashed=1;fontSize=9;align=left;verticalAlign=middle;spacing=4;fontColor=#558B2F;" vertex="1" parent="1">
+        <mxCell id="record_note" value="&lt;b&gt;按需记录&lt;/b&gt;：默认单份 spec；小修可不建档。同一功能结果连续推进并汇报进展；实质问题立即暂停；完整结果以实际证据交接后再继续。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F8E9;strokeColor=#558B2F;dashed=1;fontSize=9;align=left;verticalAlign=middle;spacing=4;fontColor=#558B2F;" vertex="1" parent="1">
           <mxGeometry x="200" y="446" width="395" height="28" as="geometry"/>
         </mxCell>
 

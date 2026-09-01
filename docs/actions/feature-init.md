@@ -152,11 +152,13 @@ then continue the authorized implementation. Do not restart the feature or rewri
 independent outcome becomes a successor/child only if the user wants it; do not automatically create a backlog.
 A failed test with unchanged requirements calls for implementation repair, not changed expectations.
 
-Plan small, focused, verifiable slices around functional logic and real dependencies; module boundaries support
-that sequence. A small direct task may be one slice.
+Organize implementation into coherent functional slices around real dependencies and risks. A slice normally
+carries one outcome through its needed code, tests, documentation and ordinary verification; module and layer
+boundaries only shape implementation order. A small or tightly coupled task may be one slice.
 Within a useful slice, ordinary implementation, expected repair and focused checks continue without another
-approval. A material problem or consequential uncertainty still stops the affected work immediately, even mid-slice, under
-the rules above. At a meaningful user-judgeable slice boundary, run the smallest relevant check and hand off
+approval. Report useful progress during longer slices without treating each update as a handoff. A material
+problem or consequential uncertainty still stops the affected work immediately, even mid-slice, under the
+rules above. At the end of a coherent user-judgeable outcome, run the smallest relevant check and hand off
 the intended result, actual behavior and evidence, whether they remain aligned, material deviations or risks,
 and the next slice with its reason. Call out material choices made inside the slice that the user did not decide
 and could reasonably judge differently. Wait before beginning that next slice.
