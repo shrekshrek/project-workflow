@@ -76,7 +76,7 @@ fixed number of questions/tool calls.
 
 For the resume case, first save the model's actual handoff text outside the fixture; start a fresh
 session against the same project with that handoff and the next supplied user turn. Do not repair the
-summary before replay. Compare it with the first-turn input and check whether negative constraints,
+summary before replay. Compare it with the first-turn input and check whether accepted constraints, exclusions,
 unresolved questions and read-only authorization survive. In an ordinary same-session run, do not reset
 context merely to update documentation.
 

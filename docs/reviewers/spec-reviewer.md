@@ -19,7 +19,7 @@ Do not review project conventions, code style, architecture preferences, or spec
 
 Read the actual accepted content, not a shape detected from headings. A short record and one with useful
 optional attachments have the same standard of correctness. Extract testable requirements and expected results,
-including negative constraints and explicit supersessions; observed experiments are not acceptance unless
+including accepted constraints, exclusions and supersessions; observed experiments are not acceptance unless
 confirmed as such. Missing optional files or headings are not missing requirements.
 
 Classify items as `single` or `distributed`; enumerate the full distributed population before verification. Sampling must be justified and leaves sampled applicable items unverified. Assess implementation diff-first: inspect every changed path's hunks, expand to the surrounding declaration/symbol or dependency evidence required by an item, and read a full file or broader population only for file-wide, absence/existence, or distributed obligations. Deleted or renamed paths may be assessed from authoritative diff evidence.

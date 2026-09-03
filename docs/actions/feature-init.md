@@ -94,10 +94,10 @@ above the computed next number; an occupied/older number cannot be reused via a 
 
 The record explains what changes, why this approach, concrete acceptance examples and expected outcomes,
 and later the actual verification. Headings are writing prompts, not mandatory forms. Preserve references
-and the actual delta when current truth already explains the unchanged behavior. Keep meaningful negative
-constraints. Add or split a design or work note only when it materially helps reading or handoff; an explicit
-request for a separate handoff document qualifies. Name each purpose and link it without duplicating accepted
-rules. Test code belongs in existing project test locations.
+and the actual delta when current truth already explains the unchanged behavior. Keep accepted constraints and
+explicit exclusions. Add or split a design or work note only when it materially helps reading or handoff; an
+explicit request for a separate handoff document qualifies. Name each purpose and link it without duplicating
+accepted rules. Test code belongs in existing project test locations.
 Long reproducible trial material can live separately when needed; keep conclusions and references in spec.
 
 An active feature uses `spec.md` as its accepted record. Optional design/work notes may support it but do not
@@ -211,5 +211,5 @@ delivery obligation without lowering a failed expectation absent a confirmed beh
 Report the useful conclusion, create/reuse/no-record disposition, actual evidence or gap, and next action in
 natural language. Do not output a required lane/form or an empty checklist. Read-only assessment stops without
 materialization. Record-only work stops after recording; authorized implementation continues from its accepted
-approach. Validate correct target, no-clobber, traceability, consistent negative constraints, and actionable
+approach. Validate correct target, no-clobber, traceability, accepted constraints and exclusions, and actionable
 acceptance before handoff. Report tests actually executed separately from planned tests and static fixtures.

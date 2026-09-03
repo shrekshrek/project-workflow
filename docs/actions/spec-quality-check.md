@@ -45,7 +45,7 @@ Check meaning, not template completion:
 4. The approach is necessary for the current outcome and addresses applicable responsibilities, data,
    authorization, recovery, cost and rollout constraints. Scope is coherent; independent outcomes are not
    silently bundled. Size alone is not a failure and a bundle does not need a new document category.
-5. Accepted decisions, negative constraints, supersessions and unresolved questions survive into the record.
+5. Accepted decisions, constraints, exclusions, supersessions and unresolved questions survive into the record.
    Related current truth is referenced and deviations are explicit. Do not demand a `Delta` heading or empty
    Added/Modified/Removed subsections when prose already states the change.
 6. The next implementation step and its verification are actionable. Do not require an exhaustive task list,
