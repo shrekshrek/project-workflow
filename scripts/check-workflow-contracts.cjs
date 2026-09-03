@@ -80,6 +80,9 @@ forbidPatterns("docs/actions/feature-init.md", [
   ["legacy required handoff blocker", /required decision, selection, or handoff/i],
   ["keyword-driven routing", /no full-lane trigger applies|Use light lane only when all are true|Architecture-shaped work remains ordinary FULL/i],
 ]);
+requirePatterns("docs/actions/feature-archive.md", [
+  ["responsibility-led current-truth evolution", /finish an otherwise unambiguous archive[\s\S]*nonblocking restructuring proposal[\s\S]*uncertain fact ownership remains a user question[\s\S]*organize area documents by coherent product\/system responsibility, not length[\s\S]*split independently changing responsibilities[\s\S]*each detailed fact has one owner/i],
+]);
 requirePatterns("docs/actions/spec-quality-check.md", [
   ["semantic rather than form gate", /Check meaning, not template completion/i],
   ["requirements reconciliation", /^## Requirements Reconciliation$/m],

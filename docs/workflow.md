@@ -158,7 +158,7 @@ AI 协作开发有**三个 Tier 1 工程痛点**,本手册的四个运行阶段�
 - 代码组织维度只影响 **A. 约定** 中 AGENTS.md 的嵌套层数(根 / tier / 模块);宿主私有规则只增强对应宿主,不要求跨 adapter 映射
 - B / C / D / E 四类与代码组织维度独立,**不按 tier / 模块嵌套**
 
-**A vs E 分界**(都是"当前态",别混):A 回答**工程上怎么干活**(命令 / 风格 / 边界),E 回答**产品现在长什么样**(IA / 行为 / 契约现状)。工程约定永远进 A,产品域现状进 E;E 不存在时,B 类历史 spec 只是审计材料,不是实施基线(见 [spec-driven.md §5](spec-driven.md))。
+**A vs E 分界**(都是"当前态",别混):A 回答**工程上怎么干活**(命令 / 风格 / 边界),E 回答**产品现在长什么样**(IA / 行为 / 契约现状)。工程约定永远进 A,产品域现状进 E;E 按稳定产品责任分区，每条详细事实一个 owner，不按篇幅拆分。E 不存在时,B 类历史 spec 只是审计材料,不是实施基线(见 [spec-driven.md §5](spec-driven.md))。
 
 **A–E 生命周期归口**:A 由 `project-init` / `project-personalize` 建立,feature 内随改动更新,客观 drift 才走
 `agents-md-revise`,始终维护当前态不归档;B 由 `feature-init` 按需创建,`feature-done` 判兑现,`feature-archive`

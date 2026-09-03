@@ -33,7 +33,7 @@ Resolve the canonical `spec.md` receipt using [feature-done](feature-done.md#del
 
 ## Outputs
 
-1. **Current truth merge** (only for features whose receipt `Current truth` is `update pending`, or that change behavior already declared in a domain document): update `docs/specs/<area>.md`. `project-init` creates only `docs/specs/index.md`; create a new area document from the plugin domain template only when the delivered feature establishes a durable domain truth.
+1. **Current truth merge** (only for features whose receipt `Current truth` is `update pending`, or that change behavior already declared in a domain document): update `docs/specs/<area>.md`. `project-init` creates only `docs/specs/index.md`; create a new area document from the plugin domain template only when the delivered feature establishes a durable domain truth. Update `docs/specs/index.md` when area ownership changes.
 2. **Physical archive**: move `docs/specs/changes/<NNN>-<slug>/` to `docs/specs/changes/archive/<NNN>-<slug>/` for every closed feature — regardless of optional attachments. Use an ordinary filesystem rename so tracked and untracked artifacts both work; Git can record the rename when the result is committed. Numbering stays unique across active and archive. After each move, recompute local Markdown destinations from the old file location to the new one so links outside the feature keep the same semantic target while links within the moved directory remain local. Missing local targets block completion and the directory is moved back before stopping.
 3. **Lifecycle status on superseded older specs**: when this delivery replaces an earlier feature's direction, mark that spec `已取代` (superseded, link the successor) or `已废弃` (abandoned) and archive it in the same pass.
 4. **ADR consistency check**: if a merged conclusion contradicts an `Accepted` ADR, stop and resolve — either a new ADR supersedes the old one, or the conclusion is wrong. Current-truth documents link the ADRs governing the area.
@@ -46,7 +46,7 @@ Resolve the canonical `spec.md` receipt using [feature-done](feature-done.md#del
 2. An explicit single-feature invocation or an enclosing close/archive/submit request authorizes an
    unambiguous READY archive. In sweep mode, present and confirm the candidate set. Ask separately only for
    uncertain current-truth ownership, supersession, or ADR decisions.
-3. For each candidate, draft the durable present-tense facts, lifecycle status changes, archive note, and optional index update without applying them. A stable READY receipt proves the historical delivery, not today's product behavior: validate every pending current-truth fact against present implementation evidence, current domain documents, and later active/successor changes. Do not merge a stale fact merely because the old receipt remains valid. Stop on unresolved supersession or contradiction with an Accepted ADR until the governing decision is resolved.
+3. For each candidate, draft the durable present-tense facts, lifecycle status changes, archive note, and optional index update without applying them. A stable READY receipt proves the historical delivery, not today's product behavior: validate every pending current-truth fact against present implementation evidence, current domain documents, and later active/successor changes. Do not merge a stale fact merely because the old receipt remains valid. If pruning still leaves independently changing responsibilities in one document, finish an otherwise unambiguous archive and report a nonblocking restructuring proposal; uncertain fact ownership remains a user question. Do not bundle the restructuring into the archive unless the user authorized it. Stop on unresolved supersession or contradiction with an Accepted ADR until the governing decision is resolved.
 4. Move the directory with an ordinary filesystem rename and run the link relocator. If relocation fails, move the directory back and stop before applying lifecycle or current-truth edits.
 5. Apply the prepared current-truth, final-status, archive-note, governing-ADR, and optional index updates.
 6. Validate current truth, final statuses, archived paths, and links; report all touched documents and follow-ups.
@@ -54,7 +54,7 @@ Resolve the canonical `spec.md` receipt using [feature-done](feature-done.md#del
 ## Current-Truth Document Discipline
 
 - **Replace, don't append**: merging rewrites the sections that changed; superseded statements are deleted, not stacked. The document always reads as a single consistent present tense.
-- **Size discipline**: aim to keep each `docs/specs/<area>.md` around 150 lines. If it grows well beyond that, check whether the area should split or stale detail should be pruned — a bloated current-truth doc is the next pollution source. Complex domains may exceed this when the content is still current, structured, and useful.
+- **Responsibility boundaries**: organize area documents by coherent product/system responsibility, not length. After pruning, split independently changing responsibilities while keeping coupled facts together; each detailed fact has one owner. An existing file may remain a concise overview when useful.
 - **Freshness header**: first line under the title is `> 最后核对:YYYY-MM-DD`, updated on every merge. Keep feature/source identifiers in the archive note, proof bundle, or commit message, not in the domain header. A stale date is a visible distrust signal.
 - Content is future-facing behavior facts only: how the area works now, plus links to governing ADRs. No history, no implementation details, no rationale (that lives in ADRs). Do not leave `docs/specs/changes/archive/*` references or long `NNN-<slug>` lists as the current-truth body; extract the surviving facts instead.
 
@@ -70,7 +70,7 @@ Resolve the canonical `spec.md` receipt using [feature-done](feature-done.md#del
 
 ## Validation
 
-- Confirm the current-truth document is concise and reflects present behavior under the document discipline above.
+- Confirm current truth reflects present behavior under the document discipline above.
 - Confirm each archived feature used a current-task READY result or another confidently unchanged reviewed Git/non-Git state; otherwise rerun `feature-done` and stop that candidate.
 - Confirm every archived spec's status line reflects its final state and superseded ones link their successor.
 - Confirm every local Markdown link in each archived directory resolves after relocation; do not report the archive complete with broken ADR, domain-doc, sibling, or reference-style links.
