@@ -1,10 +1,10 @@
 # spec-revise
 
-Canonical action for changing an accepted feature contract after implementation has started.
+Canonical action for materially correcting an accepted, unarchived feature contract before or after implementation.
 
 ## Use When
 
-- An accepted `spec.md` needs to change during implementation.
+- An accepted `spec.md` needs a material correction, including before implementation starts.
 - The latest user instruction materially corrects, rejects, removes, or replaces behavior in an accepted
   contract, even when the user does not name this action and phrases the request as "fix it" or "continue".
 - A delivered-but-unarchived feature needs to reopen because a material contract, scope, plan, or Verification omission was discovered after `feature-done`.
@@ -14,7 +14,7 @@ Canonical action for changing an accepted feature contract after implementation 
 - A module boundary or architecture decision must be adjusted after the original plan.
 - The change would otherwise rewrite history or hide a requirement shift.
 
-Draft specs may be edited directly before implementation starts.
+Unaccepted drafts may be edited directly; acceptance follows the user's decisions, not the file's status label.
 An implementation regression under an unchanged accepted contract does not use this action: repair the implementation and explicitly rerun `feature-done`, which owns delivery-verdict replacement and any `已实现` → `已确认` rollback.
 
 ## Inputs

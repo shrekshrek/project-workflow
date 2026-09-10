@@ -1,6 +1,6 @@
 # project-workflow v3
 
-**Spec-driven feature development blueprint for AI-assisted coding** — methodology docs + starter template + runtime adapters.
+**Conversation-and-evidence-led feature development for AI-assisted coding** — methodology docs + starter template + runtime adapters.
 
 > v3 is docs-first and adds dual Claude/Codex plugin packaging plus spec lifecycle management.
 
@@ -8,10 +8,10 @@
 
 ## Why v3 exists
 
-AI-assisted coding has three Tier 1 engineering problems. Every part of v3 — the 5-phase workflow, 4 pillars, skills, template, and spec lifecycle — exists to address these three:
+AI-assisted coding has three Tier 1 engineering problems. Every part of v3 — the four-stage workflow, 4 pillars, skills, template, and spec lifecycle — exists to address these three:
 
-- **Verification** — AI generates code 10x faster than humans can validate. Boris Cherny (Claude Code lead): *"The most important thing is to give Claude a way to verify."*
-- **Context-as-RAM** — Context windows behave like RAM, not storage. Long sessions drift, token costs scale, attention degrades past 200-line files.
+- **Verification** — AI code generation can outpace human validation. Boris Cherny (Claude Code lead): *"The most important thing is to give Claude a way to verify."*
+- **Context-as-RAM** — Context windows behave like RAM, not storage. Irrelevant or repetitive context increases cost and makes important guidance harder to retain.
 - **Drift** — Without long-term memory, AI conventions drift across time (same code reviewed twice gives different verdicts), modules (A vs B style mismatch), and project lifecycle (month 1 vs month 6 codebase).
 
 Cross-layer inconsistency (frontend/backend/DB contracts) is treated as a stack-specific tactic (`docs/workflow.md §8.1`), not a top-level proposition — community evidence frames it as a general architecture problem, not AI-specific.
@@ -24,7 +24,7 @@ Full framing with sources: [`docs/workflow.md §0.1`](docs/workflow.md).
 
 project-workflow supports **conversation-and-evidence-led AI development**: make the intended result and approach understandable, align before implementation, and use staged results and verification to guide the next decision. Durable records preserve that agreement.
 
-Personal and team development use the same per-change workflow. A team does not need a project-workflow collaboration layer: each contributor uses the same discussion, evidence, verification, and archive rules to their own change before submitting it.
+Personal and team development use the same per-change workflow within each contributor's authorized scope. Code submission and feature closure follow their respective authorization boundaries.
 
 v3 separates **methodology core** from **runtime adapters**:
 
@@ -213,8 +213,8 @@ Exception and maintenance actions appear only when their condition exists:
 
 | Condition | Action |
 |---|---|
-| A confirmed contract becomes materially wrong during implementation, or a delivered-but-unarchived contract/plan/Verification must reopen | `spec-revise` |
-| Historical active specs contradict each other | `spec-reconcile` |
+| An accepted, unarchived contract needs a material correction before or after implementation | `spec-revise` |
+| Active specs, current truth, or ADRs have an unresolved contradiction | `spec-reconcile` |
 | Objective project state or root/tier/module guidance placement drifts from `AGENTS.md` or explicitly selected host-specific convention files | `agents-md-revise` |
 
 Exact rule ownership and architecture-risk routing are defined once in the

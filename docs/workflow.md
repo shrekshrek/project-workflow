@@ -6,7 +6,7 @@
 >
 > 风格:opinionated 但可 hack —— 任何一条都可以为具体场景偏离,只要清楚为什么。
 >
-> **统一流程原则**:个人开发与团队开发使用同一条 per-change 流程。每个人在自己的工作范围内按相同的按需记录、风险验证、归档后提交即可;project-workflow 不要求额外 team mode、协作层或并发协调协议。
+> **统一流程原则**:个人开发与团队开发使用同一条 per-change 流程。每个人在自己的工作范围内按需记录、验证，按实际授权提交代码或关闭归档;project-workflow 不要求额外 team mode、协作层或并发协调协议。
 
 ---
 
@@ -32,7 +32,7 @@ AI 协作开发有**三个 Tier 1 工程痛点**,本手册的四个运行阶段�
 
 **社群证据**:[Mem0 — Context Window Behaves Like RAM, Not Storage](https://mem0.ai/blog/state-of-ai-agent-memory-2026)(更多见 [§参考与延伸](#参考与延伸))
 
-**v3 主力支撑**:[§6.2 Context budget](#62-上下文是有限预算context-budget) —— AGENTS.md 行数纪律 + path-scoped rules 按需加载(Claude: `.claude/rules/`) + `@imports` 组织长尾 + 宿主支持的上下文重置/压缩 + 小 composable skills
+**v3 主力支撑**:[§6.2 Context budget](#62-上下文是有限预算context-budget) —— AGENTS.md 内容预算 + path-scoped rules 按需加载(Claude: `.claude/rules/`) + `@imports` 组织长尾 + 宿主支持的上下文重置/压缩 + 小 composable skills
 
 #### 命题 3:Drift —— 规范在时间/空间/演进三向漂移
 
@@ -174,7 +174,7 @@ AI 协作开发有**三个 Tier 1 工程痛点**,本手册的四个运行阶段�
 "想看项目规则 / 架构约定"     → A(项目 AGENTS.md)
 "想看本 tier 特殊约定"        → A(<tier>/AGENTS.md)
 "想看代码风格 / 测试 / 安全"  → A(path-scoped rules;Claude: .claude/rules/<topic>.md)
-"想看 feature 设计"          → B(docs/specs/changes/<NNN>-<slug>/;已交付的在 docs/specs/changes/archive/,只当历史读)
+"想看 feature 设计"          → B(docs/specs/changes/<NNN>-<slug>/;已验证待关闭的仍在活动区，已归档的只当历史读)
 "想看为什么选 X"             → C(docs/adr/NNNN-<X>.md)
 "想看检查 / 工具配置"        → D(项目 lint / test / CI 配置)
 "想看某产品域现在的样子"      → E(docs/specs/<area>.md;没有 E 时可临时读最新 active spec;archive 只作历史证据,不当当前基线)
@@ -265,7 +265,7 @@ P0 产出物分**两层**(职责严格不重叠):
 ```
 项目根/
 ├── AGENTS.md                       # 项目级约定入口,跨工具事实标准
-├── CLAUDE.md                       # Claude adapter alias:1 行 @AGENTS.md(或 symlink)
+├── CLAUDE.md                       # Claude adapter alias:1 行 @AGENTS.md
 ├── docs/
 │   ├── specs/index.md              # current-truth 索引
 │   ├── adr/README.md               # ADR 使用说明;模板留在 plugin
@@ -487,7 +487,7 @@ docs/adr/
 - 平台协作的**原则**(人类协作走平台、不进 repo 文件)由 [§4.4](#44-backlog-与讨论走平台不进-repo-文件) 承接,不需要模板
 - 模板是**团队场景才付得起的复杂度**——出现外部 contributor / 多人协作时再加,P0 不预付
 
-**何时加**:仓库开始接受外部 issue / PR、或团队成员 ≥ 2 人 且观察到 PR 描述质量不一致。届时手动 `mkdir .github/PULL_REQUEST_TEMPLATE.md`,引用或复制 [§3.3 delivery receipt](#33-交付阶段delivery-receipt) 的当前字段即可。GitLab 等价:`.gitlab/merge_request_templates/`。
+**何时加**:仓库开始接受外部 issue / PR、或团队成员 ≥ 2 人 且观察到 PR 描述质量不一致。届时按需创建 `.github/PULL_REQUEST_TEMPLATE.md`，引用 [§3.3 delivery receipt](#33-交付阶段delivery-receipt) 的结果即可。GitLab 等价:`.gitlab/merge_request_templates/`。
 
 ### 1.10 初始化与个性化的提问边界
 
@@ -705,7 +705,7 @@ feature artifact 走自身生命周期，spec/代码偏差由端点处理；不�
 <a id="60-每条原则的两侧组成读-6164-前必读"></a>
 ### 6.0 每条原则的两侧组成(读 §6.1-6.4 前必读)
 
-> **术语提示**:本节用"**蓝图侧 / 纪律侧**"区分**谁来支撑**(工具 vs 人);§6.4 的 **L1/L2/L3** 是另一回事(review 分层 —— 通用规则 / 项目约定 / 功能规约)。不要混。
+> **术语提示**:本节用"**蓝图侧 / 纪律侧**"区分**谁来支撑**(工具 vs 人);§6.4 的 **L1/L2/L3** 是另一回事(review 分层 —— 机械验证 / 项目约定 / 功能规约)。不要混。
 
 每条原则都由两侧共同支撑,**缺一不可**:
 
@@ -812,16 +812,16 @@ LLM 的 attention 是 quadratic 或 sub-linear cost over context length。当 co
 
 #### 主张
 
-对照规则检查代码这件事,根据**规则的来源**分三层(L1 / L2 / L3),每层用不同机制 —— **不要混在一起做**。
+验证按机械可检查性和规则来源分为 L1 / L2 / L3：L1 执行检查，L2/L3 分别判断项目约定与功能契约是否满足。
 
 | 层 | 规则源 | 问的问题 | 失败模式 |
 |---|---|---|---|
-| **L1** 通用规则 | language defaults + 团队全局规则(Claude adapter 可放 `~/.claude/rules/*`) | 代码规范吗? | 通用工程错误 |
+| **L1** 机械验证 | 功能验收中的可执行检查 + 适用项目命令 | 必要的可执行检查通过了吗? | 检查失败或验证缺失 |
 | **L2** 项目约定 | `AGENTS.md` + 路径级项目规则(Claude adapter 为 `.claude/rules/`) | 长得像这个项目吗? | 风格/结构错 |
 | **L3** 功能规约 | 已接受的功能记录  | 做了说要做的事吗? | 行为/范围错 |
 
-三层失败模式正交：通用工程错误、项目约定偏离、功能契约偏离不能互相证明通过。分层能缩短
-review context、避免一层结果掩盖另一层，并让修复指向明确规则源。
+机械检查结果供适用的 L2/L3 消费，不能替代尚需判断的约定或契约问题。分工帮助限定审查范围，
+避免重复执行检查，并让修复指向明确依据。
 
 #### 怎么用
 
@@ -835,7 +835,7 @@ L1 在阶段和端点都跑机械检查;L2 与 L3 由 reviewer 在端点执行,�
 通用情形见 [§9 何时偏离](#9-何时偏离手册)。本原则特有的:
 
 - **设计期** → 还没代码,L1 / L2 都用不上,只 review spec 文本
-- **完全 AI 自主项目**(没人定项目约定) → 没有 AGENTS.md 时 L2 退化为 L1
+- **缺少明确项目约定** → 按 `feature-done` 判断 L2 适用性或输入缺口，不能以 L1 代替必要的项目约定审查
 - **legacy 代码** → 老代码大量违反 L1/L2,先 lock("不报警旧代码"),只对新改动 enforce
 
 ---
@@ -865,10 +865,10 @@ L1 在阶段和端点都跑机械检查;L2 与 L3 由 reviewer 在端点执行,�
 **症状**:把项目规则只写进单一工具私有格式(如 `.cursor/rules/` 只 Cursor 读)而不是 AGENTS.md
 **修正**:协作约定写在**广泛可读**的位置(AGENTS.md / `docs/`,Claude Code、Codex 与其他兼容工具都能读),工具特定位置只放工具特异配置(如 plugin manifest)。project-workflow 不强求"工具完全无关",但要避免锁死单一工具的私有格式 —— 见 [§0.5 信念 2](#05-实现策略的核心信念)。
 
-### 7.7 不要在 P0 没做完就跳到 P2
-**症状**:还没建 AGENTS.md / 必要规则就开始写 feature
-**后果**:基线缺失,每个 feature 都要重新讨论项目惯例
-**修正**:严格按 P0 → P2 顺序;P0 没做完不开 feature(模块新增是 P2 内 sub-flow,见 §2)
+### 7.7 项目约定按需接入
+
+先读取并遵守已有约定；需要建立或补全工作协议时，按 [项目接入规则](actions/project-init.md) 选择
+`project-init` 或 `project-personalize`。明确的小改沿用现有约定直接处理，记录需要由 `feature-init` 判断。
 
 ### 7.8 不要把 backlog 塞进 repo 文件
 **症状**:`docs/backlog.md` / `TODO.md` 跟踪未决事项
@@ -902,7 +902,7 @@ P0-P4 不绑定语言或框架。项目个性化时从仓库事实识别 formatt
 **为什么**:依赖方看到不完整契约时容易自行补全并形成跨层漂移。先把 API/schema/event/fixture 的边界写清并可验证,各 tier 才能基于同一事实实施。
 
 **怎么用**:
-- plan.md 的 task breakdown 按依赖或可独立验证的 phase 排列,不默认某个 tier 先行
+- 功能记录中的实施步骤按依赖或可独立验证的阶段排列，不默认某个 tier 先行
 - API 已存在时,前端基于可访问的 schema/swagger 和真实或契约 fixture 实施
 - API 尚未实现时,先冻结可测试的 contract/fixture;后端、前端可顺序执行,也可各自基于同一契约推进
 - 纯前端、纯后端或不跨 tier 的改动不套用本战术
@@ -1020,6 +1020,6 @@ P0-P4 不绑定语言或框架。项目个性化时从仓库事实识别 formatt
 
 ### 内部交叉
 
-- [`spec-driven.md`](spec-driven.md) — P2 spec 三文件详解
+- [`spec-driven.md`](spec-driven.md) — 功能记录与验证实践指南
 - [`tooling.md`](tooling.md) — 各 AI 工具横向比较
 - [`actions/agents-md-revise.md`](actions/agents-md-revise.md) — P4 主动 refresh action contract;宿主执行细节由各自 adapter 提供

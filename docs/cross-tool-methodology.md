@@ -28,8 +28,8 @@ project-workflow 分两层:
 1. **A 类约定是项目当前规则源**
    `AGENTS.md` 是跨工具 canonical 入口。项目自有的工具配置 可以增强本地体验,但不构成第二套 portable core,其他 adapter 也不必翻译或读取它们。
 
-2. **无需新 artifact 的任务不启动 project-workflow**
-   是否需要新 artifact由 [`feature-init`](actions/feature-init.md) 判断；直接实施仍遵守适用的 `AGENTS.md` 和相关检查，复用已有 feature 时沿用其接受规则与生命周期。
+2. **按记录需要选择工作方式**
+   是否创建、复用或省略记录由 [`feature-init`](actions/feature-init.md) 判断；直接实施仍遵守适用的 `AGENTS.md` 和相关检查，复用已有 feature 时沿用其接受规则与生命周期。
 
 3. **默认一份功能记录**
    需要追踪时只创建 `docs/specs/changes/<NNN>-<slug>/spec.md`；可复用已有记录，长内容确有用途才拆出。不按文档套餐分类。
@@ -56,7 +56,7 @@ project-workflow 分两层:
    默认跨工具 action 是 `project-init` / `project-personalize` / `feature-init` / `spec-quality-check` / `spec-revise` / `feature-done` / `feature-archive` / `spec-reconcile` / `agents-md-revise`。`feature-init` 把记录需要与 PREVIEW/APPLY 写入授权分开;显式 feature 路由评估触发只读 PREVIEW,普通讨论、诊断和检查不触发。`feature-done` 内聚交付门禁和 receipt,不再设独立 helper 命令;其复查与证据规则由 canonical action 定义。
 
 11. **`已实现` 不等于"仍是产品现状"**
-   交付后的生命周期语义是跨工具的:`docs/specs/changes/` 活动区只放进行中的变更,已交付的整目录归档到 `docs/specs/changes/archive/`(检索现状时排除);被取代的 change 标 `已取代` / `已废弃`;current truth(`docs/specs/<area>.md`)是产品域现状的唯一权威。任何 adapter 在长周期产品域取 context 时,应优先读 current truth,不把 archive 内容当有效基线。
+   交付后的生命周期语义是跨工具的:`docs/specs/changes/` 活动区保留进行中及已验证待关闭的变更；确认关闭后，整目录归档到 `docs/specs/changes/archive/`(检索现状时排除);被取代的 change 标 `已取代` / `已废弃`;current truth(`docs/specs/<area>.md`)是产品域现状的唯一权威。任何 adapter 在长周期产品域取 context 时,应优先读 current truth,不把 archive 内容当有效基线。
 
 ---
 
@@ -68,7 +68,7 @@ project-workflow 分两层:
 | Host-specific scoped rules | 可选 `.claude/rules/*.md`;由 Claude adapter 原生加载 | 使用 root/nested `AGENTS.md`;不读取或翻译 Claude-private rules | 在 `AGENTS.md` 放置 portable guidance |
 | Reusable workflows | Generated Claude package from `adapters/claude/`, with skills referencing `docs/actions/` | Generated Codex package from `adapters/codex/`; skills reference bundled copies of the same `docs/actions/` semantics | 按 `docs/actions/` 手工执行 |
 | Sub-agent review | Applicable boundary 必须 dispatch `adapters/claude/agents/` 的具名 agent;不可用/失败/无容量时有据 fallback | Applicable boundary 必须由 Codex general subagent 跑 bundled `docs/reviewers/`;不要求 custom-agent name | 无 dispatch capability 时主会话按 `docs/reviewers/` 执行并记录原因 |
-| Plugin distribution | Claude plugin marketplace | Codex plugin marketplace | Copy `template/` and docs |
+| Plugin distribution | Claude plugin marketplace | Codex plugin marketplace | Use the baseline materializer; consult action docs |
 
 Codex supports additional instruction override filenames, but project-workflow does not generate or recommend them. Native persistent guidance remains the `AGENTS.md` hierarchy. Claude-private `.claude/rules/` remain optional project-owned convention files; Codex does not treat them as portable convention input. Codex `.codex/rules/*.rules` files remain command-approval policy and are not an A-class coding-convention carrier.
 
@@ -112,7 +112,7 @@ Before adding or changing a skill or plugin feature, answer:
 2. Is the action already documented in `docs/actions/`?
 3. Is the invariant already documented in `workflow.md` / `spec-driven.md`?
 4. Is the adapter duplicating core logic that should be referenced instead?
-5. Does the adapter fail closed and record the exact reason when native reviewer dispatch cannot run?
+5. Does unavailable native dispatch use the canonical fallback, with missing required evidence still blocking the gate?
 6. If Claude and Codex differ, is the difference isolated to adapter docs?
 
 If the answer to 1 or 2 is unclear, update the methodology docs before changing the adapter.

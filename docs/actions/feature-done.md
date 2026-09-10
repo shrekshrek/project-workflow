@@ -84,7 +84,8 @@ useful, keep a dated one-line attempt summary in the implementation record. A no
   for diagnosis or an explicitly requested full sweep.
 - L1 prerequisite: a final READY candidate must finish all independently executable required checks before
   review. An early necessary failure may return `NEEDS WORK` without unrelated higher-cost checks; unavailability
-  yields `BLOCKED`, and applicable reviewer slots record `not-run(L1 prerequisite)`.
+  yields `BLOCKED`. Either suppresses L2/L3 and current-truth checks but still writes the receipt, with applicable
+  reviewer slots `not-run(L1 prerequisite)` and current truth `not-run(non-READY prerequisite)`.
 - L2 Project conventions: required when the project/user asks for it, convention sources change, or a
   qualitative convention/architecture concern cannot be settled by mechanical checks. Otherwise record a
   reasoned N/A. Documentation size does not determine applicability.
@@ -108,9 +109,8 @@ useful, keep a dated one-line attempt summary in the implementation record. A no
 
 ## Reviewer Execution
 
-Run applicable review only after L1 passes, under the shared
-[reviewer execution contract](../reviewers/README.md#reviewer-execution-contract). Missing applicable execution
-evidence blocks `READY`; an allowed N/A is an applicability decision. Finish implementation and non-receipt
+Follow the prerequisites and applicability in [Review Layers](#review-layers), then the shared
+[reviewer execution contract](../reviewers/README.md#reviewer-execution-contract). Finish implementation and non-receipt
 artifact edits first. Reviewers and this action are read-only outside endpoint-owned receipt/status writes.
 A non-READY verdict reports its blockers and `Next` routes, then ends this gate. A review-only request stops
 at the verdict. For a current authorized implementation or delivery request, a `direct-repair` blocker may
@@ -183,9 +183,7 @@ these facts unambiguous:
   evidence, proposed root/tier/module/mechanical owner, and whether `agents-md-revise` should handle it. Convention
   edits still require user authorization.
 
-Validate each applicable L2/L3 PASS against its reviewed-scope identity and coverage declaration before
-compacting it. The receipt contains the review identity, endpoint outputs, verdict, checks, review outcomes,
-relevant exceptions, and current truth.
+Validate each applicable L2/L3 PASS against its reviewed-scope identity and coverage declaration before compacting it.
 
 For `READY`, change only `spec.md`'s top status marker to `已实现`; non-READY reruns follow the lifecycle rule above.
 
@@ -202,11 +200,8 @@ prose as appropriate; no fixed response sections are required. Detailed check lo
 
 ## Verdict
 
-Run completion preflight first. Only after it passes, run all independently executable required L1 checks before qualitative review. A required L1 failure or unavailable environment suppresses L2/L3 and current-truth checks but not receipt assembly; record every applicable reviewer slot as `not-run(L1 prerequisite)` and current truth as `not-run(non-READY prerequisite)`.
-
-- Verdict contract: failed required checks or blocking L2/L3/acceptance-verification/current-truth findings = `NEEDS WORK`; missing required inputs or an environment that prevents required checks from running reliably = `BLOCKED`; after L1 passes, missing applicable reviewer evidence also = `BLOCKED`; evidence-backed required gates with only explicit nonblocking advisories = `READY`.
 - `READY`: L1 passes, applicable L2/L3 are evidence-backed PASS or an allowed explicit `N/A`, all applicable acceptance verification passes, no blocking current-truth issue remains, and the delivery receipt is complete. Explicitly nonblocking advisories are allowed.
-- `NEEDS WORK`: blocking or fixable findings remain.
+- `NEEDS WORK`: required checks fail, or applicable reviews, acceptance verification, or current-truth checks identify blocking, fixable findings.
 - `BLOCKED`: required context/spec is missing, required checks cannot run for an environmental/input reason,
   the owner-supplied review package is incomplete, reviewed inputs drift after dispatch, or applicable required
   reviewer-dispatch/execution evidence is missing in a way that prevents a reliable verdict.
@@ -224,8 +219,7 @@ history only when the user requests calibration. Establish reviewer sensitivity 
 
 ## Invariants
 
-- One stable snapshot produces one terminal verdict. Actual risk and project/user requirements determine
-  independent review applicability and scheduling; every applicable reviewer must complete reliably.
+- One stable snapshot produces one terminal verdict.
 - The accepted artifact is the delivery baseline; material corrections follow the scope-stop route above.
 - READY, receipt/status writes, and archive eligibility are endpoint/lifecycle outputs, not implementation tasks.
 - Reviewer coverage evidence supports the verdict. Each gate run creates fresh reviewer results; unchanged

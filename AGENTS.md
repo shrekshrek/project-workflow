@@ -35,7 +35,7 @@ adapters/claude/skills/
 ├── project-personalize/  /project-workflow:project-personalize (P0 project evidence / partial-custom baseline)
 ├── feature-init/         /project-workflow:feature-init        (P2 沟通、试验与按需记录)
 ├── spec-quality-check/   /project-workflow:spec-quality-check  (P2 语义就绪与需求对账)
-├── spec-revise/          /project-workflow:spec-revise         (P2 mid-impl 修订,§3.5/§2.6)
+├── spec-revise/          /project-workflow:spec-revise         (P2 已确认契约修订,§3.5/§2.6)
 ├── feature-done/         /project-workflow:feature-done        (P2 端点:L1/L2/L3/current-truth/proof 一体,幂等)
 ├── feature-archive/      /project-workflow:feature-archive     (交付后生命周期收尾:current truth + 老 spec 标记)
 ├── spec-reconcile/       /project-workflow:spec-reconcile      (多 spec 漂移诊断 + 状态修正)

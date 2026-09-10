@@ -117,7 +117,7 @@ If the host cannot expose or constrain reviewer capacity, record that limitation
 
 ## L1 prerequisite smoke
 
-- Plant a required L1 failure and confirm all other independently executable L1 checks still run.
+- Plant a necessary low-cost L1 failure and confirm unrelated higher-cost checks are skipped unless needed for diagnosis or an explicitly requested full sweep. A final READY candidate must still complete every applicable required check.
 - Confirm neither adapter dispatches new L2/L3 reviewers; each otherwise-applicable L2/L3 review records
   `not-run(L1 prerequisite)`, and the receipt returns `NEEDS WORK`.
 - Make a required L1 command unavailable and confirm the same reviewer behavior with a `BLOCKED` verdict.
@@ -135,8 +135,14 @@ Materialize a mechanically complete, subjectively clean draft with status `ËçâÁ®
 - `BLOCKED` result: status and implementation remain unchanged; subjective review is N/A when mechanical prerequisites failed.
 - A mechanically readable but substantively empty artifact is BLOCKED by the semantic check. If a reviewer
   was dispatched, its result must be recorded; it never reports reviewer N/A after dispatch.
-- Repeat a complete short spec with different headings and no plan/tasks: missing optional structure is not a finding.
+- Repeat a complete short spec with different headings and no plan/tasks: both adapters read only the existing relevant record/attachments; missing optional structure is not a finding.
   Repeat a one-file security change: independent review still applies despite its small record.
+
+## Active-feature routing smoke
+
+- With two active features, select one in conversation and make the other newer by mtime. An empty/current invocation reuses the selected feature. An explicit identifier selects its matching feature; without either context or an identifier, multiple candidates require clarification and remain unchanged.
+- Correct an accepted feature before implementation starts. Confirm `spec-revise` preserves the existing record and updates only the authorized correction, with no production code or duplicate approval.
+- Give one active spec and a current-truth document an unresolved contradiction. Confirm `spec-reconcile` reports the disagreeing statements and asks for the governing direction without requiring a second feature directory. A confirmed correction to the selected feature routes to `spec-revise`; an intentional accepted delivery delta is not a reconciliation conflict.
 
 ## Requirements-reconciliation smoke
 

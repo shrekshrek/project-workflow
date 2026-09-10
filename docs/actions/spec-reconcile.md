@@ -1,14 +1,15 @@
 # spec-reconcile
 
-Canonical repair action for product areas where accumulated specs conflict with each other or with current truth. Primarily a **retrofit tool**: projects adopting the archive discipline mid-way, or areas where multiple direction changes piled up before lifecycle management existed. In steady state (archive sweeps running), it is rarely needed.
+Canonical repair action for unresolved contradictions among a product area's active specs, current truth, and ADRs. It is primarily a retrofit tool for accumulated direction changes or adoption of lifecycle management.
 
 ## Use When
 
-- A product area has accumulated several feature specs and the user suspects stale specs are steering new work back toward superseded directions.
-- `feature-init` detected related historical specs for the same area and recommended reconciliation.
+- Accepted sources for a product area conflict and the governing direction is unresolved.
+- `feature-init` detected conflicting sources for the same area and recommended reconciliation.
 - Adopting lifecycle management in an existing project: one-time cleanup that establishes current truth and empties the active tree of history.
 
-Do not use for a single active feature that is simply wrong mid-implementation; that is [`spec-revise`](spec-revise.md).
+When the user has already supplied a material correction to one accepted feature, use [`spec-revise`](spec-revise.md).
+An accepted change's intentional difference from current truth is a delivery delta, not an unresolved conflict.
 
 ## Inputs
 
@@ -28,10 +29,10 @@ Do not use for a single active feature that is simply wrong mid-implementation; 
 
 ## Workflow
 
-1. Resolve an area, module, or explicit feature list and collect at least two related active specs plus relevant current truth, ADRs, and optional implementation evidence.
+1. Resolve an area, module, or explicit feature list and collect the relevant active specs, current truth, ADRs, and optional implementation evidence. The conflict must identify disagreeing statements; it does not require two feature directories. With no unresolved contradiction, report `CLEAN` without lifecycle changes.
 2. Build an exact-citation matrix of direct contradictions, grouping only conflicts resolved by the same
    precedence and lifecycle decision; keep independent conflicts separate and never choose a winner silently.
-3. For each group, present evidence, impact, and a recommendation; the user chooses the direction and losing
+3. For each group, present evidence, impact, and a recommendation; the user chooses the direction and any losing
    lifecycle state, and may split the group. Unresolved groups block implementation in the affected area.
 4. After approval, prepare losing status/successor links and current-truth edits without applying them. Move each losing directory with an ordinary filesystem rename, relocate local Markdown links, and move it back before stopping if relocation fails.
 5. After successful moves, apply final statuses and extract still-valid facts into current-truth gaps; replace archive-link lists or historical narratives with present-tense facts only after approval.
@@ -41,13 +42,13 @@ Do not use for a single active feature that is simply wrong mid-implementation; 
 
 - `CLEAN`: current truth and specs align; no lifecycle updates needed.
 - `NEEDS LIFECYCLE UPDATE`: statuses, archive moves, or current-truth documents need changes before new implementation in this area.
-- `BLOCKED`: contradictory active specs make new implementation unsafe until the user picks a precedence.
+- `BLOCKED`: conflicting governing sources make affected implementation unsafe until precedence is resolved.
 
 ## Invariants
 
 - Do not edit implementation code.
 - Do not delete history; superseding is marking plus archiving, never removing.
-- Do not continue implementation in the area while active specs contradict each other without a resolved precedence.
+- Do not continue affected implementation while governing sources conflict without a resolved precedence.
 - Every reported conflict cites exact files and sections; no vague "may be stale" findings.
 - Status changes and archive moves are applied only with user approval.
 - Every archived directory must retain resolvable local Markdown links after its move; a missing target blocks the lifecycle update.

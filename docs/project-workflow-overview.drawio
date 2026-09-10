@@ -179,7 +179,7 @@
         <mxCell id="pillar_63" value="&lt;b&gt;§6.3 Env-Enforced Rules&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;lint / tests 提供可重复的检查证据&lt;br/&gt;主服务:③ Drift (实时)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECEFF1;strokeColor=#455A64;fontSize=11;align=left;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
           <mxGeometry x="850" y="815" width="395" height="70" as="geometry"/>
         </mxCell>
-        <mxCell id="pillar_64" value="&lt;b&gt;§6.4 Three-Layer Review&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;按规则源分层 L1 / L2 / L3 — 正交不互感&lt;br/&gt;主服务:① Verification + ③ Drift (端点)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECEFF1;strokeColor=#455A64;fontSize=11;align=left;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
+        <mxCell id="pillar_64" value="&lt;b&gt;§6.4 Three-Layer Review&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;L1 执行机械检查，L2/L3 按约定与契约审查&lt;br/&gt;主服务:① Verification + ③ Drift (端点)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECEFF1;strokeColor=#455A64;fontSize=11;align=left;verticalAlign=middle;spacing=8;" vertex="1" parent="1">
           <mxGeometry x="1255" y="815" width="385" height="70" as="geometry"/>
         </mxCell>
 
