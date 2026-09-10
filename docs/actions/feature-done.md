@@ -187,11 +187,18 @@ Validate each applicable L2/L3 PASS against its reviewed-scope identity and cove
 compacting it. The receipt contains the review identity, endpoint outputs, verdict, checks, review outcomes,
 relevant exceptions, and current truth.
 
-Return a concise summary containing: verdict; aggregate check result; L2/L3 result or non-execution reason;
-current-truth state; `Lifecycle: READY; archive pending` when READY; non-empty blockers and `Next` routes; and the
-repository-relative canonical receipt path (normally `spec.md#proof-bundle`). The linked receipt holds command-level detail.
-
 For `READY`, change only `spec.md`'s top status marker to `已实现`; non-READY reruns follow the lifecycle rule above.
+
+## User handoff
+
+Start with the actual change against the accepted approach, including material deviations or limitations.
+When the user needs to operate the result to assess it, include the shortest useful entry point or usage
+example with its expected result. Otherwise a clear explanation of the change is sufficient. Do not invent
+access or claim an unperformed user test.
+Then report verdict; aggregate check result; L2/L3 result or non-execution reason;
+current-truth state; `Lifecycle: READY; archive pending` when READY; non-empty blockers and `Next` routes; and the
+repository-relative canonical receipt path (normally `spec.md#proof-bundle`). Combine these facts into concise
+prose as appropriate; no fixed response sections are required. Detailed check logs stay in the linked receipt.
 
 ## Verdict
 
@@ -205,8 +212,8 @@ Run completion preflight first. Only after it passes, run all independently exec
   reviewer-dispatch/execution evidence is missing in a way that prevents a reliable verdict.
 
 `READY` means the implementation passes checks against the feature artifact; a request to finish or deliver stops
-here with archive pending. Only an explicit request to close, archive, or submit the feature continues directly to
-the explicit-candidate [`feature-archive`](feature-archive.md) lifecycle action without asking again. Periodic sweep
+here with archive pending. When [closure authorization](feature-archive.md#closure-authorization) is established,
+continue to explicit-candidate `feature-archive` without asking again. Periodic sweep
 remains available. Record `update pending` in the receipt and merge it during archive.
 
 ## Gate Health

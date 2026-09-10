@@ -18,7 +18,7 @@ docs/specs/changes/<NNN>-<slug>/spec.md
 
 不选 LIGHT/FULL，不预建计划、任务或证据目录；已有记录覆盖需求则复用。记录怎么写见 [功能记录指南](spec-driven.md)。
 
-`spec-quality-check` 检查依据是否足以实施：缺少关键决定先澄清，缺少可选文件不阻断。实施中的暂停、交接与验证边界见 [feature-init](actions/feature-init.md#implementation-scope-stop)。
+按 [实施预告](actions/feature-init.md#record-and-authorization) 简要讲清尚未对齐的方案与重要选择，已明确授权的内容继续沿用。`spec-quality-check` 检查依据是否足以实施：缺少关键决定先澄清，缺少可选文件不阻断。实施中的暂停、交接与验证边界见 [feature-init](actions/feature-init.md#implementation-scope-stop)。
 
 ## 实现中发现新情况
 
@@ -26,7 +26,7 @@ docs/specs/changes/<NNN>-<slug>/spec.md
 
 ## 验证和交付
 
-`feature-done` 汇总稳定快照上的 L1、适用的独立 L2/L3 和当前事实状态；non-READY 结束本轮。READY 只表示交付验证通过；明确要求关闭/归档/提交时，再用 `feature-archive` 合并持久事实、移动目录并核验链接。没有通过的检查不能靠补文档变成通过。
+`feature-done` 先说明实际结果、偏差及适用的查看/试用方式，再汇总稳定快照上的 L1、适用的独立 L2/L3 和当前事实状态；non-READY 结束本轮。READY 只表示交付验证通过，仍可测试和反馈。按 [关闭授权](actions/feature-archive.md#closure-authorization) 使用 `feature-archive` 收尾；提交代码不自动表示关闭功能。没有通过的检查不能靠补文档变成通过。
 
 当前行为从 `docs/specs/` 和活动记录读取；只有追溯历史才读 `changes/archive/`。真正的历史冲突用 `spec-reconcile`；工程约定出现客观漂移用 `agents-md-revise`。
 

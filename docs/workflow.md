@@ -51,7 +51,7 @@ AI 协作开发有**三个 Tier 1 工程痛点**,本手册的四个运行阶段�
 **本手册不是什么**(boundary,避免误解):
 
 - **不是 process-owning 框架**:不强制按某固定顺序敲某些命令(反例见 [§7.2](#72-不要叠加两个-process-owning-框架))
-- **不承诺"AI 一次写对"**:目标是消除"对齐劳动"([§0.5](#05-实现策略的核心信念)),不消除迭代
+- **不承诺"AI 一次写对"**:减少重复工程规范提醒，保留目标、方案与结果的认知对齐及合理迭代([§0.5](#05-实现策略的核心信念))
 - **不是某个工具的使用手册**:Claude Code / Codex / 手工流程都是 runtime adapter;本手册定义的是 adapter 之上的工程方法。
 
 ### 0.2 四个运行阶段全景
@@ -207,15 +207,13 @@ Core docs 只定义"应该发生什么";adapter docs 定义"在某个工具里�
 
 ### 0.5 实现策略的核心信念
 
-要达成 §0.4 的目标,必须接受两个事实(不是手段,是前提):
+要达成 §0.4 的目标,遵循以下核心信念:
 
-1. **目标是消除"对齐劳动",不是消除迭代**。
+1. **减少重复工程规范提醒，保留认知对齐与合理迭代**。
 
-   真正该消除的:开发期间人反复提醒 AI **"注意命名"、"注意结构"、"注意规范"** 这一类**对齐对话** —— 这是真正的内耗,不是 AI 错,是规范没在系统层固化。
+   工程约定通过 lint、types、tests 和 AGENTS.md 固化，减少开发期间反复提醒 AI 注意命名、结构与规范。
    
-   不该追求的:让 AI"一次写对"或"零迭代"。合理迭代本身不是问题。
-   
-   **解法**:规范靠环境 + 文档自维持(lint / types / tests / AGENTS.md / spec.md),让对齐对话发生在**系统跟 AI 之间**,不再发生在**人跟 AI 之间**(见 §6.3)。
+   产品目标、方案选择和阶段结果仍需人与 AI 对齐。实施前让用户看清方案，分段交接实际结果和证据，支持用户判断下一步；spec 保存共识，不能替代沟通。不追求一次写对或零迭代。
 
 2. **方法论 core 必须 portable;adapter 可以 opinionated**。
 
@@ -223,21 +221,9 @@ Core docs 只定义"应该发生什么";adapter docs 定义"在某个工具里�
 
    **底层逻辑**:底层工具是 weeks-级别迁移成本,上层规范(AGENTS.md / spec.md)是 months-级别投入。上层规范必须 portable;工具特有能力(plugin manifests / sub-agent 配置)放进 adapter,不要反向污染 core。详见 §7.6 反模式 + [`cross-tool-methodology.md`](cross-tool-methodology.md)。
 
-3. **Plugin / skill 工具的角色:scaffold + 条件性框架问 + 提醒 + 兜底,不当 interviewer 替 user 决策业务细节**。
+3. **Plugin / skill 支持理解、决策和留证，不替用户决定产品方向**。
 
-   Plugin 应该做的:
-   - **Scaffold** ── 空项目只起中立六文件 baseline;feature 按需创建一份 spec;现有代码用 personalize 补真实约定
-   - **条件性框架 Q&A** ── 只问 user **当下能答 + audit 无法替代 + 延后成本极高** 的 branch 决策(如 slug / module 边界 / tier 归属);这些 once-and-done,不属"反复提醒"
-   - **Reminders** ── 把 mission-critical checkpoint(如 Scope "不做" / Sibling Alignment)前置作提醒,让 user 在 conversational fill 时主动注意,不预问
-   - **按需研究** ── 被动触发(user 提到选型不确定 → 按需研究;外部库行为不确定 → 查当前权威文档),不预设题
-   - **Audit safety net** ── decision-completeness-auditor catch plant,`/spec-quality-check` gate 把关质量
-
-   Plugin **不该做**的:
-   - 预设**固定 Q&A interview**(13 题清单式问业务细节)── feature 类型多样(CRUD / FE / job / refactor / ML 各不同),固定 Q&A 不可能通用
-   - 早期强问 user **答不准** 的内容(Scope "不做" 要看完架构才知边界;Sibling Alignment 要熟 sibling 模块现有约定)── 早问只会让 user 编凑数答案污染 spec
-   - 替 user 决策**业务细节**(字段名 / endpoint path / 错误码 / library 选择)── 这些应 conversational fill,系统侧 audit 兜底 plant
-
-   **底层逻辑**:这是 §0.4 "不依赖反复人工提醒" + §0.5 信念 #1 "对齐对话在系统 - AI 之间"在 adapter 层的落地。**关键区分:framework decision(必问)vs business detail(conversational fill + gate)** ── 准则是"audit 能否 cheaply catch + user 是否当下能答 + 延后成本"。详见 [§6.3 规则由环境强制](#63-规则由环境强制environment-enforced-rules) + `/feature-init` SKILL.md 实现。
+   从问题和具体结果出发，以仓库证据解决事实问题，对影响方向、边界、成本或验收的选择说明取舍与建议。已确认内容继续沿用；不靠固定问卷、文档字段或目录命名制造讨论。按需记录与审查帮助保存和验证共识，沟通及授权边界由 [feature-init](actions/feature-init.md) 定义。
 
 **做对了之后的副产物**(不追求,但顺带得到):
 - 迭代成本自然下降 —— 系统接管机械合规后,你不必盯每一步
@@ -607,7 +593,7 @@ sub-flow。仅新增文件、调整模块内部结构或普通移动/重命名�
 
 ### 3.4 与平台流程的协作
 
-已有 Issue/PR 可引用同一记录。平台写入仍需授权，不是讨论或开始实现的前置条件。明确关闭/归档/提交时，READY 后由 [feature-archive](actions/feature-archive.md) 合并有效的当前事实、移动目录并验证链接；只要求交付时可停在 READY、archive pending。
+已有 Issue/PR 可引用同一记录。平台写入仍需授权，不是讨论或开始实现的前置条件。满足 [关闭授权](actions/feature-archive.md#closure-authorization) 时，READY 后由 `feature-archive` 合并有效的当前事实、移动目录并验证链接；只要求交付时停在 READY、archive pending，提交代码不自动关闭功能。
 
 ### 3.5 开发中发现已确认内容有误怎么办
 

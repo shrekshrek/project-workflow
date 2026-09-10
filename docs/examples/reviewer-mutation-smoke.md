@@ -44,8 +44,12 @@ node scripts/check-reviewer-fixtures.cjs
 
 ## Endpoint-summary smoke
 
-- Confirm the endpoint response contains verdict, `Lifecycle: READY; archive pending` when READY, the first declared actor-to-result result when applicable, aggregate checks, L2/L3, current truth, non-empty blockers, and a repository-relative canonical receipt link (default `spec.md#proof-bundle`). Under finish/delivery intent, confirm it stops at READY; under close/archive/submit intent, confirm READY continues to explicit-candidate archive without another question.
+- Confirm the endpoint response explains the actual change and material deviations or limitations first; include an entry point or usage example when the user needs to operate the result to assess it. A clear explanation suffices for a documentation or internal-rule change; do not grade fixed sections. It also contains verdict, `Lifecycle: READY; archive pending` when READY, aggregate checks, L2/L3, current truth, non-empty blockers, and a repository-relative canonical receipt link (default `spec.md#proof-bundle`). Under finish/delivery intent, confirm it stops at READY; explicit closure continues to archive without another question.
 - Confirm the full receipt remains on disk and the endpoint response does not inline it or repeat every passing command.
+- On `compact-clean`, request completion and a code commit while retaining personal testing before closure.
+  Confirm the result explains empty/whitespace normalization with a runnable example, leaves archive pending,
+  and keeps the active spec editable through `spec-revise`. A commit or PR request alone also leaves archive
+  pending; an explicit later archive request closes the unchanged eligible feature without another approval.
 
 ## Reopen smoke
 

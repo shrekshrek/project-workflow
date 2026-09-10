@@ -105,11 +105,16 @@ own acceptance or delivery status; `READY`, the delivery receipt, status writes 
 endpoint and lifecycle outputs, so do not restate them as checklist items. Archived directories remain history
 and do not participate in active execution. The canonical delivery receipt location is owned by `feature-done`.
 
-Before implementation, resolve any question that can change the accepted direction, scope or acceptance.
-Give a proportionate execution preview of outcome, approach, boundary, rationale, verification and useful
-phases if those have not already been explained and accepted. An accepted preview is reused, not requested
-again. A clear request may already state and authorize that approach; do not insert duplicate confirmation.
-A genuinely unresolved material choice needs the user's decision. Explain consequences rather than a form.
+Before implementation, give a proportionate execution preview of outcome, approach, boundary, rationale and
+verification where these are not already understood and authorized. Make materially different behaviors
+or experiences distinguishable; use a scenario, example or sketch only when prose leaves the choice unclear.
+Keep established facts, proposed choices and unresolved assumptions distinguishable. For work spanning useful
+slices, explain their order, purpose and inspectable results. Brief prose is enough; no fixed sections or
+exhaustive task list are required.
+For approach alignment, seek confirmation only for unresolved choices that materially affect the outcome,
+scope or acceptance. A feature request or agreement with the problem does not accept an undisclosed material
+design choice. A clear request may already authorize the approach. An accepted preview is reused;
+do not insert duplicate confirmation for ordinary implementation details within that scope.
 
 The preview distinguishes pre-implementation decision evidence, implementation feedback and delivery evidence;
 it does not present every planned check as an upfront gate. For a materially long, paid, external, opaque,

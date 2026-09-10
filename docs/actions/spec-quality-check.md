@@ -31,7 +31,9 @@ A recorded experiment is evidence; it is not automatically an acceptance decisio
 
 Check meaning, not template completion:
 
-1. The problem, present consumer, observable outcome, boundary and meaningful exclusions are understood.
+1. The problem, present consumer, observable outcome, boundary and meaningful exclusions are understood;
+   the [execution preview](feature-init.md#record-and-authorization) makes the material choices and planned
+   handoffs understandable to the user.
 2. Critical unknowns affecting the chosen direction, contract or acceptance have adequate evidence or an
    explicit user decision. A trial that did not run or failed its criterion is not validated evidence. Ordinary
    details that can safely be discovered during implementation remain open without blocking the whole change.

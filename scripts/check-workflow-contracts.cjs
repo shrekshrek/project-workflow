@@ -127,7 +127,7 @@ requirePatterns("docs/actions/feature-done.md", [
   ["L1 L2 L3", /L1 Mechanical:[\s\S]*L2 Project conventions:[\s\S]*L3 Change-spec compliance:/],
   ["risk-based review scheduling", /When both reviews apply, dispatch L2 and L3 together[\s\S]*security\/authorization[\s\S]*Otherwise dispatch L3 first[\s\S]*same snapshot/i],
   ["review input separation", /authoritative convention population from the filesystem[\s\S]*`AGENTS\.md`[\s\S]*Caller-supplied[\s\S]*hints only[\s\S]*Route convention sources to L2 and the change-spec package to L3/i],
-  ["archive boundary", /close, archive, or submit[\s\S]*feature-archive[\s\S]*without asking again/i],
+  ["archive boundary owner", /closure authorization\]\(feature-archive\.md#closure-authorization\)[\s\S]*feature-archive[\s\S]*without asking again/i],
   ["compact failed history", /explicit rerun of an active `已实现` feature preserves[\s\S]*prior[\s\S]*READY receipt[\s\S]*Ordinary non-READY reruns replace[\s\S]*full Previous Proof Bundles are reserved/i],
   ["deferred current truth", /Domain doc check: defer it until L1[\s\S]*form a READY candidate[\s\S]*`not-run\(non-READY prerequisite\)`/i],
   ["review drift", /review-input drift/i],
@@ -189,7 +189,7 @@ requireTerms("docs/project-workflow-overview.drawio", "current feature-done over
   "不在 gate 内修实现",
   "高风险并行,普通先 L3 后 L2",
   "READY → archive pending",
-  "明确关闭/归档/提交 → /feature-archive",
+  "明确关闭/归档 → /feature-archive",
 ]);
 requireTerms("docs/project-workflow-overview.drawio", "progressive verification overview", [
   "开发前决策证据",
@@ -290,7 +290,7 @@ for (const host of ["claude", "codex"]) {
     ["receipt", /## Proof Bundle/],
   ]);
   requirePatterns(`adapters/${host}/skills/feature-done/SKILL.md`, [
-    ["archive handoff", /close\/archive\/submit intent continues to[\s\S]*feature-archive/i],
+    ["archive handoff", /canonical verdict and closure-authorization rules[\s\S]*feature-archive/i],
   ]);
 }
 

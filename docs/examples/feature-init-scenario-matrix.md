@@ -26,6 +26,9 @@ Shared behavior needs affected cases on both hosts. In particular:
   project writes. Do not require the user to invoke a command or choose a document category.
 - Request a tiny local fix: give a proportionate preview and use existing tests, without an unnecessary record
   or duplicate approval when the approach is already clear and authorized.
+- Request a feature with an undecided interaction, then confirm only the problem: explain the proposed result,
+  assumptions and useful handoffs without treating that acknowledgement as solution acceptance. After explicit
+  acceptance, preserve its scope and continue only the authorized work. Use `conversation-approach-before-implementation`.
 - Request a tracked behavior change: default to one spec. A bounded auth repair still needs risk coverage;
   a migration may need more design evidence but not automatically more files.
 - Request only a record: stop after recording. Request a separate design document for a concrete handoff:

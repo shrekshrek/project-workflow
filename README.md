@@ -22,7 +22,7 @@ Full framing with sources: [`docs/workflow.md §0.1`](docs/workflow.md).
 
 ## Project goal
 
-project-workflow helps real projects move from **chat-driven AI coding** to **spec-driven, reviewable, maintainable AI-assisted development**.
+project-workflow supports **conversation-and-evidence-led AI development**: make the intended result and approach understandable, align before implementation, and use staged results and verification to guide the next decision. Durable records preserve that agreement.
 
 Personal and team development use the same per-change workflow. A team does not need a project-workflow collaboration layer: each contributor uses the same discussion, evidence, verification, and archive rules to their own change before submitting it.
 
@@ -205,7 +205,7 @@ Most work does **not** use all nine actions. Initialize once, then use the daily
 | End of tracked change | `feature-done` | Establish the Git feature boundary, validate one stable snapshot with proportionate L1 and risk-based applicable L2/L3, and write one compact receipt. |
 | Periodic sweep | `feature-archive` | Merge pending current truth and move delivered changes out of the active tree. |
 
-Finish/delivery stops at READY with archive pending; enclosing close/archive/submit intent continues to
+Finish/delivery stops at READY with archive pending; [authorized closure](docs/actions/feature-archive.md#closure-authorization) continues to
 `feature-archive`. Deferred cross-task archive uses an immutable reviewed commit, while a dirty-worktree receipt is
 same-task evidence. `feature-archive` validates pending current truth against the present state.
 

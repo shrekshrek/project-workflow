@@ -7,8 +7,8 @@ The active tree `docs/specs/changes/` holds **in-flight work only**. History lea
 ## Use When
 
 - `feature-done` returned `READY` (whether or not its current-truth check reported an update pending).
-- The enclosing request asked to close, archive, or submit the feature and `feature-done` just returned
-  `READY`; continue with the explicit candidate without another confirmation.
+- The enclosing request authorizes closure under the rule below and `feature-done` just returned `READY`;
+  continue with the explicit candidate without another confirmation.
 - Periodically, as a sweep: close every delivered-but-unarchived feature in one pass.
 - After `spec-reconcile` resolved a messy area and left features ready to close.
 
@@ -20,6 +20,14 @@ valid Git/non-Git reviewed-state identity and endpoint outputs, Checks, applicab
 and Current truth. Optional Open questions and Drift remain optional. A missing or invalid required
 field makes the feature ineligible; report `rerun feature-done` and never infer READY from other or historical
 fields.
+
+## Closure authorization
+
+Close only when the user explicitly intends to finish the feature lifecycle, including an explicit archive
+invocation. A commit, push or PR submission alone is not closure authorization. Preserve a request to inspect,
+test or provide feedback before closing, even if an earlier request included closure. If intent is unclear,
+leave archive pending; ask only when closure is the requested next action. Reuse unchanged explicit closure
+authorization without another approval round.
 
 ## Inputs
 
@@ -43,8 +51,7 @@ Resolve the canonical `spec.md` receipt using [feature-done](feature-done.md#del
 ## Workflow
 
 1. Resolve one explicit feature or sweep active change directories. Treat delivery evidence and current truth as separate freshness questions. A current-task dirty-worktree READY result remains usable while its reviewed state and endpoint outputs are unchanged. A receipt reused across tasks is valid delivery evidence only when its reviewed commit SHA resolves and its receipt/status outputs remain intact; later movement of a current branch or PR head does not by itself invalidate that historical delivery proof. Rerun `feature-done` when the receipt records a dirty worktree from another task, uses an invalid identity pairing, or its reviewed commit cannot be resolved. A commit containing a dirty receipt is not proof that the reviewed worktree was unchanged before commit. Outside Git, compare the explicit reviewed inputs. Do not create a manual population list, fingerprint, or population hash.
-2. An explicit single-feature invocation or an enclosing close/archive/submit request authorizes an
-   unambiguous READY archive. In sweep mode, present and confirm the candidate set. Ask separately only for
+2. Apply [Closure authorization](#closure-authorization). In sweep mode, present and confirm the candidate set. Ask separately only for
    uncertain current-truth ownership, supersession, or ADR decisions.
 3. For each candidate, draft the durable present-tense facts, lifecycle status changes, archive note, and optional index update without applying them. A stable READY receipt proves the historical delivery, not today's product behavior: validate every pending current-truth fact against present implementation evidence, current domain documents, and later active/successor changes. Do not merge a stale fact merely because the old receipt remains valid. If pruning still leaves independently changing responsibilities in one document, finish an otherwise unambiguous archive and report a nonblocking restructuring proposal; uncertain fact ownership remains a user question. Do not bundle the restructuring into the archive unless the user authorized it. Stop on unresolved supersession or contradiction with an Accepted ADR until the governing decision is resolved.
 4. Move the directory with an ordinary filesystem rename and run the link relocator. If relocation fails, move the directory back and stop before applying lifecycle or current-truth edits.

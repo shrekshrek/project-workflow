@@ -326,7 +326,7 @@
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
 
-        <mxCell id="composite_note" value="&lt;b&gt;/feature-done&lt;/b&gt; = 唯一端点 gate:&lt;br/&gt;&lt;span style=&#39;font-size:10px;color:#546E7A;&#39;&gt;机械 Feature 边界 → L1 → 适用 L2/L3(高风险并行,普通先 L3 后 L2) → current-truth check → receipt;READY → archive pending;明确关闭/归档/提交 → /feature-archive(current truth pending 在此合并)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F8E9;strokeColor=#558B2F;fontSize=11;align=left;verticalAlign=middle;spacing=8;dashed=1;" vertex="1" parent="1">
+        <mxCell id="composite_note" value="&lt;b&gt;/feature-done&lt;/b&gt; = 唯一端点 gate:&lt;br/&gt;&lt;span style=&#39;font-size:10px;color:#546E7A;&#39;&gt;机械 Feature 边界 → L1 → 适用 L2/L3(高风险并行,普通先 L3 后 L2) → current-truth check → receipt;READY → archive pending;明确关闭/归档 → /feature-archive(current truth pending 在此合并)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F8E9;strokeColor=#558B2F;fontSize=11;align=left;verticalAlign=middle;spacing=8;dashed=1;" vertex="1" parent="1">
           <mxGeometry x="60" y="700" width="1280" height="60" as="geometry"/>
         </mxCell>
         <mxCell id="e_done_l1" style="endArrow=classic;html=1;dashed=1;rounded=0;strokeColor=#558B2F;strokeWidth=1;" edge="1" parent="1" source="s_featdone" target="s_l1">
