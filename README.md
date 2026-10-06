@@ -41,6 +41,10 @@ See [`docs/cross-tool-methodology.md`](docs/cross-tool-methodology.md).
 | Know whether a feature is ready | Completion preflight + proportionate L1 + applicable L2/L3 + delivery receipt |
 | Keep the codebase from drifting over months | `agents-md-revise` refresh of project conventions |
 
+Project Workflow can consume an approved Project Blueprint handoff when one exists, but remains independently
+usable for existing projects and ordinary feature work. Blueprint references are carried by the feature record;
+the Workflow does not copy project-level planning or silently revise it.
+
 The intended outcome is practical: fewer repeated reminders, fewer unreviewed AI changes, clearer handoff artifacts, and project rules that stay close to the codebase as it evolves.
 
 ---

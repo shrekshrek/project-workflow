@@ -58,6 +58,9 @@ project-workflow 分两层:
 11. **`已实现` 不等于"仍是产品现状"**
    交付后的生命周期语义是跨工具的:`docs/specs/changes/` 活动区保留进行中及已验证待关闭的变更；确认关闭后，整目录归档到 `docs/specs/changes/archive/`(检索现状时排除);被取代的 change 标 `已取代` / `已废弃`;current truth(`docs/specs/<area>.md`)是产品域现状的唯一权威。任何 adapter 在长周期产品域取 context 时,应优先读 current truth,不把 archive 内容当有效基线。
 
+12. **Blueprint handoff 是可选的上游输入**
+   `project-workflow` 可以独立运行。目标项目若提供已批准的 Blueprint handoff，feature actions 可读取其 `read_first`、slice、decision 和 contract 引用，并在当前 spec 中保持可追溯；Blueprint 默认位于目标项目的 `docs/blueprint/`，但以 handoff 和 `manifest.yaml` 的实际引用为准。没有 handoff 时按现有 feature 规则工作。未批准、过期或无法解析的 handoff 不能成为实现依据。若 feature 发现项目目标、范围、长期架构、数据所有权或安全边界需要改变，应暂停受影响工作并回到 Blueprint 修订；Workflow 不静默改写上游规划。
+
 ---
 
 ## 3. Adapter mapping
@@ -68,6 +71,7 @@ project-workflow 分两层:
 | Host-specific scoped rules | 可选 `.claude/rules/*.md`;由 Claude adapter 原生加载 | 使用 root/nested `AGENTS.md`;不读取或翻译 Claude-private rules | 在 `AGENTS.md` 放置 portable guidance |
 | Reusable workflows | Generated Claude package from `adapters/claude/`, with skills referencing `docs/actions/` | Generated Codex package from `adapters/codex/`; skills reference bundled copies of the same `docs/actions/` semantics | 按 `docs/actions/` 手工执行 |
 | Sub-agent review | Applicable boundary 必须 dispatch `adapters/claude/agents/` 的具名 agent;不可用/失败/无容量时有据 fallback | Applicable boundary 必须由 Codex general subagent 跑 bundled `docs/reviewers/`;不要求 custom-agent name | 无 dispatch capability 时主会话按 `docs/reviewers/` 执行并记录原因 |
+| Optional project planning context | Read a supplied Blueprint handoff and linked artifacts when present | Read a supplied Blueprint handoff and linked artifacts when present | Read the handoff if supplied; otherwise continue independently |
 | Plugin distribution | Claude plugin marketplace | Codex plugin marketplace | Use the baseline materializer; consult action docs |
 
 Codex supports additional instruction override filenames, but project-workflow does not generate or recommend them. Native persistent guidance remains the `AGENTS.md` hierarchy. Claude-private `.claude/rules/` remain optional project-owned convention files; Codex does not treat them as portable convention input. Codex `.codex/rules/*.rules` files remain command-approval policy and are not an A-class coding-convention carrier.

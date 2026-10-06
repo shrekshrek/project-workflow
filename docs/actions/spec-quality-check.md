@@ -58,6 +58,9 @@ Check meaning, not template completion:
 7. Explicit project/convention commitments can be satisfied. Merely touching several modules does not require
    an alignment table. A promised Codify decision needs its owner/source/enforcement; only then read the
    [Guidance Placement Contract](agents-md-revise.md#guidance-placement-contract).
+8. When the spec cites a Blueprint handoff, its slice, decision and contract references resolve and the proposed
+   change stays within the accepted upstream boundary. A material contradiction or project-level impact routes to
+   `spec-revise` and the upstream Blueprint; with no Blueprint reference, skip this check.
 
 Mechanical checks establish readable inputs, usable references and detect literal unresolved placeholders
 where an actual decision is needed. They cannot establish clarity or readiness from heading counts, file

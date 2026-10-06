@@ -44,6 +44,7 @@ requirePatterns("docs/actions/README.md", [
   ["shared verification escalation", /\*\*Verification escalation\*\*[\s\S]*independent escalation options, never a package[\s\S]*not escalation reasons/i],
 ]);
 requirePatterns("docs/actions/feature-init.md", [
+  ["optional Blueprint context", /Optional Blueprint context[\s\S]*approved Blueprint handoff[\s\S]*Without a\s+handoff, continue the normal feature flow[\s\S]*route the impact back to Blueprint revision/i],
   ["discovery before records", /^## Conversation and discovery$/m],
   ["bounded authorized experiments", /specifically authorized trial[\s\S]*isolated trial is not authorization to implement/i],
   ["observations distinct from acceptance", /observed results separately from accepted expected behavior/i],
@@ -84,6 +85,7 @@ requirePatterns("docs/actions/feature-archive.md", [
   ["responsibility-led current-truth evolution", /finish an otherwise unambiguous archive[\s\S]*nonblocking restructuring proposal[\s\S]*uncertain fact ownership remains a user question[\s\S]*organize area documents by coherent product\/system responsibility, not length[\s\S]*split independently changing responsibilities[\s\S]*each detailed fact has one owner/i],
 ]);
 requirePatterns("docs/actions/spec-quality-check.md", [
+  ["optional Blueprint reconciliation", /When the spec cites a Blueprint handoff[\s\S]*slice, decision and contract references resolve[\s\S]*with no Blueprint reference, skip this check/i],
   ["semantic rather than form gate", /Check meaning, not template completion/i],
   ["requirements reconciliation", /^## Requirements Reconciliation$/m],
   ["reconciliation statuses", /`ALIGNED`[\s\S]*`MISMATCH`[\s\S]*`SOURCE GAP`/],
@@ -104,10 +106,14 @@ forbidPatterns("docs/actions/spec-quality-check.md", [
 ]);
 
 requirePatterns("docs/actions/spec-revise.md", [
+  ["Blueprint impact routing", /When the active spec cites a Blueprint[\s\S]*upstream Blueprint impact[\s\S]*Do not silently edit or replace the upstream plan/i],
   ["implicit latest-user correction trigger", /latest user instruction materially corrects, rejects, removes, or replaces/i],
   ["stale quality gate forbidden", /do not run[\s\S]*`spec-quality-check` against the stale artifact/i],
   ["supersession trace", /exact current user[\s\S]*normalized replacement rule[\s\S]*older rule/i],
   ["revision decision closure", /Close the material correction set[\s\S]*conversation rules[\s\S]*accepted replacements/i],
+]);
+requirePatterns("docs/cross-tool-methodology.md", [
+  ["independent Workflow with optional Blueprint handoff", /Blueprint handoff 是可选的上游输入[\s\S]*`project-workflow` 可以独立运行[\s\S]*Workflow 不静默改写上游规划/i],
 ]);
 
 requirePatterns("docs/reviewers/spec-quality-reviewer.md", [

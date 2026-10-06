@@ -86,6 +86,11 @@ their dependency closure. A test failure alone is not a requirement change.
 10. Apply the synchronized revision when the user's request already authorizes it. Ask only for an unresolved
     material decision or an external write; rejection or a blocking audit leaves the worktree unchanged.
 
+When the active spec cites a Blueprint, classify whether the revision remains inside its slice and accepted
+contracts. A project-goal, scope, durable-architecture, data-ownership or trust-boundary change is an upstream
+Blueprint impact: preserve the local revision trace, stop affected work, and route the project decision back to
+Blueprint. Do not silently edit or replace the upstream plan from Workflow.
+
 ## Reviewer Execution
 
 When the auditor boundary applies, follow the canonical [reviewer execution contract](../reviewers/README.md#reviewer-execution-contract) and report `Reviewer execution` with role, mode, status, and observed reason. Missing required execution evidence is blocking and leaves the worktree unchanged.

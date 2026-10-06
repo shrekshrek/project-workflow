@@ -6,6 +6,8 @@
 
 没有工作约定时用 `project-init`；已有代码或自定义约定时用 `project-personalize`。不要为了讨论一个问题初始化全套文件。
 
+项目级规划使用独立的 `project-blueprint`。它不是 `project-init` 的前置条件；已有 Blueprint handoff 时，功能工作读取并引用它，没有 handoff 时 Workflow 照常独立运行。
+
 ## 做一个功能
 
 先沟通问题和具体例子，读取相关代码/测试，关键假设不清楚时做获准的有限试验。目标和验收明确、无需持久交接或风险记录的工作直接实施并报告聚焦检查。
@@ -29,6 +31,8 @@ docs/specs/changes/<NNN>-<slug>/spec.md
 `feature-done` 先说明实际结果、偏差及适用的查看/试用方式，再汇总稳定快照上的 L1、适用的独立 L2/L3 和当前事实状态；non-READY 结束本轮。READY 只表示交付验证通过，仍可测试和反馈。按 [关闭授权](actions/feature-archive.md#closure-authorization) 使用 `feature-archive` 收尾；提交代码不自动表示关闭功能。没有通过的检查不能靠补文档变成通过。
 
 当前行为从 `docs/specs/` 和活动记录读取；只有追溯历史才读 `changes/archive/`。真正的历史冲突用 `spec-reconcile`；工程约定出现客观漂移用 `agents-md-revise`。
+
+如果功能发现项目目标、范围、长期架构、数据所有权或安全边界需要改变，暂停受影响工作并回到 Blueprint 修订，不在 feature spec 中静默扩大项目范围。
 
 ## 宿主
 

@@ -37,6 +37,15 @@ feature or optional reviewer merely to begin a discussion. Exclude `docs/specs/c
 Carry forward the latest accepted user decisions, their reasons, explicit exclusions and unresolved questions.
 A dirty path is not automatically owned by this change.
 
+### Optional Blueprint context
+
+If the target supplies an approved Blueprint handoff, read its `read_first` artifacts and the referenced slice,
+decision and contract IDs before preparing the feature record. Carry confirmed boundaries, exclusions and accepted
+assumptions into the feature without copying the Blueprint narrative; cite the upstream IDs where they affect this
+change. A missing, draft, stale or unresolved handoff is context only, not implementation authority. Without a
+handoff, continue the normal feature flow. If the proposed change alters project goals, scope, durable architecture,
+data ownership or a trust boundary, stop the affected work and route the impact back to Blueprint revision.
+
 ## Conversation and discovery
 
 Start with the problem, present consumer and observable outcome. Use repository evidence to resolve facts;
