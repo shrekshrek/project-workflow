@@ -33,7 +33,7 @@ Create or move nested guidance only for a durable rule that applies to a clear e
 planned subtree, materially differs from inherited guidance, and is costly or unsafe to infer repeatedly.
 Place it at the narrowest scope that owns all consumers: root for a cross-project rule, tier for a shared
 runtime-local difference, and module only for a real parent exception. Keep feature/product semantics and
-durable design decisions in spec/plan/ADR, and prefer lint/test when mechanical enforcement is the better
+durable design decisions in feature records/ADRs, and prefer lint/test when mechanical enforcement is the better
 owner. Nested guidance states differences only; never create it for directory symmetry or temporary detail.
 `AGENTS.md` is canonical, and a project-adopted nested `CLAUDE.md` is exactly the one-line `@AGENTS.md` alias.
 

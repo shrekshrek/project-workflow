@@ -77,7 +77,7 @@ Run an ordinary `clean` case and a convention-risk case with each adapter and re
   `BLOCKED` before L1 instead of subtracting paths or asking reviewers to infer ownership.
 - After a non-READY verdict, confirm no implementation repair or reviewer rerun occurs inside that gate.
   A permitted direct repair runs outside it as one focused slice, reruns only the affected closure, hands off
-  its result and waits. A later user continuation may invoke `feature-done` on a fresh final snapshot, rerun
+  its result and continues an authorized delivery request with `feature-done` on a fresh final snapshot, rerunning
   affected checks and applicable reviews, and reuse only unchanged same-task L1 evidence.
 
 If the host cannot expose or constrain reviewer capacity, record that limitation instead of claiming the scheduling branch passed.
@@ -92,8 +92,8 @@ If the host cannot expose or constrain reviewer capacity, record that limitation
   later explicit invocation may start the new cycle after inputs stabilize.
 - Complete the initial `known-bad` report and confirm implementation and non-receipt artifacts remain unchanged
   inside the gate. With an existing implementation/delivery request, confirm the owning workflow reports and
-  repairs an ordinary direct blocker as one focused slice, hands off its affected evidence, and waits before
-  another full gate.
+  repairs an ordinary direct blocker as one focused slice, reports its affected evidence, and continues
+  authorized delivery verification on a fresh snapshot.
   If the focused repair cannot resolve the blocker or its affected checks repeat without new evidence, confirm
   that slice explains the remaining problem and recommended next step, then waits for the user's decision.
   With a review-only request, confirm it stops at the verdict. A material direction/scope change or an operation
@@ -135,7 +135,7 @@ Materialize a mechanically complete, subjectively clean draft with status `ËçâÁ®
 - `BLOCKED` result: status and implementation remain unchanged; subjective review is N/A when mechanical prerequisites failed.
 - A mechanically readable but substantively empty artifact is BLOCKED by the semantic check. If a reviewer
   was dispatched, its result must be recorded; it never reports reviewer N/A after dispatch.
-- Repeat a complete short spec with different headings and no plan/tasks: both adapters read only the existing relevant record/attachments; missing optional structure is not a finding.
+- Repeat a complete short spec with different headings: both adapters read only the existing relevant record/attachments; missing optional structure is not a finding.
   Repeat a one-file security change: independent review still applies despite its small record.
 
 ## Active-feature routing smoke
@@ -186,7 +186,7 @@ Run `spec-quality-check` against two artifacts whose individual tasks are concre
 - For multi-boundary or materially high-risk work, leave ownership/data-disposition coupling or scope-growth
   triggers unresolved and confirm Q7d returns `BLOCKED`. Ordinary same-boundary artifacts rely on Scope,
   Constraints, Module Impact, and Verification. When real dependency checkpoints are
-  missing, confirm Q7a remains `BLOCKED` until plan/tasks make them actionable with focused checks.
+  missing, confirm Q7a remains `BLOCKED` until the feature record makes them actionable with focused checks.
 
 ## Architecture-shaped spec-quality smoke
 
@@ -220,7 +220,7 @@ Run `spec-quality-check` against two artifacts whose individual tasks are concre
   no outside consumer remains. Repeat with no explicit `Codify`: `feature-done` creates no implicit guidance
   requirement or suggestion and must not create or move guidance.
 - Put product behavior or a temporary feature decision into nested guidance and confirm it routes back to
-  spec/plan/ADR. Give the same rule an objective lint/test implementation and confirm the preferred
+  feature records/ADRs. Give the same rule an objective lint/test implementation and confirm the preferred
   proposal is `mechanize`, not another prompt file.
 
 ## Decision conversation smoke

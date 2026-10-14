@@ -99,7 +99,7 @@ useful, keep a dated one-line attempt summary in the implementation record. A no
   map that result to each obligation.
 - Long-run execution: before a materially long, paid, external, opaque, high-volume or restart-costly endpoint
   check, present the actual next run at `feature-init`'s slice handoff, reusing its concise execution envelope.
-  Prior acceptance avoids re-deciding unchanged details; it does not skip that handoff or its wait. Report
+  Reuse an accepted envelope; pause only when its scope, cost, permission or material risk changes. Report
   observable counts or milestones and disclose unavailable progress rather than inventing it.
 - Domain doc check: defer it until L1 and applicable L2/L3 and acceptance verification form a READY candidate. Earlier
   failures record `not-run(non-READY prerequisite)`. For a candidate, compare only a declared/relevant
@@ -117,8 +117,8 @@ at the verdict. For a current authorized implementation or delivery request, a `
 continue outside the gate as one focused repair slice after that report; other routes keep their decision and
 permission boundaries. Apply [feature-init's Scope Stop](feature-init.md#implementation-scope-stop) to material
 changes and non-converging repair/verification. At the repair-slice boundary, rerun only the affected closure,
-hand off the blocker, fix, changed evidence and remaining risk, then wait before a fresh endpoint run. A later
-authorized run creates a fresh snapshot, reuses only unchanged same-task L1 evidence, and reruns affected checks
+report the blocker, fix, changed evidence and remaining risk. Continue an authorized delivery request with
+a fresh endpoint run under feature-init’s scope-stop rule; a review-only request remains read-only. Each run creates a fresh snapshot, reuses only unchanged same-task L1 evidence, and reruns affected checks
 and applicable reviews; reference valid evidence instead of restating the plan or copying failed receipts.
 
 Treat the accepted feature artifact as the requirements baseline; handle later material decisions through

@@ -5,8 +5,7 @@ Canonical semantic readiness check before implementation or after a material acc
 ## Use When
 
 A feature record is ready to guide implementation, or the user explicitly asks to check it. The same check
-applies to a short spec with or without optional design/work notes; missing optional plan/tasks or particular
-headings are not failures. Reuse a completed check when its decision sources and affected inputs remain unchanged.
+judges the record by its decision-relevant content and evidence, including linked attachments when relevant. Reuse a completed check when its decision sources and affected inputs remain unchanged.
 
 A pending correction to an accepted contract returns `N/A(route: spec-revise)` before mechanical checks or
 reviewer dispatch. Drafts can be edited normally. This action does not implement code or change requirements.

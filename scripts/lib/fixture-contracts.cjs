@@ -12,9 +12,9 @@ function validateAcceptedFixture(featureDir, options = {}) {
   const spec = read("spec.md");
   if (!spec.trim()) return [`${label}: missing accepted spec fixture`];
   if (!/状态\s*[:：].*(?:已确认|已实现)/.test(spec)) problems.push(`${label}: fixture is not accepted/delivered`);
-  const plan = read("plan.md");
-  const tasks = read("tasks.md");
-  const content = [spec, plan, tasks].join("\n");
+  const content = fs.readdirSync(featureDir, { withFileTypes: true })
+    .filter((entry) => entry.isFile() && entry.name.endsWith(".md"))
+    .map((entry) => read(entry.name)).join("\n");
   const withoutReceipts = content.replace(/^## (?:Previous )?Proof Bundle[^\n]*\n[\s\S]*?(?=^## |$(?![\s\S]))/gm, "");
   if (/\{\{TODO/.test(withoutReceipts)) problems.push(`${label}: fixture has unresolved TODO`);
   if (options.requireComplete && /^- \[ \]/m.test(withoutReceipts)) {

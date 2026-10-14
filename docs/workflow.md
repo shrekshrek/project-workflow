@@ -465,7 +465,7 @@ scoped rule，新建文件场景需以当前官方行为实测。`project-init` 
 
 ### 1.8 ADR 目录初始化
 
-架构决策记录(Architecture Decision Records,Michael Nygard 模板)。每个重要架构选择**写一份独立 ADR 文件**,不要塞 plan.md 的 prior decisions 里(plan.md 只引用 ADR 编号)。
+架构决策记录(Architecture Decision Records,Michael Nygard 模板)。需要长期留存的重要架构选择写入 ADR，功能记录引用对应决策。
 
 ```
 docs/adr/
@@ -475,9 +475,9 @@ docs/adr/
 
 **Plugin 内模板**(基于 Michael Nygard 简化,Context / Decision / Consequences 三节;项目目录不保留空模板):见 [`template/docs/adr/0000-template.md`](../template/docs/adr/0000-template.md)。
 
-**ADR 与其他文档的关系**:5 类文档(A 约定 / B 任务 / C 决策 / D 基础设施 / E 产品事实)总框架见 [§0.3 文档职责 5 类](#03-概念区分钉死再读后续)。ADR 是 C 类,**唯一回答"当时为什么这么选"**——跟 AGENTS.md(A 类规则)/ spec.md(B 类 WHAT)/ plan.md(B 类 HOW)/ current truth(E 类现状)分工正交,不重叠。
+**ADR 与其他文档的关系**:5 类文档(A 约定 / B 任务 / C 决策 / D 基础设施 / E 产品事实)总框架见 [§0.3 文档职责 5 类](#03-概念区分钉死再读后续)。ADR 是 C 类，保存长期架构决策的理由；与 AGENTS.md(A 类规则)/ spec.md(B 类需求与必要方案)/ current truth(E 类现状)按用途分工，通过引用衔接。
 
-> **典型分工例**:"项目用 SQLAlchemy 2.0" 这条规则进 AGENTS.md(A 类);**为什么** 选 SQLAlchemy 2.0 over Tortoise / Prisma 进 ADR(C 类);某 feature 怎么用 SQLAlchemy 2.0 写 query 进 plan.md(B 类)。
+> **典型分工例**:"项目用 SQLAlchemy 2.0" 这条规则进 AGENTS.md(A 类);**为什么** 选 SQLAlchemy 2.0 over Tortoise / Prisma 进 ADR(C 类);某 feature 怎么用 SQLAlchemy 2.0 写 query 记录在 spec.md(B 类)，确有阅读或交接需要时再拆出附件。
 
 ### 1.9 平台协作(默认不铺模板)
 
@@ -585,11 +585,11 @@ sub-flow。仅新增文件、调整模块内部结构或普通移动/重命名�
 
 普通实现细节和任务细化由 AI 按已有约定处理。影响范围、方案、成本、数据、权限或验收的新发现，先暂停相关实施、说明影响与建议，用户确认后局部更新并继续。已写代码不构成扩大范围的理由。
 
-围绕完整功能结果和真实依赖、风险安排切片；同一结果所需的代码、测试、文档和普通验证连续完成。长切片可汇报有效进展，完整结果交接后等待用户再进入下一片；实质问题随时暂停。小任务不人为拆片。开发中的检查是实现反馈，不冒充最终交付证明。先回应当前问题，在自然节点写回有用结论；精确执行边界只见 [feature-init](actions/feature-init.md#implementation-scope-stop)。
+围绕完整功能结果和真实依赖、风险安排切片；同一结果所需的代码、测试、文档和普通验证连续完成。长切片汇报有效进展，完整结果以证据交接后继续已授权工作；实质决定、权限或成本变化及用户指定检查点才暂停。小任务不人为拆片。开发中的检查是实现反馈，不冒充最终交付证明。先回应当前问题，在自然节点写回有用结论；精确执行边界只见 [feature-init](actions/feature-init.md#implementation-scope-stop)。
 
 ### 3.3 交付阶段:delivery receipt
 
-[feature-done](actions/feature-done.md) 在一个稳定快照上检查实际改动、L1、适用的独立 L2/L3 和当前事实，汇总真实证据。交付阶段才根据接受义务、关键用户旅程、实际改动面和项目要求选择必要的集成、E2E、回归或发布检查；E2E 是一种风险证据，不是固定配额。non-READY 结束本轮；允许的直接修复作为聚焦切片，交接并等待后才重入完整 gate。新记录的收据位于 spec.md，外部报告引用它，不复制整段日志。
+[feature-done](actions/feature-done.md) 在一个稳定快照上检查实际改动、L1、适用的独立 L2/L3 和当前事实，汇总真实证据。交付阶段才根据接受义务、关键用户旅程、实际改动面和项目要求选择必要的集成、E2E、回归或发布检查；E2E 是一种风险证据，不是固定配额。non-READY 结束本轮；允许的直接修复作为聚焦切片，报告修复结果后按既有授权重入完整 gate，重大变化或不收敛时暂停。新记录的收据位于 spec.md，外部报告引用它，不复制整段日志。
 
 ### 3.4 与平台流程的协作
 

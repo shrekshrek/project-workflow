@@ -33,7 +33,7 @@ Use [`project-init`](project-init.md) when all six baseline destinations are abs
 
 ## Evidence-led Decision Conversation
 
-Communicate evidence and the smallest recommendation for decisions that change the working agreement.
+Communicate evidence and a proportionate recommendation for decisions that change the working agreement.
 Sequence dependent questions and group related independent ones. Keep affected changes pending while
 continuing safe evidence work; explain any material reason to revisit an accepted choice. Update the staged
 draft and source trace after answers, then preflight/apply under current authorization. Repository-proven

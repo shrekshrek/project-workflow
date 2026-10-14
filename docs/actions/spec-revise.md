@@ -30,7 +30,7 @@ their dependency closure. A test failure alone is not a requirement change.
 - Requested change and reason.
 - For a current-conversation contract correction: the exact user statement, its normalized decision, and the
   older accepted rule it supersedes. A caller-authored "user confirmed" paraphrase alone is not authority.
-- The accepted record and any existing linked design/work notes affected by the change; do not create optional files to revise it.
+- The accepted record and affected linked content; organize revised material under feature-init’s record rules.
 - ADR directory state.
 
 ## Outputs
@@ -49,7 +49,7 @@ their dependency closure. A test failure alone is not a requirement change.
    Stop implementation work for the discovered delta while its direction is unresolved; do not keep adding
    code, tests, migrations, or compatibility paths that could deepen the rework.
    Route the delta through `feature-init`'s accepted-boundary and scope-viability rules. Necessary detail inside
-   the same outcome continues; an independent outcome becomes a child; capability without a current need is
+   the same outcome continues; an independent outcome becomes a child only if the user chooses it; capability without a current need is
    removed or deferred; and materially wider inseparable work needs concrete coupling and user acceptance. A
    current user correction that conflicts with accepted behavior is a `contract-correction`: do not run
    `spec-quality-check` against the stale artifact or continue the affected work before revising the

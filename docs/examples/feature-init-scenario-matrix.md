@@ -4,14 +4,15 @@ Behavior-equivalence harness for the generative `feature-init` action. Determini
 
 The scenarios cover natural discussion, accepted record reuse, single-record creation, explicitly useful
 attachments, no-record fixes, authorized trials, source conflicts, current need, coupled migrations and
-independently deliverable outcomes. They also cover context continuity and implementation discoveries.
+independently deliverable outcomes. They also cover context continuity, total-cost refactoring, authorized continuation, derived business semantics
+and implementation discoveries.
 The deterministic check separately covers explicit target roots, active/archive numbering, no-clobber,
 failed-copy rollback and symlink safety. It does not prove model behavior or semantic readiness.
 
 ## Run protocol
 
 1. `node scripts/check-feature-init-fixtures.cjs` — deterministic coherence check (CI-safe, no model).
-2. Select the smallest model-smoke set that covers the changed behavior. Shared behavior runs at least one affected scenario on each supported host; host-only behavior runs on that host. Run the full matrix only when the affected behavior cannot be bounded.
+2. Select model scenarios that cover the changed decisions and boundaries. Shared behavior runs at least one affected scenario on each supported host; host-only behavior runs on that host. Run the full matrix only when the affected behavior cannot be bounded.
 3. For each selected scenario, copy its base into a temp directory, `git init && git add -A && git commit`, then run the `feature-init` runtime adapter there with the scenario `prompt` (from the scenario `cwd` when set). When the adapter asks a question covered by `prescribedAnswers`, answer exactly that; any other business question stays unanswered (the run must not need it). Grade file-level outcomes with `node scripts/check-feature-init-fixtures.cjs --grade <scenario> <temp-dir>` only at the record-action boundary, before any enclosing implementation. If the host cannot expose that snapshot, grade the transcript and report file-level coverage unavailable; do not force a user pause just for the harness.
 
 4. Interaction-only scenarios are judged from the transcript against `expectedBehavior`: they must ask when required, must not fabricate ownership, tracking references, a repository backlog, or an epic artifact, and must create no files before the required answer. Grade the behavior and decision boundary rather than exact headings or status words. Any materialized scenario with `expectedBehavior` is mechanically graded for its files and manually graded for the stated transcript behavior, including its decomposition decision and coupling rationale.
@@ -32,21 +33,21 @@ Shared behavior needs affected cases on both hosts. In particular:
 - Request a tracked behavior change: default to one spec. A bounded auth repair still needs risk coverage;
   a migration may need more design evidence but not automatically more files.
 - Request only a record: stop after recording. Request a separate design document for a concrete handoff:
-  create that useful attachment, without manufacturing a third file.
+  create that useful attachment and reference it from the record.
 - Reuse a compatible active record with no new number; semantic readiness and actual risk determine checks,
   not file layout. Discussion and inspection remain read-only.
 - Correct an accepted rule: use `spec-revise` before implementation or a stale quality review. Update affected
-  decisions, evidence and existing attachments only. An unchanged rule with a code defect calls for repair.
+  decisions and evidence, organizing supporting content under the canonical record rules. An unchanged rule with a code defect calls for repair.
 - Provide a multi-turn feature conversation whose final decision replaces an earlier alternative. Expect no
   duplicate confirmation and explicit supersession with no fallback remnant. Conflicting sources without a
   resolution need a useful question before any artifact is materialized.
-- Give independent outcomes versus a coupled transaction: recommend the smallest useful first feature and ask
+- Give independent outcomes versus a coupled transaction: recommend a coherent first feature by value, dependencies and risk and ask
   only when the choice changes delivery. Do not create a total feature, epic or external tracker by default.
 - Compare a repository-aligned local change with a queue/worker or multiple inference paths having no present
   consumer: continue ordinary details, but explain material operating cost and resolve the unnecessary scope.
 - Carry one functional outcome through its ordinary implementation, tests, documentation and verification,
   reporting useful progress without turning it into a handoff. A material problem stops affected work even
-  mid-slice; after the coherent outcome, give evidence and alignment at the handoff and wait.
+  mid-slice; after the coherent outcome, report evidence and alignment, then continue within authorization; pause for material decisions or user checkpoints.
 - Explain verification as three different proof responsibilities: pre-implementation decision evidence,
   implementation feedback and delivery evidence. Do not require delivery-level E2E to begin ordinary work;
   explain the observable meaning before technical labels. Treat matrix, E2E and repository-wide suites as
@@ -54,7 +55,7 @@ Shared behavior needs affected cases on both hosts. In particular:
 - Before a long, paid or opaque verification, give an execution envelope with purpose, scale, rough duration,
   progress visibility, partial-result/restart behavior, stop rule and a smaller canary. When a lower-cost necessary
   check fails, stop costlier expansion unless it is needed for diagnosis or explicitly requested. A non-READY
-  endpoint ends; a permitted repair uses one focused slice and waits after its handoff before another full gate.
+  endpoint ends; a permitted repair reports its result and continues delivery verification within authorization; material changes or non-convergence pause affected work.
 - During a long run, report real counts or milestones. When exact progress is unavailable, disclose that limit
   and the interruption consequence; do not invent a percentage or repeat empty status.
 

@@ -20,6 +20,7 @@ const root = path.resolve(__dirname, "..");
 const fixtureRoot = path.join(root, "tests/fixtures/feature-init-scenarios");
 const expected = JSON.parse(fs.readFileSync(path.join(fixtureRoot, "expected.json"), "utf8"));
 const problems = [];
+const { referencedDestinations } = require("./lib/markdown-destinations.cjs");
 const materializer = path.join(root, "scripts/materialize-feature-artifact.cjs");
 
 function read(file) {
@@ -82,10 +83,38 @@ function gradeScenario(name, config, runDir) {
     if (newDirs.length !== 1) problems.push(`${name}: expected exactly one new dir, found ${JSON.stringify(newDirs)}`);
 
     const featureDir = path.join(runDir, config.expectDir);
-    const files = fs.readdirSync(featureDir).sort();
-    const expectedFiles = [...(config.expectedFiles || ["spec.md"])].sort();
-    if (JSON.stringify(files) !== JSON.stringify(expectedFiles)) {
-      problems.push(`${name}: expected only purposeful files ${JSON.stringify(expectedFiles)}, found ${JSON.stringify(files)}`);
+    const entries = snapshotTree(featureDir);
+    const files = entries.filter((entry) => entry[0] === "file").map((entry) => entry[1]).sort();
+    if (entries.some((entry) => entry[0] === "symlink")) problems.push(`${name}: expected regular record files`);
+    if (config.requiresAttachment) {
+      const attachments = files.filter((file) => file !== "spec.md");
+      if (!files.includes("spec.md") || !attachments.length) problems.push(`${name}: expected a record and requested supporting content`);
+      const reached = new Set();
+      const visit = (file) => {
+        if (reached.has(file) || !files.includes(file)) return;
+        reached.add(file);
+        if (!file.endsWith(".md")) return;
+        for (const token of referencedDestinations(read(path.join(featureDir, file)))) {
+          let destination = token.replace(/^<|>$/g, "").split(/[?#]/)[0];
+          if (!destination || /^[a-z][a-z0-9+.-]*:/i.test(destination)) continue;
+          try { destination = decodeURIComponent(destination); } catch { continue; }
+          visit(path.normalize(path.join(path.dirname(file), destination)));
+        }
+      };
+      visit("spec.md");
+      for (const file of files) {
+        if (!read(path.join(featureDir, file)).trim() || !reached.has(file)) {
+          problems.push(`${name}: content must be nonempty and reachable from spec: ${file}`);
+        }
+      }
+    } else if (config.expectedFiles) {
+      // Exact file counts apply only to scenarios explicitly testing the single-record default.
+      const expectedFiles = [...config.expectedFiles].sort();
+      if (JSON.stringify(files) !== JSON.stringify(expectedFiles)) {
+        problems.push(`${name}: expected ${JSON.stringify(expectedFiles)}, found ${JSON.stringify(files)}`);
+      }
+    } else if (!files.includes("spec.md")) {
+      problems.push(`${name}: expected the canonical feature record`);
     }
 
     const outsideRecord = (entry) => entry[1] !== config.expectDir && !entry[1].startsWith(`${config.expectDir}${path.sep}`);
@@ -212,9 +241,8 @@ function validateFixtures() {
       }
     }
     if (config.expectedFiles && (!Array.isArray(config.expectedFiles)
-      || !config.expectedFiles.includes("spec.md")
-      || config.expectedFiles.some((file) => !["spec.md", "plan.md", "tasks.md"].includes(file)))) {
-      problems.push(`${name}: expectedFiles must describe the intended record and any requested attachments`);
+      || config.expectedFiles.length !== 1 || config.expectedFiles[0] !== "spec.md")) {
+      problems.push(`${name}: expectedFiles describes a single record; use requiresAttachment for requested supporting content`);
     }
     const required = config.requiredArtifactPatterns;
     if (required && (!Array.isArray(required) || required.length === 0 || required.some((pattern) => typeof pattern !== "string" || !pattern))) {
@@ -345,12 +373,55 @@ function validateGrading() {
     fs.mkdirSync(record);
     fs.copyFileSync(path.join(root, "template/docs/specs/changes/_template/spec.md"), path.join(record, "spec.md"));
     expectGrade(scenario, true, "single-file output (not semantic readiness)");
-    fs.writeFileSync(path.join(record, "tasks.md"), "unrequested file");
+    fs.writeFileSync(path.join(record, "extra.md"), "unrequested file");
     expectGrade(scenario, false, "no precreated optional file");
-    fs.unlinkSync(path.join(record, "tasks.md"));
+    fs.unlinkSync(path.join(record, "extra.md"));
     fs.appendFileSync(path.join(target, "AGENTS.md"), "\nUnauthorized rule\n");
     expectGrade(scenario, false, "record creation cannot rewrite project rules");
     expectGrade("conversation-batched-recording", false, "files alone cannot grade a conversation");
+    fs.rmSync(target, { recursive: true, force: true });
+    const attachmentScenario = "nnn-empty-start";
+    const attachmentConfig = expected[attachmentScenario];
+    fs.cpSync(path.join(fixtureRoot, attachmentConfig.base), target, { recursive: true });
+    const attachmentRecord = path.join(target, attachmentConfig.expectDir);
+    fs.mkdirSync(attachmentRecord);
+    const specPath = path.join(attachmentRecord, "spec.md");
+    fs.writeFileSync(specPath, "# Import\n");
+    expectGrade(attachmentScenario, false, "requested supporting content is missing");
+    for (const filename of ["import-design.md", "recovery-decisions.md"]) {
+      const attachment = path.join(attachmentRecord, filename);
+      fs.writeFileSync(attachment, "# Import design\nPersist each batch before acknowledging it.\n");
+      expectGrade(attachmentScenario, false, "attachment needs a spec reference");
+      fs.writeFileSync(specPath, `# Import\n[Design](${filename})\n`);
+      expectGrade(attachmentScenario, true, "attachment names are chosen for their purpose");
+      for (const link of [
+        `[Design][detail]\n\n[detail]: ${filename}`,
+        `[Design][]\n\n[Design]: <${filename}>`,
+        `[Design]\n\n[Design]: ${filename}`,
+        `[Design](<${filename}> "Design details")`,
+      ]) {
+        fs.writeFileSync(specPath, `# Import\n${link}\n`);
+        expectGrade(attachmentScenario, true, "equivalent Markdown reference forms");
+      }
+      fs.writeFileSync(specPath, `# Import\n\`[Design](${filename})\`\n`);
+      expectGrade(attachmentScenario, false, "code examples are not references");
+      fs.writeFileSync(specPath, `# Import\n[Design](${filename})\n`);
+      const evidenceDir = path.join(attachmentRecord, "experiments");
+      fs.mkdirSync(evidenceDir);
+      const evidence = path.join(evidenceDir, "recovery.md");
+      fs.writeFileSync(evidence, "# Recovery experiment\nObserved result: the batch remained pending.\n");
+      fs.appendFileSync(attachment, "[Experiment](experiments/recovery.md)\n");
+      expectGrade(attachmentScenario, true, "transitive references and nested materials are supported");
+      fs.writeFileSync(specPath, "# Import\n");
+      fs.appendFileSync(evidence, `[Design](../${filename})\n`);
+      expectGrade(attachmentScenario, false, "an unreachable cycle is not a reference from spec");
+      fs.writeFileSync(specPath, `# Import\n[Design](${filename})\n`);
+      fs.rmSync(evidenceDir, { recursive: true });
+      fs.writeFileSync(attachment, "");
+      expectGrade(attachmentScenario, false, "empty attachment is not supporting content");
+      fs.unlinkSync(attachment);
+      fs.writeFileSync(specPath, "# Import\n");
+    }
   } finally {
     fs.rmSync(target, { recursive: true, force: true });
   }

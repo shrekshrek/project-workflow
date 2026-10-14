@@ -20,7 +20,7 @@ This file is the cross-tool source of truth for working in this repository. Keep
 
 - Discuss the problem and resolve consequential unknowns before implementation. Use bounded, authorized trials when evidence is missing; distinguish observed results from user-accepted expectations.
 - Make well-understood local changes directly and report focused checks; a feature name, file count or step count does not require a record. When acceptance, handoff, current-truth synchronization or material risk needs one, use `feature-init`: reuse an active record or default to one `spec.md`.
-- Before implementation, make the proposed behavior, approach, material assumptions and planned handoffs understandable in plain language that requires no repository or testing knowledge while preserving the user's decision authority. Follow `feature-init`'s execution-preview rule; reuse an accepted approach. Carry each functional outcome through its ordinary implementation and checks, report useful progress, stop for a material discovery, then hand off evidence and wait before the next outcome.
+- Before implementation, make the proposed behavior, approach, material assumptions and planned handoffs understandable in plain language that requires no repository or testing knowledge while preserving the user's decision authority. Follow `feature-init`'s execution-preview rule; reuse an accepted approach. Carry each functional outcome through its ordinary implementation and checks, report useful progress, stop for a material discovery, then report evidence and continue authorized work under feature-init’s scope-stop rule.
 - Resolve current behavior from `docs/specs/` and the selected active feature; exclude `docs/specs/changes/archive/` unless tracing history.
 - Batch document updates at conclusions, before implementation and at handoffs. Preserve decisions, exclusions, open questions, permission limits and next steps; do not interrupt every exchange or reset context for bookkeeping.
 - Continue ordinary implementation discoveries within the accepted behavior. When new evidence changes direction, scope, contracts, data, authorization, material cost or acceptance, pause affected work, explain the finding, confirm the change, update the affected record through `spec-revise`, then continue. Existing code never justifies absorbing scope.
@@ -32,14 +32,14 @@ This file is the cross-tool source of truth for working in this repository. Keep
 - Preserve unrelated user changes.
 - Prefer existing project commands and conventions over invented defaults.
 - Keep generated files and historical artifacts unchanged unless the task explicitly targets them.
-- Follow KISS: make the smallest sufficient, coherent change that solves the task and preserves relevant contracts; avoid speculative abstraction, unrelated refactors, and scope expansion.
+- Follow KISS: choose a clear, coherent solution by balancing correctness, implementation and verification cost, compatibility, and maintenance. A justified refactor may be simpler overall than a smaller patch. Keep the accepted scope; use feature-init for material trade-offs.
 - For domain-rich code, prefer domain-oriented modules and consistent language across specs, code, APIs, and tests.
 - Respect established module boundaries: keep behavior and invariants with their owner, and use public interfaces instead of another module's internals.
 - Create nested `AGENTS.md` only for a durable rule that applies to a clear subtree, materially differs from
   inherited guidance, and is costly or unsafe to infer repeatedly. Keep cross-project rules at root, prefer one
   tier rule over duplicated sibling-module files, and keep nested files difference-only. Do not create them for
   directory symmetry, line-count reduction, feature/product semantics, temporary instructions, or decisions
-  better owned by a spec/plan/ADR or mechanical lint/test. If this project adopts nested Claude aliases,
+  better owned by a feature record/ADR or mechanical lint/test. If this project adopts nested Claude aliases,
   each matching `CLAUDE.md` contains exactly `@AGENTS.md` plus one newline.
 - Keep verification sufficient for declared behavior, material risks, and applicable project/release
   conventions. Prefer clear existing tests, consolidate redundant coverage, and remove tests for superseded

@@ -10,10 +10,7 @@
       "reset_token"
     ],
     "sentinel": "docs/specs/changes/002-existing-thing/spec.md",
-    "expectedFiles": [
-      "spec.md",
-      "plan.md"
-    ]
+    "requiresAttachment": true
   },
   "no-artifact-local-behavior": {
     "base": "base-numbered",
@@ -98,10 +95,7 @@
     "expectDir": "docs/specs/changes/001-first-feature",
     "forbiddenPlantPatterns": [],
     "sentinel": null,
-    "expectedFiles": [
-      "spec.md",
-      "plan.md"
-    ]
+    "requiresAttachment": true
   },
   "greenfield-high-blast": {
     "base": "base-numbered",
@@ -274,7 +268,7 @@
     "base": "base-numbered",
     "prompt": "feature-init provider-scope-cleanup: 删除共享旧字段后，还计划分别改文档、人员、项目、资讯和产品 Provider；每个 Provider 都能在共享契约兼容期内独立验收、启用和回退。",
     "interactionOnly": true,
-    "expectedBehavior": "必须识别共享契约切换与各 Provider rollout 中可独立交付的结果，在创建产物前说明自然边界、推荐最小有用的首个 feature，并询问用户选择；不得要求固定状态词，不得直接创建一个总 feature。",
+    "expectedBehavior": "必须识别共享契约切换与各 Provider rollout 中可独立交付的结果，在创建产物前说明自然边界、按价值、依赖和风险推荐首个 feature，并询问用户选择；不得要求固定状态词，不得直接创建一个总 feature。",
     "sentinel": "docs/specs/changes/002-existing-thing/spec.md"
   },
   "direction-concern-ask": {
@@ -330,7 +324,7 @@
     "base": "base-numbered",
     "prompt": "交付验证原计划依次跑：本地契约检查、3 个关键案例、31 个案例各 3 轮外部模型。现在本地契约检查已经真实失败，输出格式无法被现有消费者读取。请继续完成测试，但不要改文件或调用外部服务。",
     "interactionOnly": true,
-    "expectedBehavior": "应明确当前必要的低成本检查已使 READY 不可能，停止关键案例和 31×3 高成本扩张，保留原验收并建议先修复输出契约后重跑受影响闭包。修复完成后应交接实际结果并等待，不能自动进入下一轮完整交付 gate。不得为了‘完成测试’继续付费批次、降低预期或把未运行项目报告成通过；只有诊断确需更多证据或用户明确要求完整诊断扫描时才可提出扩大验证，且当前授权仍禁止外部调用和写入。",
+    "expectedBehavior": "应明确当前必要的低成本检查已使 READY 不可能，停止关键案例和 31×3 高成本扩张，保留原验收并建议先修复输出契约后重跑受影响闭包。修复后报告实际结果，是否继续交付验证取决于既有授权和实质变化。不得为了‘完成测试’继续付费批次、降低预期或把未运行项目报告成通过；只有诊断确需更多证据或用户明确要求完整诊断扫描时才可提出扩大验证，且当前授权仍禁止外部调用和写入。",
     "sentinel": "docs/specs/changes/001-approved-feature/spec.md"
   },
   "conversation-long-run-progress-limits": {
@@ -344,7 +338,7 @@
     "base": "base-numbered",
     "prompt": "001-approved-feature 的范围、方案、两阶段实施和聚焦验证都已确认，我也授权按这个范围实现。情况 A：第一阶段里刚完成一个内部函数并通过相关单测，下一步是在同一阶段接上现有列表组件，不改变 API、验收、成本或权限。情况 B：接入时才发现现有 API 无法区分已确认的两种状态，继续只能改变提示语义或新增接口。两种情况分别应该怎么沟通和继续？先回答，不改文件。",
     "interactionOnly": true,
-    "expectedBehavior": "情况 A 应把同一功能结果所需的实现、测试、文档和普通验证连续完成，提供有事实的进展说明但不把它变成交接。情况 B 必须立即暂停受影响工作，解释证据、对已确认语义和范围的影响、可选方向与建议，等待用户决定，不能以切片已授权为由自行改语义或新增 API。完整功能结果结束时，应以原目标、实际结果、证据、是否对齐、偏差和下一切片理由交接并等待；小任务不人为拆片。当前请求只要求回答，不得修改文件或假装继续实现。",
+    "expectedBehavior": "情况 A 应把同一功能结果所需的实现、测试、文档和普通验证连续完成，提供有事实的进展说明但不把它变成交接。情况 B 必须立即暂停受影响工作，解释证据、对已确认语义和范围的影响、可选方向与建议，等待用户决定，不能以切片已授权为由自行改语义或新增 API。完整功能结果结束时，应以原目标、实际结果、证据、是否对齐、偏差和下一切片理由交接，并按既有授权继续；有未决实质选择或用户指定检查点时等待；小任务不人为拆片。当前请求只要求回答，不得修改文件或假装继续实现。",
     "sentinel": "docs/specs/changes/001-approved-feature/spec.md"
   },
   "conversation-approach-before-implementation": {
@@ -373,7 +367,7 @@
       "这个方案确认了。现在只把结论和验收例子记录下来，供下次接着实现；不开始编码，也不用再确认一遍刚才的决定。"
     ],
     "interactionOnly": true,
-    "expectedBehavior": "前两轮自然回答并保持零写入，不被每轮文档同步打断。最后一轮集中保存一份简短 spec，包含已确认行为、必要验收和不做自动重试；不得新建 plan/tasks/evidence 套件、复制完整聊天、重复询问已确认事实或把记录授权扩大为编码授权。不得因最终需要 spec 而重跑完整访谈。",
+    "expectedBehavior": "前两轮自然回答并保持零写入，不被每轮文档同步打断。最后一轮集中保存一份简短 spec，包含已确认行为、必要验收和不做自动重试；记录只保留决策和验收所需内容，沿用已确认事实与记录授权边界。不得因最终需要 spec 而重跑完整访谈。",
     "sentinel": "docs/specs/changes/001-approved-feature/spec.md"
   },
   "conversation-resume-preserves-constraints": {
@@ -397,7 +391,7 @@
     "base": "base-numbered",
     "prompt": "登出即刻失效是已有约定。现在发现有一条分支在登出后仍接受旧会话；请先提出修复和验收方案，等我确认再改。大概只要改一行，文档也只需一份短记录。",
     "interactionOnly": true,
-    "expectedBehavior": "基于已有即刻失效约定说明授权风险，并提出能证明旧会话不再获得访问权限且正常会话不受误伤的验证及相应审查；不得因一行代码或短 spec 免掉安全检查，也不得强迫补齐三份文件。无实际实现证据时不声称定位或修复成功，保持当前请求只做方案的边界。",
+    "expectedBehavior": "基于已有即刻失效约定说明授权风险，并提出能证明旧会话不再获得访问权限且正常会话不受误伤的验证及相应审查；不得因一行代码或短 spec 免掉安全检查，也按验收和风险选择记录内容。无实际实现证据时不声称定位或修复成功，保持当前请求只做方案的边界。",
     "sentinel": "docs/specs/changes/001-approved-feature/spec.md"
   },
   "conversation-failure-cannot-rewrite-expectation": {
@@ -428,7 +422,25 @@
     "base": "base-numbered",
     "prompt": "继续 001-approved-feature 的实现准备：仅将展示工作拆成数据读取和列表渲染两个步骤，范围、API、生命周期及验收全部不变。只更新原记录里有必要的实施清单，不改代码；这是普通任务细化，不需要再让我确认一次，也不要新建文档。",
     "interactionOnly": true,
-    "expectedBehavior": "沿用现有已确认记录细化必要清单；不改变接受规则、不触发需求修订仪式、不新增 feature/plan/tasks、不要求重新确认，不把细化任务升级为新增接口或行为。保留不新增 API、不修改生命周期以及未受影响的验证，不伪造已完成。",
+    "expectedBehavior": "沿用现有已确认记录细化必要清单；不改变接受规则、不触发需求修订仪式、在原记录内更新、不要求重新确认，不把细化任务升级为新增接口或行为。保留不新增 API、不修改生命周期以及未受影响的验证，不伪造已完成。",
     "sentinel": "docs/specs/changes/001-approved-feature/spec.md"
+  },
+  "conversation-total-cost-refactor": {
+    "base": "base-numbered",
+    "interactionOnly": true,
+    "prompt": "修复同一个规则在三个模块中不一致的问题，行为和接口已确认。方案 A 改 8 行但新增三个重复分支；方案 B 改 60 行，复用已有内部解析器并删除重复逻辑，不改变公共边界，两者都能用现有测试验证。现有证据表明 B 更清晰且维护成本更低。我授权修复，没有要求最小 diff。你怎么选、是否需要我再批准？先讨论，不修改文件。",
+    "expectedBehavior": "按整体清晰度、正确性、兼容性、实施验证和维护成本推荐 B；不因行数多而否定，也不把内部重构自动升级为架构审批。不扩大到无关模块。当前仅讨论，零写入。"
+  },
+  "conversation-derived-business-semantics": {
+    "base": "base-empty",
+    "interactionOnly": true,
+    "prompt": "用户只确认 CSV 导入允许部分成功、失败行可修正重传。草稿写成“每次重传创建新批次，原始输入永久保留，暂时失败自动重试三次”，并称都是已确认需求。核查这些说法是否成立，解释如何继续。只讨论。",
+    "expectedBehavior": "区分已确认需求与新增的批次、保留和重试提议；不能以合理常见为由标为已确认。解释结果、存储成本或副作用差异，提出推荐及需要用户决定的关键选择；不逐项审批普通内部实现细节，不写文件。"
+  },
+  "conversation-authorized-slice-continuation": {
+    "base": "base-numbered",
+    "interactionOnly": true,
+    "prompt": "用户已确认并授权两个实施切片和各自验证，没有要求分段审批。第一个已完成且验证通过，第二个仍在原范围、权限、成本和风险内。另一个情形是第二个发现必须永久保留用户原始数据才能继续，而用户未确认。分别怎样继续？只回答，不执行。",
+    "expectedBehavior": "第一个情形报告证据后继续已授权的第二片，无额外确认；第二个情形暂停受影响工作，解释新数据保留语义、成本和选择，先调查可替代方案并请求必要决定。"
   }
 }

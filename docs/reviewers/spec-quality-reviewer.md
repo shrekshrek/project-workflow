@@ -23,7 +23,7 @@ Do not review code-level implementation feasibility, AGENTS.md compliance, or me
 When an accepted multi-boundary or materially high-risk delivery boundary establishes or changes runtime/tier/module
 responsibility, a cross-component contract, data/state ownership, a durable trust/authorization ownership
 boundary, or deployment ownership, perform one bounded architecture-adequacy check inside Q5/Q7c/Q7d. Verify
-that the smallest sufficient responsibility/component set, applicable cross-boundary contracts and state,
+that a coherent responsibility/component set, applicable cross-boundary contracts and state,
 trust/deployment ownership, and material failure/migration/recovery behavior support the stated outcomes and
 quality constraints. Keep the assessment within the accepted delivery boundary and the existing Q5/Q7c/Q7d
 findings. Ordinary same-boundary permissions and internal refactors skip it.
@@ -35,7 +35,7 @@ applicable current truth/ADRs/issues, and their durable Prior decisions or revis
 authority. A spec explicitly supplied or confirmed by the user may be referenced by section as that user's
 proposed/accepted contract; generated draft text is not self-authorizing. Do not search for remembered
 conversation, infer a requirement from current implementation, or demand that ordinary spec content be copied
-into plan Prior decisions.
+into a separate provenance ledger.
 
 Use the supplied decision-closure result to verify faithful representation of resolved material decisions;
 missing authority remains `SOURCE GAP` for the caller to resolve.
@@ -53,8 +53,8 @@ condensed records preserve exclusions, unresolved questions and the authorizatio
   and supersede decision in the record and any affected attachments.
 - Artifacts to requirements: identify every material business behavior, ownership/authorization/data state,
   durable workflow, or scope commitment that is neither explicitly user-supplied/confirmed, traceable to an
-  applicable external source, nor surfaced as a proposed decision requiring acceptance. Ordinary implementation
-  detail may be derived in the plan when it adds no behavior or scope; accepted spec content needs no duplicate
+  applicable external source, nor surfaced as a proposed decision requiring acceptance. Retention, retry, overwrite and failure semantics also need this trace when they change observable results. Ordinary implementation
+  detail may be derived in the record when it adds no behavior or scope; accepted spec content needs no duplicate
   Prior decisions row.
 - Temporal/cross-artifact consistency: identify stale semantics left in prose, verification, tasks, fallback,
   or migration handling after a later explicitly accepted decision supersedes them.
@@ -79,11 +79,11 @@ Q3-Q7 in the same invocation so the caller receives one consolidated repair set.
 
 ## Review
 
-Fresh-read the relevant record and assess every applicable item. These questions are lenses, not mandatory sections or a demand for three files:
+Fresh-read the relevant record and assess every applicable item. Assess relevant content regardless of its layout:
 
 - Q3 verification: a compact, traceable behavior/risk → executable verification path = pass; uncheckable assertions = fail; planned proof and already-run evidence remain distinct, and documented repeatable manual observation can be evidence. Remove obligations invented from generic edge/error habits or unspecified inputs unless a contract, project convention, or concrete risk requires them. Apply the shared [verification escalation](../actions/README.md#shared-runtime-conventions) rule. One command may prove several obligations; unjustified or duplicate layers fail Q3 and should be deleted or consolidated. Optional implementation ideas remain nonblocking suggestions. For user-visible work, order the shortest meaningful actor-to-result journey first when one is declared.
 - Q4 outcomes: actor/system + action + success condition = pass; vague aspiration = fail; missing success condition = borderline.
-- Q5 constraints: hard/external/measurable = pass; wish = fail; preference belongs in plan/risk and is borderline.
+- Q5 constraints: hard/external/measurable = pass; wish = fail; a preference should be identified as such; it blocks only when an unresolved choice changes acceptance or material risk.
   For architecture-shaped work, a material quality constraint without an applicable responsibility,
   contract/state, trust/deployment, or failure/recovery decision that can satisfy it = fail; a traceable and
   proportionate mapping = pass.
@@ -93,7 +93,7 @@ Fresh-read the relevant record and assess every applicable item. These questions
   [Guidance Placement Contract](../actions/agents-md-revise.md#guidance-placement-contract); otherwise do not
   load it. A violation, missing promised target/alias task, or uncertain owner is fail or borderline according
   to whether it can change implementation.
-- Q7a next work: an exhaustive task list or tasks.md is not required. When a checklist is useful, independently actionable or reviewable output/check that can finish before `feature-done` = pass;
+- Q7a next work: when a checklist is useful, independently actionable or reviewable output/check that can finish before `feature-done` = pass;
   a broad bucket that hides separate decisions or a material dependency checkpoint = fail; work without
   verification = borderline. READY, Proof Bundle/status writes, and archive eligibility are endpoint/lifecycle
   outputs rather than task checkboxes; a checklist item that depends on them is circular and fails Q7a. Each

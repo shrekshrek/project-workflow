@@ -59,7 +59,11 @@ labels only when they help the decision. Before asking for a decision, make the 
 trade-offs and recommendation understandable; do not hide scope behind terms such as unit, integration, E2E,
 shadow or regression testing, and do not patronize the user or replace their business judgment.
 
-When uncertain, compare the smallest useful alternatives. If a consequential assumption can be checked,
+Choose a coherent solution by balancing correctness, clarity, implementation and verification cost,
+compatibility and maintenance. A justified refactor may be simpler overall than a smaller patch. Proceed
+with a well-supported approach within authorization; when alternatives materially change scope, cost, risk
+or long-term direction, explain the recommendation and trade-offs for the user to decide. Investigate
+missing facts before asking the user to choose. If a consequential assumption can be checked,
 propose a bounded trial with a question, inputs and a success/failure criterion before executing it. Reuse
 existing tests, scripts and synthetic fixtures. Perform only the specifically authorized trial; external
 calls, private data, paid work and other restricted operations retain their own approval boundaries. An
@@ -72,8 +76,8 @@ existing evidence already settles the relevant question. Low-level implementatio
 later without making every idea an upfront experiment.
 
 When several outcomes can deliver value, be accepted or be reverted independently, explain the natural
-decomposition and recommend the smallest useful first feature; let the user choose when it is not already
-clear. Keep a coupled transaction, security outcome or rollout together. Explain real coupling/rollback risks;
+decomposition and recommend a coherent first feature based on value, dependencies and risk; let the user
+choose when it is not already clear. Keep a coupled transaction, security outcome or rollout together. Explain real coupling/rollback risks;
 do not infer scope from file count or technical keywords.
 Every new [declarable surface](README.md#shared-runtime-conventions) must serve the selected outcome and name
 its affected actor, owner or consumer. Exclude speculative capability. External tracking is never a prerequisite for the selected
@@ -104,8 +108,8 @@ above the computed next number; an occupied/older number cannot be reused via a 
 The record explains what changes, why this approach, concrete acceptance examples and expected outcomes,
 and later the actual verification. Headings are writing prompts, not mandatory forms. Preserve references
 and the actual delta when current truth already explains the unchanged behavior. Keep accepted constraints and
-explicit exclusions. Add or split a design or work note only when it materially helps reading or handoff; an
-explicit request for a separate handoff document qualifies. Name each purpose and link it without duplicating
+explicit exclusions. Keep requirements, necessary design and verification conclusions in spec. Split supporting
+content only when it materially helps reading or handoff; an explicit request for a separate handoff document qualifies. Name each purpose and link it without duplicating
 accepted rules. Test code belongs in existing project test locations.
 Long reproducible trial material can live separately when needed; keep conclusions and references in spec.
 
@@ -117,8 +121,10 @@ and do not participate in active execution. The canonical delivery receipt locat
 Before implementation, give a proportionate execution preview of outcome, approach, boundary, rationale and
 verification where these are not already understood and authorized. Make materially different behaviors
 or experiences distinguishable; use a scenario, example or sketch only when prose leaves the choice unclear.
-Keep established facts, proposed choices and unresolved assumptions distinguishable. For work spanning useful
-slices, explain their order, purpose and inspectable results. Brief prose is enough; no fixed sections or
+Keep established facts, proposed choices and unresolved assumptions distinguishable. In particular, derived
+retention, retry, overwrite or failure behavior remains a proposal until accepted when it changes observable
+results; ordinary implementation details within the accepted contract can be decided directly. For work
+spanning useful slices, explain their order, purpose and inspectable results. Brief prose is enough; no fixed sections or
 exhaustive task list are required.
 For approach alignment, seek confirmation only for unresolved choices that materially affect the outcome,
 scope or acceptance. A feature request or agreement with the problem does not accept an undisclosed material
@@ -133,7 +139,7 @@ external cost or permission, observable progress, partial-result persistence, fa
 stop rule and the smallest useful canary or sample alternative. Fast local checks need no such ceremony.
 An accepted envelope covers ordinary work inside the current useful slice; do not manufacture micro-phases
 merely to ask the user to continue. It does not suppress informative handoffs or a stop for separate
-permission/cost, material discovery, a meaningful slice boundary or a non-converging cycle.
+permission/cost, material discovery, an explicit user checkpoint or a non-converging cycle.
 
 ## Document updates and context
 
@@ -147,12 +153,14 @@ On resume, read the relevant accepted record and unfinished work, then necessary
 restart planning, reload every guideline/archive, or clear the session merely because a document changed.
 Reopen a decision only when a material contradiction or new finding requires it. Keep one content owner;
 source traces are needed for non-obvious external interpretations, conflicts or supersessions, not duplicate
-rows for every ordinary requirement. Use dates and stable source references where useful.
+rows for every ordinary requirement. Use dates and stable source references where useful. Keep routine
+creation mechanics and inapplicable-review explanations in the response or execution log; persist only evidence needed for later decisions, handoff or
+required delivery receipts.
 
 ## Implementation Scope Stop
 
 Discovery continues during implementation. A task split, implementation-order change, necessary test or
-simpler internal implementation that preserves the accepted behavior can proceed without approval or a
+coherent internal refactoring that preserves the accepted behavior can proceed without approval or a
 formal revision. Record only details useful to later work. Do not require all tasks to be known upfront.
 
 Stop the affected implementation before deepening rework when evidence reveals infeasibility, a materially
@@ -175,7 +183,8 @@ problem or consequential uncertainty still stops the affected work immediately, 
 rules above. At the end of a coherent user-judgeable outcome, run the smallest relevant check and hand off
 the intended result, actual behavior and evidence, whether they remain aligned, material deviations or risks,
 and the next slice with its reason. Call out material choices made inside the slice that the user did not decide
-and could reasonably judge differently. Wait before beginning that next slice.
+and could reasonably judge differently. Continue already authorized slices; wait only for an unresolved
+material decision, a new permission/cost boundary, or an explicit user checkpoint.
 
 During implementation and post-gate repair, if repair/verification keeps cycling without converging, explain
 the unresolved problem and recommended next step, then wait for the user's decision. Preserve unaffected valid
