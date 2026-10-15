@@ -11,7 +11,7 @@ Claude execution details:
 
 - Interpret `$ARGUMENTS` in the ongoing conversation. Resolve the target root explicitly; all writes stay below it. Choose a kebab-case slug only when an authorized new record is needed.
 - Read root/applicable nested `AGENTS.md` and active current truth. Claude-local `.claude/rules/` are host-specific convention inputs when applicable.
-- `CLAUDE_PLUGIN_ROOT` is required; invoke `${CLAUDE_PLUGIN_ROOT}/scripts/materialize-feature-artifact.cjs` and never search another runtime cache or bypass its no-clobber gate.
+- Only when creating a new feature record, invoke `${CLAUDE_PLUGIN_ROOT}/scripts/materialize-feature-artifact.cjs`; require `CLAUDE_PLUGIN_ROOT` and never search another runtime cache or bypass its no-clobber gate. Skip materialization when reusing a record or when no record is needed.
 - Under the shared execution contract, dispatch a fresh `decision-completeness-auditor` only at the
   canonical material-choice/conflicting-or-weak-evidence boundary; ordinary work with directly
   traceable values is `N/A`. Use

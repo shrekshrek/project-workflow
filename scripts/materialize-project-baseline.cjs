@@ -172,9 +172,15 @@ function applyStaged(stagingRoot, targetRoot) {
 if (require.main === module) {
   const args = process.argv.slice(2);
   const templateRoot = path.resolve(__dirname, "..", "template");
+  const usage = "Usage: materialize-project-baseline.cjs <target-directory> | --stage <staging-directory> --target <target-directory> | --apply-staged <staging-directory> <target-directory>";
+  const isPath = (value) => Boolean(value) && !value.startsWith("-");
+  if (args.length === 1 && ["--help", "-h"].includes(args[0])) {
+    console.log(usage);
+    process.exit(0);
+  }
   let result;
 
-  if (args[0] === "--stage" && args.length === 4 && args[2] === "--target") {
+  if (args[0] === "--stage" && args.length === 4 && args[2] === "--target" && isPath(args[1]) && isPath(args[3])) {
     const stagingRoot = path.resolve(args[1]);
     const targetRoot = path.resolve(args[3]);
     if (!fs.existsSync(templateRoot)) {
@@ -182,16 +188,16 @@ if (require.main === module) {
       process.exit(1);
     }
     result = materialize(templateRoot, stagingRoot, { againstRoot: targetRoot });
-  } else if (args[0] === "--apply-staged" && args.length === 3) {
+  } else if (args[0] === "--apply-staged" && args.length === 3 && isPath(args[1]) && isPath(args[2])) {
     result = applyStaged(path.resolve(args[1]), path.resolve(args[2]));
-  } else if (args.length === 1) {
+  } else if (args.length === 1 && isPath(args[0])) {
     if (!fs.existsSync(templateRoot)) {
       console.error(`Template root not found: ${templateRoot}`);
       process.exit(1);
     }
     result = materialize(templateRoot, path.resolve(args[0]));
   } else {
-    console.error("Usage: materialize-project-baseline.cjs <target-directory> | --stage <staging-directory> --target <target-directory> | --apply-staged <staging-directory> <target-directory>");
+    console.error(usage);
     process.exit(2);
   }
   console.log(JSON.stringify(result));

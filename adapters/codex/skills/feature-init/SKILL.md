@@ -8,7 +8,7 @@ description: "Understand a proposed change, resolve consequential unknowns, and 
 Match the user's language. Read [`../../../../docs/actions/feature-init.md`](../../../../docs/actions/feature-init.md) completely before acting; it owns discovery, records, authorization, and safety rules.
 
 - Resolve the target root explicitly and read applicable `AGENTS.md` plus active current truth; never write under an incidental cwd.
-- Resolve the plugin root as the nearest ancestor of this skill containing `.codex-plugin/plugin.json`; invoke its `scripts/materialize-feature-artifact.cjs` and never bypass the no-clobber gate.
+- Only when creating a new feature record, resolve the plugin root as the nearest ancestor of this skill containing `.codex-plugin/plugin.json` and invoke its `scripts/materialize-feature-artifact.cjs`, preserving the no-clobber gate. Skip materialization when reusing a record or when no record is needed.
 - Under the shared execution contract, dispatch a fresh subagent for
   [`decision-completeness-auditor`](../../../../docs/reviewers/decision-completeness-auditor.md) only at the
   canonical material-choice/conflicting-or-weak-evidence boundary. Record an allowed fallback reason and canonical Reviewer execution evidence.

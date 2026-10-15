@@ -2,6 +2,7 @@
 
 const fs = require("fs");
 const os = require("os");
+const { spawnSync } = require("node:child_process");
 const path = require("path");
 const { applyStaged, materialize } = require("./materialize-project-baseline.cjs");
 
@@ -255,6 +256,31 @@ if (fs.readFileSync(path.join(conflictRoot, "same.txt"), "utf8") !== "user versi
 if (fs.existsSync(path.join(conflictRoot, "fresh.txt"))) problems.push("staged apply partially wrote non-conflicting files after a conflict");
 fs.rmSync(conflictRoot, { recursive: true, force: true });
 fs.rmSync(conflictStage, { recursive: true, force: true });
+
+// Exercise the CLI in isolation: help and malformed options must never write.
+const cliRoot = fs.mkdtempSync(path.join(realTmpRoot, "project-workflow-cli-"));
+const cli = path.join(repoRoot, "scripts/materialize-project-baseline.cjs");
+for (const args of [["--help"], ["-h"], [], ["--unknown"], ["--stage"],
+  ["--stage", "stage", "--target"], ["--stage", "stage", "--target", "--unknown"],
+  ["--apply-staged", "stage"], ["--apply-staged", "stage", "--unknown"], ["target", "extra"]]) {
+  const result = spawnSync(process.execPath, [cli, ...args], { cwd: cliRoot, encoding: "utf8" });
+  const help = args.length === 1 && ["--help", "-h"].includes(args[0]);
+  if (result.status !== (help ? 0 : 2) || !(result.stdout + result.stderr).includes("Usage:")) {
+    problems.push(`unexpected CLI result for ${JSON.stringify(args)}: ${result.status}`);
+  }
+  if (fs.readdirSync(cliRoot).length !== 0) problems.push(`CLI wrote for ${JSON.stringify(args)}`);
+}
+for (const args of [["direct"], ["--stage", "stage", "--target", "staged-target"], ["--apply-staged", "stage", "staged-target"]]) {
+  const result = spawnSync(process.execPath, [cli, ...args], { cwd: cliRoot, encoding: "utf8" });
+  if (result.status !== 0) problems.push(`valid CLI invocation failed: ${JSON.stringify(args)}: ${result.stderr}`);
+  if (args[0] === "--stage" && fs.existsSync(path.join(cliRoot, "staged-target"))) problems.push("CLI stage wrote target");
+}
+for (const target of ["direct", "staged-target"]) {
+  if (!fs.existsSync(path.join(cliRoot, target, "AGENTS.md"))) problems.push(`CLI failed to establish ${target}`);
+}
+const repeated = materialize(path.join(repoRoot, "template"), path.join(cliRoot, "direct"));
+if (repeated.copied.length !== 0) problems.push("repeated initialization added files to an initialized target");
+fs.rmSync(cliRoot, { recursive: true, force: true });
 
 const rulesRoot = path.join(repoRoot, "template", ".claude", "rules");
 const ruleFiles = walkFiles(rulesRoot)
