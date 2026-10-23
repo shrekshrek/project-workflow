@@ -99,8 +99,8 @@ useful, keep a dated one-line attempt summary in the implementation record. A no
   map that result to each obligation.
 - Long-run execution: before a materially long, paid, external, opaque, high-volume or restart-costly endpoint
   check, present the actual next run at `feature-init`'s slice handoff, reusing its concise execution envelope.
-  Reuse an accepted envelope; pause only when its scope, cost, permission or material risk changes. Report
-  observable counts or milestones and disclose unavailable progress rather than inventing it.
+  Apply [feature-init’s feedback and stop boundaries](feature-init.md#implementation-scope-stop); an accepted
+  envelope does not waive a pending handoff. Report observable progress and disclose unavailable counts.
 - Domain doc check: defer it until L1 and applicable L2/L3 and acceptance verification form a READY candidate. Earlier
   failures record `not-run(non-READY prerequisite)`. For a candidate, compare only a declared/relevant
   `docs/specs/<area>.md`: resolved durable behavior with no existing area document is `update pending`; genuinely
@@ -115,10 +115,10 @@ artifact edits first. Reviewers and this action are read-only outside endpoint-o
 A non-READY verdict reports its blockers and `Next` routes, then ends this gate. A review-only request stops
 at the verdict. For a current authorized implementation or delivery request, a `direct-repair` blocker may
 continue outside the gate as one focused repair slice after that report; other routes keep their decision and
-permission boundaries. Apply [feature-init's Scope Stop](feature-init.md#implementation-scope-stop) to material
-changes and non-converging repair/verification. At the repair-slice boundary, rerun only the affected closure,
-report the blocker, fix, changed evidence and remaining risk. Continue an authorized delivery request with
-a fresh endpoint run under feature-init’s scope-stop rule; a review-only request remains read-only. Each run creates a fresh snapshot, reuses only unchanged same-task L1 evidence, and reruns affected checks
+permission boundaries. Rerun only the affected closure within that repair slice, then hand off the blocker,
+fix, changed evidence and remaining risk. Before a fresh endpoint run, apply
+[feature-init's feedback and stop boundaries](feature-init.md#implementation-scope-stop), including
+non-converging repair/verification. Each run creates a fresh snapshot, reuses only unchanged same-task L1 evidence, and reruns affected checks
 and applicable reviews; reference valid evidence instead of restating the plan or copying failed receipts.
 
 Treat the accepted feature artifact as the requirements baseline; handle later material decisions through

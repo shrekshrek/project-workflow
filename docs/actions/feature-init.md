@@ -131,8 +131,10 @@ or experiences distinguishable; use a scenario, example or sketch only when pros
 Keep established facts, proposed choices and unresolved assumptions distinguishable. In particular, derived
 retention, retry, overwrite or failure behavior remains a proposal until accepted when it changes observable
 results; ordinary implementation details within the accepted contract can be decided directly. For work
-spanning useful slices, explain their order, purpose and inspectable results. Brief prose is enough; no fixed sections or
-exhaustive task list are required.
+spanning useful slices, explain their order, purpose, inspectable results and what the user will judge at each
+handoff. Place an early feedback point where a representative result can expose a mistaken interpretation,
+before dependent work amplifies it; do not defer the first useful feedback until the entire feature is built.
+Brief prose is enough; no fixed sections, phase count or exhaustive task list are required.
 For approach alignment, seek confirmation only for unresolved choices that materially affect the outcome,
 scope or acceptance. A feature request or agreement with the problem does not accept an undisclosed material
 design choice. A clear request may already authorize the approach. An accepted preview is reused;
@@ -144,9 +146,8 @@ high-volume or restart-costly run, give a plain-language execution envelope befo
 supports, what it does and does not cover, knowable units/calls/rounds, a rough duration and uncertainty,
 external cost or permission, observable progress, partial-result persistence, failure/restart consequence,
 stop rule and the smallest useful canary or sample alternative. Fast local checks need no such ceremony.
-An accepted envelope covers ordinary work inside the current useful slice; do not manufacture micro-phases
-merely to ask the user to continue. It does not suppress informative handoffs or a stop for separate
-permission/cost, material discovery, an explicit user checkpoint or a non-converging cycle.
+An accepted envelope covers ordinary work inside the current useful slice; it does not suppress informative handoffs
+or the feedback and stop boundaries in [Implementation Scope Stop](#implementation-scope-stop).
 
 ## Document updates and context
 
@@ -163,9 +164,8 @@ source traces are needed for non-obvious external interpretations, conflicts or 
 rows for every ordinary requirement. Use dates and stable source references where useful. Keep routine
 creation mechanics and inapplicable-review explanations in the response or execution log; persist only evidence needed for later decisions, handoff or
 required delivery receipts.
-Keep the active approach and remaining outcomes current by replacing superseded instructions in place.
-Retain concise dated reasons and evidence references as history, not competing execution instructions;
-do not make readers reconstruct the current plan from a chain of override paragraphs.
+Replace superseded execution instructions in place; keep the current approach and remaining outcomes clear,
+with concise dated reasons and evidence references as history.
 
 ## Implementation Scope Stop
 
@@ -193,26 +193,25 @@ problem or consequential uncertainty still stops the affected work immediately, 
 rules above. At the end of a coherent user-judgeable outcome, run the smallest relevant check and hand off
 the intended result, actual behavior and evidence, whether they remain aligned, material deviations or risks,
 and the next slice with its reason. Call out material choices made inside the slice that the user did not decide
-and could reasonably judge differently. Continue already authorized slices; wait only for an unresolved
-material decision, a new permission/cost boundary, or an explicit user checkpoint.
-A status question does not revoke implementation authorization: answer briefly and resume unless the user
-asks to pause or changes direction. Do not turn internal technical steps into user approval checkpoints.
+and could reasonably judge differently. Use a concrete example, preview or observed behavior where useful.
+By default, wait for user feedback before beginning the next slice, even when checks pass and the agent sees
+no deviation: the user may recognize a mistaken interpretation from the result. Scope approval, "start
+implementing", silence and status questions do not waive this feedback. Only explicit continuous-execution
+authorization covering the boundary permits proceeding without waiting; do not reconfirm within it.
+Material scope stops and separate permission/cost limits still apply; preserve project checkpoints unless
+the user explicitly changes them. Answer status questions and resume within the current slice, or remain
+at its pending feedback boundary; an explicit pause or direction change takes precedence.
 
 During implementation and post-gate repair, if repair/verification keeps cycling without converging, explain
 the unresolved problem and recommended next step, then wait for the user's decision. Preserve unaffected valid
 evidence; rerun the affected closure.
 
-Progress reports must help the user judge the work, not merely announce activity. Report a new relevant fact:
-completed work, evidence and its meaning against the intended result, a real completed/total count, deviation,
-risk, next action or changed forecast. If the runtime cannot observe exact progress, disclose that limitation
-before a long run and report only observable milestones; never invent percentages or repeat empty "still
-running" updates. State whether interruption preserves partial results when that changes the user's choice.
-At slice handoffs or overall-status questions, explain what is usable, what outcomes remain and whether the
-plan changed; test counts support that explanation rather than replace it. Distinguish ordinary task detail,
-an omission needed for an accepted outcome, and a new or changed outcome. Continue the first two within
-existing authorization unless a scope-stop condition applies; make the third's scope impact explicit.
-Keep this summary with the existing record when useful, without fixed phases, a parallel ledger or invented
-completion percentages.
+Progress reports must help the user judge the work, not merely announce activity. Report new evidence and its meaning:
+what is usable, what remains, deviations or risks, and the next action or changed plan. Use real counts or
+observable milestones; tests support the result rather than replace it. If the runtime cannot observe exact
+progress, disclose that limitation before a long run; never invent percentages or repeat empty "still running"
+updates. Explain partial-result loss or restart consequences when interruption changes the user's choice.
+Persist useful conclusions under the document-update rules above.
 
 ## Readiness and conditional guidance
 

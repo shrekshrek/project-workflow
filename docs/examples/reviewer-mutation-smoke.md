@@ -77,8 +77,9 @@ Run an ordinary `clean` case and a convention-risk case with each adapter and re
   `BLOCKED` before L1 instead of subtracting paths or asking reviewers to infer ownership.
 - After a non-READY verdict, confirm no implementation repair or reviewer rerun occurs inside that gate.
   A permitted direct repair runs outside it as one focused slice, reruns only the affected closure, hands off
-  its result and continues an authorized delivery request with `feature-done` on a fresh final snapshot, rerunning
-  affected checks and applicable reviews, and reuse only unchanged same-task L1 evidence.
+  its result and follows feature-init’s feedback boundary before `feature-done` on a fresh final snapshot:
+  default waiting versus explicitly authorized continuous execution. Rerun affected checks and applicable
+  reviews, and reuse only unchanged same-task L1 evidence.
 
 If the host cannot expose or constrain reviewer capacity, record that limitation instead of claiming the scheduling branch passed.
 
@@ -92,8 +93,9 @@ If the host cannot expose or constrain reviewer capacity, record that limitation
   later explicit invocation may start the new cycle after inputs stabilize.
 - Complete the initial `known-bad` report and confirm implementation and non-receipt artifacts remain unchanged
   inside the gate. With an existing implementation/delivery request, confirm the owning workflow reports and
-  repairs an ordinary direct blocker as one focused slice, reports its affected evidence, and continues
-  authorized delivery verification on a fresh snapshot.
+  repairs an ordinary direct blocker as one focused slice and reports its affected evidence. Verify that
+  ordinary delivery authorization preserves the feedback wait; explicit continuous-execution authorization
+  permits a fresh endpoint run without repeating approval.
   If the focused repair cannot resolve the blocker or its affected checks repeat without new evidence, confirm
   that slice explains the remaining problem and recommended next step, then waits for the user's decision.
   With a review-only request, confirm it stops at the verdict. A material direction/scope change or an operation

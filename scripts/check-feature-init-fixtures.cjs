@@ -182,6 +182,9 @@ function validateFixtures() {
     "conversation-source-to-consumer",
     "conversation-status-resume",
     "conversation-collaboration-drift",
+    "conversation-default-slice-feedback",
+    "conversation-status-preserves-checkpoint",
+    "conversation-early-feedback-plan",
  ]) {
     if (!expected[scenario]) problems.push(`missing required scope/impact/conversation scenario ${scenario}`);
  }

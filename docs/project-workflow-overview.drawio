@@ -107,7 +107,7 @@
         <mxCell id="p3_mech1" value="&lt;b&gt;聚焦验证默认&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;矩阵 / E2E / 全仓库独立按需&lt;br/&gt;低层必要检查失败即停止扩大&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#E65100;fontSize=11;align=center;" vertex="1" parent="1">
           <mxGeometry x="210" y="565" width="280" height="65" as="geometry"/>
         </mxCell>
-        <mxCell id="p3_mech2" value="&lt;b&gt;完整交付 gate (= /feature-done)&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;READY 候选完成全部适用义务&lt;br/&gt;不在 gate 内修实现；修复后按授权复验；重大变化暂停&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#E65100;fontSize=11;align=center;" vertex="1" parent="1">
+        <mxCell id="p3_mech2" value="&lt;b&gt;完整交付 gate (= /feature-done)&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;READY 候选完成全部适用义务&lt;br/&gt;不在 gate 内修实现；修复切片交接遵循阶段反馈规则&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#E65100;fontSize=11;align=center;" vertex="1" parent="1">
           <mxGeometry x="510" y="565" width="280" height="65" as="geometry"/>
         </mxCell>
         <mxCell id="p3_mech3" value="&lt;b&gt;协作走平台原生&lt;/b&gt;&lt;br/&gt;&lt;span style=&#39;font-size:10px;&#39;&gt;backlog / 讨论 → GitHub Issues / Discussions&lt;br/&gt;不进 repo 文件 (§4.4 / §7.8)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#E65100;fontSize=11;align=center;" vertex="1" parent="1">

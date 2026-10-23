@@ -47,7 +47,8 @@ Shared behavior needs affected cases on both hosts. In particular:
   consumer: continue ordinary details, but explain material operating cost and resolve the unnecessary scope.
 - Carry one functional outcome through its ordinary implementation, tests, documentation and verification,
   reporting useful progress without turning it into a handoff. A material problem stops affected work even
-  mid-slice; after the coherent outcome, report evidence and alignment, then continue within authorization; pause for material decisions or user checkpoints.
+  mid-slice; after the coherent outcome, report inspectable evidence and wait for user feedback by default.
+  Cross that boundary only with explicit continuous-execution authorization; scope approval alone is insufficient.
 - Explain verification as three different proof responsibilities: pre-implementation decision evidence,
   implementation feedback and delivery evidence. Do not require delivery-level E2E to begin ordinary work;
   explain the observable meaning before technical labels. Treat matrix, E2E and repository-wide suites as
@@ -55,7 +56,8 @@ Shared behavior needs affected cases on both hosts. In particular:
 - Before a long, paid or opaque verification, give an execution envelope with purpose, scale, rough duration,
   progress visibility, partial-result/restart behavior, stop rule and a smaller canary. When a lower-cost necessary
   check fails, stop costlier expansion unless it is needed for diagnosis or explicitly requested. A non-READY
-  endpoint ends; a permitted repair reports its result and continues delivery verification within authorization; material changes or non-convergence pause affected work.
+  endpoint ends; a permitted repair hands off its result under the same default-feedback / explicit-continuation
+  boundary before another endpoint run. Material changes or non-convergence pause affected work.
 - During a long run, report real counts or milestones. When exact progress is unavailable, disclose that limit
   and the interruption consequence; do not invent a percentage or repeat empty status.
 
@@ -69,8 +71,11 @@ Snapshot files outside `trial/` before and after. Do not pass `expectedBehavior`
 `conversation-collaboration-drift` checks narrow reconciliation without overriding project policy.
 For `conversation-status-resume`, steer the active run after its first slice tool completes. Record the
 actual injection point, reply and subsequent work. If the host cannot steer an active run, mark that case
-not executed; a later standalone status answer is not equivalent. These cases complement, rather than
-replace, the existing material-decision stop scenarios. Run only affected cases and report host limits.
+not executed; a later standalone status answer is not equivalent.
+Also run `conversation-default-slice-feedback`, `conversation-status-preserves-checkpoint` and
+`conversation-early-feedback-plan` to check the opposite boundary: ordinary scope approval and a status
+question must not waive user feedback, and the first feedback point must expose direction early.
+These cases complement, rather than replace, the existing material-decision stop scenarios. Run only affected cases and report host limits.
 
 ## Equivalence interpretation
 
@@ -113,31 +118,17 @@ PASS. Preserve authorization, no-clobber, numbering, symlink, rollback and lifec
 
 ## Local evidence — 2026-10-23
 
-The delivery/communication refinement changes canonical discovery, progress and guidance-drift rules;
-it adds no action, fixed phase count or approval gate. All eight `check-all.cjs` checks passed before smoke
-(structural/package/fixture evidence, not model behavior).
+These observations describe the tested revisions, not universal adherence or improvement measurements.
+All model runs used generated local packages; expected answers were not supplied. Temporary transcripts
+are debugging material, not durable release artifacts.
 
-- Codex CLI `0.163.0-alpha.11.1`, default model (model ID not exposed in captured events), temporary generated
-  Codex package: `conversation-executed-slice-continuation` passed. Tool traces show the first relationship
-  assertion, an interim result report, then the second visibility assertion without another user turn.
-  Visibility is exactly `SYN-manager`, `SYN-child`; tracked fixture files stayed unchanged and all new files
-  were under `trial/`. Both Node scripts were independently rerun successfully.
-- The source-to-consumer and collaboration-drift prompts ran together in a separate read-only Codex session.
-  Responses identified the missing initialization/maintenance path, preserved uncertain identity matching,
-  proposed narrow convention synchronization and retained the explicit deployment checkpoint. This is a
-  combined conversation smoke, not isolated per-case or cross-host equivalence evidence.
-- Claude Code `2.1.144` exited with `Not logged in` before executing the canary. A same-day retry loaded
-  the freshly generated Claude plugin and the exact fixture prompt, but again returned
-  `authentication_failed / Not logged in` with zero API input/output tokens. Although `claude auth status`
-  reported logged in, the execution could not authenticate. The temporary fixture stayed unchanged:
-  **not executed**, no Claude behavior PASS.
-- `conversation-status-resume` remains **not executed**. The existing noninteractive runner has no
-  established active-turn injection path; inspecting `codex queue --help` did not establish delivery at
-  the required point between slices. No standalone follow-up was substituted for active-turn steering.
-- Transcripts and trial files are temporary local debugging material, not durable release evidence.
-  This summary preserves the observed results and limitations without depending on a temporary path.
-  No plugin publication, version bump or target-project convention edits.
+| Revision / host | Observed result | Coverage limit |
+|---|---|---|
+| v3.23.3, Codex CLI `0.163.0-alpha.11.1`, default model (ID not exposed) | Execution canary produced the expected relationships and exactly `SYN-manager`, `SYN-child` visibility, reported between slices, and continued without another user turn. Both Node scripts reran successfully; only `trial/` changed. | Explicit continuous execution only; does not prove default feedback waiting. |
+| v3.23.3, same Codex host | Combined source-to-consumer / collaboration-drift discussion identified initialization and identity uncertainty, preserved the deployment checkpoint. | Combined conversation, not isolated or cross-host execution. |
+| v3.23.3, Claude Code `2.1.144` | Initial run and retry returned `Not logged in` / `authentication_failed`, despite auth status reporting logged in; zero API tokens and unchanged fixture. | Not executed. |
+| First local stage-feedback correction, same Codex host | Combined discussion of default feedback, status-preserved checkpoint, early feedback and explicit continuation gave the expected judgments; fixture byte-for-byte unchanged. | Before subsequent consolidation and repair-boundary scenario extension; not evidence of real execution pauses. |
 
-Remaining release evidence: execute the canary on an authenticated Claude host and the active-turn steering
-case on a host that supports injection. This local run does not establish universal adherence or a measured
-improvement over the previous version.
+Active-turn status injection remains not executed: the noninteractive runner did not establish delivery
+between slices. A later standalone answer was not substituted. Cross-host behavior and actual default-wait
+execution remain unverified. Static/package checks do not close those gaps.

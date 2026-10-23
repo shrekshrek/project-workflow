@@ -66,6 +66,9 @@ requirePatterns("docs/actions/feature-init.md", [
   ["ordinary discoveries proceed", /Discovery continues during implementation[\s\S]*can proceed without approval/i],
   ["affected work stops for material discovery", /Stop the affected implementation[\s\S]*authorization, data disposition, operating cost[\s\S]*ask the smallest useful question/i],
   ["local revision and continuation", /After confirmation[\s\S]*spec-revise[\s\S]*update only affected[\s\S]*continue the authorized implementation/i],
+  ["default result feedback", /By default, wait for user feedback before beginning the next slice[\s\S]*even when checks pass/i],
+  ["explicit boundary continuation", /Only explicit continuous-execution[\s\S]*authorization covering the boundary[\s\S]*do not reconfirm within it/i],
+  ["status preserves feedback", /Answer status questions and resume within the current slice, or remain[\s\S]*pending feedback boundary/i],
   ["repair convergence handoff", /cycling without converging[\s\S]*recommended next[\s\S]*wait for the user's decision/i],
   ["judgment-useful progress observability", /Progress reports must help the user judge[\s\S]*evidence and its meaning[\s\S]*cannot observe exact progress[\s\S]*never invent percentages/i],
   ["stage-matched verification", /Before implementation[\s\S]*During implementation[\s\S]*Before delivery[\s\S]*E2E/i],
@@ -73,6 +76,9 @@ requirePatterns("docs/actions/feature-init.md", [
   ["progressive verification fail-fast", /lower-cost failure stops[\s\S]*costlier expansion/i],
   ["external tracking optional", /External tracking is never a prerequisite/i],
   ["decision closure before drafting", /Normalize accepted material decisions and explicit supersessions before drafting/i],
+]);
+requirePatterns("docs/actions/feature-done.md", [
+  ["repair reentry uses canonical feedback", /Before a fresh endpoint run, apply[\s\S]*feature-init's feedback and stop boundaries/],
 ]);
 forbidPatterns("docs/actions/feature-init.md", [
   ["mandatory risk-size labels", /small, medium, large, or extra-large/i],
