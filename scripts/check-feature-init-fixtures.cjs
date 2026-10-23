@@ -178,6 +178,10 @@ function validateFixtures() {
     "conversation-progressive-verification-fail-fast",
     "conversation-long-run-progress-limits",
     "conversation-no-micro-approval",
+    "conversation-executed-slice-continuation",
+    "conversation-source-to-consumer",
+    "conversation-status-resume",
+    "conversation-collaboration-drift",
  ]) {
     if (!expected[scenario]) problems.push(`missing required scope/impact/conversation scenario ${scenario}`);
  }

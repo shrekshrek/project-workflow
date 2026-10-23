@@ -45,6 +45,9 @@ assumptions into the feature without copying the Blueprint narrative; cite the u
 change. A missing, draft, stale or unresolved handoff is context only, not implementation authority. Without a
 handoff, continue the normal feature flow. If the proposed change alters project goals, scope, durable architecture,
 data ownership or a trust boundary, stop the affected work and route the impact back to Blueprint revision.
+Even without a Blueprint, when repeated corrections expose unresolved data authority, user maintenance
+journeys or cross-system responsibilities, recommend a bounded rebaseline before further affected work.
+Do not trigger it for ordinary repairs or layout iteration, or create upstream artifacts without authorization.
 
 ## Conversation and discovery
 
@@ -79,6 +82,10 @@ When several outcomes can deliver value, be accepted or be reverted independentl
 decomposition and recommend a coherent first feature based on value, dependencies and risk; let the user
 choose when it is not already clear. Keep a coupled transaction, security outcome or rollout together. Explain real coupling/rollback risks;
 do not infer scope from file count or technical keywords.
+For work depending on existing data or another system, choose an early slice that traces available source
+facts through required initialization or maintenance to a usable consumer result. If foundational work must
+come first, explain the dependency and the result that will prove it useful; an empty interface is not that
+proof. Use the smallest representative example, not an automatic full-system build or E2E gate.
 Every new [declarable surface](README.md#shared-runtime-conventions) must serve the selected outcome and name
 its affected actor, owner or consumer. Exclude speculative capability. External tracking is never a prerequisite for the selected
 outcome; creating external items requires separate authorization.
@@ -156,6 +163,9 @@ source traces are needed for non-obvious external interpretations, conflicts or 
 rows for every ordinary requirement. Use dates and stable source references where useful. Keep routine
 creation mechanics and inapplicable-review explanations in the response or execution log; persist only evidence needed for later decisions, handoff or
 required delivery receipts.
+Keep the active approach and remaining outcomes current by replacing superseded instructions in place.
+Retain concise dated reasons and evidence references as history, not competing execution instructions;
+do not make readers reconstruct the current plan from a chain of override paragraphs.
 
 ## Implementation Scope Stop
 
@@ -185,6 +195,8 @@ the intended result, actual behavior and evidence, whether they remain aligned, 
 and the next slice with its reason. Call out material choices made inside the slice that the user did not decide
 and could reasonably judge differently. Continue already authorized slices; wait only for an unresolved
 material decision, a new permission/cost boundary, or an explicit user checkpoint.
+A status question does not revoke implementation authorization: answer briefly and resume unless the user
+asks to pause or changes direction. Do not turn internal technical steps into user approval checkpoints.
 
 During implementation and post-gate repair, if repair/verification keeps cycling without converging, explain
 the unresolved problem and recommended next step, then wait for the user's decision. Preserve unaffected valid
@@ -195,6 +207,12 @@ completed work, evidence and its meaning against the intended result, a real com
 risk, next action or changed forecast. If the runtime cannot observe exact progress, disclose that limitation
 before a long run and report only observable milestones; never invent percentages or repeat empty "still
 running" updates. State whether interruption preserves partial results when that changes the user's choice.
+At slice handoffs or overall-status questions, explain what is usable, what outcomes remain and whether the
+plan changed; test counts support that explanation rather than replace it. Distinguish ordinary task detail,
+an omission needed for an accepted outcome, and a new or changed outcome. Continue the first two within
+existing authorization unless a scope-stop condition applies; make the third's scope impact explicit.
+Keep this summary with the existing record when useful, without fixed phases, a parallel ledger or invented
+completion percentages.
 
 ## Readiness and conditional guidance
 

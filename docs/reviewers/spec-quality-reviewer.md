@@ -98,7 +98,9 @@ Fresh-read the relevant record and assess every applicable item. Assess relevant
   verification = borderline. READY, Proof Bundle/status writes, and archive eligibility are endpoint/lifecycle
   outputs rather than task checkboxes; a checklist item that depends on them is circular and fails Q7a. Each
   real dependency or risk checkpoint should close an inspectable result and own its smallest relevant check
-  before dependent work.
+  before dependent work. Apply [feature-init's discovery rule](../actions/feature-init.md#conversation-and-discovery)
+  to the first slice: flag a missing source-to-consumer path when existing data or another system is needed,
+  without turning necessary foundational work into an automatic failure or requiring all layers at once.
 - Q7b delivery coherence: one independently demonstrable/acceptable/revertible outcome with resolved material risks = pass regardless of size; several separable outcomes with no coupling or traceable bundled-risk decision in the record = fail; an explicitly accepted bundle, or one coherent delivery with material unresolved coordination/rollback risk, = borderline.
 - Q7c current necessity: every [declarable surface](../actions/README.md#shared-runtime-conventions) names a
   present actor, owner or consumer and a selected-outcome necessity =

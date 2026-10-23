@@ -40,7 +40,7 @@ owner. Nested guidance states differences only; never create it for directory sy
 ## Workflow
 
 1. Resolve root/nested `AGENTS.md` and only the host-specific convention files explicitly included in this run.
-2. Extract testable statements about commands, dependencies, directories, configuration, framework rules, and tier boundaries.
+2. Extract testable statements about commands, dependencies, directories, configuration, framework rules, tier boundaries, and collaboration rules.
 3. Inspect objective repository evidence: manifests, lockfiles, tool-version files, actual paths, configuration examples, and relevant recent changes.
 4. Audit guidance placement without judging the architecture itself:
    - root rules whose actual consumers are confined to one subtree;
@@ -51,6 +51,10 @@ owner. Nested guidance states differences only; never create it for directory sy
    - nested guidance whose directory moved/disappeared; and
    - prompt rules that objective lint/test enforcement now owns better.
    Apply the Guidance Placement Contract above. Never propose a file merely to reduce line count.
+   Compare collaboration rules with their canonical action and current template, especially continuation,
+   checkpoints and scope stops. Show conflicting clauses and distinguish an intentional project exception
+   from inherited template drift; a newer plugin is not authority to overwrite project policy. If intent is
+   unclear, ask; otherwise apply only the authorized narrow synchronization, preserving local conventions.
 5. For each mismatch, record the old text, observed state, evidence source, exact affected subtree, and a
    narrow keep/move/create/delete/mechanize patch. Exclude preferences and weak pattern guesses.
 6. Ask only about material ambiguity or genuinely new policy. Objective stale-value synchronization proceeds

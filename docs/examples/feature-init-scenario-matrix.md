@@ -59,6 +59,19 @@ Shared behavior needs affected cases on both hosts. In particular:
 - During a long run, report real counts or milestones. When exact progress is unavailable, disclose that limit
   and the interruption consequence; do not invent a percentage or repeat empty status.
 
+## Executed delivery behavior
+
+Use `conversation-executed-slice-continuation` as the small execution canary on both hosts: copy the base
+into a temporary project and run the exact prompt through the runtime adapter. Inspect tool traces and
+assert the synthetic relationship/visibility outputs; a description of intended actions is not execution.
+Snapshot files outside `trial/` before and after. Do not pass `expectedBehavior` to the model.
+`conversation-source-to-consumer` checks early discovery without authorizing data changes;
+`conversation-collaboration-drift` checks narrow reconciliation without overriding project policy.
+For `conversation-status-resume`, steer the active run after its first slice tool completes. Record the
+actual injection point, reply and subsequent work. If the host cannot steer an active run, mark that case
+not executed; a later standalone status answer is not equivalent. These cases complement, rather than
+replace, the existing material-decision stop scenarios. Run only affected cases and report host limits.
+
 ## Equivalence interpretation
 
 - Pre/post comparison is per selected model scenario: same accepted behavior and authorization, expected record disposition, sentinels untouched, no planted specifics. Wording differences in reports are not deviations.
@@ -96,3 +109,35 @@ change record; keep transcripts separate rather than copying logs into the spec.
 behavior on both supported hosts before claiming parity. The deterministic fixture validator and
 `--grade` do not establish conversation behavior: interaction-only grading must still refuse a file-only
 PASS. Preserve authorization, no-clobber, numbering, symlink, rollback and lifecycle-link regressions.
+
+
+## Local evidence — 2026-10-23
+
+The delivery/communication refinement changes canonical discovery, progress and guidance-drift rules;
+it adds no action, fixed phase count or approval gate. All eight `check-all.cjs` checks passed before smoke
+(structural/package/fixture evidence, not model behavior).
+
+- Codex CLI `0.163.0-alpha.11.1`, default model (model ID not exposed in captured events), temporary generated
+  Codex package: `conversation-executed-slice-continuation` passed. Tool traces show the first relationship
+  assertion, an interim result report, then the second visibility assertion without another user turn.
+  Visibility is exactly `SYN-manager`, `SYN-child`; tracked fixture files stayed unchanged and all new files
+  were under `trial/`. Both Node scripts were independently rerun successfully.
+- The source-to-consumer and collaboration-drift prompts ran together in a separate read-only Codex session.
+  Responses identified the missing initialization/maintenance path, preserved uncertain identity matching,
+  proposed narrow convention synchronization and retained the explicit deployment checkpoint. This is a
+  combined conversation smoke, not isolated per-case or cross-host equivalence evidence.
+- Claude Code `2.1.144` exited with `Not logged in` before executing the canary. A same-day retry loaded
+  the freshly generated Claude plugin and the exact fixture prompt, but again returned
+  `authentication_failed / Not logged in` with zero API input/output tokens. Although `claude auth status`
+  reported logged in, the execution could not authenticate. The temporary fixture stayed unchanged:
+  **not executed**, no Claude behavior PASS.
+- `conversation-status-resume` remains **not executed**. The existing noninteractive runner has no
+  established active-turn injection path; inspecting `codex queue --help` did not establish delivery at
+  the required point between slices. No standalone follow-up was substituted for active-turn steering.
+- Transcripts and trial files are temporary local debugging material, not durable release evidence.
+  This summary preserves the observed results and limitations without depending on a temporary path.
+  No plugin publication, version bump or target-project convention edits.
+
+Remaining release evidence: execute the canary on an authenticated Claude host and the active-turn steering
+case on a host that supports injection. This local run does not establish universal adherence or a measured
+improvement over the previous version.
