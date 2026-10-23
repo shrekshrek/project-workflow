@@ -132,3 +132,15 @@ are debugging material, not durable release artifacts.
 Active-turn status injection remains not executed: the noninteractive runner did not establish delivery
 between slices. A later standalone answer was not substituted. Cross-host behavior and actual default-wait
 execution remain unverified. Static/package checks do not close those gaps.
+
+
+## Subsequent planning-to-delivery evidence — 2026-10-23
+
+The installed Blueprint 0.3.2 → Workflow 3.23.4 Codex synthetic trial exercised actual
+planning/prototype artifacts, simulated confirmation written back to the canonical handoff,
+first-slice implementation, and the default feedback stop. A later status-only question did
+not start the next slice; 13 implementation/test/planning files remained byte-identical.
+The [primary report and retained artifacts](https://github.com/shrekshrek/project-blueprint/blob/71b44eff65f135ac4b7c436c13349ea05a0018a8/tests/scenarios/results/2026-10-23-planning-delivery.md)
+are owned by Blueprint's scenario evidence directory rather than duplicated here.
+This is not Claude-host/model, active-turn interruption, full multi-feature decomposition,
+feature-done/archive, or production evidence. Simulated approvals are test inputs only.
