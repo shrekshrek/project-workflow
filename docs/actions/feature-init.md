@@ -43,8 +43,15 @@ If the target supplies an approved Blueprint handoff, read its `read_first` arti
 decision and contract IDs before preparing the feature record. Carry confirmed boundaries, exclusions and accepted
 assumptions into the feature without copying the Blueprint narrative; cite the upstream IDs where they affect this
 change. A missing, draft, stale or unresolved handoff is context only, not implementation authority. Without a
-handoff, continue the normal feature flow. If the proposed change alters project goals, scope, durable architecture,
-data ownership or a trust boundary, stop the affected work and route the impact back to Blueprint revision.
+handoff, continue the normal feature flow. If the proposed change contradicts an accepted upstream Blueprint
+decision about project goals, project-wide scope, cross-system responsibilities, authoritative data or trust
+boundaries, or requires a previously uncovered project-level decision about responsibilities, authoritative
+data or trust boundaries before implementation can safely proceed, stop the affected work and resolve that
+decision first. Revise the affected Blueprint when present; otherwise clarify the decision and recommend a
+bounded rebaseline only when needed, without requiring a complete Blueprint. An undocumented feature detail
+alone does not qualify. Feature-local scope,
+architecture and contract changes remain in this workflow, using `spec-revise` when an accepted feature
+contract changes; touching architecture or data alone does not require project re-planning.
 Even without a Blueprint, when repeated corrections expose unresolved data authority, user maintenance
 journeys or cross-system responsibilities, recommend a bounded rebaseline before further affected work.
 Do not trigger it for ordinary repairs or layout iteration, or create upstream artifacts without authorization.

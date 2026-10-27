@@ -44,7 +44,7 @@ requirePatterns("docs/actions/README.md", [
   ["shared verification escalation", /\*\*Verification escalation\*\*[\s\S]*independent escalation options, never a package[\s\S]*not escalation reasons/i],
 ]);
 requirePatterns("docs/actions/feature-init.md", [
-  ["optional Blueprint context", /Optional Blueprint context[\s\S]*approved Blueprint handoff[\s\S]*Without a\s+handoff, continue the normal feature flow[\s\S]*route the impact back to Blueprint revision/i],
+  ["optional Blueprint context", /Optional Blueprint context[\s\S]*approved Blueprint handoff[\s\S]*Without a\s+handoff, continue the normal feature flow[\s\S]*Revise the affected Blueprint when present/i],
   ["discovery before records", /^## Conversation and discovery$/m],
   ["bounded authorized experiments", /specifically authorized trial[\s\S]*isolated trial is not authorization to implement/i],
   ["observations distinct from acceptance", /observed results separately from accepted expected behavior/i],
