@@ -28,38 +28,9 @@ A recorded experiment is evidence; it is not automatically an acceptance decisio
 
 ## Checks
 
-Check meaning, not template completion:
-
-1. The problem, present consumer, observable outcome, boundary and meaningful exclusions are understood;
-   the [execution preview](feature-init.md#record-and-authorization) makes the material choices and planned
-   handoffs understandable to the user.
-2. Critical unknowns affecting the chosen direction, contract or acceptance have adequate evidence or an
-   explicit user decision. A trial that did not run or failed its criterion is not validated evidence. Ordinary
-   details that can safely be discovered during implementation remain open without blocking the whole change.
-   Pre-implementation evidence is scoped to the decision it settles; do not require delivery-level E2E when a
-   cheaper existing fact or bounded trial is sufficient.
-3. Concrete acceptance examples and expected results have the smallest non-redundant proof obligations and
-   an executable verification path. Before implementation this is a credible plan plus any decision evidence,
-   not completed delivery evidence. Distinguish implementation feedback from delivery proof and order costlier
-   layers only for distinct remaining risk, following the shared
-   [verification escalation](README.md#shared-runtime-conventions) rule.
-4. The approach is necessary for the current outcome and addresses applicable responsibilities, data,
-   authorization, recovery, cost and rollout constraints. Scope is coherent; independent outcomes are not
-   silently bundled. Size alone is not a failure and a bundle does not need a new document category.
-5. Accepted decisions, constraints, exclusions, supersessions and unresolved questions survive into the record.
-   Related current truth is referenced and deviations are explicit. Do not demand a `Delta` heading or empty
-   Added/Modified/Removed subsections when prose already states the change.
-6. The next implementation step and its verification are actionable. Do not require an exhaustive task list,
-   module table or optional files. When useful steps exist, their dependency checkpoints and accepted changes
-   agree. Known material cost or permission constraints are explicit; operational details that are only
-   knowable at execution time remain runtime decisions. READY, receipt/status writes and archive eligibility
-   are endpoint outputs, not prerequisites that must be checked off before the endpoint itself can run.
-7. Explicit project/convention commitments can be satisfied. Merely touching several modules does not require
-   an alignment table. A promised Codify decision needs its owner/source/enforcement; only then read the
-   [Guidance Placement Contract](agents-md-revise.md#guidance-placement-contract).
-8. When the spec cites a Blueprint handoff, its slice, decision and contract references resolve and the proposed
-   change stays within the accepted upstream boundary. A material contradiction or project-level impact routes to
-   `spec-revise` and the upstream Blueprint; with no Blueprint reference, skip this check.
+Check meaning, not template completion. Read and apply the canonical
+[review method](../reviewers/spec-quality-reviewer.md#review), including its conditional checks, in both
+main-session and independent review. Keep assessment criteria there rather than maintaining another checklist here.
 
 Mechanical checks establish readable inputs, usable references and detect literal unresolved placeholders
 where an actual decision is needed. They cannot establish clarity or readiness from heading counts, file
@@ -97,8 +68,6 @@ this check ran. Neither a review verdict nor a template status creates user appr
 ## Invariants
 
 - This checks the implementation basis, not whether the code is delivered.
-- No format quota, fixed section list, extra document or planned-test count establishes readiness.
-- Verification depth is stage- and risk-matched; more layers or cases do not establish readiness by volume.
 - Unchanged settled decisions and evidence remain valid; new material discoveries use
   [Implementation Scope Stop](feature-init.md#implementation-scope-stop).
 - Findings cite the affected decision and evidence; source authority is fail-closed.

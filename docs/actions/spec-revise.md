@@ -40,7 +40,7 @@ their dependency closure. A test failure alone is not a requirement change.
 - Updated affected implementation/checklist items if task order, scope, or validation changed; the checklist may be inline.
 - The accepted scope, constraints, affected responsibilities, any conditional delivery boundary, and the actual discovered impact delta.
 - New ADR only when the revision changes architecture/module boundaries, establishes a durable cross-feature technical decision, or supersedes an existing ADR.
-- For a reopened delivery: status returned to `已确认`, the prior receipt preserved under a uniquely named `## Previous Proof Bundle (superseded <date-or-sequence>)`, and a fresh empty canonical `## Proof Bundle` ready for the next `feature-done`.
+- For a reopened delivery: status returned to `已确认`, the prior receipt preserved under [feature-done’s receipt-history rule](feature-done.md#completion-preflight), and a fresh empty canonical `## Proof Bundle` ready for the next `feature-done`.
 
 ## Workflow
 
@@ -69,15 +69,15 @@ their dependency closure. A test failure alone is not a requirement change.
    statement when available, normalized replacement rule, older rule being replaced, and affected
    record/optional attachment/ADR locations. Preserve exclusion and exclusivity semantics such as "remove", "no longer",
    "only", and "single source"; do not narrow them into an optional or conditional fallback without explicit
-   authority. Then draft only the affected record content without changing the worktree. Add the dated revision record;
+   authority. Then draft only the affected record content without changing the worktree. Update in place under
+   [document maintenance](feature-init.md#document-updates-and-context), with a concise dated revision summary;
    synchronize affected decisions, delivery boundary, risks, current-truth follow-up, work and
    validation where they already live; leave unrelated sections and evidence untouched. Update the existing decision source trace for each material correction and explicitly identify
    the older decision it supersedes; never rely on chat memory as the only durable source. Any completed task or proof obligation whose contract, inputs, or affected scope changed
    becomes incomplete again; retain prior evidence only as explicitly superseded history, never as current
    proof. Draft the conditional ADR from the packaged template when required. For a delivered-but-unarchived
-   feature, also return `已实现` to `已确认`, move the exact previous receipt under a uniquely named
-   dated-or-numbered superseded heading, and recreate one empty canonical `## Proof Bundle`; never edit the
-   old receipt into a new verdict.
+   feature, also return `已实现` to `已确认`, preserve the prior receipt under feature-done’s receipt-history
+   rule, and recreate one empty canonical `## Proof Bundle`; never turn old evidence into a new verdict.
 8. Update sibling alignment only when a changed tier/module introduces a durable parent difference or selects
    Codify. At that boundary, read and apply the canonical
    [Guidance Placement Contract](agents-md-revise.md#guidance-placement-contract) and name the exact owner and

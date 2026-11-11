@@ -185,6 +185,9 @@ function validateFixtures() {
     "conversation-default-slice-feedback",
     "conversation-status-preserves-checkpoint",
     "conversation-early-feedback-plan",
+    "conversation-record-revisions",
+    "conversation-record-preflight",
+    "conversation-receipt-history",
  ]) {
     if (!expected[scenario]) problems.push(`missing required scope/impact/conversation scenario ${scenario}`);
  }

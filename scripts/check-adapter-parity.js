@@ -2,6 +2,7 @@
 
 const fs = require("fs");
 const path = require("path");
+const { referencedDestinations } = require("./lib/markdown-destinations.cjs");
 
 const repoRoot = path.resolve(__dirname, "..");
 const claudeAdapterRoot = path.join(repoRoot, "adapters", "claude");
@@ -95,6 +96,33 @@ function lineCount(content) {
   return content.split(/\r?\n/).length - (content.endsWith("\n") ? 1 : 0);
 }
 
+// A consumed section must be reachable from the runtime entry, not discovered through another action.
+// Full-file handoffs/background links are intentionally excluded; this is a navigation check, not a model eval.
+function checkDirectSections(entry, owners, label) {
+  const entryTargets = new Set([
+    ...referencedDestinations(entry),
+    ...Array.from(entry.matchAll(/`([^`\r\n]+)`/g), (match) => match[1]),
+  ].map((target) => target.replace(/^<|>$/g, "")
+    .replace(/^(?:\.\.\/)+|^\$\{CLAUDE_PLUGIN_ROOT\}\//g, "")));
+  for (const owner of owners) {
+    const absolute = path.join(repoRoot, owner);
+    if (!fs.existsSync(absolute)) continue;
+    for (const target of referencedDestinations(fs.readFileSync(absolute, "utf8"))) {
+      if (!/\.md#[^\s]+$/.test(target) || /^[a-z]+:/i.test(target)) continue;
+      const [file, fragment] = target.split("#");
+      const relative = path.relative(repoRoot, path.resolve(path.dirname(absolute), file));
+      if (relative === owner) continue;
+      const direct = `${relative}#${fragment}`;
+      // A full role read already includes all of that role's sections.
+      const fullRole = relative.startsWith("docs/reviewers/") && relative !== "docs/reviewers/README.md"
+        && entryTargets.has(relative);
+      if (!entryTargets.has(direct) && !fullRole) {
+        problems.push(`${label}: missing direct section reference ${direct}`);
+      }
+    }
+  }
+}
+
 const problems = [];
 const claudeNames = skillNames(claudeSkillsRoot);
 const codexNames = skillNames(codexSkillsRoot);
@@ -158,6 +186,12 @@ for (const name of expected) {
     }
     if (!/Match the user's language/i.test(content)) {
       problems.push(`${adapter} ${name}: user-language contract missing`);
+    }
+    const owners = [`docs/actions/${name}.md`,
+      ...(requiredReviewerRefs[name] || []).map((role) => `docs/reviewers/${role}.md`)];
+    checkDirectSections(content, owners, `${adapter} ${name}`);
+    if (!content.includes("docs/actions/README.md#shared-runtime-conventions")) {
+      problems.push(`${adapter} ${name}: direct runtime/reference-reading contract missing`);
     }
     const lines = lineCount(content);
     if (lines >= 200) {
@@ -232,6 +266,7 @@ for (const name of expectedReviewerAdapters) {
     continue;
   }
   const content = fs.readFileSync(adapterPath, "utf8");
+  checkDirectSections(content, [`docs/reviewers/${name}.md`], `Claude reviewer ${name}`);
   if (/^model:/m.test(content)) {
     problems.push(`Claude reviewer ${name}: fixed model selection must remain host-controlled`);
   }

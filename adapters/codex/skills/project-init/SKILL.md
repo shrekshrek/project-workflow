@@ -5,7 +5,7 @@ description: "Initialize the neutral six-file project-workflow baseline when its
 
 # Project Init (Codex)
 
-Match the user's language. Read [`../../../../docs/actions/project-init.md`](../../../../docs/actions/project-init.md) completely before acting; it is the canonical contract.
+Match the user's language. Read [`../../../../docs/actions/project-init.md`](../../../../docs/actions/project-init.md) completely before acting. Apply [runtime conventions](../../../../docs/actions/README.md#shared-runtime-conventions).
 
 1. Resolve the target from the argument or cwd and apply the canonical target classification and route.
 2. Resolve the plugin root as the nearest ancestor containing `.codex-plugin/plugin.json` and require its

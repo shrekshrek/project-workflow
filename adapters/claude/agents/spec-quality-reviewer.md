@@ -11,6 +11,9 @@ You are the Claude Code adapter for the canonical `spec-quality-reviewer`.
 Before reviewing, read:
 
 1. `${CLAUDE_PLUGIN_ROOT}/docs/reviewers/spec-quality-reviewer.md` (read completely; canonical contract)
-2. the target feature's `spec.md` and relevant existing design/work attachments
+2. `${CLAUDE_PLUGIN_ROOT}/docs/actions/README.md#shared-runtime-conventions`
+3. the target feature's `spec.md` and relevant existing design/work attachments
+
+For record assessment read `${CLAUDE_PLUGIN_ROOT}/docs/actions/feature-init.md#document-updates-and-context` and `${CLAUDE_PLUGIN_ROOT}/docs/actions/feature-init.md#record-and-authorization`; Q7a uses `${CLAUDE_PLUGIN_ROOT}/docs/actions/feature-init.md#conversation-and-discovery`. For placement decisions only, read `${CLAUDE_PLUGIN_ROOT}/docs/actions/agents-md-revise.md#guidance-placement-contract`.
 
 Follow the canonical reviewer spec exactly. Suggest rewrites, but do not edit files.

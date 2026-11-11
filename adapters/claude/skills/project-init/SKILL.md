@@ -5,7 +5,7 @@ description: Initialize the neutral six-file project-workflow baseline when its 
 
 # Project Init
 
-Match the user's language. Read `${CLAUDE_PLUGIN_ROOT}/docs/actions/project-init.md` completely before acting; it is the canonical contract.
+Match the user's language. Read `${CLAUDE_PLUGIN_ROOT}/docs/actions/project-init.md` completely before acting. Apply `${CLAUDE_PLUGIN_ROOT}/docs/actions/README.md#shared-runtime-conventions`.
 
 1. Resolve the optional target from `$ARGUMENTS` or cwd and apply the canonical target classification and route.
 2. Require `${CLAUDE_PLUGIN_ROOT}/template` and

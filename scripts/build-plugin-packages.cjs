@@ -117,7 +117,8 @@ function transformDocumentation(content, host) {
 
 function transformAdapter(content, host) {
   if (host !== "codex") return content;
-  return content.replaceAll("../../../../docs/", "../../docs/");
+  return content.replaceAll("../../../../docs/", "../../docs/")
+    .replaceAll("../../../../template/", "../../template/");
 }
 
 function skillNames(root) {

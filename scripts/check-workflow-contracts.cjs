@@ -62,6 +62,7 @@ requirePatterns("docs/actions/feature-init.md", [
   ["long-run execution envelope", /materially long, paid, external, opaque[\s\S]*execution envelope[\s\S]*partial-result persistence[\s\S]*canary or sample alternative/i],
   ["accepted envelope preserves useful handoffs", /accepted envelope covers ordinary work[\s\S]*does not suppress informative handoffs/i],
   ["batched context-preserving updates", /Answer the current question first[\s\S]*Batch writeback[\s\S]*exclusions, unresolved questions, permission limits/i],
+  ["in-place record maintenance", /without[\s\S]*reconstructing revision history[\s\S]*Update affected sections in place[\s\S]*failures and evidence applicability/i],
   ["no bookkeeping context reset", /Do not[\s\S]*clear the session merely because a document changed/i],
   ["ordinary discoveries proceed", /Discovery continues during implementation[\s\S]*can proceed without approval/i],
   ["affected work stops for material discovery", /Stop the affected implementation[\s\S]*authorization, data disposition, operating cost[\s\S]*ask the smallest useful question/i],
@@ -89,14 +90,10 @@ requirePatterns("docs/actions/feature-archive.md", [
   ["responsibility-led current-truth evolution", /finish an otherwise unambiguous archive[\s\S]*nonblocking restructuring proposal[\s\S]*uncertain fact ownership remains a user question[\s\S]*organize area documents by coherent product\/system responsibility, not length[\s\S]*split independently changing responsibilities[\s\S]*each detailed fact has one owner/i],
 ]);
 requirePatterns("docs/actions/spec-quality-check.md", [
-  ["optional Blueprint reconciliation", /When the spec cites a Blueprint handoff[\s\S]*slice, decision and contract references resolve[\s\S]*with no Blueprint reference, skip this check/i],
+  ["canonical review method", /review method\]\(\.\.\/reviewers\/spec-quality-reviewer\.md#review\)/i],
   ["semantic rather than form gate", /Check meaning, not template completion/i],
   ["requirements reconciliation", /^## Requirements Reconciliation$/m],
   ["reconciliation statuses", /`ALIGNED`[\s\S]*`MISMATCH`[\s\S]*`SOURCE GAP`/],
-  ["conditional sibling alignment", /Merely touching several modules does not require[\s\S]*an alignment table/i],
-  ["minimum sufficient planned proof", /smallest non-redundant proof obligations[\s\S]*executable verification path[\s\S]*not completed delivery evidence/i],
-  ["stage-matched quality gate", /Before implementation[\s\S]*decision evidence[\s\S]*Distinguish implementation feedback from delivery proof/i],
-  ["shared escalation reference", /verification escalation\]\(README\.md#shared-runtime-conventions\)/i],
   ["correction handoff", /`N\/A\(route: spec-revise\)` before mechanical checks or[\s\S]*reviewer dispatch/i],
   ["direct correction evidence", /exact user statement[\s\S]*normalized replacement[\s\S]*supersedes/i],
   ["reuse decision closure", /Preserve the decision-closure result/i],
@@ -121,6 +118,9 @@ requirePatterns("docs/cross-tool-methodology.md", [
 ]);
 
 requirePatterns("docs/reviewers/spec-quality-reviewer.md", [
+  ["optional Blueprint reconciliation", /When the spec cites a Blueprint handoff[\s\S]*slice, decision and contract references resolve[\s\S]*with no Blueprint reference, skip this check/i],
+  ["minimum sufficient planned proof", /smallest non-redundant proof obligations[\s\S]*executable verification path[\s\S]*not completed delivery evidence/i],
+  ["shared escalation reference", /verification escalation\]\(\.\.\/actions\/README\.md#shared-runtime-conventions\)/i],
   ["correction source gap", /caller-authored "user confirmed"[\s\S]*`SOURCE GAP`/i],
   ["exclusion semantic remnant", /"remove"[\s\S]*optional, conditional, fallback, or compatibility path[\s\S]*`superseded-remnant`/i],
   ["endpoint-owned task rejection", /READY[\s\S]*endpoint\/lifecycle[\s\S]*circular[\s\S]*fails Q7a/i],
@@ -138,6 +138,8 @@ requirePatterns("docs/actions/feature-done.md", [
   ["review input separation", /authoritative convention population from the filesystem[\s\S]*`AGENTS\.md`[\s\S]*Caller-supplied[\s\S]*hints only[\s\S]*Route convention sources to L2 and the change-spec package to L3/i],
   ["archive boundary owner", /closure authorization\]\(feature-archive\.md#closure-authorization\)[\s\S]*feature-archive[\s\S]*without asking again/i],
   ["compact failed history", /explicit rerun of an active `已实现` feature preserves[\s\S]*prior[\s\S]*READY receipt[\s\S]*Ordinary non-READY reruns replace[\s\S]*full Previous Proof Bundles are reserved/i],
+  ["record consolidation preflight", /document maintenance[\s\S]*reconstructing competing revisions[\s\S]*`NEEDS WORK`[\s\S]*length alone is not a blocker/i],
+  ["retrievable receipt history", /immutable commit\/path[\s\S]*reference contains the receipt[\s\S]*otherwise retain the original/i],
   ["deferred current truth", /Domain doc check: defer it until L1[\s\S]*form a READY candidate[\s\S]*`not-run\(non-READY prerequisite\)`/i],
   ["review drift", /review-input drift/i],
   ["compact reviews", /`Reviews`:[\s\S]*`completed`[\s\S]*`invalidated`/],

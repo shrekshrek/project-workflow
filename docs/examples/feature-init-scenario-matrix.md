@@ -5,7 +5,10 @@ Behavior-equivalence harness for the generative `feature-init` action. Determini
 The scenarios cover natural discussion, accepted record reuse, single-record creation, explicitly useful
 attachments, no-record fixes, authorized trials, source conflicts, current need, coupled migrations and
 independently deliverable outcomes. They also cover context continuity, total-cost refactoring, authorized continuation, derived business semantics
-and implementation discoveries.
+and implementation discoveries. Record-maintenance cases cover sequential revisions, delivery preflight
+(long valid / short conflicting / lossy condensation), and reopened versus failed receipt history.
+Grade the resulting current contract and retained authority/evidence, not line counts; these cases require
+runtime transcripts and are not proved by the deterministic fixture check.
 The deterministic check separately covers explicit target roots, active/archive numbering, no-clobber,
 failed-copy rollback and symlink safety. It does not prove model behavior or semantic readiness.
 

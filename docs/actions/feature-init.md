@@ -120,8 +120,12 @@ Use the shared [NNN numbering](README.md#shared-runtime-conventions) rule. Confi
 above the computed next number; an occupied/older number cannot be reused via a different slug.
 
 The record explains what changes, why this approach, concrete acceptance examples and expected outcomes,
-and later the actual verification. Headings are writing prompts, not mandatory forms. Preserve references
-and the actual delta when current truth already explains the unchanged behavior. Keep accepted constraints and
+and later the actual verification. For new or explicitly reorganized records, keep the template's four
+level-two headings in order, omitting sections with no useful content; use level-three headings for domain
+subtopics. Change this structure only for an explicit user/project convention or a concrete content/navigation
+need, not stylistic preference. Do not reformat existing readable records merely for consistency or reject
+an actionable record solely for different headings. Preserve references and the actual delta when current
+truth already explains the unchanged behavior. Keep accepted constraints and
 explicit exclusions. Keep requirements, necessary design and verification conclusions in spec. Split supporting
 content only when it materially helps reading or handoff; an explicit request for a separate handoff document qualifies. Name each purpose and link it without duplicating
 accepted rules. Test code belongs in existing project test locations.
@@ -169,10 +173,13 @@ restart planning, reload every guideline/archive, or clear the session merely be
 Reopen a decision only when a material contradiction or new finding requires it. Keep one content owner;
 source traces are needed for non-obvious external interpretations, conflicts or supersessions, not duplicate
 rows for every ordinary requirement. Use dates and stable source references where useful. Keep routine
-creation mechanics and inapplicable-review explanations in the response or execution log; persist only evidence needed for later decisions, handoff or
-required delivery receipts.
-Replace superseded execution instructions in place; keep the current approach and remaining outcomes clear,
-with concise dated reasons and evidence references as history.
+creation mechanics and inapplicable-review explanations in the response or execution log.
+The current contract, authorization, acceptance, status and next action must be understandable without
+reconstructing revision history. Update affected sections in place; condense superseded plans and progress
+into dated reasons and evidence references, not another competing contract. Preserve material decisions,
+exclusions, authorization limits, failures and evidence applicability; historical protection does not freeze
+obsolete prose inside an active record. Keep one owner per fact and do not split files or impose a length
+limit merely to hide accumulation. Receipt preservation follows [feature-done](feature-done.md#completion-preflight).
 
 ## Implementation Scope Stop
 

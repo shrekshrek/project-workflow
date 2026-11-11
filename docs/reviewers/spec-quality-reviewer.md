@@ -6,17 +6,8 @@ the accepted/proposed record and any relevant existing attachments.
 ## Scope
 
 Assess whether a feature record still matches its accepted requirement sources and is good enough
-to implement. In one fresh invocation, perform Requirements Reconciliation first and then the subjective
-checks from the seven-question gate:
-
-- Q3: proof obligations are mechanically checkable, risk-mapped, and non-redundant
-- Q4: outcomes are concrete scenarios or observable behavior
-- Q5: constraints are real constraints, not wishes
-- Q6: Sibling Alignment and any `Codify` choice place durable conventions at the narrowest correct owner
-- Q7a: tasks use independently useful implementation/review boundaries rather than tier/file/test/time quotas
-- Q7b: the aggregate artifact is one coherent delivery outcome
-- Q7c: new persistent/API/runtime/governance capability is currently necessary rather than speculative
-- Q7d: the accepted impact boundary and scope-growth triggers are complete
+to implement. Apply Requirements Reconciliation followed by Review below, whether called in the main
+session or as an independent reviewer. The calling action owns dispatch, verdict and continuation.
 
 Do not review code-level implementation feasibility, AGENTS.md compliance, or mechanical presence checks that the calling action can run directly. Do review delivery-shape feasibility: whether the proposed outcomes can ship independently.
 
@@ -56,8 +47,9 @@ condensed records preserve exclusions, unresolved questions and the authorizatio
   applicable external source, nor surfaced as a proposed decision requiring acceptance. Retention, retry, overwrite and failure semantics also need this trace when they change observable results. Ordinary implementation
   detail may be derived in the record when it adds no behavior or scope; accepted spec content needs no duplicate
   Prior decisions row.
-- Temporal/cross-artifact consistency: identify stale semantics left in prose, verification, tasks, fallback,
-  or migration handling after a later explicitly accepted decision supersedes them.
+- Temporal/cross-artifact consistency: apply [document maintenance](../actions/feature-init.md#document-updates-and-context).
+  Flag competing current rules or stale semantics in prose, verification, tasks, fallback or migration handling;
+  a “history” label is insufficient when current obligations still require reconstructing those revisions.
 - Exclusion and ownership semantics: when an authoritative source says "remove", "no longer", "only",
   "single source", or equivalent, flag any retained optional, conditional, fallback, or compatibility path as
   `superseded-remnant` unless that source explicitly preserves it.
@@ -79,7 +71,20 @@ Q3-Q7 in the same invocation so the caller receives one consolidated repair set.
 
 ## Review
 
-Fresh-read the relevant record and assess every applicable item. Assess relevant content regardless of its layout:
+Fresh-read the relevant record and assess every applicable item, regardless of layout. Preserve accepted
+constraints, exclusions and open questions; do not require a `Delta` heading, optional files, exhaustive tasks
+or an alignment table merely because several modules are touched. Check material choices and handoffs against
+[execution preview](../actions/feature-init.md#record-and-authorization).
+
+Before implementation, require the smallest non-redundant proof obligations and an executable verification path:
+a credible plan plus decision evidence, not completed delivery evidence. Distinguish implementation feedback
+from delivery proof. Failed or unavailable trials do not resolve critical unknowns; safely deferred details
+and operational choices only knowable at execution time remain nonblocking. Known material cost and permission
+constraints must be explicit.
+
+When the spec cites a Blueprint handoff, verify its slice, decision and contract references resolve and the
+change stays within the accepted upstream boundary. A material contradiction or project-level impact routes
+to `spec-revise` and the upstream Blueprint; with no Blueprint reference, skip this check.
 
 - Q3 verification: a compact, traceable behavior/risk → executable verification path = pass; uncheckable assertions = fail; planned proof and already-run evidence remain distinct, and documented repeatable manual observation can be evidence. Remove obligations invented from generic edge/error habits or unspecified inputs unless a contract, project convention, or concrete risk requires them. Apply the shared [verification escalation](../actions/README.md#shared-runtime-conventions) rule. One command may prove several obligations; unjustified or duplicate layers fail Q3 and should be deleted or consolidated. Optional implementation ideas remain nonblocking suggestions. For user-visible work, order the shortest meaningful actor-to-result journey first when one is declared.
 - Q4 outcomes: actor/system + action + success condition = pass; vague aspiration = fail; missing success condition = borderline.
@@ -93,7 +98,7 @@ Fresh-read the relevant record and assess every applicable item. Assess relevant
   [Guidance Placement Contract](../actions/agents-md-revise.md#guidance-placement-contract); otherwise do not
   load it. A violation, missing promised target/alias task, or uncertain owner is fail or borderline according
   to whether it can change implementation.
-- Q7a next work: when a checklist is useful, independently actionable or reviewable output/check that can finish before `feature-done` = pass;
+- Q7a next work: the next step and its check must be actionable even without a checklist. When a checklist is useful, independently actionable or reviewable output/check that can finish before `feature-done` = pass;
   a broad bucket that hides separate decisions or a material dependency checkpoint = fail; work without
   verification = borderline. READY, Proof Bundle/status writes, and archive eligibility are endpoint/lifecycle
   outputs rather than task checkboxes; a checklist item that depends on them is circular and fails Q7a. Each

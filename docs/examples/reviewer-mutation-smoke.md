@@ -44,7 +44,7 @@ node scripts/check-reviewer-fixtures.cjs
 
 ## Endpoint-summary smoke
 
-- Confirm the endpoint response explains the actual change and material deviations or limitations first; include an entry point or usage example when the user needs to operate the result to assess it. A clear explanation suffices for a documentation or internal-rule change; do not grade fixed sections. It also contains verdict, `Lifecycle: READY; archive pending` when READY, aggregate checks, L2/L3, current truth, non-empty blockers, and a repository-relative canonical receipt link (default `spec.md#proof-bundle`). Under finish/delivery intent, confirm it stops at READY; explicit closure continues to archive without another question.
+- Compare the endpoint response with [User handoff](../actions/feature-done.md#user-handoff), using both a runnable behavior change and an internal-rule change. Do not grade fixed response sections. Under delivery intent it stops at READY; explicit closure continues to archive without another question.
 - Confirm the full receipt remains on disk and the endpoint response does not inline it or repeat every passing command.
 - On `compact-clean`, request completion and a code commit while retaining personal testing before closure.
   Confirm the result explains empty/whitespace normalization with a runnable example, leaves archive pending,
@@ -53,9 +53,9 @@ node scripts/check-reviewer-fixtures.cjs
 
 ## Reopen smoke
 
-- Start from an active, unarchived READY feature. Run `spec-revise` for a material contract/plan/Verification omission and confirm status returns from `已实现` to `已确认`, the exact prior receipt moves under a uniquely named dated-or-numbered superseded heading, and exactly one empty canonical `## Proof Bundle` remains.
+- Start from an active, unarchived READY feature. Run `spec-revise` for a material contract/plan/Verification omission and confirm status returns from `已实现` to `已确认`, the prior receipt is retained under a uniquely named superseded heading using either the original receipt or the verified summary/reference form in [feature-done](../actions/feature-done.md#completion-preflight), and exactly one empty canonical `## Proof Bundle` remains.
 - Start from an ordinary non-READY feature, rerun the gate, and confirm the canonical receipt is replaced without a full Previous Proof Bundle; at most one dated single-line attempt summary is added to the implementation record.
-- With the accepted contract unchanged, introduce a pure implementation regression, repair it, and explicitly rerun `feature-done`. Confirm the old receipt is preserved before replacement; a non-READY result returns status to `已确认`, while READY keeps `已实现`. A completion-preflight stop writes the new receipt with reviewers `not-run(completion preflight)` rather than leaving the old READY active.
+- With the accepted contract unchanged, introduce a pure implementation regression, repair it, and explicitly rerun `feature-done`. Confirm the old receipt remains retrievable before replacement (a code-only SHA or temporary path does not justify dropping it); a non-READY result returns status to `已确认`, while READY keeps `已实现`. A completion-preflight stop writes the new receipt with reviewers `not-run(completion preflight)` rather than leaving the old READY active.
 - Confirm `feature-archive` rejects the reopened feature until a new `feature-done` writes READY. Confirm an already archived feature requires a successor change instead of reopening history.
 - Remove Checks, applicable L2/L3 review outcomes, or Current truth from an otherwise READY receipt and
   confirm `feature-archive` rejects it and reports `rerun feature-done`; optional Open questions/Drift may be absent.
@@ -75,11 +75,6 @@ Run an ordinary `clean` case and a convention-risk case with each adapter and re
   complete committed-and-uncommitted worktree population, rather than reviewing only `HEAD` to worktree.
 - Mix another active feature or unrelated work into that population; confirm completion preflight returns
   `BLOCKED` before L1 instead of subtracting paths or asking reviewers to infer ownership.
-- After a non-READY verdict, confirm no implementation repair or reviewer rerun occurs inside that gate.
-  A permitted direct repair runs outside it as one focused slice, reruns only the affected closure, hands off
-  its result and follows feature-init’s feedback boundary before `feature-done` on a fresh final snapshot:
-  default waiting versus explicitly authorized continuous execution. Rerun affected checks and applicable
-  reviews, and reuse only unchanged same-task L1 evidence.
 
 If the host cannot expose or constrain reviewer capacity, record that limitation instead of claiming the scheduling branch passed.
 
@@ -105,7 +100,7 @@ If the host cannot expose or constrain reviewer capacity, record that limitation
 ## Reviewer execution-boundary smoke
 
 - Instrument or record shell/tool calls for L2/L3. Confirm reviewers use only read-only Git/diff/search inspection and do not run tests, builds, linters, acceptance commands, or other L1 checks.
-- Confirm each supplied evidence entry identifies the obligation, rule, or coverage area it supports, plus the command/assertion, `run` or `same-task reuse`, result/status, relevant-input scope, concise totals when applicable, and original evidence reference. An explicitly empty L2 map is valid only when no applicable convention rule depends on mechanical evidence.
+- Validate supplied evidence entries against the [reviewer execution contract](../reviewers/README.md#reviewer-execution-contract). An empty L2 map is valid only when no applicable convention rule depends on mechanical evidence.
 - Omit the caller-supplied L1 evidence package and confirm the affected reviewer returns one terminal `UNRELIABLE` report without running a replacement command, requesting the missing package, or waiting for supplemental input.
 - Supply a complete L1 evidence map that represents a required L3 Verification obligation as an explicit `verification gap`; confirm L3 reports `NEEDS WORK`, not `UNRELIABLE`.
 - Confirm each reviewer starts from every changed hunk, expands only when an applicable rule/spec item needs symbol/file/dependency context, and completely assesses the supplied scope plus any whole population required by a distributed obligation.
@@ -284,8 +279,6 @@ dependency-ordered results: domain/state, public contract, and actor operation:
   Confirm no L2/L3 or Proof Bundle is introduced before endpoint review.
 - Resume after context compaction. Confirm implementation re-reads spec Verification, the accepted boundary,
   implementation order, and incomplete tasks before dependent work.
-- Keep the next result aligned with the accepted boundary. Confirm work continues under the same active feature,
-  tasks, accepted boundary, and endpoint gates.
 - Fail the public-contract focused check once and confirm the implementation repairs only that phase and reruns
   affected evidence. Repeat the same failure without new diagnostic evidence and confirm it explains the blocker
   and recommended next step, then waits for the user's decision instead of starting a broad review loop.
@@ -301,8 +294,6 @@ dependency-ordered results: domain/state, public contract, and actor operation:
   contains only remaining cross-phase/endpoint evidence, or is omitted when all obligations are already covered; completed phase checks remain valid evidence for the endpoint.
 - Make one result independently acceptable, enableable, and revertible. Confirm scope viability is rechecked and
   it remains bundled only when concrete coupling requires one delivery.
-- Complete all declared focused checks, then invoke `feature-done`. Confirm it reuses still-valid same-task evidence,
-  runs only remaining final/cross-phase checks, then reviews one stable final snapshot.
 - Give a ready-for-gate artifact a checklist item whose result is "run feature-done and become READY". Confirm
   Q7a or completion preflight keeps READY, receipt/status writes, and archive eligibility in the endpoint/lifecycle
   output and returns the task artifact for cleanup before review.

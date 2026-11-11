@@ -86,7 +86,7 @@ scripts/
 - **Workflow contracts**:修改 conversation / record rules / retrofit / verdict / feature templates 后运行 `node scripts/check-workflow-contracts.cjs`
 - **Docs links**:修改或移动 Markdown 后运行 `node scripts/check-markdown-links.cjs`
 - **不在方法论正文塞栈细节**:workflow.md §0-§7/§9-§10、`docs/actions/`、`docs/reviewers/`、`template/` 保持栈中立;`template/docs/gotchas.md` 是生成项目用的空 ledger,必须栈中立。两处显式豁免:`docs/gotchas.md` 是 plugin 自身的 example-of-one 证据库(允许栈偏向,只收真实复现过的坑);workflow.md §8 是栈适配示范附录(换栈只重写该节)
-- **plugin skill 简洁**:每个 SKILL.md < 200 行,职责单一;超长的静态查表** relocation** 到同目录 `reference.md`—— 不是删内容;SKILL.md 标出强制 Read 点,执行时必须先读对应节再填表
+- **plugin skill 简洁**:每个 SKILL.md < 200 行,职责单一;先删除过期内容、合并重复规则,再按实际使用条件引用已有 owner。只有独立维护或按需读取确有收益时才拆分,不得仅靠搬文件满足行数;必要运行时参考从 skill/agent 入口直接定位并注明条件和章节范围;跨 action 链接不触发递归全文读取,流程跳转和背景资料不作为预读依赖。
 - **skill description 写好**:Claude 据此判断何时自动调用
 - **文档先于工具**:任何新 skill / 命令想法,先问 "这是 workflow SOP 的哪一步自动化?SOP 写过没?"。SOP 不清晰时做工具是把混乱固化(对应 workflow.md §7.2 反模式)
 - **Skill Step 编号约定**:Step 0 仅用于 **scope-changing pre-work**(cwd / 写入根解析、全局 setup,影响所有 Step 1+ 的运行环境)。普通输入解析(slug / identifier 等)从 **Step 1** 起。`project-init` / `project-personalize`(cwd 切换)与 `feature-init`(TARGET_ROOT 解析)用 Step 0;`spec-quality-check` 从 Step 1 起(parse 不改 cwd / 写入根)

@@ -29,7 +29,10 @@ Run this cheap completion check before expanded L1 commands or reviewer dispatch
   abandoned, or archived artifacts do not enter this gate. A knowingly incomplete artifact returns
   `NEEDS WORK` without running expanded L1.
 - For a reused accepted artifact, confirm that its accepted outcome/boundary remain current and its
-  Verification/tasks are actionable. Any declared phase-focused checks must be complete; valid same-task results are
+  Verification/tasks are actionable. Apply [document maintenance](feature-init.md#document-updates-and-context):
+  if current obligations, authorization or next actions require reconstructing competing revisions, return
+  `NEEDS WORK` for in-place consolidation before expanded L1. Necessary detail or length alone is not a blocker.
+  Any declared phase-focused checks must be complete; valid same-task results are
   consumed under the normal L1 reuse rules rather than recreated at the endpoint.
 - Establish one Git-derived feature population before interpreting scope. A dirty state uses the complete
   `base`-to-worktree population: tracked changes plus untracked paths reported by Git. `base` is `HEAD` when all
@@ -57,9 +60,12 @@ Run this cheap completion check before expanded L1 commands or reviewer dispatch
 A preflight failure replaces the canonical receipt with reviewers `not-run(completion preflight)` and current truth
 `not-run(non-READY prerequisite)`. An explicit rerun of an active `已实现` feature preserves its exact prior
 non-empty READY receipt under a uniquely named
-`## Previous Proof Bundle (superseded <date-or-sequence>)` heading. Ordinary non-READY reruns replace the canonical
-receipt in place; full Previous Proof Bundles are reserved for the active `已实现` rerun above. When a trail is
-useful, keep a dated one-line attempt summary in the implementation record. A non-READY rerun returns the status to `已确认`; a READY rerun keeps
+`## Previous Proof Bundle (superseded <date-or-sequence>)` heading. A superseded receipt may instead be a short
+entry retaining its verdict, reviewed identity, invalidation reason and exact retrievable immutable commit/path
+reference to the original receipt. Verify that reference contains the receipt, not merely the reviewed code;
+otherwise retain the original in place. Do not require a new file or commit just for compaction.
+Ordinary non-READY reruns replace the canonical receipt in place; full Previous Proof Bundles are reserved
+for reopened delivered evidence without such a reference. Keep only a dated one-line attempt summary when useful. A non-READY rerun returns the status to `已确认`; a READY rerun keeps
 `已实现`. These receipt-history and status writes are endpoint-owned lifecycle outputs, not contract repair.
 
 ## Inputs
@@ -157,11 +163,8 @@ these facts unambiguous:
 - `Verdict`: READY / NEEDS WORK / BLOCKED.
 - `Change`: in Git, record either `git=[base=<commit SHA>; reviewed=<commit SHA>; dirty=no]` for an immutable state,
   or `git=[base=<commit SHA>; reviewed=worktree; dirty=yes]` for the current worktree. Also record endpoint-owned
-  output paths. Capture these coordinates before endpoint writes. `base` is the actual left side: an explicit PR
-  base or target-branch merge base when feature commits exist, and `HEAD` when all reviewed work is uncommitted. A
-  worktree population covers tracked changes since `base` plus untracked paths reported by Git. Ambiguous
-  repository/base/ownership blocks the verdict. Git-derived coordinates, rather than a manual list or hash,
-  identify the population. Outside Git, record the explicit reviewed input paths.
+  output paths. Capture the [preflight population](#completion-preflight) coordinates before endpoint writes;
+  do not substitute a manual list or hash. Outside Git, record the explicit reviewed input paths.
 - `Checks`: commands, execution mode (`run` or `same-task reuse`), exit status, and concise test totals. A reused check must retain or reference its original same-task result and must not be presented as newly executed.
 - `Reviews`: for L2 and L3, record `completed`, `N/A`, `not-run`, or `invalidated`, with the verdict and
   baseline for completed reviews and a concise reason for every other state. Add findings, unverified
@@ -219,10 +222,5 @@ history only when the user requests calibration. Establish reviewer sensitivity 
 
 ## Invariants
 
-- One stable snapshot produces one terminal verdict.
-- The accepted artifact is the delivery baseline; material corrections follow the scope-stop route above.
-- READY, receipt/status writes, and archive eligibility are endpoint/lifecycle outputs, not implementation tasks.
-- Reviewer coverage evidence supports the verdict. Each gate run creates fresh reviewer results; unchanged
-  same-task L1 evidence remains reusable.
 - Historical specs remain archived; delivery evidence goes to the canonical receipt.
 - `已实现` is a delivery marker, not a claim that the spec is still the current product baseline; the spec's final resting place is `docs/specs/changes/archive/` (see [`feature-archive`](feature-archive.md) / [`spec-reconcile`](spec-reconcile.md)).

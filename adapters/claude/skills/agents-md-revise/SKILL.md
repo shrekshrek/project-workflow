@@ -5,16 +5,14 @@ description: Refresh project conventions by comparing AGENTS.md and explicitly s
 
 # Agents.md Revise
 
-Match the user's language. Read `${CLAUDE_PLUGIN_ROOT}/docs/actions/agents-md-revise.md` completely before acting; it owns the portable workflow and contract.
+Match the user's language. Read `${CLAUDE_PLUGIN_ROOT}/docs/actions/agents-md-revise.md` completely before acting. Apply `${CLAUDE_PLUGIN_ROOT}/docs/actions/README.md#shared-runtime-conventions`.
 
 Claude execution details:
 
 - Parse `$ARGUMENTS` as an optional scope. Root/applicable nested `AGENTS.md` are the default; include `.claude/rules/` only when the user explicitly selects them.
 - Use Read/Grep/Glob/Bash for evidence. Missing `AGENTS.md` redirects to `/project-workflow:project-personalize`.
-- Use inline trace for sourced synchronization; dispatch a fresh `decision-completeness-auditor` only at its narrowed canonical boundary, with fallback under the shared execution contract. Blocking or unreliable audit evidence prevents apply.
+- Use inline trace for sourced synchronization; dispatch a fresh `decision-completeness-auditor` (`${CLAUDE_PLUGIN_ROOT}/docs/reviewers/decision-completeness-auditor.md#dispatch-boundary`) only at its narrowed canonical boundary, with fallback under the `${CLAUDE_PLUGIN_ROOT}/docs/reviewers/README.md#reviewer-execution-contract`. Blocking or unreliable audit evidence prevents apply.
 - Ask only for material ambiguity or new policy; do not reconfirm objective stale-value synchronization item by item.
 - Run the canonical Guidance Placement audit and apply only evidence-backed placement changes.
 - Apply only convention edits authorized by the current request or an explicit follow-up decision. Do not edit
   product specs, implementation code, or commit.
-
-Report applied/skipped drift, evidence, applicable audit execution/results, and unresolved questions.
