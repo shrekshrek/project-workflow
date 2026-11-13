@@ -56,6 +56,7 @@ authorization without another approval round.
 - **Responsibility boundaries**: organize area documents by coherent product/system responsibility, not length. After pruning, split independently changing responsibilities while keeping coupled facts together; each detailed fact has one owner. An existing file may remain a concise overview when useful.
 - **Freshness header**: first line under the title is `> 最后核对:YYYY-MM-DD`, updated on every merge. Keep feature/source identifiers in the archive note, proof bundle, or commit message, not in the domain header. A stale date is a visible distrust signal.
 - Content is future-facing behavior facts only: how the area works now, plus links to governing ADRs. No history, no implementation details, no rationale (that lives in ADRs). Do not leave `docs/specs/changes/archive/*` references or long `NNN-<slug>` lists as the current-truth body; extract the surviving facts instead.
+- Merge only durable rules verified against current behavior. Keep diagrams that mix those rules with feature-specific details or delivery evidence in the feature archive. Link to an existing diagram that already explains those rules. Move a feature diagram beside the domain document only if the domain needs it, its entire content is verified as current, and it is no longer needed as delivery evidence. Update affected links after a move.
 
 ## Invariants
 
