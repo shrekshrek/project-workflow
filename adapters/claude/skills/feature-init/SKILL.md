@@ -1,6 +1,6 @@
 ---
 name: feature-init
-description: Understand a proposed change, resolve consequential unknowns, and create or reuse only the feature record needed for acceptance or handoff. Keep ordinary questions and diagnosis in conversation; tiny local fixes need no record.
+description: Plan the behavior and acceptance of one feature, including changes across modules that follow established rules. If multiple features need the same undecided rule, route that decision to Blueprint plan-project. Keep ordinary questions and diagnosis in conversation. Create or reuse a record only when acceptance or handoff needs one.
 ---
 
 # Feature Init
