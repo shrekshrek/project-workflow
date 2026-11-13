@@ -1,0 +1,74 @@
+# feature-archive
+
+Canonical lifecycle action for closing delivered features: merge durable conclusions into current truth, then physically move closed feature directories into `docs/specs/changes/archive/`.
+
+The active tree `docs/specs/changes/` holds **in-flight work only**. History leaves the active tree instead of being merely marked: directory boundaries are respected by retrieval tools (grep/glob), top-of-file status markers are not. This is the core defense against stale changes polluting LLM attention.
+
+## Use When
+
+Use an explicit candidate when closing one delivered feature. With no argument, sweep the active
+tree and confirm the candidate set. Archive may share the delivery commit.
+
+## Closure authorization
+
+Close only when the user explicitly intends to finish the feature lifecycle, including an explicit archive
+invocation. A commit, push or PR submission alone is not closure authorization. Preserve a request to inspect,
+test or provide feedback before closing, even if an earlier request included closure. If intent is unclear,
+leave archive pending; ask only when closure is the requested next action. Reuse unchanged explicit closure
+authorization without another approval round.
+
+## Inputs
+
+- Feature directory/slug, or an empty argument for a sweep.
+- The candidate's canonical [delivery receipt](feature-done.md#delivery-receipt--proof-bundle-on-disk)
+  and lifecycle status (`已实现`, or `已取代`/`已废弃` set by `spec-reconcile`).
+- Related current-truth documents (`docs/specs/<area>.md`), if any.
+- Related earlier specs and ADRs in the same product area.
+- Present implementation evidence and later active/successor changes when current truth is pending or the reviewed delivery is no longer the latest change in that area.
+
+## Outputs
+
+1. **Current truth merge** (only for features whose receipt `Current truth` is `update pending`, or that change behavior already declared in a domain document): update `docs/specs/<area>.md`. `project-init` creates only `docs/specs/index.md`; create a new area document from the plugin domain template only when the delivered feature establishes a durable domain truth. Update `docs/specs/index.md` when area ownership changes.
+2. **Physical archive**: move `docs/specs/changes/<NNN>-<slug>/` to `docs/specs/changes/archive/<NNN>-<slug>/` for every closed feature — regardless of optional attachments. Use an ordinary filesystem rename so tracked and untracked artifacts both work; Git can record the rename when the result is committed. Numbering stays unique across active and archive. After each move, recompute local Markdown destinations from the old file location to the new one so links outside the feature keep the same semantic target while links within the moved directory remain local. Missing local targets block completion and the directory is moved back before stopping.
+3. **Lifecycle status on superseded older specs**: when this delivery replaces an earlier feature's direction, mark that spec `已取代` (superseded, link the successor) or `已废弃` (abandoned) and archive it in the same pass.
+4. **ADR consistency check**: if a merged conclusion contradicts an `Accepted` ADR, stop and resolve — either a new ADR supersedes the old one, or the conclusion is wrong. Current-truth documents link the ADRs governing the area.
+5. A closing note in the feature's canonical receipt record recording what was merged and when it was archived.
+6. Updated `docs/specs/changes/index.md` (optional, if the project keeps one): a flat list mapping `NNN` → title/status/location, so links to archived specs stay resolvable.
+
+## Workflow
+
+1. Apply [closure authorization](#closure-authorization) to the candidate or confirmed sweep.
+2. Reuse the complete READY receipt for the reviewed state. In the same task, an unchanged worktree
+   and intact receipt/status outputs suffice. Across tasks in Git, the reviewed commit must resolve
+   and the recorded outputs must be intact. A later commit containing a dirty-worktree receipt cannot
+   establish that identity. A newer branch head alone does not invalidate an immutable reviewed commit.
+   Outside Git compare the explicit reviewed inputs. If the receipt is incomplete or invalid, the verdict
+   is not READY, or the reviewed state cannot be verified, leave the candidate active and route back
+   to `feature-done`. A valid receipt carries its checks and reviews into archive.
+3. For each candidate, draft the durable present-tense facts, lifecycle status changes, archive note, and optional index update without applying them. A stable READY receipt proves the historical delivery, not today's product behavior: validate every pending current-truth fact against present implementation evidence, current domain documents, and later active/successor changes. Do not merge a stale fact merely because the old receipt remains valid. If pruning still leaves independently changing responsibilities in one document, finish an otherwise unambiguous archive and report a nonblocking restructuring proposal; uncertain fact ownership remains a user question. Do not bundle the restructuring into the archive unless the user authorized it. Stop on unresolved supersession or contradiction with an Accepted ADR until the governing decision is resolved.
+4. Move the directory with an ordinary filesystem rename and run the link relocator. If relocation fails, move the directory back and stop before applying lifecycle or current-truth edits.
+5. Apply the prepared current-truth, final-status, archive-note, governing-ADR, and optional index updates.
+6. Validate current truth, final statuses, archived paths, and links; report all touched documents and follow-ups.
+
+## Current-Truth Document Discipline
+
+- **Replace, don't append**: merging rewrites the sections that changed; superseded statements are deleted, not stacked. The document always reads as a single consistent present tense.
+- **Responsibility boundaries**: organize area documents by coherent product/system responsibility, not length. After pruning, split independently changing responsibilities while keeping coupled facts together; each detailed fact has one owner. An existing file may remain a concise overview when useful.
+- **Freshness header**: first line under the title is `> 最后核对:YYYY-MM-DD`, updated on every merge. Keep feature/source identifiers in the archive note, proof bundle, or commit message, not in the domain header. A stale date is a visible distrust signal.
+- Content is future-facing behavior facts only: how the area works now, plus links to governing ADRs. No history, no implementation details, no rationale (that lives in ADRs). Do not leave `docs/specs/changes/archive/*` references or long `NNN-<slug>` lists as the current-truth body; extract the surviving facts instead.
+- Merge only durable rules verified against current behavior. Keep diagrams that mix those rules with feature-specific details or delivery evidence in the feature archive. Link to an existing diagram that already explains those rules. Move a feature diagram beside the domain document only if the domain needs it, its entire content is verified as current, and it is no longer needed as delivery evidence. Update affected links after a move.
+
+## Invariants
+
+- A READY feature is not current truth until its durable conclusions are merged.
+- Archiving is a directory move, never deletion; archived directories are read-only history.
+- Never archive an in-flight feature (`spec.md` status `草稿`/`已确认`, or its delivery receipt is missing/non-READY).
+- Explicit single-feature invocation needs no duplicate confirmation. Sweep candidates and uncertain lifecycle decisions remain visible to the user.
+- Do not edit implementation code.
+
+## Validation
+
+- Confirm current truth reflects present behavior under the document discipline above.
+- Confirm every archived spec's status line reflects its final state and superseded ones link their successor.
+- Confirm every local Markdown link in each archived directory resolves after relocation; do not report the archive complete with broken ADR, domain-doc, sibling, or reference-style links.
+- Report which documents were touched, which features were archived, and any ADR follow-ups.
