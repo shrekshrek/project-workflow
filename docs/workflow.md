@@ -244,7 +244,7 @@ Core docs 只定义"应该发生什么";adapter docs 定义"在某个工具里�
 | **已有 idea + baseline-compatible 目录** | 跳过 brainstorm,直接 `/project-init` 建中立 baseline;不替用户选栈 |
 | **Retrofit 既有项目** | 跳过 —— 跑 [`project-personalize`](actions/project-personalize.md)(已有 codebase 已经是 brainstorm 产物)|
 
-**project-workflow 不工具化这个阶段**——brainstorm 本质发散,SOP / mandatory skill(Superpowers 风格)反而磕碰。**主会话自由对话最合适**;产物不必落盘。项目接入按现有内容是否需要影响 working agreement 二选一:六个 baseline 目标都不存在,且目录为空或只有无关资料时用 `project-init`;已有项目证据或 partial/custom baseline 时用 `project-personalize`。完全匹配的中立 baseline 加无关资料表示已经初始化但尚无可个性化的项目证据。资料性质确实不清时只问一次,不按“目录非空”机械升级。若代码 scaffold 工具要求目标目录为空,先运行该工具,再对生成后的项目运行 `project-personalize`。若要保存产品讨论,走 GitHub Discussions / Issues(per [§4.4](#44-backlog-与讨论走平台不进-repo-文件) "AI 读 → 文件,人类协作 → 平台")。
+**project-workflow 不工具化这个阶段**——brainstorm 本质发散,SOP / mandatory skill(Superpowers 风格)反而磕碰。**主会话自由对话最合适**;产物不必落盘。项目接入统一用 `project-init`，由插件识别仓库现状；已有项目仍可直接用 `project-personalize`。要求空目录的脚手架生成器应先运行。若要保存产品讨论,走 GitHub Discussions / Issues(per [§4.4](#44-backlog-与讨论走平台不进-repo-文件) "AI 读 → 文件,人类协作 → 平台")。
 
 **外部工具**(可选):Anthropic 内置 / ECC / Superpowers 各有 brainstorming skill,选你顺手的或直接用 AI 主会话 —— project-workflow 不强制。
 
@@ -585,7 +585,7 @@ sub-flow。仅新增文件、调整模块内部结构或普通移动/重命名�
 
 普通实现细节和任务细化由 AI 按已有约定处理。影响范围、方案、成本、数据、权限或验收的新发现，先暂停相关实施、说明影响与建议，用户确认后局部更新并继续。已写代码不构成扩大范围的理由。
 
-围绕完整功能结果和真实依赖、风险安排切片；同一结果所需的代码、测试、文档和普通验证连续完成。长切片汇报有效进展，完整结果以证据交接，默认等待用户判断方向后再进入下一切片；明确授权连续推进时才跨过相应反馈节点，实质决定、权限或成本变化仍及时暂停。小任务不人为拆片。开发中的检查是实现反馈，不冒充最终交付证明。先回应当前问题，在自然节点写回有用结论；精确执行边界只见 [feature-init](actions/feature-init.md#implementation-scope-stop)。
+每个阶段完成后，先在对话里展示实际结果，等用户反馈后再进入下一阶段。用户明确要求几个阶段连续完成时，按授权推进。详见 [feature-init](actions/feature-init.md#implementation-scope-stop)。
 
 ### 3.3 交付阶段:delivery receipt
 

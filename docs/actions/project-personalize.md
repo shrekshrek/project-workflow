@@ -4,18 +4,14 @@ Canonical action for adapting a target whose project evidence must shape the wor
 
 ## Use When
 
-- The target contains project evidence that should shape the working agreement: for example, a generated or copied scaffold, existing codebase, project configuration, or project-specific documentation that establishes commands, source/test paths, conventions, architecture, product truth, or current truth.
-- Any of the six neutral baseline destinations is partial, custom, or otherwise occupied and requires preservation or reconciliation.
-- `AGENTS.md` may be complete, partial, unrelated to project-workflow, or absent.
-- Default names, commands, ports, database names, tier paths, or rule path patterns still reflect the scaffold.
-- An existing codebase needs its project conventions aligned with actual structure.
-
-Use [`project-init`](project-init.md) when all six baseline destinations are absent and the target is empty or contains only incidental material that does not establish project facts. When the exact neutral baseline plus only incidental material exists, report N/A because there is no project evidence to personalize; keep deferred values and recommend a scaffold, direct work, or `feature-init` as applicable. A target with project evidence but no `AGENTS.md` remains a `project-personalize` case. If shallow inspection cannot distinguish incidental material from project evidence, ask one focused routing question instead of guessing.
+The unified setup entry selects this action for an existing project or partial/custom baseline.
+The original direct command remains available. Follow the [setup routing rules](project-init.md)
+when called directly. A matching neutral baseline with only incidental content is already initialized.
 
 ## Inputs
 
 - Target directory.
-- User-selected scope: replace scaffold defaults, add missing tier-level guidance, infer project structure, or all of these.
+- Requested scope. General onboarding covers the minimum evidence-backed working agreement. Preserve existing configuration and custom guidance. If already aligned, report that result without writing. Additional changes follow the user’s selected scope.
 - Actual project names, database/container names, commands, tier paths, and known conventions.
 
 ## Outputs
@@ -37,11 +33,11 @@ Communicate evidence and a proportionate recommendation for decisions that chang
 Sequence dependent questions and group related independent ones. Keep affected changes pending while
 continuing safe evidence work; explain any material reason to revisit an accepted choice. Update the staged
 draft and source trace after answers, then preflight/apply under current authorization. Repository-proven
-facts and safely deferred values proceed directly; architecture or product decisions route to `feature-init`.
+facts and safely deferred values proceed directly.
 
 ## Workflow
 
-1. Resolve the target and inspect its complete population including dotfiles, excluding version-control metadata from content classification. Classify the six baseline destinations and inspect other content only far enough to identify project evidence. All destinations absent plus only incidental material uses `project-init`; all six matching plus only incidental material is N/A; project evidence or any partial/custom/occupied baseline destination continues here. Ask one focused routing question only when the distinction is genuinely ambiguous.
+1. Reuse the target and classification from setup. On direct invocation inspect the target once under the same routing rules. Continue here for existing-project adaptation.
 2. Inspect root/nested `AGENTS.md`, aliases, manifests, shallow structure, commands, source/test paths, project-specific boundaries, existing test/CI configuration, and existing host-private assets. Preserve useful custom guidance.
 3. Start the Evidence-led Decision Conversation with only applicable scopes: create/complete the minimum working agreement, replace demonstrably stale scaffold values, repair real tier guidance, survey structure, or explicitly selected host-private conventions.
 4. For a missing baseline, stage the neutral six-file template with `scripts/materialize-project-baseline.cjs`; do not write the target yet.
@@ -70,7 +66,7 @@ Every applicable explorer, researcher, or auditor boundary follows the canonical
 - When `AGENTS.md` is absent in a target with project evidence, render the minimum baseline from objective repository evidence and user answers, with a preview before writing.
 - Missing-baseline bootstrap keeps reusable templates in the plugin and renders `AGENTS.md` indexes from files that will actually exist.
 - Do not invent product semantics from directory names.
-- Align observed structure and conventions with repository evidence, user decisions, and accepted specs/ADRs. Pass material architecture changes and their evidence to [`feature-init`](feature-init.md) for design and routing.
+- Align observed structure and conventions with repository evidence, user decisions, and accepted specs/ADRs. Report unresolved project planning gaps under the shared conventions. Pass feature-local architecture or product decisions and their evidence to [`feature-init`](feature-init.md) for design and routing.
 - `AGENTS.md` remains concise and follows the canonical Guidance Placement Contract when applicable.
 - Do not leave an existing scaffold's commands and source/test paths deferred when objective repository evidence resolves them. Do not invent style, Git, coverage, deployment, or tier policies that the repository and user do not establish.
 - Do not introduce a missing test layer, matrix, coverage gate, or release suite for completeness. Preserve an existing matrix only with its observed command and purpose; add a new one only after the user explicitly selects it for concrete interacting risks or a release/compliance contract.

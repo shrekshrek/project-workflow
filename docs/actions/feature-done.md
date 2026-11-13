@@ -37,10 +37,15 @@ Run this cheap completion check before expanded L1 commands or reviewer dispatch
 - Establish one Git-derived feature population before interpreting scope. A dirty state uses the complete
   `base`-to-worktree population: tracked changes plus untracked paths reported by Git. `base` is `HEAD` when all
   selected-feature work is uncommitted; otherwise use the explicit PR base or target-branch merge base to include
-  committed and uncommitted work. A clean state uses one exact `base..reviewed` commit range. Treat the resulting
-  population as indivisible and require it all to belong to the selected feature. An ambiguous base/ownership or
-  mixed feature/unrelated population returns `BLOCKED` before expanded L1 and asks for isolation or a commit range.
-- Compare the actual changed responsibility areas and high-impact surfaces with the accepted behavior, constraints and any applicable delivery boundary. An undeclared
+  committed and uncommitted work. A clean state uses one exact `base..reviewed` commit range.
+  If the repository has no first commit, return `BLOCKED` before expanded L1 and explain that a baseline commit excluding the feature changes is needed before retrying.
+  When onboarding and the first feature are both uncommitted, use the setup record and actual diff
+  (individual hunks for shared files) to identify which changes belong to each. If ownership is clear,
+  accept the feature in place without a separate commit. Note the distinction in the existing receipt,
+  apply the project conventions in the working tree, and cover any setup changes the feature depends on.
+  If ownership is unclear, name the ambiguous changes and ask the user before expanded L1. Other mixed
+  features or unrelated work still require isolation or a commit range, as does an ambiguous base.
+- Compare the actual changed responsibility areas and high-impact surfaces with the accepted behavior, constraints and any applicable delivery boundary. For each new exposed option or mode, trace its consumer and supported settings to current accepted scenarios. Flag unsupported variation as `NEEDS WORK`. An undeclared
   [declarable surface](README.md#shared-runtime-conventions) returns `NEEDS WORK` before expanded L1
   and routes through [Implementation Scope Stop](feature-init.md#implementation-scope-stop).
   If ownership of the extra change is ambiguous, return `BLOCKED`.
@@ -162,7 +167,8 @@ these facts unambiguous:
 
 - `Verdict`: READY / NEEDS WORK / BLOCKED.
 - `Change`: in Git, record either `git=[base=<commit SHA>; reviewed=<commit SHA>; dirty=no]` for an immutable state,
-  or `git=[base=<commit SHA>; reviewed=worktree; dirty=yes]` for the current worktree. Also record endpoint-owned
+  or `git=[base=<commit SHA>; reviewed=worktree; dirty=yes]` for the current worktree. For a `BLOCKED` receipt in a repository with no first commit,
+  state in this field that the baseline commit is unavailable in place of the Git coordinates. Also record endpoint-owned
   output paths. Capture the [preflight population](#completion-preflight) coordinates before endpoint writes;
   do not substitute a manual list or hash. Outside Git, record the explicit reviewed input paths.
 - `Checks`: commands, execution mode (`run` or `same-task reuse`), exit status, and concise test totals. A reused check must retain or reference its original same-task result and must not be presented as newly executed.
@@ -196,10 +202,11 @@ Start with the actual change against the accepted approach, including material d
 When the user needs to operate the result to assess it, include the shortest useful entry point or usage
 example with its expected result. Otherwise a clear explanation of the change is sufficient. Do not invent
 access or claim an unperformed user test.
-Then report verdict; aggregate check result; L2/L3 result or non-execution reason;
-current-truth state; `Lifecycle: READY; archive pending` when READY; non-empty blockers and `Next` routes; and the
-repository-relative canonical receipt path (normally `spec.md#proof-bundle`). Combine these facts into concise
-prose as appropriate; no fixed response sections are required. Detailed check logs stay in the linked receipt.
+Report the verdict, evidence summary, material limitations and receipt link. Include blockers and
+their next actions when present. For READY, report archive pending if acceptance ends the request.
+When the request includes immediate closure, pass the receipt to archive and give one final handoff
+with the observed archive outcome and receipt location. If closure stops, report the READY delivery
+and the specific pending archive work.
 
 ## Verdict
 

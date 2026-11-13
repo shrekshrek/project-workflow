@@ -11,8 +11,7 @@ Claude execution details:
 
 - For convention placement read `${CLAUDE_PLUGIN_ROOT}/docs/actions/agents-md-revise.md#guidance-placement-contract`; only for a selected tier layout read `${CLAUDE_PLUGIN_ROOT}/template/_multi_tier_examples/README.md`.
 
-- Parse `$ARGUMENTS` as an optional target, include dotfiles in inspection, exclude version-control metadata
-  from content classification, and apply the canonical target classification and route.
+- Reuse the target and route on handoff. On direct invocation resolve `$ARGUMENTS` or cwd using `${CLAUDE_PLUGIN_ROOT}/docs/actions/project-init.md` for setup routing.
 - Inspect with Read/Grep/Glob/Bash. Use `codebase-explorer` (`${CLAUDE_PLUGIN_ROOT}/docs/reviewers/codebase-explorer.md`), `tech-researcher` (`${CLAUDE_PLUGIN_ROOT}/docs/reviewers/tech-researcher.md`), and
   `decision-completeness-auditor` (`${CLAUDE_PLUGIN_ROOT}/docs/reviewers/decision-completeness-auditor.md#dispatch-boundary`) only at their canonical boundaries.
 - For a partial/missing baseline, use `${CLAUDE_PLUGIN_ROOT}/scripts/materialize-project-baseline.cjs --stage` in a disposable directory.

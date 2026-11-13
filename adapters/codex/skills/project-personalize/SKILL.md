@@ -9,8 +9,7 @@ Match the user's language and preserve file language. Read [`../../../../docs/ac
 
 - For convention placement read [guidance placement](../../../../docs/actions/agents-md-revise.md#guidance-placement-contract); only for a selected tier layout read [tier examples](../../../../template/_multi_tier_examples/README.md).
 
-- Include dotfiles in target inspection, exclude version-control metadata from content classification, and apply
-  the canonical target classification and route.
+- Reuse the setup target and route when invoked from $project-init. On direct invocation resolve the target from the argument or cwd and follow [setup routing](../../../../docs/actions/project-init.md).
 - Resolve the plugin root as the nearest ancestor of this skill containing `.codex-plugin/plugin.json`. Stage missing baseline files with its `scripts/materialize-project-baseline.cjs`.
 - Under the [review execution](../../../../docs/reviewers/README.md#reviewer-execution-contract), dispatch fresh general subagents only at the canonical
   [`codebase-explorer`](../../../../docs/reviewers/codebase-explorer.md),

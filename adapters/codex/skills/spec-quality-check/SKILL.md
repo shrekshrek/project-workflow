@@ -7,6 +7,7 @@ description: "Run the Codex-native pre-implementation requirements-reconciliatio
 
 Match the user's language. Read [`../../../../docs/actions/spec-quality-check.md`](../../../../docs/actions/spec-quality-check.md) completely before reviewing. Use the canonical semantic method in the current conversation; an applicable independent subagent reads its own role contract. Apply [runtime conventions](../../../../docs/actions/README.md#shared-runtime-conventions).
 
+- For a revised contract, consult [revision validation](../../../../docs/actions/spec-revise.md#validation) first.
 - For record assessment read [maintenance](../../../../docs/actions/feature-init.md#document-updates-and-context) and [preview](../../../../docs/actions/feature-init.md#record-and-authorization); Q7a uses [discovery](../../../../docs/actions/feature-init.md#conversation-and-discovery).
 - Only for guidance placement read [guidance placement](../../../../docs/actions/agents-md-revise.md#guidance-placement-contract); for material discoveries read [scope stops](../../../../docs/actions/feature-init.md#implementation-scope-stop).
 

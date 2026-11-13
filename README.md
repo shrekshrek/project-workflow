@@ -35,7 +35,7 @@ See [`docs/cross-tool-methodology.md`](docs/cross-tool-methodology.md).
 
 | Need | project-workflow answer |
 |---|---|
-| Set up a project without guessing | Use `project-init` when the neutral baseline can be added without conflict or personalization; use `project-personalize` when project evidence or a partial/custom baseline must shape the agreement |
+| Set up a project without guessing | Run `project-init` for any repository. It selects neutral setup or adapts the working agreement to existing project evidence. |
 | Start a feature without losing requirements in chat | One `spec.md` by default, with optional supporting detail |
 | Keep implementation aligned while coding | spec revise SOP, module-boundary handling, environment-enforced rules |
 | Know whether a feature is ready | Completion preflight + proportionate L1 + applicable L2/L3 + delivery receipt |
@@ -167,7 +167,7 @@ $spec-reconcile <area>
 $agents-md-revise
 ```
 
-Run `$project-init` once when all six neutral baseline destinations are absent and existing content, if any, is merely incidental: `AGENTS.md`, the one-line `CLAUDE.md` alias, `.gitignore`, `docs/specs/index.md`, `docs/adr/README.md`, and `docs/gotchas.md`. It preserves unrelated references, exports, or notes without interpreting them. A matching baseline plus only incidental content is already initialized. Use `$project-personalize` when code, configuration, or project-specific documentation establishes commands, paths, conventions, architecture, product/current truth, or when a baseline destination is partial, custom, or occupied. If a scaffold generator requires an empty target, run it first. `project-init` leaves the workflow baseline ready even when application structure is undecided; `project-personalize` leaves the evidence-backed working agreement aligned without claiming the architecture is suitable.
+Run `$project-init` for new and existing projects. It inspects the repository, creates the neutral baseline where appropriate, or continues with `$project-personalize` to adapt existing guidance and preserve project configuration. An aligned setup needs no edits. You can still invoke `$project-personalize` directly. Run any generator requiring an empty target first.
 
 Application-foundation and architecture work follows [`feature-init`](docs/actions/feature-init.md)'s conversation and record rules, without a separate action or lane. Keep minimal setup inside the first feature when inseparable; track architecture separately only when it has its own durable consumer. Read [`architecture-design`](docs/architecture-design.md) when the action calls for it.
 
@@ -202,7 +202,7 @@ Most work does **not** use all nine actions. Initialize once, then use the daily
 
 | Frequency | Action | Purpose |
 |---|---|---|
-| Once, baseline-compatible target | `project-init` | Create the neutral six-file project baseline without disturbing incidental content. |
+| Onboarding | `project-init` | Inspect the repository and complete the appropriate setup. |
 | Once, project evidence or partial/custom baseline exists | `project-personalize` | Establish or adapt the evidence-backed project agreement; when structure/guidance scope is selected, propose evidence-backed root/tier/module placement without creating files for symmetry. |
 | Per proposed change | `feature-init` | Discuss the problem, test consequential assumptions when needed, and create or reuse only the acceptance record needed. Continue from settled decisions without repeated approval. |
 | Before implementation | `spec-quality-check` | Reconcile accepted requirements and gate the completed artifact before implementation. |

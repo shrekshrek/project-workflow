@@ -9,6 +9,7 @@ Match the user's language. Read `${CLAUDE_PLUGIN_ROOT}/docs/actions/spec-quality
 
 Claude execution details:
 
+- For a revised contract, consult `${CLAUDE_PLUGIN_ROOT}/docs/actions/spec-revise.md#validation` first.
 - For record assessment read `${CLAUDE_PLUGIN_ROOT}/docs/actions/feature-init.md#document-updates-and-context` and `${CLAUDE_PLUGIN_ROOT}/docs/actions/feature-init.md#record-and-authorization`; Q7a uses `${CLAUDE_PLUGIN_ROOT}/docs/actions/feature-init.md#conversation-and-discovery`.
 - Only for guidance placement read `${CLAUDE_PLUGIN_ROOT}/docs/actions/agents-md-revise.md#guidance-placement-contract`; for material discoveries read `${CLAUDE_PLUGIN_ROOT}/docs/actions/feature-init.md#implementation-scope-stop`.
 

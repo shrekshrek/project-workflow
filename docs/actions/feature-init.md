@@ -52,8 +52,7 @@ bounded rebaseline only when needed, without requiring a complete Blueprint. An 
 alone does not qualify. Feature-local scope,
 architecture and contract changes remain in this workflow, using `spec-revise` when an accepted feature
 contract changes; touching architecture or data alone does not require project re-planning.
-Even without a Blueprint, when repeated corrections expose unresolved data authority, user maintenance
-journeys or cross-system responsibilities, recommend a bounded rebaseline before further affected work.
+Apply the shared project planning gap rule as soon as the first feature exposes a missing shared decision, or when repeated corrections reveal one.
 Do not trigger it for ordinary repairs or layout iteration, or create upstream artifacts without authorization.
 
 ## Conversation and discovery
@@ -126,9 +125,13 @@ subtopics. Change this structure only for an explicit user/project convention or
 need, not stylistic preference. Do not reformat existing readable records merely for consistency or reject
 an actionable record solely for different headings. Preserve references and the actual delta when current
 truth already explains the unchanged behavior. Keep accepted constraints and
-explicit exclusions. Keep requirements, necessary design and verification conclusions in spec. Split supporting
-content only when it materially helps reading or handoff; an explicit request for a separate handoff document qualifies. Name each purpose and link it without duplicating
-accepted rules. Test code belongs in existing project test locations.
+explicit exclusions. Keep both spec and design notes concise. Spec owns requirements, acceptance and verification.
+Before implementation, use a brief example to show who acts, what changes and what the user sees. When branches
+or handoffs matter, prefer a small flow diagram for sequence or a decision table for conditions and outcomes.
+Explain only what the visual leaves open, distinguishing accepted rules from choices the user still needs to make.
+Include file or module details only when they clarify a material choice. For a proposed setting, identify who needs
+different values and why. Implement the single accepted behavior directly when it suffices. Keep short designs in spec. Split supporting content when it materially helps reading or handoff.
+Create or reuse a linked design note such as `design.md` in that case. An explicit request for a separate handoff document qualifies. Reference the accepted rules there. Test code belongs in existing project test locations.
 Long reproducible trial material can live separately when needed; keep conclusions and references in spec.
 
 An active feature uses `spec.md` as its accepted record. Optional design/work notes may support it but do not
@@ -136,16 +139,17 @@ own acceptance or delivery status; `READY`, the delivery receipt, status writes 
 endpoint and lifecycle outputs, so do not restate them as checklist items. Archived directories remain history
 and do not participate in active execution. The canonical delivery receipt location is owned by `feature-done`.
 
-Before implementation, give a proportionate execution preview of outcome, approach, boundary, rationale and
-verification where these are not already understood and authorized. Make materially different behaviors
-or experiences distinguishable; use a scenario, example or sketch only when prose leaves the choice unclear.
-Keep established facts, proposed choices and unresolved assumptions distinguishable. In particular, derived
-retention, retry, overwrite or failure behavior remains a proposal until accepted when it changes observable
-results; ordinary implementation details within the accepted contract can be decided directly. For work
-spanning useful slices, explain their order, purpose, inspectable results and what the user will judge at each
-handoff. Place an early feedback point where a representative result can expose a mistaken interpretation,
-before dependent work amplifies it; do not defer the first useful feedback until the entire feature is built.
-Brief prose is enough; no fixed sections, phase count or exhaustive task list are required.
+Give the execution preview in the conversation before implementation. Explain the proposed behavior in the order the user would experience it. Where a choice matters,
+show who or what decides, what the decision uses, what happens if it fails, and why you recommend
+that approach. Surface any decision the user could reasonably make differently while it can still
+change the plan. A sentence can be enough. Use an example, diagram, list or table when it makes
+the behavior or choice easier to understand. The user should be able to judge the approach
+from the conversation alone. For work with dependent outcomes, show an early inspectable result
+while feedback can still change the next step. Revisit only what has materially changed.
+If the visible result could look right even with a wrong internal design, walk through one case that
+would expose the difference (for example, retrying after a partial save). Show which component acts,
+which data it relies on and how to tell whether it acted correctly. Use the agreed case as an
+acceptance example and check it in the first implementation slice where it can run.
 For approach alignment, seek confirmation only for unresolved choices that materially affect the outcome,
 scope or acceptance. A feature request or agreement with the problem does not accept an undisclosed material
 design choice. A clear request may already authorize the approach. An accepted preview is reused;
@@ -201,20 +205,11 @@ A failed test with unchanged requirements calls for implementation repair, not c
 Organize implementation into coherent functional slices around real dependencies and risks. A slice normally
 carries one outcome through its needed code, tests, documentation and ordinary verification; module and layer
 boundaries only shape implementation order. A small or tightly coupled task may be one slice.
-Within a useful slice, ordinary implementation, expected repair and focused checks continue without another
-approval. Report useful progress during longer slices without treating each update as a handoff. A material
-problem or consequential uncertainty still stops the affected work immediately, even mid-slice, under the
-rules above. At the end of a coherent user-judgeable outcome, run the smallest relevant check and hand off
-the intended result, actual behavior and evidence, whether they remain aligned, material deviations or risks,
-and the next slice with its reason. Call out material choices made inside the slice that the user did not decide
-and could reasonably judge differently. Use a concrete example, preview or observed behavior where useful.
-By default, wait for user feedback before beginning the next slice, even when checks pass and the agent sees
-no deviation: the user may recognize a mistaken interpretation from the result. Scope approval, "start
-implementing", silence and status questions do not waive this feedback. Only explicit continuous-execution
-authorization covering the boundary permits proceeding without waiting; do not reconfirm within it.
-Material scope stops and separate permission/cost limits still apply; preserve project checkpoints unless
-the user explicitly changes them. Answer status questions and resume within the current slice, or remain
-at its pending feedback boundary; an explicit pause or direction change takes precedence.
+If you made a material choice the user might decide differently, explain its effect on the observed behavior. Show the
+result in the conversation and wait for user feedback before starting the next outcome. If the
+user explicitly requests continuous execution across those outcomes, report progress and continue
+within that authorization. A status question preserves a pending checkpoint. Material changes and
+separate permission or cost limits still stop the affected work.
 
 During implementation and post-gate repair, if repair/verification keeps cycling without converging, explain
 the unresolved problem and recommended next step, then wait for the user's decision. Preserve unaffected valid

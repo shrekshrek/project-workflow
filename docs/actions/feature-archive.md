@@ -6,20 +6,8 @@ The active tree `docs/specs/changes/` holds **in-flight work only**. History lea
 
 ## Use When
 
-- `feature-done` returned `READY` (whether or not its current-truth check reported an update pending).
-- The enclosing request authorizes closure under the rule below and `feature-done` just returned `READY`;
-  continue with the explicit candidate without another confirmation.
-- Periodically, as a sweep: close every delivered-but-unarchived feature in one pass.
-- After `spec-reconcile` resolved a messy area and left features ready to close.
-
-Default invocation is **sweep mode**: with no argument, find all features whose delivery is complete (READY delivery receipt in `## Proof Bundle`) and propose closing them as a batch. Archiving may share the final commit with implementation, receipt, and current-truth changes; a prior commit is not required. Forgetting to archive immediately is fine — a later sweep can revalidate uncertain candidates.
-
-A feature is archive-eligible only when its `## Proof Bundle` contains the required fields defined by the
-[`feature-done` delivery receipt](feature-done.md#delivery-receipt--proof-bundle-on-disk): `Verdict: READY`,
-valid Git/non-Git reviewed-state identity and endpoint outputs, Checks, applicable L2/L3 review outcomes,
-and Current truth. Optional Open questions and Drift remain optional. A missing or invalid required
-field makes the feature ineligible; report `rerun feature-done` and never infer READY from other or historical
-fields.
+Use an explicit candidate when closing one delivered feature. With no argument, sweep the active
+tree and confirm the candidate set. Archive may share the delivery commit.
 
 ## Closure authorization
 
@@ -31,10 +19,9 @@ authorization without another approval round.
 
 ## Inputs
 
-Resolve the canonical `spec.md` receipt using [feature-done](feature-done.md#delivery-receipt--proof-bundle-on-disk). Do not require optional attachments or duplicate the receipt.
-
-- Feature directory/slug, or nothing (sweep mode).
-- Each candidate's `spec.md` receipt must contain every required archive-eligibility field above and one valid Git identity (or explicit non-Git inputs): exact reviewed commit SHA with `dirty=no`, or current worktree with `dirty=yes`. Other pairings are invalid. A dirty-worktree coordinate is eligible only as a current-task result while the reviewed state remains unchanged; reuse across tasks requires an immutable reviewed commit SHA. Committing a dirty-worktree receipt later does not re-anchor it. Its status must be `已实现`, or `已取代`/`已废弃` as set by `spec-reconcile`. Missing or invalid required receipt fields are ineligible and require `feature-done`.
+- Feature directory/slug, or an empty argument for a sweep.
+- The candidate's canonical [delivery receipt](feature-done.md#delivery-receipt--proof-bundle-on-disk)
+  and lifecycle status (`已实现`, or `已取代`/`已废弃` set by `spec-reconcile`).
 - Related current-truth documents (`docs/specs/<area>.md`), if any.
 - Related earlier specs and ADRs in the same product area.
 - Present implementation evidence and later active/successor changes when current truth is pending or the reviewed delivery is no longer the latest change in that area.
@@ -50,9 +37,14 @@ Resolve the canonical `spec.md` receipt using [feature-done](feature-done.md#del
 
 ## Workflow
 
-1. Resolve one explicit feature or sweep active change directories. Treat delivery evidence and current truth as separate freshness questions. A current-task dirty-worktree READY result remains usable while its reviewed state and endpoint outputs are unchanged. A receipt reused across tasks is valid delivery evidence only when its reviewed commit SHA resolves and its receipt/status outputs remain intact; later movement of a current branch or PR head does not by itself invalidate that historical delivery proof. Rerun `feature-done` when the receipt records a dirty worktree from another task, uses an invalid identity pairing, or its reviewed commit cannot be resolved. A commit containing a dirty receipt is not proof that the reviewed worktree was unchanged before commit. Outside Git, compare the explicit reviewed inputs. Do not create a manual population list, fingerprint, or population hash.
-2. Apply [Closure authorization](#closure-authorization). In sweep mode, present and confirm the candidate set. Ask separately only for
-   uncertain current-truth ownership, supersession, or ADR decisions.
+1. Apply [closure authorization](#closure-authorization) to the candidate or confirmed sweep.
+2. Reuse the complete READY receipt for the reviewed state. In the same task, an unchanged worktree
+   and intact receipt/status outputs suffice. Across tasks in Git, the reviewed commit must resolve
+   and the recorded outputs must be intact. A later commit containing a dirty-worktree receipt cannot
+   establish that identity. A newer branch head alone does not invalidate an immutable reviewed commit.
+   Outside Git compare the explicit reviewed inputs. If the receipt is incomplete or invalid, the verdict
+   is not READY, or the reviewed state cannot be verified, leave the candidate active and route back
+   to `feature-done`. A valid receipt carries its checks and reviews into archive.
 3. For each candidate, draft the durable present-tense facts, lifecycle status changes, archive note, and optional index update without applying them. A stable READY receipt proves the historical delivery, not today's product behavior: validate every pending current-truth fact against present implementation evidence, current domain documents, and later active/successor changes. Do not merge a stale fact merely because the old receipt remains valid. If pruning still leaves independently changing responsibilities in one document, finish an otherwise unambiguous archive and report a nonblocking restructuring proposal; uncertain fact ownership remains a user question. Do not bundle the restructuring into the archive unless the user authorized it. Stop on unresolved supersession or contradiction with an Accepted ADR until the governing decision is resolved.
 4. Move the directory with an ordinary filesystem rename and run the link relocator. If relocation fails, move the directory back and stop before applying lifecycle or current-truth edits.
 5. Apply the prepared current-truth, final-status, archive-note, governing-ADR, and optional index updates.
@@ -70,15 +62,12 @@ Resolve the canonical `spec.md` receipt using [feature-done](feature-done.md#del
 - A READY feature is not current truth until its durable conclusions are merged.
 - Archiving is a directory move, never deletion; archived directories are read-only history.
 - Never archive an in-flight feature (`spec.md` status `草稿`/`已确认`, or its delivery receipt is missing/non-READY).
-- Never archive when the reviewed Git/non-Git state is known to have changed or its freshness cannot be established; rerun `feature-done` instead.
-- A resolvable reviewed commit SHA is immutable delivery evidence even after the current branch or PR head advances; current-truth conclusions still require independent present-state validation.
 - Explicit single-feature invocation needs no duplicate confirmation. Sweep candidates and uncertain lifecycle decisions remain visible to the user.
 - Do not edit implementation code.
 
 ## Validation
 
 - Confirm current truth reflects present behavior under the document discipline above.
-- Confirm each archived feature used a current-task READY result or another confidently unchanged reviewed Git/non-Git state; otherwise rerun `feature-done` and stop that candidate.
 - Confirm every archived spec's status line reflects its final state and superseded ones link their successor.
 - Confirm every local Markdown link in each archived directory resolves after relocation; do not report the archive complete with broken ADR, domain-doc, sibling, or reference-style links.
 - Report which documents were touched, which features were archived, and any ADR follow-ups.

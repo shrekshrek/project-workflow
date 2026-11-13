@@ -58,32 +58,21 @@ their dependency closure. A test failure alone is not a requirement change.
    fresh-read applicable conventions. Do not treat already-written implementation as evidence that the
    expansion belongs in the feature.
 4. Classify `ADR_REQUIRED`: yes only for architecture/module boundaries, durable cross-feature technical decisions, or superseding an ADR. When yes, search ADR filenames, titles, status fields, and existing references first, then open only candidates relevant to the affected area or decision.
-5. Close the material correction set under `feature-init`'s conversation rules. Resolve material
-   interpretation conflicts before drafting; preserve accepted replacements and explicit supersessions or
-   exclusions in the trace below.
-6. When the accepted boundary, current need, or delivery shape changes, proportionately reapply only the
-   affected `feature-init` questions and keep routing and unrelated settled decisions intact. Record a child
-   boundary or accepted bundle when durable handoff is useful. Reuse an existing or explicitly requested
-   issue/PM reference, but never make external tracking a prerequisite.
-7. For every contract correction, build a compact supersession trace before drafting: exact current user
-   statement when available, normalized replacement rule, older rule being replaced, and affected
-   record/optional attachment/ADR locations. Preserve exclusion and exclusivity semantics such as "remove", "no longer",
-   "only", and "single source"; do not narrow them into an optional or conditional fallback without explicit
-   authority. Then draft only the affected record content without changing the worktree. Update in place under
-   [document maintenance](feature-init.md#document-updates-and-context), with a concise dated revision summary;
-   synchronize affected decisions, delivery boundary, risks, current-truth follow-up, work and
-   validation where they already live; leave unrelated sections and evidence untouched. Update the existing decision source trace for each material correction and explicitly identify
-   the older decision it supersedes; never rely on chat memory as the only durable source. Any completed task or proof obligation whose contract, inputs, or affected scope changed
-   becomes incomplete again; retain prior evidence only as explicitly superseded history, never as current
-   proof. Draft the conditional ADR from the packaged template when required. For a delivered-but-unarchived
-   feature, also return `已实现` to `已确认`, preserve the prior receipt under feature-done’s receipt-history
-   rule, and recreate one empty canonical `## Proof Bundle`; never turn old evidence into a new verdict.
-8. Update sibling alignment only when a changed tier/module introduces a durable parent difference or selects
+5. Close the material correction set using [conversation rules](feature-init.md#conversation-and-discovery).
+   Reuse accepted replacements. Ask only about consequences the user has not decided. For changed scope,
+   revisit the affected delivery boundary and current need.
+6. Draft the affected behavior and acceptance example together. Record the exact current user statement
+   or durable source, normalized replacement rule, and older rule it supersedes in one dated entry.
+   Check the draft against that source, including exclusions and any affected references or tests.
+   A removed behavior must also disappear from fallback paths. Follow [document maintenance](feature-init.md#document-updates-and-context).
+   Invalidate only evidence whose inputs or obligations changed. For reopened delivery preserve the previous
+   receipt and reset the status and current receipt as specified under Outputs.
+7. Update sibling alignment only when a changed tier/module introduces a durable parent difference or selects
    Codify. At that boundary, read and apply the canonical
    [Guidance Placement Contract](agents-md-revise.md#guidance-placement-contract) and name the exact owner and
    source; otherwise do not load it.
-9. Use inline trace or independent audit under the [decision-completeness auditor's dispatch boundary](../reviewers/decision-completeness-auditor.md#dispatch-boundary).
-10. Apply the synchronized revision when the user's request already authorizes it. Ask only for an unresolved
+8. Use inline trace or independent audit under the [decision-completeness auditor's dispatch boundary](../reviewers/decision-completeness-auditor.md#dispatch-boundary).
+9. Apply the synchronized revision when the user's request already authorizes it. Ask only for an unresolved
     material decision or an external write; rejection or a blocking audit leaves the worktree unchanged.
 
 When the active spec cites a Blueprint, classify whether the revision remains inside its slice and accepted
@@ -101,9 +90,6 @@ When the auditor boundary applies, follow the canonical [reviewer execution cont
 - Every material spec change has a dated revision record with reason and decision source. ADRs are conditional, not a generic change log.
 - The accepted record and any affected existing attachments stay consistent after the revision; no optional file is mandatory.
 - Reopening preserves historical evidence but makes it ineligible for archive until a new `feature-done` writes READY; there is exactly one canonical `## Proof Bundle` and any superseded receipt uses a differently named heading.
-- A material scope expansion, contraction, or semantic correction rechecks delivery coherence, current
-  necessity, and impact completeness. `spec-quality-check` must rerun when the revision changes scope
-  viability, the accepted delivery boundary, or any high-impact business/ownership/authorization/data rule.
 - External tracker edits do not revise this feature implicitly. Adopt them only through an explicit draft edit or this action when they change the active contract.
 - Module-boundary changes update affected module notes and future validation expectations.
 - Specific decisions must be traceable to user input, existing project convention, revision record, or an applicable ADR.
@@ -117,6 +103,9 @@ When the auditor boundary applies, follow the canonical [reviewer execution cont
 
 - Apply the canonical conversational-judgment rule to decision questions. Draft and audit the synchronized
   contents before apply; the current request's revision authorization remains in effect.
-- Confirm the next implementation step. Rerun [`spec-quality-check`](spec-quality-check.md) whenever scope
-  viability, current necessity, impact baseline, or a high-impact rule changed; otherwise state why it is
-  unnecessary.
+- For a clear local correction, the source-to-draft check above completes the revision. Report the
+  changed behavior and acceptance example, then resume any previously authorized work. A request
+  limited to revising the plan ends with the updated plan.
+- Use [spec-quality-check](spec-quality-check.md) on the affected boundary when the user or project
+  requires it, sources conflict, or the correction changes delivery viability, ownership, permissions,
+  data handling or another high-impact contract. Reuse the resolved decision and its source.

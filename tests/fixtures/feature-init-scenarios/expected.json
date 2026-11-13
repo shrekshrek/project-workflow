@@ -36,7 +36,7 @@
     "expectDir": null,
     "forbiddenPlantPatterns": [],
     "sentinel": "docs/specs/changes/001-approved-feature/spec.md",
-    "expectedBehavior": "不得新建 artifact；复用 001-approved-feature，从已接受边界与可执行验收复查语义实施就绪度，通过后按已有授权继续 implementation → feature-done；不通过则 repair/spec-revise → spec-quality-check。复用不等于豁免交付验证，不要求固定输出字段。"
+    "expectedBehavior": "不得新建 artifact；复用 001-approved-feature，从已接受边界与可执行验收复查语义实施就绪度，通过后按已有授权继续 implementation → feature-done；不通过则针对缺口修复；用户明确更改一条局部规则时，同步该行为和验收例子，按修订规则核对一次；仍有来源冲突或改动权限等高影响规则时，对受影响部分运行 spec-quality-check。复用不等于豁免交付验证，不要求固定输出字段。"
   },
   "no-artifact-multifile-refactor": {
     "base": "base-numbered",
@@ -465,7 +465,7 @@
     "base": "base-empty",
     "interactionOnly": true,
     "prompt": "只检查协作约定，不写文件。项目写着“每个阶段结束后等待用户继续”，用户另有明确约定“生产部署必须单独确认”。请按当前插件判断两项约定是否冲突或需要同步，不能把插件更新本身当作覆盖项目政策的理由。",
-    "expectedBehavior": "指出阶段反馈约定与当前默认规则兼容，不把它当成过时模板删除；不把阶段内技术步骤变成逐项审批。保留生产部署检查点，当前只读不改文件；阶段含义不清且会影响执行时才澄清。"
+    "expectedBehavior": "指出项目已约定的逐段反馈点继续生效，不把它当成过时模板删除；不把阶段内技术步骤变成逐项审批。保留生产部署检查点，当前只读不改文件；阶段含义不清且会影响执行时才澄清。"
   },
   "conversation-default-slice-feedback": {
     "base": "base-empty",
@@ -483,7 +483,7 @@
     "base": "base-empty",
     "interactionOnly": true,
     "prompt": "准备做员工主管关系维护和下属可见功能，存在主管同名、关系表为空的问题。我希望开发中能看到结果、及时纠正方向，但不想逐个批准建表、写接口和跑测试。先建议实施顺序及我参与判断的位置，不写文件。",
-    "expectedBehavior": "提出最小代表性数据到维护再到可见结果的早期切片，指出需要用户判断的匹配和可见行为，默认该结果交接后等待反馈再扩展；身份政策未定先澄清或用明确合成样例，不擅自确认真实关系。不把全部实现后才反馈，不机械按技术层拆审批，不新增固定阶段或文档。"
+    "expectedBehavior": "提出最小代表性数据到维护再到可见结果的早期切片，指出需要用户判断的匹配和可见行为，说明同名无法唯一匹配时谁决定、下属可见范围如何变化，用合成样例展示实际可见名单，请用户判断同名时的处理方式；即使已授权整项功能，也要等反馈后再扩展依赖该选择的实现；身份政策未定先澄清或用明确合成样例，不擅自确认真实关系。不把全部实现后才反馈，不机械按技术层拆审批，不新增固定阶段或文档。"
   },
   "conversation-record-revisions": {
     "base": "base-numbered",
