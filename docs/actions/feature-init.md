@@ -126,12 +126,11 @@ need, not stylistic preference. Do not reformat existing readable records merely
 an actionable record solely for different headings. Preserve references and the actual delta when current
 truth already explains the unchanged behavior. Keep accepted constraints and
 explicit exclusions. Keep both spec and design notes concise. Spec owns requirements, acceptance and verification.
-Before implementation, use a brief example to show who acts, what changes and what the user sees. When branches
-or handoffs matter, prefer a small flow diagram for sequence or a decision table for conditions and outcomes.
-Explain only what the visual leaves open, distinguishing accepted rules from choices the user still needs to make.
-Include file or module details only when they clarify a material choice. For a proposed setting, identify who needs
-different values and why. Implement the single accepted behavior directly when it suffices. Keep short designs in spec. Split supporting content when it materially helps reading or handoff.
-Create or reuse a linked design note such as `design.md` in that case. An explicit request for a separate handoff document qualifies. Reference the accepted rules there. Test code belongs in existing project test locations.
+Keep short designs in spec. Split supporting content when it materially helps reading or handoff.
+Create or reuse a linked `design.md` before dependent implementation when a choice needs separate review:
+for example, trace one case across existing workflows to settle data ownership, permissions or recovery.
+Show the proposed path and open choices; reference the acceptance rules in spec. An explicit request for a separate handoff document qualifies.
+Add a setting only when a current consumer needs a different value. Test code belongs in existing project test locations.
 Long reproducible trial material can live separately when needed; keep conclusions and references in spec.
 
 An active feature uses `spec.md` as its accepted record. Optional design/work notes may support it but do not
@@ -139,21 +138,16 @@ own acceptance or delivery status; `READY`, the delivery receipt, status writes 
 endpoint and lifecycle outputs, so do not restate them as checklist items. Archived directories remain history
 and do not participate in active execution. The canonical delivery receipt location is owned by `feature-done`.
 
-Give the execution preview in the conversation before implementation. Explain the proposed behavior in the order the user would experience it. Where a choice matters,
-show who or what decides, what the decision uses, what happens if it fails, and why you recommend
-that approach. Surface any decision the user could reasonably make differently while it can still
-change the plan. A sentence can be enough. Use an example, diagram, list or table when it makes
-the behavior or choice easier to understand. The user should be able to judge the approach
-from the conversation alone. For work with dependent outcomes, show an early inspectable result
-while feedback can still change the next step. Revisit only what has materially changed.
-If the visible result could look right even with a wrong internal design, walk through one case that
-would expose the difference (for example, retrying after a partial save). Show which component acts,
-which data it relies on and how to tell whether it acted correctly. Use the agreed case as an
-acceptance example and check it in the first implementation slice where it can run.
-For approach alignment, seek confirmation only for unresolved choices that materially affect the outcome,
-scope or acceptance. A feature request or agreement with the problem does not accept an undisclosed material
-design choice. A clear request may already authorize the approach. An accepted preview is reused;
-do not insert duplicate confirmation for ordinary implementation details within that scope.
+Give the execution preview in the conversation before implementation. Check existing behavior, conventions
+and contracts first. Use a representative case to show what carries over, what changes and what the user
+will see. For an unresolved material choice, show who or what decides, what happens if it fails and
+why you recommend the approach. Treat inferred behavior such as overwrite or retry as a proposal when
+it changes the result. Settle it before implementing work that depends on it. An accepted
+preview is reused; do not insert duplicate confirmation for ordinary implementation details.
+Use a small diagram or decision table when branches or handoffs are hard to follow. If different designs
+could look correct in the happy path, use a case that distinguishes them, such as retry after a partial
+save. Check the agreed case in the first slice where it can run. For known handoffs, say what the user will judge and which work depends on it;
+bring the first representative result forward.
 
 The preview distinguishes pre-implementation decision evidence, implementation feedback and delivery evidence;
 it does not present every planned check as an upfront gate. For a materially long, paid, external, opaque,
@@ -205,11 +199,13 @@ A failed test with unchanged requirements calls for implementation repair, not c
 Organize implementation into coherent functional slices around real dependencies and risks. A slice normally
 carries one outcome through its needed code, tests, documentation and ordinary verification; module and layer
 boundaries only shape implementation order. A small or tightly coupled task may be one slice.
-If you made a material choice the user might decide differently, explain its effect on the observed behavior. Show the
-result in the conversation and wait for user feedback before starting the next outcome. If the
-user explicitly requests continuous execution across those outcomes, report progress and continue
-within that authorization. A status question preserves a pending checkpoint. Material changes and
-separate permission or cost limits still stop the affected work.
+Within a slice, continue ordinary implementation, repairs and focused checks. Honor agreed project checkpoints.
+At the end of each slice that delivers a result the user can judge, show actual versus expected behavior
+on a representative case, the relevant evidence and the proposed next step. Even when checks pass and
+the result looks as intended, wait for user feedback before starting the next outcome.
+If the user explicitly requests continuous execution across that checkpoint, report the result and continue
+within that authorization. A request to start work, silence or a status question leaves the checkpoint in place.
+Material changes and separate permission or cost limits still stop the affected work.
 
 During implementation and post-gate repair, if repair/verification keeps cycling without converging, explain
 the unresolved problem and recommended next step, then wait for the user's decision. Preserve unaffected valid
