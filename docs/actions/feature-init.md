@@ -142,8 +142,14 @@ Give the execution preview in the conversation before implementation. Check exis
 and contracts first. Use a representative case to show what carries over, what changes and what the user
 will see. For an unresolved material choice, show who or what decides, what happens if it fails and
 why you recommend the approach. Treat inferred behavior such as overwrite or retry as a proposal when
-it changes the result. Settle it before implementing work that depends on it. An accepted
-preview is reused; do not insert duplicate confirmation for ordinary implementation details.
+it changes the result. A feature request does not accept an undisclosed material design choice.
+
+For changes to another system's contract, shared authorization or data ownership, explain the affected
+systems and consumers, the behavior change and the code, data and deployment scope. Show one case
+that makes the consequence clear. If these effects exceed the accepted boundary, ask for a decision
+and wait before editing affected code, configuration or data. A progress announcement or saved design
+does not establish acceptance. Local-only deployment can still involve shared code changes.
+An accepted preview is reused; do not insert duplicate confirmation for work within its stated effects.
 Use a small diagram or decision table when branches or handoffs are hard to follow. If different designs
 could look correct in the happy path, use a case that distinguishes them, such as retry after a partial
 save. Check the agreed case in the first slice where it can run. For known handoffs, say what the user will judge and which work depends on it;
