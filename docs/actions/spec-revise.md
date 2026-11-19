@@ -62,8 +62,10 @@ rerun affected checks and any checks that depend on them. A test failure alone i
 5. Use the [conversation rules](feature-init.md#conversation-and-discovery) to identify what must change
    and resolve remaining choices. Reuse accepted replacements; ask only about
    consequences the user has not decided. If scope changes, check what needs to be delivered together and why.
-6. Draft the affected behavior and acceptance example together. Record the exact current user statement
-   or durable source, normalized replacement rule, and older rule it supersedes in one dated entry.
+6. Update the affected behavior and acceptance example together in their existing sections.
+   Keep a short dated revision entry with the reason and exact current user statement or durable source.
+   Reference the normalized replacement rule in the updated text and identify the older rule it supersedes,
+   instead of appending a second set of current requirements and acceptance criteria.
    Check the draft against that source, including exclusions and any affected references or tests.
    A removed behavior must also disappear from fallback paths. Follow [document maintenance](feature-init.md#document-updates-and-context).
    Invalidate only evidence whose inputs or obligations changed. For reopened delivery preserve the previous
