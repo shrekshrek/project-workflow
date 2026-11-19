@@ -1,6 +1,6 @@
 # spec-revise
 
-Canonical action for materially correcting an accepted, unarchived feature contract before or after implementation.
+Correct agreed requirements or plans for a feature that has not been archived, before or after implementation.
 
 ## Use When
 
@@ -8,23 +8,22 @@ Canonical action for materially correcting an accepted, unarchived feature contr
 - The latest user instruction materially corrects, rejects, removes, or replaces behavior in an accepted
   contract, even when the user does not name this action and phrases the request as "fix it" or "continue".
 - A delivered-but-unarchived feature needs to reopen because a material contract, scope, plan, or Verification omission was discovered after `feature-done`.
-- Implementation discovers a material scope delta: an undeclared
-  [declarable surface](README.md#shared-runtime-conventions), or a simpler outcome that removes speculative
-  capability.
+- Implementation reveals an important scope change: an undeclared
+  [declarable surface](README.md#shared-runtime-conventions), or a simpler solution that removes capability
+  with no current need.
 - A module boundary or architecture decision must be adjusted after the original plan.
 - The change would otherwise rewrite history or hide a requirement shift.
 
 Unaccepted drafts may be edited directly; acceptance follows the user's decisions, not the file's status label.
-An implementation regression under an unchanged accepted contract does not use this action: repair the implementation and explicitly rerun `feature-done`, which owns delivery-verdict replacement and any `已实现` → `已确认` rollback.
+If agreed behavior is unchanged and the code is wrong, fix the code instead of revising the requirements.
+Then explicitly rerun `feature-done`; it replaces the delivery verdict and handles any `已实现` → `已确认` rollback.
 
 ## Inputs
 
-Implementation can reveal new tasks and better boundaries. Ordinary details under unchanged acceptance
-continue directly; material findings first pause affected work and get a user decision. After the confirmed
-local revision, return to the already authorized implementation rather than restarting initialization or
-reconfirming unchanged choices. Preserve valid unaffected tests and evidence; rerun only affected checks and
-their dependency closure. A test failure alone is not a requirement change.
-
+Ordinary implementation details can proceed while agreed behavior stays unchanged. Important changes first
+pause affected work for a user decision. After revising the agreed plan, resume the authorized work without
+restarting initialization or asking again about unchanged choices. Keep unaffected test results and evidence;
+rerun affected checks and any checks that depend on them. A test failure alone is not a requirement change.
 
 - Feature directory.
 - Requested change and reason.
@@ -38,47 +37,50 @@ their dependency closure. A test failure alone is not a requirement change.
 - Updated `spec.md`, the active feature's sole accepted record, with changed text and a revision record.
 - Updated affected decisions/design notes where they already live, without duplicating the accepted rules.
 - Updated affected implementation/checklist items if task order, scope, or validation changed; the checklist may be inline.
-- The accepted scope, constraints, affected responsibilities, any conditional delivery boundary, and the actual discovered impact delta.
+- Agreed scope and constraints, affected responsibilities, any conditions on delivery, and how the newly
+  discovered impact differs from the original plan.
 - New ADR only when the revision changes architecture/module boundaries, establishes a durable cross-feature technical decision, or supersedes an existing ADR.
 - For a reopened delivery: status returned to `已确认`, the prior receipt preserved under [feature-done’s receipt-history rule](feature-done.md#completion-preflight), and a fresh empty canonical `## Proof Bundle` ready for the next `feature-done`.
 
 ## Workflow
 
 1. Resolve the active accepted record under [feature-init's record rules](feature-init.md#record-and-authorization). A delivered feature may reopen while active and unarchived; archived work requires a successor change. Neither a new task nor a different file layout requires a new feature.
-2. Confirm that the discovery is a material contract, verification, scope, plan, or module-boundary error.
-   Stop implementation work for the discovered delta while its direction is unresolved; do not keep adding
-   code, tests, migrations, or compatibility paths that could deepen the rework.
-   Route the delta through `feature-init`'s accepted-boundary and scope-viability rules. Necessary detail inside
-   the same outcome continues; an independent outcome becomes a child only if the user chooses it; capability without a current need is
-   removed or deferred; and materially wider inseparable work needs concrete coupling and user acceptance. A
-   current user correction that conflicts with accepted behavior is a `contract-correction`: do not run
-   `spec-quality-check` against the stale artifact or continue the affected work before revising the
-   synchronized artifacts.
-3. Resolve the accepted boundary, actual affected modules/files and Git overlap, then
-   fresh-read applicable conventions. Do not treat already-written implementation as evidence that the
-   expansion belongs in the feature.
+2. Check whether requirements, verification, scope, plan or module responsibilities need an important correction.
+   While the direction is unresolved, stop affected code, tests, migrations and compatibility work that could
+   deepen rework. Follow `feature-init`'s scope-stop rules:
+   - Ordinary details within the same outcome can proceed.
+   - Create a child feature for an independent outcome only if the user chooses it.
+   - Remove or defer capability with no current need.
+   - If wider work cannot be separated, explain why and get the user's agreement.
+
+   A user correction that conflicts with agreed behavior is a `contract-correction`: do not run
+   `spec-quality-check` against the stale artifact or continue affected implementation before updating
+   the spec and affected linked records.
+3. Identify the agreed scope, affected modules/files and overlap with other Git changes. Reread applicable
+   project conventions. Code already written does not authorize expanding the feature.
 4. Classify `ADR_REQUIRED`: yes only for architecture/module boundaries, durable cross-feature technical decisions, or superseding an ADR. When yes, search ADR filenames, titles, status fields, and existing references first, then open only candidates relevant to the affected area or decision.
-5. Close the material correction set using [conversation rules](feature-init.md#conversation-and-discovery).
-   Reuse accepted replacements. Ask only about consequences the user has not decided. For changed scope,
-   revisit the affected delivery boundary and current need.
+5. Use the [conversation rules](feature-init.md#conversation-and-discovery) to identify what must change
+   and resolve remaining choices. Reuse accepted replacements; ask only about
+   consequences the user has not decided. If scope changes, check what needs to be delivered together and why.
 6. Draft the affected behavior and acceptance example together. Record the exact current user statement
    or durable source, normalized replacement rule, and older rule it supersedes in one dated entry.
    Check the draft against that source, including exclusions and any affected references or tests.
    A removed behavior must also disappear from fallback paths. Follow [document maintenance](feature-init.md#document-updates-and-context).
    Invalidate only evidence whose inputs or obligations changed. For reopened delivery preserve the previous
    receipt and reset the status and current receipt as specified under Outputs.
-7. Update sibling alignment only when a changed tier/module introduces a durable parent difference or selects
-   Codify. At that boundary, read and apply the canonical
-   [Guidance Placement Contract](agents-md-revise.md#guidance-placement-contract) and name the exact owner and
-   source; otherwise do not load it.
+7. Check whether changed tier/module rules establish a lasting difference from inherited parent rules,
+   or include an agreed `Codify` task to record or enforce a rule. Only then read the
+   [Guidance Placement Contract](agents-md-revise.md#guidance-placement-contract), update sibling alignment,
+   and identify where the rule belongs and its source. Otherwise skip this guidance.
 8. Use inline trace or independent audit under the [decision-completeness auditor's dispatch boundary](../reviewers/decision-completeness-auditor.md#dispatch-boundary).
-9. Apply the synchronized revision when the user's request already authorizes it. Ask only for an unresolved
-    material decision or an external write; rejection or a blocking audit leaves the worktree unchanged.
+9. Apply the revision to the spec and affected records when the user's request already authorizes it.
+   Ask only for an unresolved important decision or an external write; rejection or a blocking audit leaves
+   the worktree unchanged.
 
-When the active spec cites a Blueprint, classify whether the revision remains inside its slice and accepted
-contracts. A project-goal, scope, durable-architecture, data-ownership or trust-boundary change is an upstream
-Blueprint impact: preserve the local revision trace, stop affected work, and route the project decision back to
-Blueprint. Do not silently edit or replace the upstream plan from Workflow.
+When the active spec cites a Blueprint, check whether the revision stays within its agreed feature scope.
+A change to project goals, project scope, lasting architecture, data ownership or trust boundaries is an
+upstream Blueprint impact. Keep the local revision record, stop affected work and return the project-level
+decision to Blueprint. Do not silently edit or replace the upstream plan from Workflow.
 
 ## Reviewer Execution
 
@@ -93,16 +95,15 @@ When the auditor boundary applies, follow the canonical [reviewer execution cont
 - External tracker edits do not revise this feature implicitly. Adopt them only through an explicit draft edit or this action when they change the active contract.
 - Module-boundary changes update affected module notes and future validation expectations.
 - Specific decisions must be traceable to user input, existing project convention, revision record, or an applicable ADR.
-- A material user correction is never durably sourced only as a caller-written "user confirmed" summary. Its
-  revision trace records the normalized replacement, what it supersedes, and an exact current statement or
-  stable external/durable source that supports that interpretation.
 - If the revision changes durable behavior recorded in `docs/specs/<area>.md`, keep the domain document read-only during this in-flight revision and record `current truth update pending` for [`feature-done`](feature-done.md) → [`feature-archive`](feature-archive.md). If it supersedes earlier specs, record a follow-up for [`feature-archive`](feature-archive.md) or [`spec-reconcile`](spec-reconcile.md) to mark and archive them.
-- When an ADR is required, use metadata/reference search to find relevant `Accepted`/`Proposed` candidates; never load the whole ADR directory. With user approval, flip an overturned ADR's status to `Superseded by NNNN` and note the takeover in the new ADR.
+- For an ADR, follow the targeted search in step 4; consider relevant `Accepted`/`Proposed` candidates,
+  never the whole directory. With user approval, mark an overturned ADR `Superseded by NNNN` and identify
+  the replaced ADR in the new one.
 
 ## Validation
 
-- Apply the canonical conversational-judgment rule to decision questions. Draft and audit the synchronized
-  contents before apply; the current request's revision authorization remains in effect.
+- Follow the conversation rules above. Draft the spec and affected record updates, then perform any required
+  audit before applying them. The current request's authorization remains valid.
 - For a clear local correction, the source-to-draft check above completes the revision. Report the
   changed behavior and acceptance example, then resume any previously authorized work. A request
   limited to revising the plan ends with the updated plan.

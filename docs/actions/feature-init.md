@@ -39,25 +39,26 @@ A dirty path is not automatically owned by this change.
 
 ### Optional Blueprint context
 
-If the target supplies an approved Blueprint handoff, read its `read_first` artifacts and the referenced slice,
-decision and contract IDs before preparing the feature record. Carry confirmed boundaries, exclusions and accepted
-assumptions into the feature without copying the Blueprint narrative; cite the upstream IDs where they affect this
-change. A missing, draft, stale or unresolved handoff is context only, not implementation authority. Without a
-handoff, continue the normal feature flow. If the proposed change contradicts an accepted upstream Blueprint
-decision about project goals, project-wide scope, cross-system responsibilities, authoritative data or trust
-boundaries, or requires a previously uncovered project-level decision about responsibilities, authoritative
-data or trust boundaries before implementation can safely proceed, stop the affected work and resolve that
-decision first. Revise the affected Blueprint when present; otherwise clarify the decision and recommend a
-bounded rebaseline only when needed, without requiring a complete Blueprint. An undocumented feature detail
-alone does not qualify. Feature-local scope,
-architecture and contract changes remain in this workflow, using `spec-revise` when an accepted feature
-contract changes; touching architecture or data alone does not require project re-planning.
-Apply the shared project planning gap rule as soon as the first feature exposes a missing shared decision, or when repeated corrections reveal one.
-Do not trigger it for ordinary repairs or layout iteration, or create upstream artifacts without authorization.
+If the target supplies an approved Blueprint handoff, read its `read_first` files and referenced slice,
+decision and contract IDs before preparing the feature record. Carry forward confirmed scope, exclusions
+and assumptions; cite the relevant IDs instead of copying the plan. A missing, draft, stale or unresolved handoff does not authorize implementation.
+Without a handoff, continue the normal feature flow.
+
+Stop affected work when the change contradicts an accepted Blueprint decision about project goals, scope,
+cross-system responsibilities, authoritative data or trust boundaries. Also stop when safe implementation
+needs a new project-level decision about responsibilities, authoritative data or trust boundaries.
+Revise the affected Blueprint when present. Otherwise resolve that decision and recommend revisiting only
+the affected part of the project plan when needed; do not require a complete Blueprint.
+
+An undocumented feature detail alone does not require project planning. Feature-local scope, architecture
+and contract changes stay in Workflow; use `spec-revise` when they change an accepted feature contract.
+Apply the shared project planning gap rule when the first feature exposes a missing shared decision or
+repeated corrections reveal one. Ordinary repairs and layout changes do not trigger it.
+Do not create upstream planning files without authorization.
 
 ## Conversation and discovery
 
-Start with the problem, present consumer and observable outcome. Use repository evidence to resolve facts;
+Start with the problem, who needs the change and what result they should see. Use repository evidence to resolve facts;
 ask only what can change the outcome, approach, boundary, material cost, risk or acceptance. Settled choices
 remain settled unless new evidence exposes a material consequence. Do not re-interview the user to fill a
 form, choose a lane, invent a slug during discussion, or satisfy a fixed question count.
@@ -84,14 +85,13 @@ criterion informs the next decision; do not rewrite the criterion to make it pas
 existing evidence already settles the relevant question. Low-level implementation details can be discovered
 later without making every idea an upfront experiment.
 
-When several outcomes can deliver value, be accepted or be reverted independently, explain the natural
-decomposition and recommend a coherent first feature based on value, dependencies and risk; let the user
-choose when it is not already clear. Keep a coupled transaction, security outcome or rollout together. Explain real coupling/rollback risks;
-do not infer scope from file count or technical keywords.
-For work depending on existing data or another system, choose an early slice that traces available source
-facts through required initialization or maintenance to a usable consumer result. If foundational work must
-come first, explain the dependency and the result that will prove it useful; an empty interface is not that
-proof. Use the smallest representative example, not an automatic full-system build or E2E gate.
+When outcomes can be useful, accepted or reverted independently, explain how to split them. Recommend
+which feature to do first based on value, dependencies and risk; let the user choose when it is not already
+clear. Keep work together when splitting it would break a transaction, security behavior or rollout.
+Explain those dependencies and rollback risks; file count and technical keywords do not decide scope.
+For work using existing data or another system, show an early result that uses the source data through the
+required setup or maintenance steps. If foundation work must come first, explain why and what usable result
+will demonstrate it; an empty interface is not proof. Use the smallest representative example, not an automatic full-system build or E2E gate.
 Every new [declarable surface](README.md#shared-runtime-conventions) must serve the selected outcome and name
 its affected actor, owner or consumer. Exclude speculative capability. External tracking is never a prerequisite for the selected
 outcome; creating external items requires separate authorization.
@@ -125,7 +125,8 @@ subtopics. Change this structure only for an explicit user/project convention or
 need, not stylistic preference. Do not reformat existing readable records merely for consistency or reject
 an actionable record solely for different headings. Preserve references and the actual delta when current
 truth already explains the unchanged behavior. Keep accepted constraints and
-explicit exclusions. Keep both spec and design notes concise. Spec owns requirements, acceptance and verification.
+explicit exclusions. Follow the [writing and maintenance rules](#document-updates-and-context).
+Spec owns requirements, acceptance and verification; design notes explain the necessary implementation approach.
 Keep short designs in spec. Split supporting content when it materially helps reading or handoff.
 Create or reuse a linked `design.md` before dependent implementation when a choice needs separate review:
 for example, trace one case across existing workflows to settle data ownership, permissions or recovery.
@@ -138,37 +139,50 @@ own acceptance or delivery status; `READY`, the delivery receipt, status writes 
 endpoint and lifecycle outputs, so do not restate them as checklist items. Archived directories remain history
 and do not participate in active execution. The canonical delivery receipt location is owned by `feature-done`.
 
-Give the execution preview in the conversation before implementation. Check existing behavior, conventions
-and contracts first. Use a representative case to show what carries over, what changes and what the user
-will see. Briefly explain the implementation approach: which modules or flows are reused or changed,
-what new responsibilities or verification work are needed, and why. Scale detail to the decision; a sentence
-can suffice for a routine change. Name files only when they clarify
-a consequential change. Use accepted conversation decisions and any existing spec/design as the baseline.
-For an unresolved material choice, show who or what decides, what happens if it fails and
-why you recommend the approach. Treat inferred behavior such as overwrite or retry as a proposal when
-it changes the result. A feature request does not accept an undisclosed material design choice.
+Before implementation, proactively give the execution preview in the conversation: how you plan to do the
+work and what the user will see. Check existing behavior and agreed rules first. Explain what matters to
+this change: what happens automatically, what stays unchanged, who or what decides and what happens if it fails.
+Briefly say which modules or flows you will reuse or change, what new work or checks are needed, and why.
+Mention files only when that helps the user judge the approach. A simple change may need only a sentence.
 
-For changes to another system's contract, shared authorization or data ownership, explain the affected
-systems and consumers, the behavior change and the code, data and deployment scope. Show one case
-that makes the consequence clear. If these effects exceed the accepted boundary, ask for a decision
-and wait before editing affected code, configuration or data. A progress announcement or saved design
-does not establish acceptance. Local-only deployment can still involve shared code changes.
-An accepted preview is reused; do not insert duplicate confirmation for work within its stated effects.
-Use a small diagram or decision table when branches or handoffs are hard to follow. If different designs
-could look correct in the happy path, use a case that distinguishes them, such as retry after a partial
-save. Check the agreed case in the first slice where it can run. For known handoffs, say what the user will judge and which work depends on it;
-bring the first representative result forward.
+If the change affects another system, shared permissions or who owns data, explain who is affected and how,
+including the code, data and deployments involved. A local deployment can still change shared code.
 
-The preview distinguishes pre-implementation decision evidence, implementation feedback and delivery evidence;
-it does not present every planned check as an upfront gate. For a materially long, paid, external, opaque,
-high-volume or restart-costly run, give a plain-language execution envelope before starting: the decision it
-supports, what it does and does not cover, knowable units/calls/rounds, a rough duration and uncertainty,
-external cost or permission, observable progress, partial-result persistence, failure/restart consequence,
-stop rule and the smallest useful canary or sample alternative. Fast local checks need no such ceremony.
-An accepted envelope covers ordinary work inside the current useful slice; it does not suppress informative handoffs
-or the feedback and stop boundaries in [Implementation Scope Stop](#implementation-scope-stop).
+Follow agreed decisions, whether in conversation or recorded in spec/design. An accepted preview is reused;
+do not insert duplicate confirmation for settled choices or ordinary coding details. If an important choice
+is still open, or the impact goes beyond what was agreed, explain the options, their consequences and your recommendation,
+then wait for the user's decision before doing the affected work. Do not silently choose behavior such as
+overwrite or retry when it changes the result. Permission to start does not approve an unexplained choice;
+a progress message or saved design does not replace agreement.
+
+Use an example or diagram when words alone leave the choice unclear. If different approaches look correct
+on the happy path, use a case that exposes their difference, such as a partial failure. Check the agreed
+case in the first stage where it can run.
+For work with several useful stages, explain what the user can judge at each handoff and what follows it.
+Show a representative result early enough to correct the direction before building on it.
+No fixed format, stage count or exhaustive task list is required.
+
+Explain which checks help choose the approach, which guide implementation and which verify delivery.
+Do not require every planned check before coding. For a materially long, paid, external, opaque,
+high-volume or restart-costly run, give a short execution envelope before starting:
+
+- What question the run answers, what it covers and what it leaves out.
+- Known units/calls/rounds, estimated duration and uncertainty, and any external cost or permission.
+- How progress can be observed, partial-result persistence, and what failure or restart would lose or repeat.
+- When to stop, and the smallest useful canary or sample alternative.
+
+Fast local checks need no such ceremony. An accepted envelope covers ordinary work inside the current useful
+slice; it does not suppress informative handoffs or the feedback and stop boundaries in
+[Implementation Scope Stop](#implementation-scope-stop).
 
 ## Document updates and context
+
+Write project documents in plain language: who does what, what result to expect, and what happens when it
+fails. Use technical terms when they add precision, not as substitutes for explaining behavior or decisions.
+Scale detail to what the reader needs to decide, implement, verify or maintain. Keep exact interface and
+field names, permissions, failure and reproduction conditions, acceptance criteria, and important decisions with their reasons
+and sources. Do not shorten away these details. Use sections, tables and lists only when they help; do not
+add empty content or files to look complete, or impose word, page or section-count targets.
 
 Answer the current question first. Batch writeback when a conclusion is reached, before implementation or at
 handoff; do not write after each sentence or interrupt conversation with bookkeeping. During a long exchange,
@@ -178,16 +192,17 @@ transcripts or logs, turn assumptions into decisions, or erase a relevant reject
 
 On resume, read the relevant accepted record and unfinished work, then necessary linked evidence. Do not
 restart planning, reload every guideline/archive, or clear the session merely because a document changed.
-Reopen a decision only when a material contradiction or new finding requires it. Keep one content owner;
-source traces are needed for non-obvious external interpretations, conflicts or supersessions, not duplicate
-rows for every ordinary requirement. Use dates and stable source references where useful. Keep routine
+Reopen a decision only when an important contradiction or new finding requires it.
+Cite sources for non-obvious interpretations of external information, conflicts or replacement decisions;
+do not add a duplicate source row for every ordinary requirement. Use dates and stable source references where useful. Keep routine
 creation mechanics and inapplicable-review explanations in the response or execution log.
-The current contract, authorization, acceptance, status and next action must be understandable without
-reconstructing revision history. Update affected sections in place; condense superseded plans and progress
-into dated reasons and evidence references, not another competing contract. Preserve material decisions,
-exclusions, authorization limits, failures and evidence applicability; historical protection does not freeze
-obsolete prose inside an active record. Keep one owner per fact and do not split files or impose a length
-limit merely to hide accumulation. Receipt preservation follows [feature-done](feature-done.md#completion-preflight).
+The current requirements, permission to proceed, acceptance criteria, status and next action must be clear
+without reconstructing revision history. Update affected sections in place. Replace outdated plans and
+progress with dated reasons and evidence references, so they cannot be mistaken for current instructions.
+Preserve important decisions, exclusions, authorization limits, failures and evidence applicability.
+Keeping history does not mean keeping obsolete instructions active. Keep each current rule in one owning
+document and reference it elsewhere, rather than repeat it across spec, design, tasks and product documents.
+Do not split files or impose a length limit merely to hide accumulated content. Receipt preservation follows [feature-done](feature-done.md#completion-preflight).
 
 ## Implementation Scope Stop
 
@@ -234,7 +249,7 @@ Persist useful conclusions under the document-update rules above.
 
 ## Readiness and conditional guidance
 
-Use [`spec-quality-check`](spec-quality-check.md) to check semantic readiness, without demanding file sets or
+Use [`spec-quality-check`](spec-quality-check.md) to check whether requirements are ready to implement, without demanding file sets or
 repeating a completed check on unchanged inputs. Independent review is conditional on risk or an explicit
 request, not record size. For real architecture/ownership changes, read only the applicable
 [architecture guidance](../architecture-design.md). A durable convention-placement decision uses the
@@ -250,7 +265,7 @@ blocks a reliable handoff, not permission to invent the decision.
 
 ## Verification
 
-Match verification to its stage and proof obligation:
+Choose checks for the current stage and what needs to be proved:
 
 - Before implementation, use existing evidence or the smallest bounded trial needed for a consequential
   decision. Use E2E only when it is the smallest reliable baseline, reproduction or decision evidence.
@@ -267,8 +282,9 @@ delivery obligation without lowering a failed expectation absent a confirmed beh
 
 ## Outputs and validation
 
-Report the useful conclusion, create/reuse/no-record disposition, actual evidence or gap, and next action in
-natural language. Do not output a required lane/form or an empty checklist. Read-only assessment stops without
+Report the conclusion, whether a record was created, reused or unnecessary, what was verified or remains
+unknown, and the next action in natural language. Do not output a required lane/form or an empty checklist. Read-only assessment stops without
 materialization. Record-only work stops after recording; authorized implementation continues from its accepted
 approach. Validate correct target, no-clobber, traceability, accepted constraints and exclusions, and actionable
-acceptance before handoff. Report tests actually executed separately from planned tests and static fixtures.
+acceptance before handoff. For documents, apply the [writing and maintenance rules](#document-updates-and-context).
+Report tests actually executed separately from planned tests and static fixtures.

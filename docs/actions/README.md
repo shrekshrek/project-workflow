@@ -46,6 +46,7 @@ implementation detail, speculative future concerns, and file/test/line counts re
 
 Single authoritative home for rules that several actions need. Action specs and runtime skills cite this section instead of restating it.
 
+- **Project documentation**: when creating or updating project documents, follow [feature-init's writing and maintenance rules](feature-init.md#document-updates-and-context). Apply them to the documents involved in the task; this does not authorize a documentation-wide cleanup.
 - **Reference reading**: read the current action fully; load supporting references only when applicable. For a named section, read from its heading through its children, stopping at the next equal/higher heading; fragments do not slice files automatically. Do not recursively load links or pre-read later actions. Reuse unchanged context; fresh reviewers read their selected role and supporting inputs.
 - **Feature directory resolution**: a feature lives in `docs/specs/changes/<NNN>-<slug>/`. Resolve an explicit slug/number/path to its matching active directory. For an empty or `current` argument, reuse the feature unambiguously selected in the current conversation; otherwise use the sole active candidate. Ask when the selection is missing or ambiguous. Exclude `archive/`. An action's explicit sweep mode selects a candidate set instead of one feature.
 - **NNN numbering**: three digits, one global sequence shared by the active tree and `archive/`; next number = max across both + 1 (zero-padded, `001` when empty). Archived numbers are never reused.

@@ -110,7 +110,7 @@ requirePatterns("docs/actions/spec-revise.md", [
   ["implicit latest-user correction trigger", /latest user instruction materially corrects, rejects, removes, or replaces/i],
   ["stale quality gate forbidden", /do not run[\s\S]*`spec-quality-check` against the stale artifact/i],
   ["supersession trace", /exact current user[\s\S]*normalized replacement rule[\s\S]*older rule/i],
-  ["revision decision closure", /Close the material correction set[\s\S]*conversation rules[\s\S]*accepted replacements/i],
+  ["revision decision closure", /conversation rules[\s\S]*identify what must change[\s\S]*resolve remaining choices[\s\S]*accepted replacements/i],
 ]);
 requirePatterns("docs/cross-tool-methodology.md", [
   ["independent Workflow with optional Blueprint handoff", /Blueprint handoff 是可选的上游输入[\s\S]*`project-workflow` 可以独立运行[\s\S]*Workflow 不静默改写上游规划/i],
@@ -118,12 +118,12 @@ requirePatterns("docs/cross-tool-methodology.md", [
 
 requirePatterns("docs/reviewers/spec-quality-reviewer.md", [
   ["optional Blueprint reconciliation", /When the spec cites a Blueprint handoff[\s\S]*slice, decision and contract references resolve[\s\S]*with no Blueprint reference, skip this check/i],
-  ["minimum sufficient planned proof", /smallest non-redundant proof obligations[\s\S]*executable verification path[\s\S]*not completed delivery evidence/i],
+  ["minimum sufficient planned proof", /practical verification plan and enough evidence to choose the approach[\s\S]*not completed delivery evidence[\s\S]*Keep only checks needed/i],
   ["shared escalation reference", /verification escalation\]\(\.\.\/actions\/README\.md#shared-runtime-conventions\)/i],
   ["correction source gap", /caller-authored "user confirmed"[\s\S]*`SOURCE GAP`/i],
   ["exclusion semantic remnant", /"remove"[\s\S]*optional, conditional, fallback, or compatibility path[\s\S]*`superseded-remnant`/i],
   ["endpoint-owned task rejection", /READY[\s\S]*endpoint\/lifecycle[\s\S]*circular[\s\S]*fails Q7a/i],
-  ["reviewer consumes resolved decisions", /decision-closure result[\s\S]*faithful representation of resolved material decisions/i],
+  ["reviewer consumes resolved decisions", /decision-closure result[\s\S]*faithfully represents decisions already[\s\S]*made/i],
 ]);
 
 requirePatterns("docs/actions/feature-done.md", [
@@ -134,7 +134,7 @@ requirePatterns("docs/actions/feature-done.md", [
   ["terminal endpoint handoff", /Each gate run reviews one stable final snapshot[\s\S]*never repairs[\s\S]*non-READY verdict returns control/i],
   ["L1 L2 L3", /L1 Mechanical:[\s\S]*L2 Project conventions:[\s\S]*L3 Change-spec compliance:/],
   ["risk-based review scheduling", /When both reviews apply, dispatch L2 and L3 together[\s\S]*security\/authorization[\s\S]*Otherwise dispatch L3 first[\s\S]*same snapshot/i],
-  ["review input separation", /authoritative convention population from the filesystem[\s\S]*`AGENTS\.md`[\s\S]*Caller-supplied[\s\S]*hints only[\s\S]*Route convention sources to L2 and the change-spec package to L3/i],
+  ["review input separation", /Collect applicable project rules from the filesystem[\s\S]*`AGENTS\.md`[\s\S]*Caller-supplied[\s\S]*hints only[\s\S]*Route convention sources to L2 and the change-spec package to L3/i],
   ["archive boundary owner", /closure authorization\]\(feature-archive\.md#closure-authorization\)[\s\S]*feature-archive[\s\S]*without asking again/i],
   ["compact failed history", /explicit rerun of an active `已实现` feature preserves[\s\S]*prior[\s\S]*READY receipt[\s\S]*Ordinary non-READY reruns replace[\s\S]*full Previous Proof Bundles are reserved/i],
   ["record consolidation preflight", /document maintenance[\s\S]*reconstructing competing revisions[\s\S]*`NEEDS WORK`[\s\S]*length alone is not a blocker/i],
@@ -148,16 +148,16 @@ requirePatterns("docs/actions/feature-done.md", [
   ["delivery artifact baseline", /accepted feature artifact as the requirements baseline/i],
   ["conditional L3 without coverage waiver", /L3 Change-spec compliance: required for a concrete[\s\S]*Otherwise record a[\s\S]*reasoned N\/A[\s\S]*execute or mechanically check every applicable obligation/i],
   ["single spec delivery receipt", /append the receipt to `spec\.md` only at delivery[\s\S]*single canonical receipt/i],
-  ["cost-tier fail-fast", /Order necessary evidence by cost and discrimination[\s\S]*lower-cost failure makes READY impossible[\s\S]*skip unrelated higher-cost checks/i],
+  ["cost-tier fail-fast", /Start with cheaper checks that can expose the relevant failure[\s\S]*lower-cost failure makes READY impossible[\s\S]*skip unrelated higher-cost checks/i],
   ["final candidate completes required evidence", /final READY candidate must finish all independently executable required checks/i],
   ["shared escalation reference", /verification escalation\]\(README\.md#shared-runtime-conventions\)/i],
 ]);
 requireTerms("docs/actions/feature-done.md", "mechanical feature boundary", [
-  "Git-derived feature population",
-  /complete\s+`base`-to-worktree population/,
-  "tracked changes plus untracked paths reported by Git",
-  "`base` is `HEAD` when all",
-  /include\s+committed and uncommitted work/,
+  "Use Git to identify all changes belonging to this feature",
+  /review everything from `base` to the working tree/,
+  "including Git-reported untracked paths",
+  "Use `HEAD` as `base` only when all feature work is uncommitted",
+  /PR base or target-branch merge base so committed work is included too/,
   "`base..reviewed` commit range",
   "accept the feature in place without a separate commit",
   "name the ambiguous changes and ask the user",
@@ -190,7 +190,7 @@ requirePatterns("docs/reviewers/README.md", [
   ["independent reviewer", /independent reviewer/i],
   ["main-session execution", /use the main session under the same read-only role contract/i],
   ["stable owner snapshot", /stable owner-supplied snapshot/i],
-  ["independent role contracts", /Each role retains its independent canonical contract/i],
+  ["independent role contracts", /Each reviewer follows the same role, input, evidence and verdict[\s\S]*rules either way/i],
   ["single reviewer fallback", /exactly one[\s\S]*execution fallback[\s\S]*only when no terminal result exists/i],
 ]);
 requireTerms("docs/project-workflow-overview.drawio", "current feature-done overview", [

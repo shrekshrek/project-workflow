@@ -1,74 +1,47 @@
 # project-workflow v3
 
-**Conversation-and-evidence-led feature development for AI-assisted coding** — methodology docs + starter template + runtime adapters.
-
-> v3 is docs-first and adds dual Claude/Codex plugin packaging plus spec lifecycle management.
-
----
-
-## Why v3 exists
-
-AI-assisted coding has three Tier 1 engineering problems. Every part of v3 — the four-stage workflow, 4 pillars, skills, template, and spec lifecycle — exists to address these three:
-
-- **Verification** — AI code generation can outpace human validation. Boris Cherny (Claude Code lead): *"The most important thing is to give Claude a way to verify."*
-- **Context-as-RAM** — Context windows behave like RAM, not storage. Irrelevant or repetitive context increases cost and makes important guidance harder to retain.
-- **Drift** — Without long-term memory, AI conventions drift across time (same code reviewed twice gives different verdicts), modules (A vs B style mismatch), and project lifecycle (month 1 vs month 6 codebase).
-
-Cross-layer inconsistency (frontend/backend/DB contracts) is treated as a stack-specific tactic (`docs/workflow.md §8.1`), not a top-level proposition — community evidence frames it as a general architecture problem, not AI-specific.
-
-Full framing with sources: [`docs/workflow.md §0.1`](docs/workflow.md).
-
----
-
-## Project goal
-
-project-workflow supports **conversation-and-evidence-led AI development**: make the intended result and approach understandable, align before implementation, and use staged results and verification to guide the next decision. Durable records preserve that agreement.
-
-Personal and team development use the same per-change workflow within each contributor's authorized scope. Code submission and feature closure follow their respective authorization boundaries.
-
-v3 separates **methodology core** from **runtime adapters**:
-
-- Core: `AGENTS.md`, `docs/specs/`(域现状), `docs/specs/changes/`(tracked changes), conditional ADR, compact delivery receipt, L1/L2/L3 review model, canonical workflow actions in `docs/actions/`, and canonical reviewer specs in `docs/reviewers/`.
-- Adapters: Claude Code and Codex each have a host-native plugin package. Both use the same core docs and template, while keeping runtime skills, manifests, and subagent dispatch host-specific.
-
-See [`docs/cross-tool-methodology.md`](docs/cross-tool-methodology.md).
-
-| Need | project-workflow answer |
-|---|---|
-| Set up a project without guessing | Run `project-init` for any repository. It selects neutral setup or adapts the working agreement to existing project evidence. |
-| Start a feature without losing requirements in chat | One `spec.md` by default, with optional supporting detail |
-| Keep implementation aligned while coding | spec revise SOP, module-boundary handling, environment-enforced rules |
-| Know whether a feature is ready | Completion preflight + proportionate L1 + applicable L2/L3 + delivery receipt |
-| Keep the codebase from drifting over months | `agents-md-revise` refresh of project conventions |
-
-Project Workflow can consume an approved Project Blueprint handoff when one exists, but remains independently
-usable for existing projects and ordinary feature work. Blueprint references are carried by the feature record;
-the Workflow does not copy project-level planning or silently revise it.
-
-The intended outcome is practical: fewer repeated reminders, fewer unreviewed AI changes, clearer handoff artifacts, and project rules that stay close to the codebase as it evolves.
-
----
+**A workflow for AI-assisted development:** agree on the approach, review useful results along the way, and verify the finished work. Supports Claude Code and Codex.
 
 ## Start here
 
-- Users: [`docs/quickstart.md`](docs/quickstart.md).
-- Runtime contract authors: [`docs/actions/`](docs/actions/) and [`docs/reviewers/`](docs/reviewers/).
-- Visual overview: [`docs/project-workflow-overview.drawio`](docs/project-workflow-overview.drawio).
+- Using the workflow: [`Quickstart`](docs/quickstart.md).
+- Writing feature records: [`Feature record guide`](docs/spec-driven.md).
+- Maintaining the rules: [`Actions`](docs/actions/) and [`Reviewers`](docs/reviewers/).
+- Visual overview: [`Workflow diagram`](docs/project-workflow-overview.drawio).
 
-Deep reference, not required reading: [`workflow.md`](docs/workflow.md), [`spec-driven.md`](docs/spec-driven.md), [`cross-tool-methodology.md`](docs/cross-tool-methodology.md), [`tooling.md`](docs/tooling.md), and the plugin evidence library [`gotchas.md`](docs/gotchas.md).
+For background, see [`workflow.md`](docs/workflow.md), [`cross-tool-methodology.md`](docs/cross-tool-methodology.md), [`tooling.md`](docs/tooling.md), and [`gotchas.md`](docs/gotchas.md). These are not required reading to get started.
 
----
+## Why v3 exists
+
+AI can produce code faster than people can check it. Long conversations can bury important decisions, and project rules can drift as the code changes. Workflow addresses these problems through conversation, focused verification and records of agreed decisions.
+
+Background and sources: [`docs/workflow.md §0.1`](docs/workflow.md).
+
+## Project goal
+
+Explain the result and approach before implementation, use staged results to gather feedback, and keep enough evidence to judge the work. Personal and team projects use the same workflow; permission to implement, submit code and close a feature are handled separately.
+
+| Need | What to use |
+|---|---|
+| Set up a project | `project-init` inspects the repository and chooses the appropriate setup. |
+| Keep requirements beyond the conversation | `feature-init` creates or reuses a record when needed; one `spec.md` by default. |
+| Change an agreed requirement | `spec-revise` updates the affected decisions and acceptance criteria. |
+| Check whether a feature is ready | `feature-done` runs required checks and reviews, then records the result. |
+| Update stale project rules | `agents-md-revise` compares conventions with the actual project. |
+
+Workflow works independently. If an approved Project Blueprint plan exists, feature records reference it rather than copy or silently change it.
 
 ## What's in v3
 
-| Layer | What | Where |
+| Part | Purpose | Location |
 |---|---|---|
-| 📘 **Methodology core** | Project setup, tracked feature delivery, continuous maintenance, and convention refresh principles + canonical action specs + 4 pillars + cross-tool boundaries + spec-driven templates + demonstrative gotchas ledger | [`docs/`](docs/) |
-| 🧰 **Starter template** | Six-file generated baseline plus optional rules, tier examples, feature/domain/ADR templates, and safety scripts retained in the plugin library. | [`template/`](template/) |
-| 🤖 **Claude Code adapter** | 9 Claude-native slash-command skills + 6 named sub-agents | [`adapters/claude/`](adapters/claude/) + [`.claude-plugin/`](.claude-plugin/) marketplace |
-| 🧩 **Codex adapter** | 9 Codex-native skills using bundled canonical reviewer specs | [`adapters/codex/`](adapters/codex/) + [`.agents/plugins/`](.agents/plugins/) marketplace |
+| Shared rules | Planning, implementation, verification, review and record maintenance | [`docs/`](docs/) |
+| Starter templates | Project setup, optional rules and feature/domain/ADR templates | [`template/`](template/) |
+| Claude Code plugin | 9 skills and 6 named agents | [`adapters/claude/`](adapters/claude/) |
+| Codex plugin | The same 9 actions, using Codex skills and shared reviewer rules | [`adapters/codex/`](adapters/codex/) |
 
-> **Concrete project example** (example-of-one, not authoritative source): [`shrekshrek/full-stack-scaffolding-fastapi-nuxt4`](https://github.com/shrekshrek/full-stack-scaffolding-fastapi-nuxt4) — a FastAPI + Nuxt 4 full-stack scaffold that follows project-workflow methodology. The methodology's arguments are self-contained in `docs/`; the scaffold is just one concrete instantiation.
+Both plugins use the same workflow rules while keeping their own tool integration.
+An example project is [`full-stack-scaffolding-fastapi-nuxt4`](https://github.com/shrekshrek/full-stack-scaffolding-fastapi-nuxt4); its stack and layout are not requirements for using Workflow.
 
 ## Install
 
@@ -94,11 +67,11 @@ claude plugin marketplace update project-workflow
 claude plugin update project-workflow@project-workflow
 ```
 
-Claude Code exposes the same 9 workflow actions as Codex — one entry point per action, no separate helper commands. Delivery and archive behavior follows the shared canonical actions.
+Claude Code and Codex expose the same 9 workflow actions.
 
 ### Codex plugin
 
-The Codex-native source adapter lives at [`adapters/codex/`](adapters/codex/). The repository marketplace resolves the self-contained generated package from the `plugin-dist` branch. Codex exposes the same 9 workflow actions through its own native skill implementations; the Codex skills are not copies of the Claude runtime adapter.
+The marketplace installs the Codex package from the `plugin-dist` branch.
 
 Install the GitHub version in Codex:
 
@@ -118,15 +91,10 @@ codex plugin add project-workflow@project-workflow
 
 Start a new Codex task after installing or updating so the refreshed skills are loaded.
 
-Before archiving, require the current `## Proof Bundle` fields from `feature-done`: READY verdict, reviewed-state
-identity and endpoint outputs, Checks, applicable L2/L3 review outcomes, and Current truth. A
-missing or invalid required field is ineligible; rerun `feature-done`. `feature-archive` never interprets
-historical receipt fields as READY evidence.
-
 <details>
 <summary>Local development install (repo contributors only)</summary>
 
-Build both self-contained packages into a fresh temporary directory while iterating on this repo itself. If the GitHub marketplace is already configured for the host being tested, remove it before adding this local marketplace; local and remote sources intentionally share the same marketplace and plugin names.
+Build both packages into a fresh temporary directory. Before switching from GitHub to a local install, remove the GitHub marketplace for that host; both sources use the same plugin name.
 
 ```bash
 DIST_ROOT=$(mktemp -d)
@@ -149,8 +117,6 @@ codex plugin add project-workflow@project-workflow
 
 The same output root contains a Claude marketplace at `.claude-plugin/marketplace.json` and a Codex marketplace at `.agents/plugins/marketplace.json`. In Codex App, add the generated output directory as the local marketplace, install **Project Workflow**, and start a new thread.
 
-Do not add both the local development source and the GitHub release source at the same time. Remove the configured `project-workflow` marketplace for that host before switching sources, then reinstall and start a new task.
-
 </details>
 
 Installed Codex skills are invoked as:
@@ -167,9 +133,9 @@ $spec-reconcile <area>
 $agents-md-revise
 ```
 
-Run `$project-init` for new and existing projects. It inspects the repository, creates the neutral baseline where appropriate, or continues with `$project-personalize` to adapt existing guidance and preserve project configuration. An aligned setup needs no edits. You can still invoke `$project-personalize` directly. Run any generator requiring an empty target first.
+Use `$project-init` for new or existing projects. It sets up a new project or uses `$project-personalize` to adapt existing guidance without replacing project configuration. If setup already matches, nothing changes. `$project-personalize` also works directly. Run generators that need an empty directory before setup.
 
-Application-foundation and architecture work follows [`feature-init`](docs/actions/feature-init.md)'s conversation and record rules, without a separate action or lane. Keep minimal setup inside the first feature when inseparable; track architecture separately only when it has its own durable consumer. Read [`architecture-design`](docs/architecture-design.md) when the action calls for it.
+Foundation and architecture work use [`feature-init`](docs/actions/feature-init.md) too. Keep setup with the first feature when they belong together; track architecture separately only when other work needs it independently. Read [`architecture-design`](docs/architecture-design.md) when the action calls for it.
 
 ### Manual fallback
 
@@ -182,7 +148,7 @@ node <path-to-this-repo>/scripts/materialize-project-baseline.cjs \
   --apply-staged <temporary-staging-dir> <your-project>
 ```
 
-The generated baseline contains no stack placeholders. All reusable templates and optional host-specific assets stay in the plugin/source library; add them later through evidence-backed personalization. Dockerfile / docker-compose / build scripts remain project-owned.
+Setup does not invent a technology stack. Templates and optional tool-specific files stay in the plugin until needed. Docker and build files belong to the project.
 
 ### Source naming rule
 
@@ -196,46 +162,57 @@ The plugin identity is `project-workflow` for both Claude Code and Codex. Local 
 
 ## Workflow surface
 
-> Version follows the Claude and Codex plugin manifests; per-skill version columns are intentionally omitted to avoid drift. Claude Code uses `/project-workflow:*`; Codex uses the same action names as `$skill`. [`docs/actions/`](docs/actions/) is the canonical contract layer.
+The plugin manifests define the version. Claude Code uses `/project-workflow:*`; Codex uses `$skill`.
+The complete rules live in [`docs/actions/`](docs/actions/).
 
-Most work does **not** use all nine actions. Initialize once, then use the daily path only when a change benefits from tracking:
+Most work does not need all nine actions. Set up once, then use the actions relevant to the change:
 
-| Frequency | Action | Purpose |
+| When | Action | Purpose |
 |---|---|---|
-| Onboarding | `project-init` | Inspect the repository and complete the appropriate setup. |
-| Once, project evidence or partial/custom baseline exists | `project-personalize` | Establish or adapt the evidence-backed project agreement; when structure/guidance scope is selected, propose evidence-backed root/tier/module placement without creating files for symmetry. |
-| Per proposed change | `feature-init` | Discuss the problem, test consequential assumptions when needed, and create or reuse only the acceptance record needed. Continue from settled decisions without repeated approval. |
-| Before implementation | `spec-quality-check` | Reconcile accepted requirements and gate the completed artifact before implementation. |
-| End of tracked change | `feature-done` | Establish the Git feature boundary, validate one stable snapshot with proportionate L1 and risk-based applicable L2/L3, and write one compact receipt. |
-| Periodic sweep | `feature-archive` | Merge pending current truth and move delivered changes out of the active tree. |
+| Project setup | `project-init` | Inspect the repository and choose the appropriate setup. |
+| Adapting existing project guidance | `project-personalize` | Base working rules on the project's code, configuration and conventions. |
+| Planning a change | `feature-init` | Clarify behavior and important choices; create or reuse a record only when needed. |
+| Checking readiness to implement | `spec-quality-check` | Check that the record matches agreed requirements and resolves important questions. |
+| Delivering a tracked change | `feature-done` | Check the actual changes, run required verification and reviews, and record the result. |
+| Authorized closure or periodic cleanup | `feature-archive` | Update current product documentation and archive delivered changes. |
 
-Finish/delivery stops at READY with archive pending; [authorized closure](docs/actions/feature-archive.md#closure-authorization) continues to
-`feature-archive`. Deferred cross-task archive uses an immutable reviewed commit, while a dirty-worktree receipt is
-same-task evidence. `feature-archive` validates pending current truth against the present state.
+Delivery ends at READY, with archive pending. [Authorized closure](docs/actions/feature-archive.md#closure-authorization)
+continues to `feature-archive`. Archiving needs a valid current delivery receipt; missing or invalid evidence
+requires another `feature-done` run. A receipt for uncommitted work is valid only in the same task;
+archiving in a later task needs a reviewed commit. Archive checks pending documentation updates against the
+current project state.
 
 Exception and maintenance actions appear only when their condition exists:
 
 | Condition | Action |
 |---|---|
-| An accepted, unarchived contract needs a material correction before or after implementation | `spec-revise` |
-| Active specs, current truth, or ADRs have an unresolved contradiction | `spec-reconcile` |
-| Objective project state or root/tier/module guidance placement drifts from `AGENTS.md` or explicitly selected host-specific convention files | `agents-md-revise` |
+| Agreed requirements need an important correction before archive | `spec-revise` |
+| Active specs, current product documentation or ADRs contradict each other | `spec-reconcile` |
+| Project rules no longer match the code, configuration or directory structure | `agents-md-revise` |
 
-Exact rule ownership and architecture-risk routing are defined once in the
-[`docs/actions` index](docs/actions/README.md). The overview and quickstart summarize that contract; they do
-not add gates, reviewers, artifacts, or trigger conditions.
+The [actions index](docs/actions/README.md) identifies which file owns each rule. This overview and Quickstart
+summarize those rules without adding requirements.
 
-> Reusable templates (feature/domain/ADR) are plugin-canonical and are not retained in generated projects. Actions instantiate only concrete artifacts when needed. To customize, fork the plugin and edit `template/`.
->
-> Ad-hoc single-layer review: run the applicable feature Verification and changed-scope project check commands directly for L1, or dispatch the `agents-md-reviewer` / `spec-reviewer` sub-agent from the main session for L2/L3.
+Templates stay in the plugin; actions create project records only when needed. To customize templates, fork
+the plugin and edit `template/`.
+
+For a focused review, run relevant test/check commands (L1), or use `agents-md-reviewer` for project rules (L2)
+and `spec-reviewer` for agreed feature behavior (L3).
 
 ## Reviewer methodology
 
-[`docs/reviewers/`](docs/reviewers/) is canonical for the six reviewer, auditor, and research roles. Actual risk and project requirements determine whether independent review is needed; applicable L2 and L3 retain their distinct contracts. Every acceptance obligation still needs verification. Reviewers consume L1 evidence, and an execution failure permits one fresh same-contract fallback. See the [reviewer index](docs/reviewers/README.md).
+Risk and project requirements determine which independent reviews are needed. Every acceptance requirement
+still needs verification. Reviewers use the supplied test results rather than rerun them. Only an execution
+failure that produces no final result allows one fresh attempt under the same rules. See the [reviewer index](docs/reviewers/README.md) for all six roles.
 
 ## Maintaining generated plugin packages
 
-The main branch keeps one canonical core plus separate Claude- and Codex-native adapters. `scripts/build-plugin-packages.cjs` assembles two self-contained packages in a temporary output tree; no generated package is committed on `main`. A versioned release commit on `main` publishes the validated output to the generated `plugin-dist` branch after all checks pass. Maintainer-only feature-init fixtures, grading scripts, and scenario instructions remain source-only. After changing shared core assets or either adapter, run the complete local suite:
+The main branch contains shared rules and separate Claude/Codex adapters. The build script assembles both
+packages in a temporary directory. A versioned release commit publishes them to `plugin-dist` after checks
+pass; generated packages are not committed on `main`. Maintainer-only test fixtures and grading tools stay
+in the source repository.
+
+After changing shared rules or either adapter, run:
 
 ```bash
 node scripts/check-all.cjs
@@ -254,7 +231,10 @@ node scripts/check-lifecycle-links.cjs
 node scripts/check-markdown-links.cjs
 ```
 
-These checks enforce the same 9 public actions, installed-plugin-safe canonical reads, the `< 200` line limit, structural verdict/receipt/template contracts, deterministic endpoint and feature-init fixture inputs, mechanical no-clobber behavior, verdict truth tables, generated-package completeness, and source plus packaged Markdown paths/fragments. They do not execute model reviewers or generative skills. When reviewer, endpoint, or feature-init generation behavior changes, run the applicable model smoke in [`docs/examples/reviewer-mutation-smoke.md`](docs/examples/reviewer-mutation-smoke.md) or [`docs/examples/feature-init-scenario-matrix.md`](docs/examples/feature-init-scenario-matrix.md) and record the result in the release PR/task.
+These checks cover action parity, packaged file access, skill length, document structure, fixture inputs,
+verdict rules, safe file creation and links. They do not run model reviewers or generative skills.
+For changes to model behavior, run the applicable [reviewer smoke test](docs/examples/reviewer-mutation-smoke.md)
+or [feature-init scenarios](docs/examples/feature-init-scenario-matrix.md) and record the result in the release PR/task.
 
 ## License
 

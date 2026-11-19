@@ -2,14 +2,17 @@
 
 This directory is the canonical reviewer / auditor / researcher layer for project-workflow.
 
-Runtime agents and skills must reference these specs instead of redefining the review method in tool-specific files. Claude Code uses `adapters/claude/agents/*.md`. Codex plugin skills read the same specs and must use a Codex subagent whenever the owning action marks a reviewer boundary applicable and dispatch capability/capacity exist. Those files are adapters: they define runtime metadata, tool availability, and dispatch details.
+Agents and skills reference these specs; they do not define a second review method. Claude Code uses
+`adapters/claude/agents/*.md`. Codex skills read the same specs and must use a Codex subagent when the calling
+action requires a review and dispatch capability/capacity are available. Adapters define only host metadata,
+tools and how to start the reviewer.
 
 | Reviewer | Purpose |
 |---|---|
 | [`agents-md-reviewer`](agents-md-reviewer.md) | L2 project-convention compliance review |
 | [`spec-reviewer`](spec-reviewer.md) | L3 implementation-vs-accepted-feature compliance review |
-| [`spec-quality-reviewer`](spec-quality-reviewer.md) | requirements reconciliation plus subjective pre-implementation quality and conditional architecture adequacy |
-| [`decision-completeness-auditor`](decision-completeness-auditor.md) | generated-decision traceability audit |
+| [`spec-quality-reviewer`](spec-quality-reviewer.md) | Check requirement sources and readiness to implement; check architecture when applicable |
+| [`decision-completeness-auditor`](decision-completeness-auditor.md) | Check sources for generated decisions |
 | [`tech-researcher`](tech-researcher.md) | stack/library/tool choice research |
 | [`codebase-explorer`](codebase-explorer.md) | existing-codebase structure survey |
 
@@ -17,17 +20,17 @@ If a runtime adapter conflicts with one of these specs, the spec wins. Update th
 
 ## Reviewer execution contract
 
-The owning action decides whether a reviewer, auditor, or researcher boundary is applicable. `N/A` is valid only when that action defines it, such as a review with no applicable independent-judgment concern. Failed mechanical prerequisites use the action's non-execution status, not an applicability exemption.
+The calling action decides whether review, audit or research is needed. Use `N/A` only when that action
+allows it, such as when nothing requires independent judgment. If a prerequisite check fails, report the
+action's status for a check that was not run; do not label the review inapplicable.
 
 At every applicable boundary, use an independent reviewer when the host can dispatch one. If the host cannot
 dispatch that role, use the main session under the same read-only role contract and evidence. Invoking the owning action requires no extra workflow confirmation; host security approvals
 still apply.
 
-Independent reviewer boundaries may run in parallel or sequentially. Scheduling does not change their inputs,
-evidence requirements, or verdict contract. Each role retains its independent canonical contract.
-
-Reviewer progress is non-authoritative. The owning action aggregates or acts on findings only after the reviewer
-has completed its applicable population.
+Reviews may run in parallel or sequentially. Each reviewer follows the same role, input, evidence and verdict
+rules either way. Progress updates are not final findings: the calling action uses the result only after
+the reviewer has finished all applicable work.
 If a reviewer discovers that required caller-supplied input or prior-cycle evidence is missing or unreadable,
 it must terminate with the failure form defined by its canonical role and owning action; roles whose verdict
 contract defines `UNRELIABLE` return one terminal `UNRELIABLE` report. It must not request the missing material
@@ -42,6 +45,11 @@ When runtime or transport failure prevents a terminal result, the owning action 
 execution fallback under the same role contract: use another independent reviewer when available, otherwise the
 main session. Execution fallback applies only when no terminal result exists.
 
-Reviewers consume prerequisite/check evidence supplied by the owning action. They must not rerun, expand, or substitute for the owning action's mechanical gate unless a role specification explicitly owns such execution. An evidence entry identifies the obligation, rule, or coverage area it supports, the command or assertion, execution mode, result/status, relevant-input scope, concise totals when applicable, and original execution-evidence reference. Missing or unreadable required execution evidence makes the review `UNRELIABLE`; evidence that reliably demonstrates a role-level compliance gap remains a finding under that role's verdict contract.
+Use prerequisite and check results supplied by the calling action. Do not run, repeat or add mechanical checks
+unless the role explicitly requires that execution. Each evidence entry identifies what it proves
+(requirement, rule or coverage area), the command/assertion, execution mode, result, inputs covered,
+concise totals when applicable, and the original result reference.
+Missing or unreadable required execution evidence makes the review `UNRELIABLE`. Evidence showing an actual
+violation is a finding, handled under that role's verdict rules.
 
 Reviewers are read-only. The owning action controls any repair or later review cycle.

@@ -1,10 +1,10 @@
 # decision-completeness-auditor
 
-Canonical auditor for generated-decision traceability before preview/apply gates.
+Check where generated decisions came from before presenting or applying them.
 
 ## Scope
 
-Audit generated content for unanchored "specific-string decisions", such as:
+Check the sources for concrete choices in generated content, such as:
 
 - paths and package roots
 - module references
@@ -28,7 +28,10 @@ When a baseline is provided, audit only newly added or changed decisions. Existi
 
 ## Dispatch Boundary
 
-Do not dispatch for values directly traceable to user input or repository evidence, even when repeated across files; use a compact inline `value → source` trace. Dispatch only for an unconfirmed choice whose consequences are material to the accepted direction or boundary, or for conflicting/weak sources.
+If values come directly from user input or repository evidence, use a short inline `value → source` trace;
+no separate auditor is needed, even when values repeat across files. Dispatch this auditor only when an
+unconfirmed choice could significantly change the agreed direction or scope, or when sources conflict
+or do not provide enough evidence.
 
 ## Method
 

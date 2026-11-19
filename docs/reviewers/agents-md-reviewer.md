@@ -24,22 +24,30 @@ For Claude, only project-root `.claude/rules/*.md` may be supplied; user-level `
 
 ## Review
 
-1. Resolve convention-source applicability independently for every changed path. Starting at the project root,
-   collect the ancestor `AGENTS.md` chain through the nearest nested tier/module file, then union those chains
-   across the authoritative population. An unrelated sibling file is not applicable. A caller-supplied source
-   list that omits an applicable ancestor is `UNRELIABLE`; supplied non-applicable sources are resolved as
-   definite non-matches rather than applied outside their subtree.
-2. Fresh-read each applicable convention source completely and extract testable `single` or `distributed`
-   rules. For each changed path, inherit non-conflicting rules from root to nearest nested source. A deeper rule
+1. Identify applicable project rules for every changed path. Collect the root `AGENTS.md` and nested
+   `AGENTS.md` files along that path, then combine the lists without duplicates. Unrelated sibling files
+   do not apply. If the caller's source list omits an applicable ancestor, return `UNRELIABLE`.
+   Mark supplied but inapplicable sources as non-matches; do not apply them outside their directory scope.
+2. Reread each applicable convention file completely. Identify testable `single` rules (one location)
+   and `distributed` rules (several locations). For each changed path, inherit non-conflicting rules from root to nearest nested source. A deeper rule
    overrides the same identifiable requirement; all other parent rules remain inherited. Proximity alone never
    erases a parent rule, and an unclear parent/child requirement match is a blocking ambiguity.
 3. Use the changed paths supplied by the owning action as authoritative scope, or derive them from the supplied
    Git/non-Git scope when absent. Assess every supplied path and return `UNRELIABLE` when any path or applicable
    convention cannot be assessed. Track enough applicability detail to cite findings; a clean result needs no
    exhaustive rule-ID inventory.
-4. Assess every changed path diff-first: inspect its changed hunks, then expand only to the surrounding declaration/symbol, dependency evidence, or full file needed by an applicable rule. A file-wide, absence/existence, or distributed rule authorizes the corresponding broader population; the requirement to assess every path does not require reading every implementation file in full by default. Deleted or renamed paths may be assessed from authoritative diff evidence rather than treated as unreadable.
-5. For distributed rules, verify the whole applicable population; if unavoidable sampling leaves applicable but unverified items, explain it and return `UNRELIABLE`.
-6. Consume the supplied L1 evidence map when a convention rule depends on mechanical evidence. Each used entry must identify its mapped rule IDs, command/assertion, execution mode, result/status, relevant-input scope, concise totals when applicable, and original evidence reference. Do not execute or repeat tests, builds, linters, acceptance commands, or other L1 checks; read-only Git/diff/search inspection remains allowed. An explicitly empty map is complete when no applicable rule needs mechanical evidence. A missing or unreadable required evidence package is `UNRELIABLE`; a complete package that demonstrates a convention violation supports the normal finding verdict.
+4. Start with every changed path's diff. Read surrounding code, dependencies or a whole file only as needed
+   by an applicable rule. File-wide, presence/absence and distributed rules may require broader inspection;
+   covering all changed paths does not mean reading all implementation files in full. Use diff evidence for
+   deleted or renamed paths instead of treating them as unreadable.
+5. For distributed rules, check every applicable location. If unavoidable sampling leaves any applicable
+   item unverified, explain the gap and return `UNRELIABLE`.
+6. Use the supplied L1 evidence map for rules that need mechanical checks. Each used entry must identify the
+   mapped rule IDs, command/assertion, execution mode, result, inputs covered, concise totals when applicable,
+   and original evidence reference. Do not run or repeat tests, builds, linters, acceptance commands or other L1 checks;
+   read-only Git/diff/search inspection is allowed. An explicitly empty map is complete when no applicable
+   rule needs mechanical evidence. Missing or unreadable required evidence is `UNRELIABLE`; a complete
+   package showing a convention violation supports the normal finding verdict.
 7. Cite each violation and mark every ambiguity blocking or advisory. Show a compact population matrix only for a distributed failure.
 
 A zero-finding `PASS` requires complete review of the changed scope against every applicable convention and no

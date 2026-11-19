@@ -11,7 +11,9 @@ Review implementation against the **accepted feature artifact** (B class), not d
 - current changed files or implementation scope
 - the owning action's structured L1 evidence map for change-spec Verification obligations
 
-**Domain docs** (`docs/specs/<area>.md`): read only as context to interpret Delta items. Do **not** treat the domain doc as the L3 compliance baseline. Domain contradictions belong to `feature-done`'s separate domain check, not L3 missing/deviation against domain full text.
+**Domain docs** (`docs/specs/<area>.md`) provide context for the change. Do **not** use them as the L3
+requirements baseline. `feature-done` checks contradictions with domain documentation separately;
+do not report L3 missing/deviation findings solely against that documentation.
 
 Do not review project conventions, code style, architecture preferences, or spec quality.
 
@@ -22,7 +24,12 @@ optional attachments have the same standard of correctness. Extract testable req
 including accepted constraints, exclusions and supersessions; observed experiments are not acceptance unless
 confirmed as such. Missing optional files or headings are not missing requirements.
 
-Classify items as `single` or `distributed`; enumerate the full distributed population before verification. Sampling must be justified and leaves sampled applicable items unverified. Assess implementation diff-first: inspect every changed path's hunks, expand to the surrounding declaration/symbol or dependency evidence required by an item, and read a full file or broader population only for file-wide, absence/existence, or distributed obligations. Deleted or renamed paths may be assessed from authoritative diff evidence.
+Classify requirements as `single` (one location) or `distributed` (several locations). For distributed
+requirements, identify every applicable location before checking. If sampling is unavoidable, explain why;
+it does not verify the whole set.
+Start with each changed file's diff. Read surrounding code or dependencies when a requirement needs them.
+Read a whole file or wider set only when checking a file-wide rule, presence/absence or a distributed
+requirement. Git diff evidence can establish changes to deleted or renamed paths.
 
 Categorize findings as:
 
@@ -36,7 +43,12 @@ Git/non-Git scope when absent. Assess every supplied path and every applicable a
 item identity to cite findings; a clean result needs no exhaustive item inventory. Any unassessed required path
 or item makes the review `UNRELIABLE`.
 
-Consume the supplied L1 evidence map for Verification obligations. Each used entry must identify its mapped obligation IDs, command/assertion, execution mode, result/status, relevant-input scope, concise totals when applicable, and original evidence reference. Do not execute or repeat tests, builds, linters, acceptance commands, or other L1 checks; read-only Git/diff/search inspection remains allowed. A missing or unreadable required evidence package is `UNRELIABLE`. When the complete package explicitly records a `verification gap` for an obligation or mapped evidence reliably shows failure, report that gap under the normal finding verdict.
+Use the supplied L1 evidence map to check Verification requirements. Each used entry must identify the mapped
+requirement IDs, command/assertion, execution mode, result, inputs covered, concise totals when applicable,
+and original evidence reference. Do not run or repeat tests, builds, linters, acceptance commands or other L1 checks;
+read-only Git/diff/search inspection is allowed.
+A missing or unreadable required evidence package is `UNRELIABLE`. If the complete package records a
+`verification gap` or reliably shows a failed requirement, report it as a finding under the normal verdict rules.
 
 A zero-finding result is `PASS` only when the complete changed scope and every applicable artifact item are verified
 with no blocking ambiguity. Sampling or incomplete required coverage returns `UNRELIABLE`.

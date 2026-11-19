@@ -1,20 +1,21 @@
 # feature-done
 
-Canonical endpoint action for deciding whether a feature is ready and recording proof in the feature record.
+Check whether a feature is ready to deliver and record the result and supporting evidence in its spec.
 
 ## Use When
 
 - Implementation for a feature is believed complete.
 - The user wants a single readiness verdict.
 
-This action owns the endpoint gate: completion preflight, L1, applicable L2/L3, current-truth check,
-and delivery receipt. Adapters implement it as one entry point.
+This action runs the delivery check: completion preflight, tests and automated checks (L1), applicable
+project-convention and requirement reviews (L2/L3), comparison with current product documentation,
+and a delivery receipt. Both adapters provide one entry point for this process.
 Each gate run reviews one stable final snapshot and returns its terminal verdict. It never repairs
 implementation or non-receipt artifacts; a non-READY verdict returns control to the enclosing request.
 
 ## Completion Preflight
 
-Run this cheap completion check before expanded L1 commands or reviewer dispatch:
+Before running broader checks or starting reviewers, check that the work is ready for review:
 
 - The selected artifact is active and has no unfinished checklist item or unresolved material placeholder
   in its contract, plan, task checklist, Verification, or implementation record. Ignore the canonical
@@ -34,10 +35,11 @@ Run this cheap completion check before expanded L1 commands or reviewer dispatch
   `NEEDS WORK` for in-place consolidation before expanded L1. Necessary detail or length alone is not a blocker.
   Any declared phase-focused checks must be complete; valid same-task results are
   consumed under the normal L1 reuse rules rather than recreated at the endpoint.
-- Establish one Git-derived feature population before interpreting scope. A dirty state uses the complete
-  `base`-to-worktree population: tracked changes plus untracked paths reported by Git. `base` is `HEAD` when all
-  selected-feature work is uncommitted; otherwise use the explicit PR base or target-branch merge base to include
-  committed and uncommitted work. A clean state uses one exact `base..reviewed` commit range.
+- Use Git to identify all changes belonging to this feature before judging its scope.
+  With uncommitted changes, review everything from `base` to the working tree, including Git-reported
+  untracked paths. Use `HEAD` as `base` only when all feature work is uncommitted. Otherwise use the explicit
+  PR base or target-branch merge base so committed work is included too.
+  With a clean working tree, use one exact `base..reviewed` commit range.
   If the repository has no first commit, return `BLOCKED` before expanded L1 and explain that a baseline commit excluding the feature changes is needed before retrying.
   When onboarding and the first feature are both uncommitted, use the setup record and actual diff
   (individual hunks for shared files) to identify which changes belong to each. If ownership is clear,
@@ -45,18 +47,21 @@ Run this cheap completion check before expanded L1 commands or reviewer dispatch
   apply the project conventions in the working tree, and cover any setup changes the feature depends on.
   If ownership is unclear, name the ambiguous changes and ask the user before expanded L1. Other mixed
   features or unrelated work still require isolation or a commit range, as does an ambiguous base.
-- Compare the actual changed responsibility areas and high-impact surfaces with the accepted behavior, constraints and any applicable delivery boundary. For each new exposed option or mode, trace its consumer and supported settings to current accepted scenarios. Flag unsupported variation as `NEEDS WORK`. An undeclared
-  [declarable surface](README.md#shared-runtime-conventions) returns `NEEDS WORK` before expanded L1
-  and routes through [Implementation Scope Stop](feature-init.md#implementation-scope-stop).
-  If ownership of the extra change is ambiguous, return `BLOCKED`.
-- Close every explicit Guidance Placement commitment before expanded L1. When plan Sibling Alignment or an
-  accepted task says `Codify`, mechanically require either the named root/tier/module `AGENTS.md` target plus
-  any project-adopted one-line `CLAUDE.md` alias, or the named mechanical enforcement. Verify the named subtree
+- Compare actual changes to responsibilities and important behavior with the agreed behavior, constraints
+  and delivery scope. For each new option or mode, identify who needs it and which agreed scenario needs
+  its settings. Options without that support return `NEEDS WORK`.
+  An undeclared [declarable surface](README.md#shared-runtime-conventions) returns `NEEDS WORK` before
+  expanded L1 and routes through [Implementation Scope Stop](feature-init.md#implementation-scope-stop).
+  If it is unclear which feature owns the extra change, return `BLOCKED`.
+- Before expanded L1, verify any agreed task to record or enforce project rules (Guidance Placement).
+  When plan Sibling Alignment or an accepted task says `Codify`, check that the promised root/tier/module
+  `AGENTS.md` and any adopted one-line `CLAUDE.md` alias exist, or that the promised automated enforcement exists.
+  Verify the named subtree
   exists (or is created by this feature) and an adopted alias is byte-equivalent to `@AGENTS.md\n`. A missing
   promised target returns `NEEDS WORK` and reviewers record `not-run(completion preflight)`; an unresolvable
   promised owner returns `BLOCKED`. Difference-only content, inheritance, and semantic placement belong to L2.
   Only an accepted artifact or project convention establishes a Codify commitment.
-- When a declared user-visible actor-to-result journey is a cheap, high-value early signal, run it before
+- When an agreed user flow is quick to check and likely to expose important failures, test it before
   broader or lower-level checks. A failure returns `NEEDS WORK` before expanded L1; otherwise continue with the
   artifact's ordered Verification.
 - A passing preflight journey becomes an ordinary L1 evidence entry and is not rerun unless its relevant inputs
@@ -70,8 +75,10 @@ entry retaining its verdict, reviewed identity, invalidation reason and exact re
 reference to the original receipt. Verify that reference contains the receipt, not merely the reviewed code;
 otherwise retain the original in place. Do not require a new file or commit just for compaction.
 Ordinary non-READY reruns replace the canonical receipt in place; full Previous Proof Bundles are reserved
-for reopened delivered evidence without such a reference. Keep only a dated one-line attempt summary when useful. A non-READY rerun returns the status to `已确认`; a READY rerun keeps
-`已实现`. These receipt-history and status writes are endpoint-owned lifecycle outputs, not contract repair.
+for reopened deliveries whose old receipt has no verified immutable reference. A dated one-line attempt
+summary is enough for other retries when useful.
+A non-READY rerun returns the status to `已确认`; a READY rerun keeps `已实现`.
+This action owns these receipt and status updates; they do not revise the requirements.
 
 ## Inputs
 
@@ -88,9 +95,10 @@ for reopened delivered evidence without such a reference. Keep only a dated one-
 - L1 Mechanical: run explicit Verification plus standard commands for each changed project. Follow the shared
   [verification escalation](README.md#shared-runtime-conventions) rule.
 - L1 execution: reuse a passing same-task check only while its command, relevant inputs, and scope classification
-  are unchanged. After a fix, rerun affected checks and their dependency closure; expand only when the fix changes
-  a shared surface, contract, dependency, or build configuration. Sequence cache-sharing heavyweight commands.
-  Order necessary evidence by cost and discrimination; batch independent checks at the current cost tier.
+  are unchanged. After a fix, rerun affected checks and checks that depend on them. Expand coverage only when
+  the fix changes shared code or interfaces, a contract, dependency or build configuration. Run expensive commands
+  sequentially when they share caches. Start with cheaper checks that can expose the relevant failure;
+  run independent checks of similar cost together.
   Once a necessary lower-cost failure makes READY impossible, skip unrelated higher-cost checks unless needed
   for diagnosis or an explicitly requested full sweep.
 - L1 prerequisite: a final READY candidate must finish all independently executable required checks before
@@ -135,24 +143,27 @@ and applicable reviews; reference valid evidence instead of restating the plan o
 Treat the accepted feature artifact as the requirements baseline; handle later material decisions through
 [Implementation Scope Stop](feature-init.md#implementation-scope-stop) before reviewing implementation fidelity.
 
-Create one transient snapshot with repository identity, authoritative changed paths, L1 evidence, applicable
-spec/artifacts, and convention sources. Resolve the authoritative convention population from the filesystem: for
-every changed path, walk from the project root through its ancestors to the nearest applicable nested `AGENTS.md`,
-then union those chains; add project-local host convention sources selected by the active adapter. Caller-supplied
-paths are hints only. Validate this population before dispatch.
-Every Verification obligation has evidence or an explicit gap; missing or unreadable required input returns
-`BLOCKED` with `not-run(review-package incomplete)`. Each evidence entry records obligation, command/assertion,
-`run` or `same-task reuse`, result, relevant-input scope, and original reference. Reviewers consume rather than
-rerun it; missing supplied evidence is `UNRELIABLE`, while an explicit failed/gap entry is a finding.
+Prepare one temporary review snapshot: repository identity, Git-derived changed paths, L1 evidence,
+relevant specs and supporting records, and project rules.
+Collect applicable project rules from the filesystem: for every changed path, collect the
+root `AGENTS.md` and applicable nested `AGENTS.md` files along its directory path. Combine them without
+duplicates, then add project-local host rules selected by the active adapter. Caller-supplied
+paths are hints only. Verify the collected rules before starting reviewers.
+For every required verification item, supply the result or state what remains unverified. Missing or unreadable
+required input returns `BLOCKED` with `not-run(review-package incomplete)`. Each evidence entry records the
+requirement, command/assertion, `run` or `same-task reuse`, result, inputs covered and original reference.
+Reviewers use these results instead of rerunning checks. If promised evidence is missing, their result is
+`UNRELIABLE`; a supplied failure or explicit gap is a review finding.
 Route convention sources to L2 and the change-spec package to L3.
 
 When both reviews apply, dispatch L2 and L3 together for changes to convention sources, shared boundaries,
 security/authorization, migration or release/recovery, or when the user/project requests parallel review.
 If capacity prevents parallel execution, use sequential fresh dispatch. Otherwise dispatch L3 first;
 if it passes and the snapshot is unchanged, dispatch the applicable L2 once against that same snapshot.
-When only one reviewer applies, run that reviewer without manufacturing another requirement. If L3 does not pass, end the run with L2 recorded as
-`not-run(awaiting final L3 candidate)`; this is valid only for a non-READY verdict. Revalidate reviewed inputs before
-aggregation. Material drift returns `BLOCKED` with `invalidated(review-input drift)`.
+When only one reviewer applies, run only that reviewer. If L3 does not pass, end the run and record L2 as
+`not-run(awaiting final L3 candidate)`; this is valid only for a non-READY verdict.
+Before combining results, check that the reviewed inputs have not changed in a way that affects the verdict.
+Such a change returns `BLOCKED` with `invalidated(review-input drift)`.
 
 Apply the shared reviewer's single execution-fallback rule. If it still produces no terminal result, return
 `BLOCKED`. A later gate run creates a fresh snapshot. Keep snapshots and applicability maps transient.
