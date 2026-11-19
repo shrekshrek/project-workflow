@@ -140,7 +140,11 @@ and do not participate in active execution. The canonical delivery receipt locat
 
 Give the execution preview in the conversation before implementation. Check existing behavior, conventions
 and contracts first. Use a representative case to show what carries over, what changes and what the user
-will see. For an unresolved material choice, show who or what decides, what happens if it fails and
+will see. Briefly explain the implementation approach: which modules or flows are reused or changed,
+what new responsibilities or verification work are needed, and why. Scale detail to the decision; a sentence
+can suffice for a routine change. Name files only when they clarify
+a consequential change. Use accepted conversation decisions and any existing spec/design as the baseline.
+For an unresolved material choice, show who or what decides, what happens if it fails and
 why you recommend the approach. Treat inferred behavior such as overwrite or retry as a proposal when
 it changes the result. A feature request does not accept an undisclosed material design choice.
 
@@ -206,8 +210,12 @@ Organize implementation into coherent functional slices around real dependencies
 carries one outcome through its needed code, tests, documentation and ordinary verification; module and layer
 boundaries only shape implementation order. A small or tightly coupled task may be one slice.
 Within a slice, continue ordinary implementation, repairs and focused checks. Honor agreed project checkpoints.
-At the end of each slice that delivers a result the user can judge, show actual versus expected behavior
-on a representative case, the relevant evidence and the proposed next step. Even when checks pass and
+At the end of each slice that delivers a result the user can judge, show what now works on a representative
+case, its evidence and any remaining gap. Explain consequential implementation changes from the accepted
+approach and their reasons and effects. If work remains, briefly explain how the next step will be
+implemented and judged, following the execution-preview guidance with or without a design document.
+Avoid repeating settled plans. Keep existing spec/design records current under the document-update rules;
+material changes still require the scope-stop decision before implementation. Even when checks pass and
 the result looks as intended, wait for user feedback before starting the next outcome.
 If the user explicitly requests continuous execution across that checkpoint, report the result and continue
 within that authorization. A request to start work, silence or a status question leaves the checkpoint in place.
