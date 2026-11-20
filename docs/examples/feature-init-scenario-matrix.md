@@ -29,10 +29,12 @@ Shared behavior needs affected cases on both hosts. In particular:
 - Ask an ordinary question or assess whether a migration needs a record: explain the useful conclusion with no
   project writes. Do not require the user to invoke a command or choose a document category.
 - Request a tiny local fix: give a proportionate preview and use existing tests, without an unnecessary record
-  or duplicate approval when the approach is already clear and authorized.
+  or duplicate approval when the user has already approved that approach and authorized implementation.
 - Request a feature with an undecided interaction, then confirm only the problem: explain the proposed result,
   assumptions and useful handoffs without treating that acknowledgement as solution acceptance. After explicit
   acceptance, preserve its scope and continue only the authorized work. Use `conversation-approach-before-implementation`.
+- Use `conversation-scope-of-agreement` to test two live turns. After approval of a narrow preview, disclose a
+  shared-component constraint. Check that the host explains both alternatives and waits before editing.
 - Request a tracked behavior change: default to one spec. A bounded auth repair still needs risk coverage;
   a migration may need more design evidence but not automatically more files.
 - Request only a record: stop after recording. Request a separate design document for a concrete handoff:

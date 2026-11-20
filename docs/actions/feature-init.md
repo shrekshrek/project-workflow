@@ -8,7 +8,7 @@ Use when a requested implementation needs tracked acceptance, cross-session hand
 synchronization, or contract/risk protection, or the user explicitly asks whether a feature record is useful.
 Ordinary questions, diagnosis and discussion remain conversation; do not force an action invocation or
 artifact just to answer them. A feature name, several files or multiple implementation steps do not by
-themselves require a record. Proceed directly when outcome and acceptance are clear and no tracked acceptance,
+themselves require a record. Skip the feature record when outcome and acceptance are clear and no tracked acceptance,
 handoff, current-truth synchronization or material risk protection is needed. Reuse a compatible active record.
 
 A change to durable behavior already declared in `docs/specs/` needs a traceable record and eventual
@@ -58,23 +58,15 @@ Do not create upstream planning files without authorization.
 
 ## Conversation and discovery
 
-Start with the problem, who needs the change and what result they should see. Use repository evidence to resolve facts;
-ask only what can change the outcome, approach, boundary, material cost, risk or acceptance. Settled choices
-remain settled unless new evidence exposes a material consequence. Do not re-interview the user to fill a
-form, choose a lane, invent a slug during discussion, or satisfy a fixed question count.
+Start with who needs the change and what they should see. Check the repository for facts before
+asking the user. When a choice affects behavior, scope, acceptance, risk or cost, explain the
+options and your recommendation in terms the user can judge without knowing the code or test tools.
+Consider correctness, compatibility, maintenance and the cost of building and verifying each option.
+The user can change an earlier decision at any time. You may briefly confirm the replacement and
+who it affects before acting. When you propose reopening a settled choice, explain what changed.
 
-Assume no prior knowledge of the repository, workflow or testing vocabulary, while preserving the user's
-authority over product intent, risk and cost. Explain the observable consequence first and introduce technical
-labels only when they help the decision. Before asking for a decision, make the available choices, material
-trade-offs and recommendation understandable; do not hide scope behind terms such as unit, integration, E2E,
-shadow or regression testing, and do not patronize the user or replace their business judgment.
-
-Choose a coherent solution by balancing correctness, clarity, implementation and verification cost,
-compatibility and maintenance. A justified refactor may be simpler overall than a smaller patch. Proceed
-with a well-supported approach within authorization; when alternatives materially change scope, cost, risk
-or long-term direction, explain the recommendation and trade-offs for the user to decide. Investigate
-missing facts before asking the user to choose. If a consequential assumption can be checked,
-propose a bounded trial with a question, inputs and a success/failure criterion before executing it. Reuse
+If a consequential assumption can be checked, propose a bounded trial with a question, inputs and
+a success/failure criterion before executing it. Reuse
 existing tests, scripts and synthetic fixtures. Perform only the specifically authorized trial; external
 calls, private data, paid work and other restricted operations retain their own approval boundaries. An
 isolated trial is not authorization to implement the feature. If a trial cannot run, identify the evidence
@@ -97,10 +89,6 @@ its affected actor, owner or consumer. Exclude speculative capability. External 
 outcome; creating external items requires separate authorization.
 
 ## Record and authorization
-
-A clear user confirmation establishes the current implementation baseline, even before it is written to a
-file. The record preserves that decision; its absence or draft status does not reopen it. Changing an
-accepted boundary requires a new user decision, which may already be explicit in the current request.
 
 Decide whether to create, reuse or omit a record independently of verification depth. There are no LIGHT/FULL
 packages or replacement lane labels. Match documentation to decision and coordination needs, and verification
@@ -139,25 +127,22 @@ own acceptance or delivery status; `READY`, the delivery receipt, status writes 
 endpoint and lifecycle outputs, so do not restate them as checklist items. Archived directories remain history
 and do not participate in active execution. The canonical delivery receipt location is owned by `feature-done`.
 
-Before implementation, proactively give the execution preview in the conversation: how you plan to do the
-work and what the user will see. Check existing behavior and agreed rules first. Explain what matters to
-this change: what happens automatically, what stays unchanged, who or what decides and what happens if it fails.
-Briefly say which modules or flows you will reuse or change, what new work or checks are needed, and why.
-Mention files only when that helps the user judge the approach. A simple change may need only a sentence.
+Before implementation, give the execution preview in the conversation, including when no feature record
+is needed. Explain what already works, which flows you will reuse or change, and how you will check
+the result. A sentence can suffice for a routine change. For consequential automatic behavior, explain
+who or what decides and what happens if it fails.
 
-If the change affects another system, shared permissions or who owns data, explain who is affected and how,
-including the code, data and deployments involved. A local deployment can still change shared code.
+Choose a case that shows how the proposed behavior differs from today's or from a plausible alternative.
+If the proposal also changes an existing workflow or stored data, show that effect on a familiar case.
+For shared contracts, permissions or data ownership, name the affected consumers and the code, data
+or deployments involved.
+Use a diagram when it makes the choice clearer. Check the agreed case at the first stage where it can run.
 
-Follow agreed decisions, whether in conversation or recorded in spec/design. An accepted preview is reused;
-do not insert duplicate confirmation for settled choices or ordinary coding details. If an important choice
-is still open, or the impact goes beyond what was agreed, explain the options, their consequences and your recommendation,
-then wait for the user's decision before doing the affected work. Do not silently choose behavior such as
-overwrite or retry when it changes the result. Permission to start does not approve an unexplained choice;
-a progress message or saved design does not replace agreement.
+Wait for the user to agree to the concrete approach and its material effects before implementing.
+A reply such as “go ahead” to that preview covers both the choice and permission to start. If the
+user already approved that same approach in conversation and authorized implementation, proceed within
+that scope. Bring newly discovered effects back under [Implementation Scope Stop](#implementation-scope-stop).
 
-Use an example or diagram when words alone leave the choice unclear. If different approaches look correct
-on the happy path, use a case that exposes their difference, such as a partial failure. Check the agreed
-case in the first stage where it can run.
 For work with several useful stages, explain what the user can judge at each handoff and what follows it.
 Show a representative result early enough to correct the direction before building on it.
 No fixed format, stage count or exhaustive task list is required.
@@ -192,7 +177,6 @@ transcripts or logs, turn assumptions into decisions, or erase a relevant reject
 
 On resume, read the relevant accepted record and unfinished work, then necessary linked evidence. Do not
 restart planning, reload every guideline/archive, or clear the session merely because a document changed.
-Reopen a decision only when an important contradiction or new finding requires it.
 Cite sources for non-obvious interpretations of external information, conflicts or replacement decisions;
 do not add a duplicate source row for every ordinary requirement. Use dates and stable source references where useful. Keep routine
 creation mechanics and inapplicable-review explanations in the response or execution log.
@@ -216,36 +200,27 @@ migration, release boundary, or changed acceptance. Explain the finding, consequ
 ask the smallest useful question. Safe authorized investigation can continue. Existing code never justifies
 absorbing scope or making the user accept it.
 
-After confirmation, use [`spec-revise`](spec-revise.md) to update only affected decisions, work and acceptance,
-then continue the authorized implementation. Do not restart the feature or rewrite unaffected evidence. An
+After confirmation, use [`spec-revise`](spec-revise.md) when the change revises an accepted record. Update
+a draft in place. For work without a record, reassess the [record criteria](#use-when) against the new scope.
+Then continue the authorized implementation, preserving unaffected decisions and evidence. An
 independent outcome becomes a successor/child only if the user wants it; do not automatically create a backlog.
 A failed test with unchanged requirements calls for implementation repair, not changed expectations.
 
-Organize implementation into coherent functional slices around real dependencies and risks. A slice normally
-carries one outcome through its needed code, tests, documentation and ordinary verification; module and layer
-boundaries only shape implementation order. A small or tightly coupled task may be one slice.
-Within a slice, continue ordinary implementation, repairs and focused checks. Honor agreed project checkpoints.
-At the end of each slice that delivers a result the user can judge, show what now works on a representative
-case, its evidence and any remaining gap. Explain consequential implementation changes from the accepted
-approach and their reasons and effects. If work remains, briefly explain how the next step will be
-implemented and judged, following the execution-preview guidance with or without a design document.
-Avoid repeating settled plans. Keep existing spec/design records current under the document-update rules;
-material changes still require the scope-stop decision before implementation. Even when checks pass and
-the result looks as intended, wait for user feedback before starting the next outcome.
-If the user explicitly requests continuous execution across that checkpoint, report the result and continue
-within that authorization. A request to start work, silence or a status question leaves the checkpoint in place.
-Material changes and separate permission or cost limits still stop the affected work.
+Group work by outcomes the user can judge. Within one outcome, carry the code, tests, documentation
+and routine repairs through together, respecting agreed project checkpoints. During a long run, report
+observable milestones, delays or blockers that affect the user's choices. If exact progress is unavailable,
+say so up front and explain what stopping would lose. Use only counts or milestones you can verify.
+
+At handoff, show the result on a representative case, the evidence and any gap. Explain consequential
+deviations and their effects. If work remains, say how you will carry out and check the next step.
+Even when checks pass, wait for user feedback before starting the next outcome. If the user explicitly
+requests continuous execution across that checkpoint, report the result and continue within that scope.
+A status question, silence or permission to start leaves the checkpoint in place. Scope, permission
+and cost limits still apply.
 
 During implementation and post-gate repair, if repair/verification keeps cycling without converging, explain
 the unresolved problem and recommended next step, then wait for the user's decision. Preserve unaffected valid
 evidence; rerun the affected closure.
-
-Progress reports must help the user judge the work, not merely announce activity. Report new evidence and its meaning:
-what is usable, what remains, deviations or risks, and the next action or changed plan. Use real counts or
-observable milestones; tests support the result rather than replace it. If the runtime cannot observe exact
-progress, disclose that limitation before a long run; never invent percentages or repeat empty "still running"
-updates. Explain partial-result loss or restart consequences when interruption changes the user's choice.
-Persist useful conclusions under the document-update rules above.
 
 ## Readiness and conditional guidance
 

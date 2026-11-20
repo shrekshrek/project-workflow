@@ -573,11 +573,11 @@ sub-flow。仅新增文件、调整模块内部结构或普通移动/重命名�
 ### 3.0 P2 流程全景(skill 视角)
 
 沟通问题 → 必要时调查/试验 → 确认方案和验收 → 实现并验证。
-实现中的重要新发现会回到沟通，不要求事先发现全部任务。无需记录的小改直接做，需要追踪时默认一份 spec，已有记录优先复用。
+实现中的重要新发现会回到沟通，不要求事先发现全部任务。简单改动可以省去功能记录；需要追踪时默认一份 spec，已有记录优先复用。
 
 ### 3.1 规划阶段
 
-[feature-init](actions/feature-init.md) 拥有沟通、记录需要、授权、上下文和范围暂停规则；普通明确工作直接开发，多个可独立交付的结果先自然建议拆分并由用户选择。[spec-quality-check](actions/spec-quality-check.md) 检查依据是否足以开始。文档内容是否有用比章节是否齐全重要，独立审查按风险和项目要求决定。
+[feature-init](actions/feature-init.md) 拥有沟通、记录需要、授权、上下文和范围暂停规则；多个可独立交付的结果先建议拆分并由用户选择。[spec-quality-check](actions/spec-quality-check.md) 检查依据是否足以开始。文档内容是否有用比章节是否齐全重要，独立审查按风险和项目要求决定。
 
 协作默认不假设用户熟悉仓库、实现或测试术语，但保留用户对业务结果、风险和成本的判断权。先说明用户会看到什么、哪些选择会改变结果，再按需解释技术名词。开发前的验证用于解决会改变方向的关键未知，不默认要求 E2E 或完整回归；已有证据足够时不为流程重复试验。
 
@@ -868,7 +868,7 @@ L1 在阶段和端点都跑机械检查;L2 与 L3 由 reviewer 在端点执行,�
 ### 7.7 项目约定按需接入
 
 先读取并遵守已有约定；需要建立或补全工作协议时，按 [项目接入规则](actions/project-init.md) 选择
-`project-init` 或 `project-personalize`。明确的小改沿用现有约定直接处理，记录需要由 `feature-init` 判断。
+`project-init` 或 `project-personalize`。小改沿用现有项目约定，是否需要记录由 `feature-init` 判断。
 
 ### 7.8 不要把 backlog 塞进 repo 文件
 **症状**:`docs/backlog.md` / `TODO.md` 跟踪未决事项
@@ -915,9 +915,9 @@ P0-P4 不绑定语言或框架。项目个性化时从仓库事实识别 formatt
 
 | 场景 | 建议偏离方式 |
 |---|---|
-| tiny/local、低风险且未改变已声明 current truth | 不建 feature artifact,直接做并跑相关检查 |
+| tiny/local、低风险且未改变已声明 current truth | 省去功能记录，按已同意的方案实施并跑相关检查 |
 | 探索性 spike | worktree + vibe coding;只有留下持久架构/跨功能技术决定时才补 ADR |
-| 紧急生产 hotfix | 直接修,事后补 spec 和测试,记 tech debt |
+| 紧急生产 hotfix | 按项目的应急授权和流程修复，事后补 spec、测试和遗留事项 |
 | 架构变更 | 按 `feature-init` 判断文档需要；只有命中 `ADR_REQUIRED` 才写 ADR，隔离方式按仓库与风险选择 |
 | 低风险文档编辑 | 不建 feature artifact，检查 diff 与本地 links；语义变更仍按实际文档需要分流 |
 | 别人代码的小修 | 遵守对方风格,不强加本手册 |

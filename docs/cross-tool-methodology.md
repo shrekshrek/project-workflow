@@ -29,7 +29,7 @@ project-workflow 分两层:
    `AGENTS.md` 是跨工具 canonical 入口。项目自有的工具配置 可以增强本地体验,但不构成第二套 portable core,其他 adapter 也不必翻译或读取它们。
 
 2. **按记录需要选择工作方式**
-   是否创建、复用或省略记录由 [`feature-init`](actions/feature-init.md) 判断；直接实施仍遵守适用的 `AGENTS.md` 和相关检查，复用已有 feature 时沿用其接受规则与生命周期。
+   是否创建、复用或省略记录由 [`feature-init`](actions/feature-init.md) 判断；无论是否写记录，都按已同意的方案和适用的 `AGENTS.md` 实施、验证，复用已有 feature 时沿用其接受规则与生命周期。
 
 3. **默认一份功能记录**
    需要追踪时只创建 `docs/specs/changes/<NNN>-<slug>/spec.md`；可复用已有记录，长内容确有用途才拆出。不按文档套餐分类。

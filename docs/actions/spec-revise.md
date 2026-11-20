@@ -20,56 +20,47 @@ Then explicitly rerun `feature-done`; it replaces the delivery verdict and handl
 
 ## Inputs
 
-Ordinary implementation details can proceed while agreed behavior stays unchanged. Important changes first
-pause affected work for a user decision. After revising the agreed plan, resume the authorized work without
-restarting initialization or asking again about unchanged choices. Keep unaffected test results and evidence;
-rerun affected checks and any checks that depend on them. A test failure alone is not a requirement change.
-
 - Feature directory.
 - Requested change and reason.
 - For a current-conversation contract correction: the exact user statement, its normalized decision, and the
   older accepted rule it supersedes. A caller-authored "user confirmed" paraphrase alone is not authority.
 - The accepted record and affected linked content; organize revised material under feature-init’s record rules.
-- ADR directory state.
 
 ## Outputs
 
-- Updated `spec.md`, the active feature's sole accepted record, with changed text and a revision record.
-- Updated affected decisions/design notes where they already live, without duplicating the accepted rules.
-- Updated affected implementation/checklist items if task order, scope, or validation changed; the checklist may be inline.
-- Agreed scope and constraints, affected responsibilities, any conditions on delivery, and how the newly
-  discovered impact differs from the original plan.
-- New ADR only when the revision changes architecture/module boundaries, establishes a durable cross-feature technical decision, or supersedes an existing ADR.
-- For a reopened delivery: status returned to `已确认`, the prior receipt preserved under [feature-done’s receipt-history rule](feature-done.md#completion-preflight), and a fresh empty canonical `## Proof Bundle` ready for the next `feature-done`.
+- A revised `spec.md` with the current behavior, acceptance example and dated reason for the change.
+- Affected design notes, module responsibilities, delivery conditions and implementation tasks updated
+  where they already live. Record the difference from the agreed plan. Include an ADR when step 4 applies.
 
 ## Workflow
 
 1. Resolve the active accepted record under [feature-init's record rules](feature-init.md#record-and-authorization). A delivered feature may reopen while active and unarchived; archived work requires a successor change. Neither a new task nor a different file layout requires a new feature.
 2. Check whether requirements, verification, scope, plan or module responsibilities need an important correction.
    While the direction is unresolved, stop affected code, tests, migrations and compatibility work that could
-   deepen rework. Follow `feature-init`'s scope-stop rules:
-   - Ordinary details within the same outcome can proceed.
-   - Create a child feature for an independent outcome only if the user chooses it.
-   - Remove or defer capability with no current need.
-   - If wider work cannot be separated, explain why and get the user's agreement.
+   deepen rework. Apply the [implementation scope-stop rule](feature-init.md#implementation-scope-stop)
+   and discuss any inseparable wider impact with the user.
 
    A user correction that conflicts with agreed behavior is a `contract-correction`: do not run
    `spec-quality-check` against the stale artifact or continue affected implementation before updating
    the spec and affected linked records.
 3. Identify the agreed scope, affected modules/files and overlap with other Git changes. Reread applicable
    project conventions. Code already written does not authorize expanding the feature.
-4. Classify `ADR_REQUIRED`: yes only for architecture/module boundaries, durable cross-feature technical decisions, or superseding an ADR. When yes, search ADR filenames, titles, status fields, and existing references first, then open only candidates relevant to the affected area or decision.
+4. An ADR is required (`ADR_REQUIRED`) for a change to architecture or module boundaries, a durable
+   cross-feature technical decision, or replacement of an existing ADR. Only then check filenames, titles, status
+   and references, then read only relevant Accepted or Proposed records. When replacing an ADR, identify
+   it in the new decision and obtain approval before marking the old one `Superseded by NNNN`.
 5. Use the [conversation rules](feature-init.md#conversation-and-discovery) to identify what must change
-   and resolve remaining choices. Reuse accepted replacements; ask only about
-   consequences the user has not decided. If scope changes, check what needs to be delivered together and why.
+   and resolve remaining choices. A brief readback can confirm the replacement and its effects. If scope changes, check what needs to be delivered together and why.
 6. Update the affected behavior and acceptance example together in their existing sections.
    Keep a short dated revision entry with the reason and exact current user statement or durable source.
    Reference the normalized replacement rule in the updated text and identify the older rule it supersedes,
    instead of appending a second set of current requirements and acceptance criteria.
    Check the draft against that source, including exclusions and any affected references or tests.
    A removed behavior must also disappear from fallback paths. Follow [document maintenance](feature-init.md#document-updates-and-context).
-   Invalidate only evidence whose inputs or obligations changed. For reopened delivery preserve the previous
-   receipt and reset the status and current receipt as specified under Outputs.
+   Identify affected checks and any dependent checks to rerun. Retain evidence for unchanged inputs and
+   obligations. When reopening a delivery,
+   preserve the old receipt under [feature-done’s receipt-history rule](feature-done.md#completion-preflight),
+   restore `已确认` and leave one empty canonical `## Proof Bundle`. A fresh READY verdict is required for archive.
 7. Check whether changed tier/module rules establish a lasting difference from inherited parent rules,
    or include an agreed `Codify` task to record or enforce a rule. Only then read the
    [Guidance Placement Contract](agents-md-revise.md#guidance-placement-contract), update sibling alignment,
@@ -90,22 +81,14 @@ When the auditor boundary applies, follow the canonical [reviewer execution cont
 
 ## Invariants
 
-- Do not silently rewrite an accepted spec.
-- Every material spec change has a dated revision record with reason and decision source. ADRs are conditional, not a generic change log.
 - The accepted record and any affected existing attachments stay consistent after the revision; no optional file is mandatory.
-- Reopening preserves historical evidence but makes it ineligible for archive until a new `feature-done` writes READY; there is exactly one canonical `## Proof Bundle` and any superseded receipt uses a differently named heading.
 - External tracker edits do not revise this feature implicitly. Adopt them only through an explicit draft edit or this action when they change the active contract.
 - Module-boundary changes update affected module notes and future validation expectations.
 - Specific decisions must be traceable to user input, existing project convention, revision record, or an applicable ADR.
 - If the revision changes durable behavior recorded in `docs/specs/<area>.md`, keep the domain document read-only during this in-flight revision and record `current truth update pending` for [`feature-done`](feature-done.md) → [`feature-archive`](feature-archive.md). If it supersedes earlier specs, record a follow-up for [`feature-archive`](feature-archive.md) or [`spec-reconcile`](spec-reconcile.md) to mark and archive them.
-- For an ADR, follow the targeted search in step 4; consider relevant `Accepted`/`Proposed` candidates,
-  never the whole directory. With user approval, mark an overturned ADR `Superseded by NNNN` and identify
-  the replaced ADR in the new one.
 
 ## Validation
 
-- Follow the conversation rules above. Draft the spec and affected record updates, then perform any required
-  audit before applying them. The current request's authorization remains valid.
 - For a clear local correction, the source-to-draft check above completes the revision. Report the
   changed behavior and acceptance example, then resume any previously authorized work. A request
   limited to revising the plan ends with the updated plan.

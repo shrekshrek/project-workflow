@@ -12,11 +12,9 @@ reviewer dispatch. Drafts can be edited normally. This action does not implement
 
 ## Inputs
 
-Read the active accepted/proposed record, relevant current truth/ADRs and the current user decisions. Open
-optional linked design or task content only when it affects the judgment. For a material correction use the
-exact user statement or stable accepted source, normalized replacement and the rule it supersedes. A
-caller-authored confirmation label alone is not authority. Preserve the decision-closure result rather than
-asking the user to reconfirm it. Do not copy ordinary spec prose into another source ledger.
+Read the feature record, applicable project decisions and attachments that affect the judgment.
+Supply the exchange or source showing which material effects the user accepted. For a correction,
+include the exact user statement or stable accepted source, the replacement and the rule it supersedes.
 
 ## Requirements Reconciliation
 
@@ -53,17 +51,15 @@ user decision. Review the affected boundary, not every project document or unrel
 ## Verdict and continuation
 
 - `APPROVED`: required checks pass, critical direction questions are resolved, acceptance is actionable and
-  every applicable review boundary completed reliably. This verdict clears implementation to start; the
-  delivery verdict `READY` belongs to [`feature-done`](feature-done.md).
+  every applicable review boundary completed reliably. The delivery verdict `READY` belongs to [`feature-done`](feature-done.md).
 - `BORDERLINE`: a concrete residual risk is identified with an explicit decision needed before affected
   implementation; reuse existing unchanged risk acceptance instead of asking twice.
 - `BLOCKED`: a material mismatch, unsupported decision, unexecutable acceptance or missing required evidence
   prevents reliable implementation. State the specific gap and next useful action.
 
-A pure check remains read-only. For an already authorized implementation request, `APPROVED` can mark the record
-`已确认` and return to the enclosing workflow. Continue into implementation only with an accepted approach;
-reuse a previously accepted execution preview. Do not make the user repeat authorization merely because
-this check ran. Neither a review verdict nor a template status creates user approval.
+A standalone check is read-only. Return to the enclosing request under the
+[implementation authorization rule](feature-init.md#record-and-authorization). Once the user has
+accepted the reviewed approach and authorized implementation, an approved record can be marked `已确认`.
 
 ## Invariants
 

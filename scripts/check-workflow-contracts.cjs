@@ -51,14 +51,15 @@ requirePatterns("docs/actions/feature-init.md", [
   ["unchanged criteria", /do not rewrite the criterion to make it pass/i],
   ["direct work does not require a record by shape", /feature name, several files or multiple implementation steps[\s\S]*do not by[\s\S]*themselves require a record/i],
   ["record-need anchors", /No record:[\s\S]*Record:[\s\S]*Volume never decides/i],
-  ["zero-context respectful explanation", /Assume no prior knowledge[\s\S]*preserving the user's[\s\S]*authority[\s\S]*do not patronize/i],
+  ["informed user choice", /explain the options and your recommendation in terms the user can judge without knowing the code or test tools/i],
   ["pre-implementation evidence is not delivery E2E", /Before implementation[\s\S]*smallest bounded trial[\s\S]*Use E2E only when it is the smallest reliable/i],
   ["record need independent of verification", /Decide whether to create, reuse or omit a record independently of verification depth/i],
   ["preview and apply", /`PREVIEW`[\s\S]*`APPLY`/],
   ["single record default", /Default new record:[\s\S]*\/spec\.md`, and only that file[\s\S]*Do not precreate any\s+attachment/],
   ["optional useful attachment", /Split supporting content[\s\S]*materially helps reading or handoff[\s\S]*explicit\s+request for a separate handoff document qualifies/i],
   ["single active accepted record", /active feature uses `spec\.md` as its accepted record[\s\S]*Archived directories remain history/i],
-  ["preview without duplicate approval", /execution preview[\s\S]*accepted preview is reused[\s\S]*do not insert duplicate confirmation/i],
+  ["agreement before implementation", /wait for the user to agree to the concrete approach and its material effects before implementing/i],
+  ["continue within a previously approved approach", /already approved that same approach in conversation and authorized implementation, proceed within\s+that scope/i],
   ["long-run execution envelope", /materially long, paid, external, opaque[\s\S]*execution envelope[\s\S]*partial-result persistence[\s\S]*canary or sample alternative/i],
   ["accepted envelope preserves useful handoffs", /accepted envelope covers ordinary work[\s\S]*does not suppress informative handoffs/i],
   ["batched context-preserving updates", /Answer the current question first[\s\S]*Batch writeback[\s\S]*exclusions, unresolved questions, permission limits/i],
@@ -66,11 +67,11 @@ requirePatterns("docs/actions/feature-init.md", [
   ["no bookkeeping context reset", /Do not[\s\S]*clear the session merely because a document changed/i],
   ["ordinary discoveries proceed", /Discovery continues during implementation[\s\S]*can proceed without approval/i],
   ["affected work stops for material discovery", /Stop the affected implementation[\s\S]*authorization, data disposition, operating cost[\s\S]*ask the smallest useful question/i],
-  ["local revision and continuation", /After confirmation[\s\S]*spec-revise[\s\S]*update only affected[\s\S]*continue the authorized implementation/i],
+  ["local revision and continuation", /After confirmation[\s\S]*spec-revise[\s\S]*revises an accepted record[\s\S]*draft in place[\s\S]*without a record[\s\S]*record criteria[\s\S]*continue the authorized implementation/i],
   ["conversation preview exposes decisions", /execution preview in the conversation[\s\S]*who or what decides[\s\S]*what happens if it fails/i],
   ["stage result feedback", /wait for user feedback before starting the next outcome[\s\S]*explicitly requests continuous execution/i],
   ["repair convergence handoff", /cycling without converging[\s\S]*recommended next[\s\S]*wait for the user's decision/i],
-  ["judgment-useful progress observability", /Progress reports must help the user judge[\s\S]*evidence and its meaning[\s\S]*cannot observe exact progress[\s\S]*never invent percentages/i],
+  ["observable progress and interruption cost", /If exact progress is unavailable, say so up front and explain what stopping would lose[\s\S]*only counts or milestones you can verify/i],
   ["stage-matched verification", /Before implementation[\s\S]*During implementation[\s\S]*Before delivery[\s\S]*E2E/i],
   ["shared escalation reference", /Focused evidence is the default[\s\S]*verification escalation\]\(README\.md#shared-runtime-conventions\)/i],
   ["progressive verification fail-fast", /lower-cost failure stops[\s\S]*costlier expansion/i],
@@ -94,11 +95,10 @@ requirePatterns("docs/actions/spec-quality-check.md", [
   ["requirements reconciliation", /^## Requirements Reconciliation$/m],
   ["reconciliation statuses", /`ALIGNED`[\s\S]*`MISMATCH`[\s\S]*`SOURCE GAP`/],
   ["correction handoff", /`N\/A\(route: spec-revise\)` before mechanical checks or[\s\S]*reviewer dispatch/i],
-  ["direct correction evidence", /exact user statement[\s\S]*normalized replacement[\s\S]*supersedes/i],
-  ["reuse decision closure", /Preserve the decision-closure result/i],
+  ["direct correction evidence", /exact user statement or stable accepted source, the replacement and the rule it supersedes/i],
   ["conditional independent review", /main session performs[\s\S]*fresh independent[\s\S]*when requested[\s\S]*security\/authorization/i],
   ["no file count readiness", /cannot establish clarity or readiness from heading counts, file[\s\S]*counts/i],
-  ["quality preserves authorization", /Continue into implementation only with an accepted approach[\s\S]*previously accepted execution preview/i],
+  ["quality delegates authorization", /implementation authorization rule\]\(feature-init\.md#record-and-authorization\)[\s\S]*accepted the reviewed approach and authorized implementation/i],
 ]);
 forbidPatterns("docs/actions/spec-quality-check.md", [
   ["forced empty decision token", /N\/A\(no durable why\/source decision\)/i],
@@ -110,7 +110,7 @@ requirePatterns("docs/actions/spec-revise.md", [
   ["implicit latest-user correction trigger", /latest user instruction materially corrects, rejects, removes, or replaces/i],
   ["stale quality gate forbidden", /do not run[\s\S]*`spec-quality-check` against the stale artifact/i],
   ["supersession trace", /exact current user[\s\S]*normalized replacement rule[\s\S]*older rule/i],
-  ["revision decision closure", /conversation rules[\s\S]*identify what must change[\s\S]*resolve remaining choices[\s\S]*accepted replacements/i],
+  ["revision decision closure", /conversation rules[\s\S]*identify what must change[\s\S]*resolve remaining choices[\s\S]*confirm the replacement and its effects/i],
 ]);
 requirePatterns("docs/cross-tool-methodology.md", [
   ["independent Workflow with optional Blueprint handoff", /Blueprint handoff 是可选的上游输入[\s\S]*`project-workflow` 可以独立运行[\s\S]*Workflow 不静默改写上游规划/i],
@@ -120,10 +120,11 @@ requirePatterns("docs/reviewers/spec-quality-reviewer.md", [
   ["optional Blueprint reconciliation", /When the spec cites a Blueprint handoff[\s\S]*slice, decision and contract references resolve[\s\S]*with no Blueprint reference, skip this check/i],
   ["minimum sufficient planned proof", /practical verification plan and enough evidence to choose the approach[\s\S]*not completed delivery evidence[\s\S]*Keep only checks needed/i],
   ["shared escalation reference", /verification escalation\]\(\.\.\/actions\/README\.md#shared-runtime-conventions\)/i],
-  ["correction source gap", /caller-authored "user confirmed"[\s\S]*`SOURCE GAP`/i],
+  ["correction evidence and supersession", /check the replacement and the superseded\s+rule against the user's statement or a durable decision source/i],
   ["exclusion semantic remnant", /"remove"[\s\S]*optional, conditional, fallback, or compatibility path[\s\S]*`superseded-remnant`/i],
   ["endpoint-owned task rejection", /READY[\s\S]*endpoint\/lifecycle[\s\S]*circular[\s\S]*fails Q7a/i],
-  ["reviewer consumes resolved decisions", /decision-closure result[\s\S]*faithfully represents decisions already[\s\S]*made/i],
+  ["reviewer checks the scope of agreement", /what the user saw and what their reply covered/i],
+  ["unsupported wider impact is a source gap", /only the author's design or summary supports a broader effect, report `SOURCE GAP`/i],
 ]);
 
 requirePatterns("docs/actions/feature-done.md", [
@@ -320,7 +321,7 @@ requirePatterns("docs/examples/feature-init-scenario-matrix.md", [
 ]);
 
 requirePatterns("template/AGENTS.md", [
-  ["plain-language collaboration", /plain language that requires no repository or testing knowledge[\s\S]*user's decision authority/i],
+  ["plain-language collaboration", /explain the approach and its effects in plain language and wait for the user's agreement/i],
   ["cost-aware independent verification", /cheapest useful evidence[\s\S]*Matrix, E2E and repository-wide suites are independent options[\s\S]*not a package[\s\S]*observable facts/i],
 ]);
 

@@ -23,19 +23,16 @@ Include important failure, migration and recovery behavior. Do not start a separ
 
 ## Requirements Reconciliation
 
-The caller supplies the exact transient Requirements Source Map plus exact artifact paths. Treat user decisions,
-applicable current truth/ADRs/issues, and their durable Prior decisions or revision-record source trace as
-authority. A spec explicitly supplied or confirmed by the user may be referenced by section as that user's
-proposed/accepted contract; generated draft text is not self-authorizing. Do not search for remembered
-conversation, infer a requirement from current implementation, or demand that ordinary spec content be copied
-into a separate provenance ledger.
+Use the caller's Requirements Source Map and artifact paths. An applicable ADR or project
+contract can establish a requirement. When a user supplies a spec, distinguish a proposal for review
+from a section the user explicitly accepted. Cite the relevant section or exchange. If it is missing,
+identify the missing source rather than reconstructing the conversation from memory.
 
-Use the supplied decision-closure result to check that the record faithfully represents decisions already
-made. If a required decision has no supporting source, report `SOURCE GAP` for the caller to resolve.
-
-For a current-conversation correction or supersede decision, require the caller to provide the exact user
-statement, normalized replacement, and older rule it supersedes. A caller-authored "user confirmed" summary
-without that direct statement or a stable external/durable source is `SOURCE GAP`, not authority.
+For a material choice recorded as agreed, check what the user saw and what their reply covered.
+Compare who is affected, which existing records change and which consumers will rely on it.
+If only the author's design or summary supports a broader effect, report `SOURCE GAP` and identify
+the choice the caller needs to discuss. For a correction, check the replacement and the superseded
+rule against the user's statement or a durable decision source.
 
 Before Q3-Q7, check both that requirements are recorded and that recorded behavior has a source.
 Keep trial observations, agreed expected behavior and delivery evidence distinct. A failed or unavailable
@@ -63,9 +60,8 @@ Report exactly one `Requirements Reconciliation` status before the Q findings:
 - `ALIGNED` when both directions agree and material decisions have authoritative sources.
 - `MISMATCH` with one of `missing-from-artifact`, `unsupported-artifact`, `superseded-remnant`, or
   `cross-artifact-conflict`, citing both source and artifact evidence.
-- `SOURCE GAP` when a material external claim, contradiction, or supersede claim lacks enough authority to
-  resolve. Name the decision/source required; do not choose a side. Missing duplicate provenance for ordinary
-  user-supplied/confirmed spec content is not a source gap.
+- `SOURCE GAP` when the supplied evidence cannot establish a material claim, its accepted scope or
+  which decision supersedes an earlier one. Name the missing decision or source.
 
 Latest wins only when a later authoritative source explicitly replaces the earlier decision. Otherwise a
 conflict is `SOURCE GAP`. `MISMATCH` and `SOURCE GAP` are blocking regardless of the later Q results. Continue
@@ -120,10 +116,9 @@ to `spec-revise` and the upstream Blueprint; with no Blueprint reference, skip t
   and [execution preview](../actions/feature-init.md#record-and-authorization) to assess the first slice:
   can the user judge a representative result before more work builds on a mistaken interpretation?
   Do not require all layers at once.
-- **Q7b delivery coherence**: one outcome that can be demonstrated, accepted and reverted independently
-  passes when its important risks are resolved, regardless of size. Several separable outcomes bundled
-  without a real dependency or recorded risk decision fail. An explicitly accepted bundle is borderline,
-  as is one coherent delivery with important unresolved coordination or rollback risk.
+- **Q7b delivery coherence**: one outcome, including work that must ship together, passes when its
+  coordination and rollback risks are resolved. Significant residual risk is borderline. Bundling
+  independently deliverable outcomes is borderline if the user accepted that risk and fails otherwise.
 - **Q7c current necessity**: every [declarable surface](../actions/README.md#shared-runtime-conventions)
   identifies who needs it now and why the selected outcome requires it. That passes; possible future need
   alone fails. An unclear current need, affected party or simpler safe alternative is borderline.
@@ -134,8 +129,6 @@ to `spec-revise` and the upstream Blueprint; with no Blueprint reference, skip t
   rollback limits and conditions that would expand scope. Missing applicable decisions about cross-component
   contracts/state, lasting trust/permission ownership, deployment or important failure/migration/recovery
   behavior fail. So do undisclosed high-impact changes or unresolved data handling/ownership.
-  A broad delivery with concrete inseparable dependencies and accepted risk passes or is borderline according
-  to remaining coordination risk; size alone never makes it fail.
 
 Report the reconciliation status, reviewed items, skipped items with reasons, blocking ambiguity, citations,
 and concise rewrites. Use a pass/borderline/fail matrix only when several items fail. A mostly empty artifact

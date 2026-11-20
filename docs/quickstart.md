@@ -10,7 +10,7 @@
 
 ## 做一个功能
 
-先沟通问题和具体例子，读取相关代码/测试，关键假设不清楚时做获准的有限试验。目标和验收明确、无需交接或记录风险的工作可直接实施，并报告相关检查结果。
+先从一个具体例子说清问题。助手查看相关代码和测试，必要时做获准的小范围试验，然后在对话里说明做法和影响。如果改动也会影响原有用户或数据，就用一个熟悉的场景说明前后差异。你同意方案并让助手开始后，就可以实施。详见[开工前的沟通](actions/feature-init.md#record-and-authorization)。
 
 需要跨会话保留决定、追踪验收或更新产品现状文档时用 `feature-init`。默认只有：
 
@@ -18,9 +18,7 @@
 docs/specs/changes/<NNN>-<slug>/spec.md
 ```
 
-不分文档套餐，不预建计划、任务或证据目录；已有记录覆盖需求则复用。记录怎么写见 [功能记录指南](spec-driven.md)。
-
-开工前按 [实施预告](actions/feature-init.md#record-and-authorization) 主动讲清怎么做和重要选择，已经确认的决定直接沿用。`spec-quality-check` 检查依据是否足以实施：缺少关键决定先澄清，缺少可选文件不阻断。何时停下来沟通、展示结果和验证，见 [feature-init](actions/feature-init.md#implementation-scope-stop)。
+已有记录能覆盖需求就复用。简单改动可以省去功能记录。有记录时，`spec-quality-check` 检查它能否指导实施。见[功能记录指南](spec-driven.md)。
 
 ## 实现中发现新情况
 

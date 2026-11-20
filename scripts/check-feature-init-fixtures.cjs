@@ -178,6 +178,7 @@ function validateFixtures() {
     "conversation-progressive-verification-fail-fast",
     "conversation-long-run-progress-limits",
     "conversation-no-micro-approval",
+    "conversation-scope-of-agreement",
     "conversation-executed-slice-continuation",
     "conversation-source-to-consumer",
     "conversation-status-resume",

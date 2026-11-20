@@ -9,7 +9,7 @@ Match the user's language and preserve file language. Read `${CLAUDE_PLUGIN_ROOT
 
 Claude execution details:
 
-- For material decision closure read `${CLAUDE_PLUGIN_ROOT}/docs/actions/feature-init.md#conversation-and-discovery`; for reopening read `${CLAUDE_PLUGIN_ROOT}/docs/actions/feature-done.md#completion-preflight`; for convention placement read `${CLAUDE_PLUGIN_ROOT}/docs/actions/agents-md-revise.md#guidance-placement-contract`.
+- For newly discovered impact use `${CLAUDE_PLUGIN_ROOT}/docs/actions/feature-init.md#implementation-scope-stop`. For material decision closure read `${CLAUDE_PLUGIN_ROOT}/docs/actions/feature-init.md#conversation-and-discovery`; for reopening read `${CLAUDE_PLUGIN_ROOT}/docs/actions/feature-done.md#completion-preflight`; for convention placement read `${CLAUDE_PLUGIN_ROOT}/docs/actions/agents-md-revise.md#guidance-placement-contract`.
 
 - Resolve `$ARGUMENTS` through the shared active-feature rules and apply the canonical record/lifecycle routing.
 - Read root/applicable nested `AGENTS.md`, recomputing applicability if the affected module population changes.

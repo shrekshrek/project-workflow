@@ -7,7 +7,7 @@ description: "Revise a materially wrong accepted or delivered-but-unarchived con
 
 Match the user's language and preserve file language. Read [`../../../../docs/actions/spec-revise.md`](../../../../docs/actions/spec-revise.md) completely before acting. Apply [runtime conventions](../../../../docs/actions/README.md#shared-runtime-conventions).
 
-- For material decision closure read [discovery](../../../../docs/actions/feature-init.md#conversation-and-discovery); for reopening read [receipt history](../../../../docs/actions/feature-done.md#completion-preflight); for convention placement read [guidance placement](../../../../docs/actions/agents-md-revise.md#guidance-placement-contract).
+- For a change in scope use [scope stops](../../../../docs/actions/feature-init.md#implementation-scope-stop). For material decision closure read [discovery](../../../../docs/actions/feature-init.md#conversation-and-discovery); for reopening read [receipt history](../../../../docs/actions/feature-done.md#completion-preflight); for convention placement read [guidance placement](../../../../docs/actions/agents-md-revise.md#guidance-placement-contract).
 
 - Resolve the feature under canonical record/lifecycle rules. Read applicable root/nested `AGENTS.md`, recomputing applicability when module scope changes.
 - Resolve the plugin root as the nearest ancestor of this skill containing `.codex-plugin/plugin.json`; when
