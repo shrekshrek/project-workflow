@@ -5,8 +5,7 @@ Correct agreed requirements or plans for a feature that has not been archived, b
 ## Use When
 
 - An accepted `spec.md` needs a material correction, including before implementation starts.
-- The latest user instruction materially corrects, rejects, removes, or replaces behavior in an accepted
-  contract, even when the user does not name this action and phrases the request as "fix it" or "continue".
+- The user's latest instruction materially changes previously accepted behavior, even if the user does not name this action.
 - A delivered-but-unarchived feature needs to reopen because a material contract, scope, plan, or Verification omission was discovered after `feature-done`.
 - Implementation reveals an important scope change: an undeclared
   [declarable surface](README.md#shared-runtime-conventions), or a simpler solution that removes capability

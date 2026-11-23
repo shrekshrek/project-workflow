@@ -49,9 +49,9 @@ limits on what the user authorized.
 - Consistency over time and across records: apply [document maintenance](../actions/feature-init.md#document-updates-and-context).
   Flag conflicting or outdated instructions in prose, verification, tasks, fallback or migration handling.
   A “history” label does not help if the reader still has to reconstruct revisions to know what applies now.
-- Exclusion and ownership semantics: when an authoritative source says "remove", "no longer", "only",
-  "single source", or equivalent, flag any retained optional, conditional, fallback, or compatibility path as
-  `superseded-remnant` unless that source explicitly preserves it.
+- Exclusion and ownership: check every path against the governing decision. Flag any optional, conditional,
+  fallback or compatibility path that retains excluded behavior or superseded ownership as
+  `superseded-remnant`. Preserve exceptions the decision explicitly allows.
 - Counterexamples: when ownership, authorization, hierarchy, fallback, unknown-data, or migration rules can
   change the result, test at least one materially different case rather than accepting only the happy path.
 

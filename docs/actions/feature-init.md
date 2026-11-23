@@ -141,7 +141,7 @@ Use a diagram when it makes the choice clearer. Check the agreed case at the fir
 In the preview, say where you will stop and what you will show there. Choose the first result the user
 can judge before you build on it. For a small change this can be the finished result.
 Wait for the user to agree to the concrete approach and its material effects before implementing.
-“Go ahead” authorizes work up to that checkpoint. If the user explicitly asks you to continue through
+Permission to start covers work only up to the agreed checkpoint. If the user explicitly asks you to continue through
 several outcomes to a named result, report progress along the way and stop at that result.
 If material effects emerge sooner, follow [Implementation Scope Stop](#implementation-scope-stop).
 
@@ -213,8 +213,8 @@ say so up front and explain what stopping would lose. Use only counts or milesto
 At the agreed checkpoint, show the result on a representative case and the evidence. Explain any gap
 from the agreed behavior and its effect. If work remains, explain what the next step would change,
 how you would check it and what you would show at the next stop. End the turn there, even when checks pass.
-Start the next step only when the user asks to proceed. Acknowledging the example, asking for status
-or staying silent leaves the work paused.
+Start the proposed next step only when the user agrees to it. An acknowledgment of the result,
+a status question or silence leaves the work paused.
 
 During implementation and post-gate repair, if repair/verification keeps cycling without converging, explain
 the unresolved problem and recommended next step, then wait for the user's decision. Preserve unaffected valid

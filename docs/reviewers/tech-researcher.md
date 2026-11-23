@@ -41,12 +41,11 @@ Compare the factors that can change this decision, such as:
 
 ### Phase 3: Recommendation
 
-Recommend one default and explain why. Include one "choose another option if..." escape hatch.
+Recommend one option, explain why it fits and identify the condition that would change the recommendation.
 
 ## Output
 
-Return a concise comparison, recommendation, rationale, and the condition that would change it. Use a table or
-prose according to the number and complexity of candidates; omit dimensions that do not affect the choice.
+Present the comparison and recommendation in a brief table or prose. Omit dimensions that do not affect the choice.
 
 ## Rules
 
