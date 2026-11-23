@@ -59,7 +59,7 @@ requirePatterns("docs/actions/feature-init.md", [
   ["optional useful attachment", /Split supporting content[\s\S]*materially helps reading or handoff[\s\S]*explicit\s+request for a separate handoff document qualifies/i],
   ["single active accepted record", /active feature uses `spec\.md` as its accepted record[\s\S]*Archived directories remain history/i],
   ["agreement before implementation", /wait for the user to agree to the concrete approach and its material effects before implementing/i],
-  ["continue within a previously approved approach", /already approved that same approach in conversation and authorized implementation, proceed within\s+that scope/i],
+  ["permission to start ends at the stated checkpoint", /say where you will stop and what you will show there[\s\S]*“Go ahead” authorizes work up to that checkpoint/i],
   ["long-run execution envelope", /materially long, paid, external, opaque[\s\S]*execution envelope[\s\S]*partial-result persistence[\s\S]*canary or sample alternative/i],
   ["accepted envelope preserves useful handoffs", /accepted envelope covers ordinary work[\s\S]*does not suppress informative handoffs/i],
   ["batched context-preserving updates", /Answer the current question first[\s\S]*Batch writeback[\s\S]*exclusions, unresolved questions, permission limits/i],
@@ -67,9 +67,10 @@ requirePatterns("docs/actions/feature-init.md", [
   ["no bookkeeping context reset", /Do not[\s\S]*clear the session merely because a document changed/i],
   ["ordinary discoveries proceed", /Discovery continues during implementation[\s\S]*can proceed without approval/i],
   ["affected work stops for material discovery", /Stop the affected implementation[\s\S]*authorization, data disposition, operating cost[\s\S]*ask the smallest useful question/i],
-  ["local revision and continuation", /After confirmation[\s\S]*spec-revise[\s\S]*revises an accepted record[\s\S]*draft in place[\s\S]*without a record[\s\S]*record criteria[\s\S]*continue the authorized implementation/i],
+  ["local revision stays within the current step", /After confirmation[\s\S]*spec-revise[\s\S]*draft in place[\s\S]*record criteria[\s\S]*within the current authorized\s+step only/i],
   ["conversation preview exposes decisions", /execution preview in the conversation[\s\S]*who or what decides[\s\S]*what happens if it fails/i],
-  ["stage result feedback", /wait for user feedback before starting the next outcome[\s\S]*explicitly requests continuous execution/i],
+  ["explicit continuous execution has a named endpoint", /explicitly asks you to continue through\s+several outcomes to a named result[\s\S]*stop at that result/i],
+  ["next step needs a user decision", /End the turn there, even when checks pass[\s\S]*only when the user\s+asks to proceed[\s\S]*Acknowledging the example[\s\S]*leaves the work paused/i],
   ["repair convergence handoff", /cycling without converging[\s\S]*recommended next[\s\S]*wait for the user's decision/i],
   ["observable progress and interruption cost", /If exact progress is unavailable, say so up front and explain what stopping would lose[\s\S]*only counts or milestones you can verify/i],
   ["stage-matched verification", /Before implementation[\s\S]*During implementation[\s\S]*Before delivery[\s\S]*E2E/i],
@@ -315,13 +316,13 @@ requirePatterns("docs/examples/reviewer-mutation-smoke.md", [
 ]);
 
 requirePatterns("docs/examples/feature-init-scenario-matrix.md", [
-  ["decision closure interaction", /multi-turn feature conversation[\s\S]*no[\s\S]*duplicate confirmation[\s\S]*before any artifact is materialized/i],
+  ["decision closure interaction", /multi-turn feature conversation[\s\S]*brief readback[\s\S]*old fallback is removed[\s\S]*before any artifact is materialized/i],
   ["stage-matched verification interactions", /pre-implementation decision evidence[\s\S]*implementation feedback[\s\S]*delivery evidence/i],
   ["long-run and fail-fast interactions", /execution envelope[\s\S]*lower-cost necessary\s+check fails[\s\S]*exact progress is unavailable/i],
 ]);
 
 requirePatterns("template/AGENTS.md", [
-  ["plain-language collaboration", /explain the approach and its effects in plain language and wait for the user's agreement/i],
+  ["plain-language collaboration", /explain the approach and its effects in plain language and agree where to stop[\s\S]*wait for the user to authorize the next step/i],
   ["cost-aware independent verification", /cheapest useful evidence[\s\S]*Matrix, E2E and repository-wide suites are independent options[\s\S]*not a package[\s\S]*observable facts/i],
 ]);
 

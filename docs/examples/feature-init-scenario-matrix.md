@@ -43,8 +43,8 @@ Shared behavior needs affected cases on both hosts. In particular:
   not file layout. Discussion and inspection remain read-only.
 - Correct an accepted rule: use `spec-revise` before implementation or a stale quality review. Update affected
   decisions and evidence, organizing supporting content under the canonical record rules. An unchanged rule with a code defect calls for repair.
-- Provide a multi-turn feature conversation whose final decision replaces an earlier alternative. Expect no
-  duplicate confirmation and explicit supersession with no fallback remnant. Conflicting sources without a
+- Provide a multi-turn feature conversation whose final decision replaces an earlier alternative. Allow a
+  brief readback of the change and its effects. Verify the old fallback is removed. Conflicting sources without a
   resolution need a useful question before any artifact is materialized.
 - Give independent outcomes versus a coupled transaction: recommend a coherent first feature by value, dependencies and risk and ask
   only when the choice changes delivery. Do not create a total feature, epic or external tracker by default.
@@ -52,7 +52,7 @@ Shared behavior needs affected cases on both hosts. In particular:
   consumer: continue ordinary details, but explain material operating cost and resolve the unnecessary scope.
 - Carry one functional outcome through its ordinary implementation, tests, documentation and verification,
   reporting useful progress without turning it into a handoff. A material problem stops affected work even
-  mid-slice; after the coherent outcome, report inspectable evidence and wait for user feedback by default.
+  mid-slice; at the checkpoint, show the evidence and wait for agreement to the next step.
   Cross that boundary only with explicit continuous-execution authorization; scope approval alone is insufficient.
 - Explain verification as three different proof responsibilities: pre-implementation decision evidence,
   implementation feedback and delivery evidence. Do not require delivery-level E2E to begin ordinary work;

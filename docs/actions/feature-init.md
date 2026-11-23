@@ -138,14 +138,12 @@ For shared contracts, permissions or data ownership, name the affected consumers
 or deployments involved.
 Use a diagram when it makes the choice clearer. Check the agreed case at the first stage where it can run.
 
+In the preview, say where you will stop and what you will show there. Choose the first result the user
+can judge before you build on it. For a small change this can be the finished result.
 Wait for the user to agree to the concrete approach and its material effects before implementing.
-A reply such as “go ahead” to that preview covers both the choice and permission to start. If the
-user already approved that same approach in conversation and authorized implementation, proceed within
-that scope. Bring newly discovered effects back under [Implementation Scope Stop](#implementation-scope-stop).
-
-For work with several useful stages, explain what the user can judge at each handoff and what follows it.
-Show a representative result early enough to correct the direction before building on it.
-No fixed format, stage count or exhaustive task list is required.
+“Go ahead” authorizes work up to that checkpoint. If the user explicitly asks you to continue through
+several outcomes to a named result, report progress along the way and stop at that result.
+If material effects emerge sooner, follow [Implementation Scope Stop](#implementation-scope-stop).
 
 Explain which checks help choose the approach, which guide implementation and which verify delivery.
 Do not require every planned check before coding. For a materially long, paid, external, opaque,
@@ -202,7 +200,8 @@ absorbing scope or making the user accept it.
 
 After confirmation, use [`spec-revise`](spec-revise.md) when the change revises an accepted record. Update
 a draft in place. For work without a record, reassess the [record criteria](#use-when) against the new scope.
-Then continue the authorized implementation, preserving unaffected decisions and evidence. An
+Preserve unaffected decisions and evidence. A correction permits work within the current authorized
+step only. At a checkpoint, wait for the user's decision on the next step. An
 independent outcome becomes a successor/child only if the user wants it; do not automatically create a backlog.
 A failed test with unchanged requirements calls for implementation repair, not changed expectations.
 
@@ -211,12 +210,11 @@ and routine repairs through together, respecting agreed project checkpoints. Dur
 observable milestones, delays or blockers that affect the user's choices. If exact progress is unavailable,
 say so up front and explain what stopping would lose. Use only counts or milestones you can verify.
 
-At handoff, show the result on a representative case, the evidence and any gap. Explain consequential
-deviations and their effects. If work remains, say how you will carry out and check the next step.
-Even when checks pass, wait for user feedback before starting the next outcome. If the user explicitly
-requests continuous execution across that checkpoint, report the result and continue within that scope.
-A status question, silence or permission to start leaves the checkpoint in place. Scope, permission
-and cost limits still apply.
+At the agreed checkpoint, show the result on a representative case and the evidence. Explain any gap
+from the agreed behavior and its effect. If work remains, explain what the next step would change,
+how you would check it and what you would show at the next stop. End the turn there, even when checks pass.
+Start the next step only when the user asks to proceed. Acknowledging the example, asking for status
+or staying silent leaves the work paused.
 
 During implementation and post-gate repair, if repair/verification keeps cycling without converging, explain
 the unresolved problem and recommended next step, then wait for the user's decision. Preserve unaffected valid

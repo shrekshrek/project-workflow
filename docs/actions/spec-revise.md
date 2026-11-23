@@ -90,8 +90,8 @@ When the auditor boundary applies, follow the canonical [reviewer execution cont
 ## Validation
 
 - For a clear local correction, the source-to-draft check above completes the revision. Report the
-  changed behavior and acceptance example, then resume any previously authorized work. A request
-  limited to revising the plan ends with the updated plan.
+  changed behavior and acceptance example. A plan-only request ends with the updated plan. For
+  implementation, follow the [current step and checkpoint rules](feature-init.md#implementation-scope-stop).
 - Use [spec-quality-check](spec-quality-check.md) on the affected boundary when the user or project
   requires it, sources conflict, or the correction changes delivery viability, ownership, permissions,
   data handling or another high-impact contract. Reuse the resolved decision and its source.
