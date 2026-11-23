@@ -138,9 +138,11 @@ For shared contracts, permissions or data ownership, name the affected consumers
 or deployments involved.
 Use a diagram when it makes the choice clearer. Check the agreed case at the first stage where it can run.
 
-In the preview, say where you will stop and what you will show there. Choose the first result the user
-can judge before you build on it. For a small change this can be the finished result.
-Wait for the user to agree to the concrete approach and its material effects before implementing.
+In the preview, say what you will do in this step and what the user will see. Choose the first result
+they can judge before you build on it. For a small change this can be the finished result.
+When the user asks to hear the approach first, use read-only inspection as needed and end the turn
+with the proposed approach, even if the request also describes the deliverable. Wait for the user's
+explicit agreement to the approach and its material effects before creating files or implementing it.
 Permission to start covers work only up to the agreed checkpoint. If the user explicitly asks you to continue through
 several outcomes to a named result, report progress along the way and stop at that result.
 If material effects emerge sooner, follow [Implementation Scope Stop](#implementation-scope-stop).
@@ -210,9 +212,9 @@ and routine repairs through together, respecting agreed project checkpoints. Dur
 observable milestones, delays or blockers that affect the user's choices. If exact progress is unavailable,
 say so up front and explain what stopping would lose. Use only counts or milestones you can verify.
 
-At the agreed checkpoint, show the result on a representative case and the evidence. Explain any gap
-from the agreed behavior and its effect. If work remains, explain what the next step would change,
-how you would check it and what you would show at the next stop. End the turn there, even when checks pass.
+Show the agreed result on a representative case with the evidence. Explain any gap from the agreed
+behavior and its effect. If work remains, say what it would change, how you would check it and what
+the user would see next. End the turn there, even when checks pass.
 Start the proposed next step only when the user agrees to it. An acknowledgment of the result,
 a status question or silence leaves the work paused.
 
@@ -255,9 +257,7 @@ delivery obligation without lowering a failed expectation absent a confirmed beh
 
 ## Outputs and validation
 
-Report the conclusion, whether a record was created, reused or unnecessary, what was verified or remains
-unknown, and the next action in natural language. Do not output a required lane/form or an empty checklist. Read-only assessment stops without
-materialization. Record-only work stops after recording; authorized implementation continues from its accepted
-approach. Validate correct target, no-clobber, traceability, accepted constraints and exclusions, and actionable
-acceptance before handoff. For documents, apply the [writing and maintenance rules](#document-updates-and-context).
-Report tests actually executed separately from planned tests and static fixtures.
+Report results, uncertainties and next steps in the user's terms. Explain workflow details only when requested or needed for a decision.
+Link any record created or reused. Before handoff, verify the target, no-clobber, decision sources, agreed constraints,
+exclusions and actionable acceptance criteria. Follow the [document rules](#document-updates-and-context).
+Distinguish executed tests from planned tests and static fixtures.

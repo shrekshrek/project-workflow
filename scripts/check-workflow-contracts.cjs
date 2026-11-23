@@ -58,8 +58,9 @@ requirePatterns("docs/actions/feature-init.md", [
   ["single record default", /Default new record:[\s\S]*\/spec\.md`, and only that file[\s\S]*Do not precreate any\s+attachment/],
   ["optional useful attachment", /Split supporting content[\s\S]*materially helps reading or handoff[\s\S]*explicit\s+request for a separate handoff document qualifies/i],
   ["single active accepted record", /active feature uses `spec\.md` as its accepted record[\s\S]*Archived directories remain history/i],
-  ["agreement before implementation", /wait for the user to agree to the concrete approach and its material effects before implementing/i],
-  ["preview identifies the stop and result", /preview[^.]*where you will stop[^.]*what you will show/i],
+  ["requested approach preview ends the turn", /asks to hear the approach first[^.]*read-only inspection[^.]*end the turn/i],
+  ["agreement before implementation", /wait for the user's\s+explicit agreement to the approach and its material effects before creating files or implementing/i],
+  ["preview identifies the work and visible result", /preview[^.]*what you will do in this step[^.]*what the user will see/i],
   ["permission to start ends at the stated checkpoint", /permission to start[^.]*only up to (?:the|that) (?:agreed )?checkpoint/i],
   ["long-run execution envelope", /materially long, paid, external, opaque[\s\S]*execution envelope[\s\S]*partial-result persistence[\s\S]*canary or sample alternative/i],
   ["accepted envelope preserves useful handoffs", /accepted envelope covers ordinary work[\s\S]*does not suppress informative handoffs/i],
@@ -324,7 +325,7 @@ requirePatterns("docs/examples/feature-init-scenario-matrix.md", [
 ]);
 
 requirePatterns("template/AGENTS.md", [
-  ["plain-language collaboration", /explain the approach and its effects in plain language and agree where to stop[\s\S]*wait for the user to authorize the next step/i],
+  ["plain-language collaboration", /the proposed change and what the user will see[^.]*\.\s+When asked for the approach first, wait for explicit agreement before acting/i],
   ["cost-aware independent verification", /cheapest useful evidence[\s\S]*Matrix, E2E and repository-wide suites are independent options[\s\S]*not a package[\s\S]*observable facts/i],
 ]);
 
