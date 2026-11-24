@@ -81,7 +81,6 @@ const activeSources = [
   path.join(repoRoot, "docs", "cross-tool-methodology.md"),
   path.join(repoRoot, "docs", "spec-driven.md"),
   path.join(repoRoot, "docs", "workflow.md"),
-  path.join(repoRoot, "entries"),
   path.join(repoRoot, "template"),
 ].flatMap((entry) => (fs.statSync(entry).isDirectory() ? walkFiles(entry) : [entry]));
 

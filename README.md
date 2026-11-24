@@ -37,21 +37,21 @@ Workflow works independently. If an approved Project Blueprint plan exists, feat
 |---|---|---|
 | Shared rules | Planning, implementation, verification, review and record maintenance | [`docs/`](docs/) |
 | Starter templates | Project setup, optional rules and feature/domain/ADR templates | [`template/`](template/) |
-| Agent Skills | 9 action entry points | [`entries/`](entries/) |
+| Agent Skills | 9 generated entries | [action sources](docs/actions/) |
 
 An example project is [`full-stack-scaffolding-fastapi-nuxt4`](https://github.com/shrekshrek/full-stack-scaffolding-fastapi-nuxt4); its stack and layout are not requirements for using Workflow.
 
 ## Install
 
-Use Node.js 22.20 or later for the skills CLI. Install the nine Agent Skills from the release branch. For local Codex and DeepSeek Harness using their default shared user skill directory:
+Use Node.js 22.20 or later. Install all nine skills together in `~/.agents/skills/`. Their shared resources live under `project-init/resources/`.
 
 ```bash
-npx skills add https://github.com/shrekshrek/project-workflow/tree/skills-dist --skill '*' --agent codex --global --copy
+npx skills add https://github.com/shrekshrek/project-workflow/tree/skills-dist --skill '*' --agent codex claude-code --global
 ```
 
-For Claude Code, add `--agent claude-code` to the same command. Local Cursor can discover the shared skills. Omit `--global` for a project installation. Check existing skills of the same name before replacing them. Re-run the command with the same scope and clients to update. For an unattended install, append `--yes` after checking the scope and names.
+Choose **Symlink** if prompted. Codex, local Cursor and DeepSeek Harness with default settings read the shared directory directly. Claude Code uses links in `~/.claude/skills/` to the same files. Omit `--global` for project scope. To update or migrate an earlier `--copy` install, repeat the command at its original scope. Review any same-named skills before replacing them.
 
-If your install tracks `main`, run the branch command above once with the same scope and clients to switch the installer lock to `skills-dist`. Existing `skills-dist` installations can update normally. To pin a release, use `shrekshrek/project-workflow@vX.Y.Z` with its published version tag.
+If your install tracks `main`, run the branch command above once with the same scope and clients to switch the installer lock to `skills-dist`. To pin a release, use `shrekshrek/project-workflow@vX.Y.Z` with its published version tag.
 
 Open a fresh chat and invoke `feature-init`. Check the version under `metadata.version` in its installed `SKILL.md`. Independent reviews require a host with subagent support or the fallback allowed by the selected action.
 
@@ -103,8 +103,7 @@ Exception and maintenance actions appear only when their condition exists:
 The [actions index](docs/actions/README.md) identifies which file owns each rule. This overview and Quickstart
 summarize those rules without adding requirements.
 
-Templates ship with the skills; actions create project records only when needed. To customize templates, fork
-the repository and edit `template/`.
+The package includes the optional code style, security and testing rule templates. The [framework examples](template/.claude/rules/_examples/) stay in the source repository. Actions create project records only when needed. To customize templates, fork the repository and edit `template/`.
 
 For a focused review, run relevant test/check commands (L1), or use `agents-md-reviewer` for project rules (L2)
 and `spec-reviewer` for agreed feature behavior (L3).
@@ -123,10 +122,10 @@ Run all checks with `node scripts/check-all.cjs`. To test an unpublished build, 
 dist=$(mktemp -d)
 node scripts/build-skills.cjs --out "$dist"
 # From a disposable project:
-npx skills add "$dist" --skill '*' --agent codex --copy
+npx skills add "$dist" --skill '*' --agent codex claude-code
 ```
 
-Build from a Git checkout. Edit the action and reviewer contracts in `docs/` and the skill entry points in `entries/`. Each installed action includes its runtime resources so it can be installed independently. A release commit of the form `release: vX.Y.Z ...` with a matching new `VERSION` publishes the validated package to `skills-dist` and tags that package commit. Its `Source-Commit` trailer identifies the source on `main`.
+Build from a Git checkout. Maintain each skill’s discovery metadata and behavior in `docs/actions/<name>.md` and its reviewer methods in `docs/reviewers/`. A release commit of the form `release: vX.Y.Z ...` with a matching new `VERSION` publishes the validated package to `skills-dist` and tags that package commit. Its `Source-Commit` trailer identifies the source on `main`.
 
 ## License
 

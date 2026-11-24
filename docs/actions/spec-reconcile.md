@@ -1,3 +1,8 @@
+---
+name: spec-reconcile
+description: "Reconcile objective contradictions among accumulated specs, current truth, ADRs, and optional implementation evidence."
+---
+
 # spec-reconcile
 
 Canonical repair action for unresolved contradictions among a product area's active specs, current truth, and ADRs. It is primarily a retrofit tool for accumulated direction changes or adoption of lifecycle management.
@@ -22,7 +27,7 @@ An accepted change's intentional difference from current truth is a delivery del
 
 - Conflict report: for each contradiction, the exact files and sections that disagree, and which statement the evidence supports.
 - Selected source of truth per contradiction (a spec, an ADR, a current-truth document, or the code itself).
-- With user approval, per losing spec: status mark `已取代` (link the successor) or `已废弃`, then physical move to `docs/specs/changes/archive/` (same mechanics as [`feature-archive`](feature-archive.md)), including relative-link relocation and move-back on failure. Winning delivered specs are closed through `feature-archive` as the recommended follow-up.
+- With user approval, per losing spec: status mark `已取代` (link the successor) or `已废弃`, then physical move to `docs/specs/changes/archive/` (see [archive mechanics](feature-archive.md#workflow)), including relative-link relocation and move-back on failure. Winning delivered specs are closed through `feature-archive` as the recommended follow-up.
 - Current-truth gaps: merge or identify still-valid durable facts from scattered or superseded specs for `docs/specs/<area>.md`, following [Current-Truth Document Discipline](feature-archive.md#current-truth-document-discipline).
 - ADR consistency: contradictions whose loser is backed by an `Accepted` ADR get flagged for a superseding ADR or a status update.
 - Recommended next step: run `feature-archive` (sweep) for delivered features, update current truth, or start a new feature.
@@ -34,7 +39,7 @@ An accepted change's intentional difference from current truth is a delivery del
    precedence and lifecycle decision; keep independent conflicts separate and never choose a winner silently.
 3. For each group, present evidence, impact, and a recommendation; the user chooses the direction and any losing
    lifecycle state, and may split the group. Unresolved groups block implementation in the affected area.
-4. After approval, prepare losing status/successor links and current-truth edits without applying them. Move each losing directory with an ordinary filesystem rename, relocate local Markdown links, and move it back before stopping if relocation fails.
+4. After approval, prepare losing status/successor links and current-truth edits without applying them. Move each losing directory with an ordinary filesystem rename, run [the link relocator](../../scripts/relocate-markdown-links.cjs) with `<old-dir> <new-dir>`, and move it back before stopping if relocation fails.
 5. After successful moves, apply final statuses and extract still-valid facts into current-truth gaps; replace archive-link lists or historical narratives with present-tense facts only after approval.
 6. Flag losing directions backed by Accepted ADRs for superseding decisions or status correction. Update an existing changes index when present.
 

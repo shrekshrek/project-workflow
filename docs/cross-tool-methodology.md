@@ -69,4 +69,4 @@ project-workflow 分两层:
 
 独立审查使用宿主的子代理能力。角色、证据和无法调度时的处理见[审查契约](reviewers/README.md#reviewer-execution-contract)。交付和归档遵循 [feature-done](actions/feature-done.md)。
 
-入口源文件在 `entries/`。构建生成各技能的 `SKILL.md` 和运行所需资料；安装、升级及旧插件迁移见[项目说明](../README.md#install)。
+入口由 `docs/actions/` 中的动作文件生成。构建生成各技能的 `SKILL.md` 和运行所需资料；安装、升级及旧插件迁移见[项目说明](../README.md#install)。

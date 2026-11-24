@@ -1,6 +1,6 @@
 # Project Workflow 协作约定
 
-`docs/actions/` 维护动作契约，`docs/reviewers/` 维护审查方法，`template/` 存放项目模板。九个跨端技能的入口位于 `entries/`。宿主按能力调度角色，适用的回退规则由审查契约定义。
+`docs/actions/` 维护动作契约，`docs/reviewers/` 维护审查方法，`template/` 存放项目模板。构建从九个动作文件生成跨端技能入口。宿主按能力调度角色，适用的回退规则由审查契约定义。
 
 运行 `node scripts/check-all.cjs` 验证源码、打包、模板和行为约定。发布时用新 `VERSION` 和对应 release commit 生成 `skills-dist`；主分支不保存构建副本。
 
@@ -17,7 +17,7 @@
 - **skill description 写好**:宿主据此判断何时自动调用
 - **文档先于工具**:任何新 skill / 命令想法,先问 "这是 workflow SOP 的哪一步自动化?SOP 写过没?"。SOP 不清晰时做工具是把混乱固化(对应 workflow.md §7.2 反模式)
 - **Skill Step 编号约定**:Step 0 仅用于 **scope-changing pre-work**(cwd / 写入根解析、全局 setup,影响所有 Step 1+ 的运行环境)。普通输入解析(slug / identifier 等)从 **Step 1** 起。`project-init` / `project-personalize`(cwd 切换)与 `feature-init`(TARGET_ROOT 解析)用 Step 0;`spec-quality-check` 从 Step 1 起(parse 不改 cwd / 写入根)
-- **Runtime prompt 语言**:各端共用 `entries/` 中的英文指令
+- **Runtime prompt 语言**:各端共用动作文件的英文指令
   - 每个 Skill 必须明确 `Match the user's language`；每个 Agent 必须明确匹配 calling skill/user 的语言
   - user-facing 回复使用用户的语言；项目文件、引用内容、代码、命令、路径和 schema key 保留 source/canonical 语言
   - `docs/`、`template/` 和用户内容不因 runtime prompt 英文化而批量翻译

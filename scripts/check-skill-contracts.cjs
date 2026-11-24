@@ -4,6 +4,11 @@ const path = require("node:path");
 const { referencedDestinations } = require("./lib/markdown-destinations.cjs");
 
 const root = path.resolve(__dirname, "..");
+const skillRoot = process.argv[2];
+if (!skillRoot) {
+  require("node:child_process").execFileSync(process.execPath, [path.join(root, "scripts/build-skills.cjs"), "--check"], { stdio: "inherit" });
+  process.exit(0);
+}
 const rolesByAction = {
   "agents-md-revise": ["decision-completeness-auditor"],
   "feature-done": ["agents-md-reviewer", "spec-reviewer"],
@@ -24,6 +29,12 @@ const sectionsByAction = {
   "spec-revise": ["Workflow", "Invariants", "Validation"],
 };
 const problems = [];
+const owners = fs.readdirSync(skillRoot).filter(name => fs.existsSync(path.join(skillRoot, name, "resources")));
+if (owners.length !== 1 || owners[0] !== "project-init") problems.push("Expected one shared resource directory in project-init");
+const rules = fs.readdirSync(path.join(skillRoot, "project-init/resources/template/.claude/rules")).sort();
+if (rules.join(",") !== "code-style.md,security.md,testing.md") {
+  problems.push("Expected only the three optional Claude rule templates in the package");
+}
 const read = file => fs.readFileSync(path.join(root, file), "utf8");
 
 // Keep section fragments when normalizing links to the repo root. Runtime entries point
@@ -41,9 +52,9 @@ for (const roleFile of fs.readdirSync(path.join(root, "docs/reviewers"))) {
   }
 }
 for (const [name, sections] of Object.entries(sectionsByAction)) {
-  const file = `entries/${name}.md`;
-  const content = read(file);
-  const direct = links(file, content);
+  const file = `${name}/SKILL.md`;
+  const content = fs.readFileSync(path.join(skillRoot, file), "utf8");
+  const direct = new Set([...links(file, content)].map(ref => path.posix.relative("project-init/resources", ref)));
   const canonical = `docs/actions/${name}.md`;
   const roles = (rolesByAction[name] || []).map(role => `docs/reviewers/${role}.md`);
   const docs = [canonical, ...roles];
@@ -68,6 +79,10 @@ for (const [name, sections] of Object.entries(sectionsByAction)) {
   }
   if (["feature-archive", "spec-reconcile"].includes(name) && !content.includes("scripts/relocate-markdown-links.cjs")) {
     problems.push(`${file}: missing archive link relocator`);
+  }
+  if (!/Read \[the action\]\([^)]+\) completely/.test(content)) problems.push(`${file}: missing full-action instruction`);
+  if (name === "feature-done" && /bounded repair|repair-delta reconciliation/i.test(content)) {
+    problems.push(`${file}: duplicates the canonical repair rules`);
   }
   if (!content.includes("Match the user's language") || content.trimEnd().split("\n").length >= 200) {
     problems.push(`${file}: check entry length and user-language instruction`);

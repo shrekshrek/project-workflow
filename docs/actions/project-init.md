@@ -1,3 +1,8 @@
+---
+name: project-init
+description: "Set up project-workflow in a new or existing repository. Inspect the target and complete neutral initialization or existing-project adaptation."
+---
+
 # project-init
 
 Default entry for setting up project-workflow in a new or existing repository.
@@ -30,13 +35,14 @@ These six outputs apply to neutral setup. Existing-project outputs follow [proje
 If the target is a Git repository with no commits yet, explain during setup that first-feature acceptance needs a baseline commit of the initial project state before feature changes.
 
 1. Resolve the target plus the installed skill template read-only. Enumerate the complete target population including dotfiles, excluding only version-control metadata. Treat installed skill bundles and their installer lockfile as tooling, not evidence of the project’s stack. Classify the six mapped destinations as all absent, all matching, or partial/custom/occupied; inspect other content only far enough to distinguish incidental material from project evidence. For an inspection-only request, report the current setup and any gaps, then stop before staging, writing or handing off to personalization. All matching plus only incidental material is `already initialized`; stop before staging or any materializer invocation. For partial/custom/occupied destinations or project evidence (code, manifests, configuration or project-specific guidance), continue directly with the host’s `project-personalize` action for the same target and authorized scope. Pass the classification, preserve existing configuration, and finish through that action. The remaining steps apply only to neutral setup. Ask one focused routing question only when the significance of existing material is genuinely ambiguous.
-2. When all six destinations are absent and remaining content is incidental, require the already-resolved plugin template and `scripts/materialize-project-baseline.cjs`, then materialize into a disposable staging directory with `--stage <staging> --target <target>`.
+2. When all six destinations are absent and remaining content is incidental, require the already-resolved plugin template and [the baseline materializer](../../scripts/materialize-project-baseline.cjs), then materialize into a disposable staging directory with `--stage <staging> --target <target>`.
 3. Show the complete target-mapped six-file list. No setup questionnaire or decision audit is needed because the baseline contains no stack decisions; a setup request authorizes this deterministic no-clobber baseline.
 4. Apply once with `--apply-staged <staging> <target>`. Normalize an existing target-root symlink to its real directory. Strict no-clobber and destination-symlink preflight reject the complete apply before copying; an absent target below a symlinked ancestor is rejected, and copy failure rolls back files created by that apply.
 5. Validate the exact six-file baseline, the unchanged pre-existing population, the one-line alias, placeholder absence, and deferred commands/paths.
 
 ## Invariants
 
+- Neutral setup runs in the main session without subagents.
 - Staging leaves the target unchanged until the single apply step.
 - Existing incidental content is preserved byte-for-byte and is not interpreted, merged into, or advertised by the neutral baseline.
 - Unknown commands and paths remain explicitly deferred until repository evidence exists.

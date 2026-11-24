@@ -260,22 +260,15 @@ forbidPatterns("docs/actions/project-personalize.md", [
   ["duplicate apply approval", /user-approved consolidated diff|single consolidated preview/i],
 ]);
 
-forbidPatterns("entries/project-personalize.md", [
+forbidPatterns("docs/actions/project-personalize.md", [
   ["duplicate approval choreography", /before approval|consolidated approval/i],
 ]);
-requirePatterns("entries/agents-md-revise.md", [
+requirePatterns("docs/actions/agents-md-revise.md", [
   ["current-request authorization", /authorized by the current request/i],
 ]);
-forbidPatterns("entries/agents-md-revise.md", [
+forbidPatterns("docs/actions/agents-md-revise.md", [
   ["legacy approved-only wording", /user-approved drift fixes|approved drift fixes|approved convention edits/i],
 ]);
-requirePatterns("entries/feature-done.md", [
-  ["canonical action delegation", /Execute the complete canonical action/i],
-]);
-forbidPatterns("entries/feature-done.md", [
-  ["same-run repair delegation", /bounded repair|repair-delta reconciliation/i],
-]);
-
 forbidPatterns("docs/examples/feature-record.md", [
   ["legacy risk-size field", /Delivery risk signal/i],
 ]);
@@ -292,14 +285,14 @@ forbidPatterns("docs/examples/reviewer-mutation-smoke.md", [
   ["legacy exact-population output", /exact-population evidence|evidence ID|enumerates the full population/i],
 ]);
 
-requirePatterns("entries/feature-init.md", [
-  ["bundled feature materializer", /resources\/[\s\S]*materialize-feature-artifact\.cjs/],
+requirePatterns("docs/actions/feature-init.md", [
+  ["bundled feature materializer", /\(\.\.\/\.\.\/scripts\/materialize-feature-artifact\.cjs\)/],
 ]);
-requirePatterns("entries/feature-done.md", [
+requirePatterns("docs/actions/feature-done.md", [
   ["receipt", /## Proof Bundle/],
 ]);
-requirePatterns("entries/feature-done.md", [
-  ["archive handoff", /canonical verdict and closure-authorization rules[\s\S]*feature-archive/i],
+requirePatterns("docs/actions/feature-done.md", [
+  ["archive handoff", /closure authorization\]\(feature-archive\.md#closure-authorization\) is established,[\s\S]*explicit-candidate/i],
 ]);
 
 requirePatterns("docs/examples/reviewer-mutation-smoke.md", [

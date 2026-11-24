@@ -1,3 +1,8 @@
+---
+name: feature-init
+description: "Plan the behavior and acceptance of one feature, including changes across modules that follow established rules. If multiple features need the same undecided rule, route that decision to Blueprint plan-project. Keep ordinary questions and diagnosis in conversation. Create or reuse a record only when acceptance or handoff needs one."
+---
+
 # feature-init
 
 Canonical action for understanding a proposed change and preparing only the durable record it needs.
@@ -100,8 +105,7 @@ to actual risk.
   decision does not authorize coding. A separately approved temporary trial follows its own narrow scope.
 
 Default new record: `docs/specs/changes/<NNN>-<slug>/spec.md`, and only that file. Do not precreate any
-attachment, evidence directory, domain document or index that has no content yet. Use the packaged
-materializer with `--target`, `--number` and `--slug`; it creates only spec.md and preserves no-clobber,
+attachment, evidence directory, domain document or index that has no content yet. Use the bundled [feature materializer](../../scripts/materialize-feature-artifact.cjs) with `--target`, `--number` and `--slug`; it creates only spec.md and preserves no-clobber,
 numbering and symlink safety.
 Use the shared [NNN numbering](README.md#shared-runtime-conventions) rule. Confirm a requested unused number
 above the computed next number; an occupied/older number cannot be reused via a different slug.
@@ -232,7 +236,7 @@ request, not record size. For real architecture/ownership changes, read only the
 Create an ADR only for architecture/module boundaries, durable cross-feature decisions or superseding an ADR.
 
 Normalize accepted material decisions and explicit supersessions before drafting. Use a compact source trace.
-Dispatch a fresh [decision-completeness auditor](../reviewers/decision-completeness-auditor.md) only for an
+Dispatch a fresh [decision-completeness auditor](../reviewers/decision-completeness-auditor.md#dispatch-boundary) only for an
 unconfirmed material choice or conflicting/weak evidence under its dispatch boundary. Directly traceable
 values do not need another reviewer. Applicable dispatch follows the shared
 [reviewer execution contract](../reviewers/README.md#reviewer-execution-contract); missing required evidence

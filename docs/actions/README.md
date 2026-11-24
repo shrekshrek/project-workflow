@@ -2,9 +2,7 @@
 
 This directory is the canonical action layer for project-workflow.
 
-Each file defines one methodology action: when it applies, required inputs, outputs, invariants, and validation. Runtime adapters such as Claude Code skills, Codex skills, shell scripts, or a manual operator may add execution detail, but they should not redefine the action.
-
-If an adapter conflicts with an action spec, the action spec wins. Update this directory first, then update adapters.
+Each public action defines its discovery metadata, behavior and runtime references in one file. The build generates its portable skill entry from that source.
 
 ## Contract ownership
 
@@ -24,7 +22,7 @@ copying its decision table or inventing a second gate.
 | Durable root/tier/module guidance maintenance | [`agents-md-revise`](agents-md-revise.md) | Feature actions may select or verify a placement, but do not run a convention-maintenance sweep |
 
 The action specs and Shared runtime conventions below are executable contracts. Reviewer documents own
-assessment methods, adapters own host execution mechanics, and templates own only the fields materialized into
+assessment methods, and templates own the fields materialized into
 a target project. Other `README` content, `quickstart`, `workflow`, and `spec-driven` are explanatory surfaces:
 they may summarize a rule and link to its owner, but must not become an alternative normative source.
 
@@ -46,11 +44,12 @@ implementation detail, speculative future concerns, and file/test/line counts re
 
 Single authoritative home for rules that several actions need. Action specs and runtime skills cite this section instead of restating it.
 
+- Only the caller commits changes made by setup, planning, spec checks, revision, reconciliation or archive.
 - **Project documentation**: when creating or updating project documents, follow [feature-init's writing and maintenance rules](feature-init.md#document-updates-and-context). Apply them to the documents involved in the task; this does not authorize a documentation-wide cleanup.
-- **Reference reading**: read the current action fully; load supporting references only when applicable. For a named section, read from its heading through its children, stopping at the next equal/higher heading; fragments do not slice files automatically. Do not recursively load links or pre-read later actions. Reuse unchanged context; fresh reviewers read their selected role and supporting inputs.
+- **Reference reading**: read the current action fully; load supporting references only when applicable. For `feature-done` and `project-personalize`, only the reviewer reads its role instructions unless the main session performs the allowed fallback. For a named section, read from its heading through its children, stopping at the next equal/higher heading; fragments do not slice files automatically. Do not recursively load links or pre-read later actions. Reuse unchanged context; fresh reviewers read their selected role and supporting inputs.
 - **Feature directory resolution**: a feature lives in `docs/specs/changes/<NNN>-<slug>/`. Resolve an explicit slug/number/path to its matching active directory. For an empty or `current` argument, reuse the feature unambiguously selected in the current conversation; otherwise use the sole active candidate. Ask when the selection is missing or ambiguous. Exclude `archive/`. An action's explicit sweep mode selects a candidate set instead of one feature.
 - **NNN numbering**: three digits, one global sequence shared by the active tree and `archive/`; next number = max across both + 1 (zero-padded, `001` when empty). Archived numbers are never reused.
-- **Skill resources**: resolve bundled docs, templates and scripts under `resources/` beside the active `SKILL.md`. Resolve project files against the target repository. If a required bundled file is missing, report an incomplete installation.
+- **Skill resources**: follow the entry’s links to the shared docs, templates and scripts in `project-init/resources/`. Resolve project files against the target repository. If a required bundled file is missing, report an incomplete installation.
 - **Project planning gaps**: During onboarding or feature discovery, check known project specs, accepted ADRs and any relevant Blueprint decision when a shared rule is unclear. If multiple features would otherwise guess at the same rule, name the open decision, affected features and what Blueprint could clarify. Recommend bounded planning with `plan-project` and use the user's authorization before starting it. Once decided, reference the owning document and resume the affected work.
 - **Declarable surface**: a new persistent state, API, role, workflow, management surface, queue, runtime component, contract, migration, authorization rule, release boundary, or durable responsibility boundary. Internal structure that preserves the accepted behavior — a new class, helper, module split or refactor with no new external or durable consequence — is not a declarable surface and follows ordinary implementation rules. Each action applies its own rule to this population: planning requires a current need and affected actor, owner or consumer; delivery requires prior declaration; revision treats an undeclared surface as a scope delta.
 - **Verification escalation**: a matrix, E2E and a repository-wide/release suite are independent escalation options, never a package. Use only the necessary type at its narrowest useful scope, and only when cheaper evidence cannot prove a distinct remaining risk or a project/release requirement selects it. Record presence, size, file count and step count are not escalation reasons.

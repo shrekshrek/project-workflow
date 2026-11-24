@@ -1,3 +1,8 @@
+---
+name: project-personalize
+description: "Adapt a target whose project evidence or partial/custom baseline must shape the working agreement, using repository evidence and user decisions."
+---
+
 # project-personalize
 
 Canonical action for adapting a target whose project evidence must shape the working agreement, including a generated or copied scaffold, an existing codebase, or project-specific documentation. The target may have a complete, partial, unrelated, or missing project-workflow baseline.
@@ -35,19 +40,21 @@ continuing safe evidence work; explain any material reason to revisit an accepte
 draft and source trace after answers, then preflight/apply under current authorization. Repository-proven
 facts and safely deferred values proceed directly.
 
+Use [supplemental examples](project-personalize-reference.md) only when a project fact or user choice makes one relevant.
+
 ## Workflow
 
-1. Reuse the target and classification from setup. On direct invocation inspect the target once under the same routing rules. Continue here for existing-project adaptation.
+1. Reuse the target and classification from setup. On direct invocation inspect the target once under the [setup routing rules](project-init.md). Continue here for existing-project adaptation.
 2. Inspect root/nested `AGENTS.md`, aliases, manifests, shallow structure, commands, source/test paths, project-specific boundaries, existing test/CI configuration, and existing host-private assets. Preserve useful custom guidance.
 3. Start the Evidence-led Decision Conversation with only applicable scopes: create/complete the minimum working agreement, replace demonstrably stale scaffold values, repair real tier guidance, survey structure, or explicitly selected host-private conventions.
-4. For a missing baseline, stage the neutral six-file template with `scripts/materialize-project-baseline.cjs`; do not write the target yet.
-5. Use the codebase-explorer methodology only for a nontrivial or unclear structure survey. When observed project content shows multiple durable runtime tiers and the user selects tier-level guidance, read the conditional [`_multi_tier_examples`](../../template/_multi_tier_examples/README.md) reference before drafting it. Use tech-researcher only when an unresolved choice would materially change the working agreement and needs current external evidence; present suitable candidates and a recommendation for the user's direction. Ordinary tooling follows repository evidence and applicable conventions. Derive commands, their actual scope/trigger, source/test paths, project-specific rules, and tier ownership from repository evidence. A command being available does not make it mandatory for every feature.
+4. For a missing baseline, stage the neutral six-file template with [the baseline materializer](../../scripts/materialize-project-baseline.cjs); do not write the target yet.
+5. Use the [codebase-explorer method](../reviewers/codebase-explorer.md) only for a nontrivial or unclear structure survey. When observed project content shows multiple durable runtime tiers and the user selects tier-level guidance, read the conditional [`_multi_tier_examples`](../../template/_multi_tier_examples/README.md) reference before drafting it. Use [tech-researcher](../reviewers/tech-researcher.md) only when an unresolved choice would materially change the working agreement and needs current external evidence; present suitable candidates and a recommendation for the user's direction. Ordinary tooling follows repository evidence and applicable conventions. Derive commands, their actual scope/trigger, source/test paths, project-specific rules, and tier ownership from repository evidence. A command being available does not make it mandatory for every feature.
    When structure/guidance scope is selected, read the canonical
    [Guidance Placement Contract](agents-md-revise.md#guidance-placement-contract) and perform a bounded survey.
    Otherwise do not load it. Propose only evidence-backed narrow moves, creation, deletion, or mechanization;
    placement findings do not establish that the architecture is good.
 6. Validate selected host-private conventions. Preserve unrelated project configuration; optional assets are included only when selected.
-7. Use inline trace for sourced synchronization; dispatch the decision-completeness auditor only for a material
+7. Use inline trace for sourced synchronization; dispatch the [decision-completeness auditor](../reviewers/decision-completeness-auditor.md#dispatch-boundary) only for a material
    unconfirmed choice or conflicting/weak evidence.
 8. Preflight unchanged baselines and staged destinations, summarize the proposed changes, and apply under the
    current request's authorization and conversation above. Normalize an existing target-root symlink to its

@@ -978,7 +978,7 @@ P0-P4 不绑定语言或框架。项目个性化时从仓库事实识别 formatt
 ## 附:跟现有工具的关系
 
 - **`~/.claude/rules/`**(Claude Code 官方支持):Claude 用户级规则载体;不属于项目 baseline,是否使用由用户自行决定
-- **project-workflow v3**:本手册是它的核心文档;`template/` 存放 P0 starter assets 与 feature 模板,`entries/` 提供跨端技能入口,`scripts/` 负责 release checks 与 package build
+- **project-workflow**:本手册是它的核心文档;`template/` 存放 P0 starter assets 与 feature 模板,`docs/actions/` 提供生成跨端技能入口的源文件,`scripts/` 负责 release checks 与 package build
 - **GitHub Spec Kit `/speckit.clarify`**:P2 spec 不完整时的 Q&A 工具(可选)
 
 ---
