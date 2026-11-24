@@ -1,0 +1,17 @@
+---
+name: agents-md-revise
+description: "Refresh project conventions from objective repository evidence and apply authorized drift fixes."
+metadata:
+  version: "4.0.0"
+---
+
+# Agents.md Revise
+
+Match the user's language. Read [`resources/docs/actions/agents-md-revise.md`](resources/docs/actions/agents-md-revise.md) completely before acting. Apply [runtime conventions](resources/docs/actions/README.md#shared-runtime-conventions).
+
+- Scope root/applicable nested `AGENTS.md` by default; include host-private convention files only when explicitly selected. Do not translate another host's private rules.
+- Use inline trace for sourced synchronization; only at the narrowed canonical boundary dispatch a fresh subagent for [`decision-completeness-auditor`](resources/docs/reviewers/decision-completeness-auditor.md#dispatch-boundary), with fallback under the [review execution](resources/docs/reviewers/README.md#reviewer-execution-contract). Blocking or unreliable audit evidence prevents apply.
+- Ask only for material ambiguity or new policy; do not reconfirm objective stale-value synchronization item by item.
+- Run the canonical Guidance Placement audit and apply only evidence-backed placement changes.
+- Apply only convention edits authorized by the current request or an explicit follow-up decision. Do not edit
+  product specs, implementation code, or commit.
