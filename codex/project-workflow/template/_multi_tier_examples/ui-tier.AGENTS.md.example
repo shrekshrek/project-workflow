@@ -1,0 +1,36 @@
+# `{{TIER_NAME}}` tier — AGENTS.md
+
+> project-personalize 根据仓库证据填写本 tier 相对父级的持久差异，删除不适用节。
+
+## Commands(本 tier 特有)
+
+- 开发:`{{TIER_DEV_COMMAND}}`
+- 测试:`{{TIER_TEST_COMMAND}}`
+- Lint:`{{TIER_LINT_COMMAND}}`
+- Build:`{{TIER_BUILD_COMMAND}}`
+
+## Testing
+
+- {{TIER_TEST_LAYER}}:{{TIER_TEST_FRAMEWORK}}(只列已有且适用的层级，不为填模板新增层级)
+- 测试位置与特有验证约定:{{TIER_TEST_CONVENTIONS}}
+
+## Module Structure
+
+- 源码位置:`{{TIER_SRC_DIR}}`
+- 仓库实际采用的页面、组件与业务逻辑组织:{{TIER_MODULE_LAYOUT}}
+- 与父级不同的责任或依赖边界:{{TIER_BOUNDARY_DIFFERENCES}}
+
+## UI and State Conventions(按需)
+
+- 项目已采用的 UI / 样式方案及特有约定:{{TIER_UI_CONVENTIONS}}
+- 状态所有权与共享方式:{{TIER_STATE_CONVENTIONS}}
+
+## Conventions
+
+继承根/上级 `AGENTS.md`；当前宿主已采用的 path-scoped convention file 可承载详细约定。
+
+- 本 tier 特有约定及来源:{{TIER_CONVENTIONS}}
+- 工具配置:`{{TIER_LINT_CONFIG}}`
+- 项目已有的特殊操作权限:{{TIER_AUTHORIZATION_DIFFERENCES}}
+
+> 每条规则须能直接执行，或链接到具体说明；已有父级规则不重复。
