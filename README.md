@@ -43,13 +43,15 @@ An example project is [`full-stack-scaffolding-fastapi-nuxt4`](https://github.co
 
 ## Install
 
-Use Node.js 22.20 or later for the skills CLI. Install the nine Agent Skills from the release branch. For local Codex and DeepSeek Harness using their default shared user skill directory:
+Use Node.js 22.20 or later for the skills CLI. Install the nine Agent Skills from the repository. For local Codex and DeepSeek Harness using their default shared user skill directory:
 
 ```bash
-npx skills add https://github.com/shrekshrek/project-workflow/tree/skills-dist --skill '*' --agent codex --global --copy
+npx skills add shrekshrek/project-workflow --skill '*' --agent codex --global --copy
 ```
 
 For Claude Code, add `--agent claude-code` to the same command. Local Cursor can discover the shared skills. Omit `--global` for a project installation. Check existing skills of the same name before replacing them. Re-run the command with the same scope and clients to update. For an unattended install, append `--yes` after checking the scope and names.
+
+If you installed from `skills-dist`, run the command above once using the same scope and clients to switch the installer lock to the default branch. The old branch stays at its last release.
 
 Open a fresh chat and invoke `feature-init`. Check the version under `metadata.version` in its installed `SKILL.md`. Independent reviews require a host with subagent support or the fallback allowed by the selected action.
 
@@ -115,16 +117,14 @@ failure that produces no final result allows one fresh attempt under the same ru
 
 ## Development
 
-Run all checks with `node scripts/check-all.cjs`. To test an unpublished build, generate an empty distribution directory and pass it to the same installer:
+Edit the action and reviewer contracts in `docs/` and skill entry points in `entries/`. Stage any new or removed runtime assets so Git lists the intended package contents. Regenerate the installable directories and run the checks:
 
 ```bash
-dist=$(mktemp -d)
-node scripts/build-skills.cjs --out "$dist"
-# From a disposable project:
-npx skills add "$dist" --skill '*' --agent codex --copy
+node scripts/build-skills.cjs --sync
+node scripts/check-all.cjs
 ```
 
-Build from a Git checkout. Edit the action and reviewer contracts in `docs/` and the skill entry points in `entries/`. Each installed action includes its runtime resources so it can be installed independently. A release commit of the form `release: vX.Y.Z ...` with a matching new `VERSION` builds and publishes the `skills-dist` branch after validation.
+Include the regenerated `skills/` tree in the same change. CI rebuilds it and checks for differences. The repository install follows `main`. For a release, update `VERSION`, regenerate the skills, and commit with `release: vX.Y.Z ...`. After validation, CI tags that commit. To pin a tagged release, add `@vX.Y.Z` to the repository name in the install command.
 
 ## License
 

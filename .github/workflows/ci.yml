@@ -47,39 +47,9 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-    concurrency: publish-skills
     steps:
       - uses: actions/checkout@v7
-        with:
-          fetch-depth: 0
-      - uses: actions/setup-node@v7
-        with:
-          node-version: 24
-          package-manager-cache: false
-      - name: Build installable skills
-        run: node scripts/build-skills.cjs --out "$RUNNER_TEMP/skills-dist"
-      - name: Publish distribution
-        shell: bash
+      - name: Tag the validated release commit
         run: |
           version=$(cat VERSION)
-          if git ls-remote --exit-code --heads origin skills-dist; then
-            git fetch --depth=1 origin refs/heads/skills-dist
-            previous_source=$(git log -1 --format='%(trailers:key=Source-Commit,valueonly)' FETCH_HEAD)
-            if [[ "$previous_source" == "$GITHUB_SHA" ]]; then exit 0; fi
-            if ! git merge-base --is-ancestor "$previous_source" "$GITHUB_SHA"; then
-              echo "::error::Distribution already refers to a newer or unrelated source commit"
-              exit 1
-            fi
-            git switch -C skills-dist FETCH_HEAD
-            git rm -r --ignore-unmatch skills
-          else
-            result=$?
-            if [[ $result != 2 ]]; then exit "$result"; fi
-            git switch --orphan skills-dist
-          fi
-          cp -R "$RUNNER_TEMP/skills-dist/skills" skills
-          git add -f -- skills
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git commit -m "Build v$version" -m "Source-Commit: $GITHUB_SHA"
-          git push origin HEAD:skills-dist
+          git push origin "HEAD:refs/tags/v$version"

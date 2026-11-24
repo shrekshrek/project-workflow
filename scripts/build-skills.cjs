@@ -2,7 +2,7 @@
 const fs = require("node:fs");
 const os = require("node:os");
 const path = require("node:path");
-const { execFileSync } = require("node:child_process");
+const { execFileSync, spawnSync } = require("node:child_process");
 
 const root = path.resolve(__dirname, "..");
 const actions = [
@@ -71,16 +71,41 @@ function build(output) {
   console.log("Built " + actions.length + " self-contained skills, version " + version);
 }
 
+// Prepare the complete tree first so a build failure leaves the installable copy intact.
+function refresh(mode) {
+  const sync = mode === "--sync";
+  const temp = fs.mkdtempSync(path.join(sync ? root : os.tmpdir(), ".skills-build-"));
+  const installed = path.join(root, "skills");
+  const generated = path.join(temp, "skills");
+  const backup = path.join(temp, "previous");
+  try {
+    build(temp);
+    if (!sync) {
+      const comparison = spawnSync("git", [
+        "diff", "--no-index", "--quiet", "--no-ext-diff", "--", installed, generated
+      ], { cwd: root, stdio: "inherit" });
+      if (comparison.error) throw comparison.error;
+      if (comparison.status !== 0) throw new Error("Run node scripts/build-skills.cjs --sync and include skills/ in your change.");
+      return;
+    }
+    if (fs.existsSync(installed)) fs.renameSync(installed, backup);
+    try {
+      fs.renameSync(generated, installed);
+    } catch (error) {
+      if (fs.existsSync(backup)) fs.renameSync(backup, installed);
+      throw error;
+    }
+    fs.rmSync(backup, { recursive: true, force: true });
+  } finally {
+    if (!fs.existsSync(backup)) fs.rmSync(temp, { recursive: true, force: true });
+  }
+}
+
 const args = process.argv.slice(2);
 if (args.length === 2 && args[0] === "--out") {
   build(path.resolve(args[1]));
-} else if (args.length === 1 && args[0] === "--check") {
-  const temp = fs.mkdtempSync(path.join(os.tmpdir(), "skills-check-"));
-  try {
-    build(temp);
-  } finally {
-    fs.rmSync(temp, { recursive: true, force: true });
-  }
+} else if (args.length === 1 && ["--check", "--sync"].includes(args[0])) {
+  refresh(args[0]);
 } else {
-  throw new Error("Usage: node scripts/build-skills.cjs --check | --out <empty-directory>");
+  throw new Error("Usage: node scripts/build-skills.cjs --sync | --check | --out <empty-directory>");
 }

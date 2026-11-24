@@ -2,7 +2,7 @@
 
 `docs/actions/` 维护动作契约，`docs/reviewers/` 维护审查方法，`template/` 存放项目模板。九个跨端技能的入口位于 `entries/`。宿主按能力调度角色，适用的回退规则由审查契约定义。
 
-运行 `node scripts/check-all.cjs` 验证源码、打包、模板和行为约定。发布时用新 `VERSION` 和对应 release commit 生成 `skills-dist`；主分支不保存构建副本。
+运行 `node scripts/check-all.cjs` 验证源码、打包、模板和行为约定。修改运行资料后执行 `node scripts/build-skills.cjs --sync`，随源码提交生成的 `skills/`。正式发布时更新 `VERSION` 并重新生成，CI 验证后为 release commit 打标签。
 
 ## 修改纪律
 
