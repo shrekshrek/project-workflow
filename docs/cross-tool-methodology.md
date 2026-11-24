@@ -11,7 +11,7 @@ project-workflow 分两层:
 | 层 | 定义 | 是否工具绑定 | 例 |
 |---|---|---|---|
 | **Methodology core** | 项目长期资产和流程契约 | 否 | `AGENTS.md`, `docs/specs/`, `docs/specs/changes/`, conditional ADR, delivery receipt, L1/L2/L3 review model, `docs/actions/`, `docs/reviewers/` |
-| **Runtime adapter** | 把 core 自动化到某个工具里的封装 | 是 | Claude Code plugin skills, Codex skills/plugins, shell scripts |
+| **Runtime adapter** | 把 core 自动化到某个工具里的封装 | 是 | 技能加载、子代理调度、shell scripts |
 
 **判断规则**:
 
@@ -26,7 +26,7 @@ project-workflow 分两层:
 无论使用 Claude Code、Codex,还是手工执行,以下不变量保持不变:
 
 1. **A 类约定是项目当前规则源**
-   `AGENTS.md` 是跨工具 canonical 入口。项目自有的工具配置 可以增强本地体验,但不构成第二套 portable core,其他 adapter 也不必翻译或读取它们。
+   `AGENTS.md` 是跨工具 canonical 入口。项目自有的工具配置可以增强本地体验,但不构成第二套 portable core,其他 adapter 也不必翻译或读取它们。
 
 2. **按记录需要选择工作方式**
    是否创建、复用或省略记录由 [`feature-init`](actions/feature-init.md) 判断；无论是否写记录，都按已同意的方案和适用的 `AGENTS.md` 实施、验证，复用已有 feature 时沿用其接受规则与生命周期。
@@ -47,10 +47,10 @@ project-workflow 分两层:
    P4 更新 `AGENTS.md` 以及本次明确纳入范围的 host-specific convention files,不回写历史 spec,也不把 backlog 放进 repo 文件。
 
 8. **Workflow action 有唯一权威层**
-   `docs/actions/` 定义每个 public workflow action 的触发、输入、输出、不变量和验证。Claude Code skills、Codex skills、shell scripts、手工流程只能增加 runtime 执行细节,不能重新定义 action。
+   `docs/actions/` 定义每个 public workflow action 的触发、输入、输出、不变量和验证。各端技能、shell scripts、手工流程只能增加 runtime 执行细节,不能重新定义 action。
 
 9. **Reviewer 方法有唯一权威层**
-   `docs/reviewers/` 定义 reviewer、auditor、researcher 的任务边界、输入、检查方法和输出形状。Claude `adapters/claude/agents/` 与 Codex plugin skills 只是 adapter,不能各自维护一套 reviewer 方法。
+   `docs/reviewers/` 定义 reviewer、auditor、researcher 的任务边界、输入、检查方法和输出形状。技能入口按适用条件引用角色契约。
 
 10. **所有 adapter 暴露同一组 public action,没有第二套 surface**
    默认跨工具 action 是 `project-init` / `project-personalize` / `feature-init` / `spec-quality-check` / `spec-revise` / `feature-done` / `feature-archive` / `spec-reconcile` / `agents-md-revise`。`feature-init` 把记录需要与 PREVIEW/APPLY 写入授权分开;显式 feature 路由评估触发只读 PREVIEW,普通讨论、诊断和检查不触发。`feature-done` 内聚交付门禁和 receipt,不再设独立 helper 命令;其复查与证据规则由 canonical action 定义。
@@ -65,72 +65,8 @@ project-workflow 分两层:
 
 ## 3. Adapter mapping
 
-| Methodology need | Claude Code adapter | Codex adapter | Manual fallback |
-|---|---|---|---|
-| Persistent project guidance | `AGENTS.md` + `CLAUDE.md` 1 行 alias | `AGENTS.md` discovery | 读 `AGENTS.md` |
-| Host-specific scoped rules | 可选 `.claude/rules/*.md`;由 Claude adapter 原生加载 | 使用 root/nested `AGENTS.md`;不读取或翻译 Claude-private rules | 在 `AGENTS.md` 放置 portable guidance |
-| Reusable workflows | Generated Claude package from `adapters/claude/`, with skills referencing `docs/actions/` | Generated Codex package from `adapters/codex/`; skills reference bundled copies of the same `docs/actions/` semantics | 按 `docs/actions/` 手工执行 |
-| Sub-agent review | Applicable boundary 必须 dispatch `adapters/claude/agents/` 的具名 agent;不可用/失败/无容量时有据 fallback | Applicable boundary 必须由 Codex general subagent 跑 bundled `docs/reviewers/`;不要求 custom-agent name | 无 dispatch capability 时主会话按 `docs/reviewers/` 执行并记录原因 |
-| Optional project planning context | Read a supplied Blueprint handoff and linked artifacts when present | Read a supplied Blueprint handoff and linked artifacts when present | Read the handoff if supplied; otherwise continue independently |
-| Plugin distribution | Claude plugin marketplace | Codex plugin marketplace | Use the baseline materializer; consult action docs |
+各端加载相同的 Agent Skills。用户可以直接说出动作名，例如 `feature-init`。项目约定仍由根目录和适用子目录的 `AGENTS.md` 维护；Claude 项目可另选本机专用规则。
 
-Codex supports additional instruction override filenames, but project-workflow does not generate or recommend them. Native persistent guidance remains the `AGENTS.md` hierarchy. Claude-private `.claude/rules/` remain optional project-owned convention files; Codex does not treat them as portable convention input. Codex `.codex/rules/*.rules` files remain command-approval policy and are not an A-class coding-convention carrier.
+独立审查使用宿主的子代理能力。角色、证据和无法调度时的处理见[审查契约](reviewers/README.md#reviewer-execution-contract)。交付和归档遵循 [feature-done](actions/feature-done.md)。
 
-Adapter 设计必须遵守一个约束:**不要复制 methodology core**。例如 Claude 和 Codex 各有原生 skill 入口,但 action 的触发/输入/输出/不变量只能在 `docs/actions/` 定义一次;reviewer 的任务方法只能在 `docs/reviewers/` 定义一次;L1/L2/L3 的含义只能在 core 文档定义一次。
-
-Runtime adapter 本身则应保持 **host-native 且薄**:`adapters/claude/skills/` 使用 Claude Code 的交互、具名 agent 和 slash-command 语义;`adapters/codex/skills/` 使用 Codex 的 `$skill`、通用 subagent 和 Codex 工具语义。两端在 canonical dispatch boundary 都遵守“能力与容量存在则必须调度;否则有据 fallback;缺证据 fail closed”,同时保持同一 action 集合并引用同名 canonical spec,但不得把一端 SKILL.md 原样复制给另一端。源仓库的 [`scripts/check-adapter-parity.js`](../scripts/check-adapter-parity.js) 机械校验 action parity、canonical 引用、行数和 runtime marker 隔离。
-
-`feature-done` 是交付端点的唯一入口。快照、修复、复验和证据复用遵循其 [canonical action](actions/feature-done.md)。
-
----
-
-## 4. Command naming rule
-
-Core docs should name the **workflow action**, then list adapter commands.
-
-Preferred:
-
-```text
-Action: feature init
-Canonical: docs/actions/feature-init.md
-Claude Code: /project-workflow:feature-init <slug>
-Codex: $feature-init <slug> (or plugin-provided command)
-Manual: create docs/specs/changes/<NNN>-<slug>/ from template
-```
-
-Avoid:
-
-```text
-Run /project-workflow:feature-init, therefore the methodology starts.
-```
-
-The action is the method. The command is just one runtime entry point.
-
----
-
-## 5. Portability checklist
-
-Before adding or changing a skill or plugin feature, answer:
-
-1. Which methodology action or invariant does this automate?
-2. Is the action already documented in `docs/actions/`?
-3. Is the invariant already documented in `workflow.md` / `spec-driven.md`?
-4. Is the adapter duplicating core logic that should be referenced instead?
-5. Does unavailable native dispatch use the canonical fallback, with missing required evidence still blocking the gate?
-6. If Claude and Codex differ, is the difference isolated to adapter docs?
-
-If the answer to 1 or 2 is unclear, update the methodology docs before changing the adapter.
-
----
-
-## 6. Maintenance stance
-
-The maintained state is:
-
-1. Keep methodology docs adapter-neutral and authoritative.
-2. Keep the Claude and Codex native sources under `adapters/`; generate both self-contained distributions only at build/release time.
-3. Do not commit generated package trees on `main`; release duplication belongs only in `plugin-dist` and installed caches.
-4. Keep both adapters on the same nine-action surface without copying runtime bodies between hosts.
-5. Do not make Codex custom-agent name dispatch required for correctness. Codex skills must run the same reviewer spec through a general subagent when dispatch and capacity exist; only unavailable/failed dispatch or exhausted capacity permits an evidenced main-session fallback. Claude named-agent wrappers stay outside the Codex package.
-
-This keeps the project from turning into two diverging tools that happen to share a name.
+入口源文件在 `entries/`。构建生成各技能的 `SKILL.md` 和运行所需资料；安装、升级及旧插件迁移见[项目说明](../README.md#install)。

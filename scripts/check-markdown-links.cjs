@@ -12,9 +12,7 @@ const roots = (requested.length > 0
   : [
     "README.md",
     "AGENTS.md",
-    "adapters/claude/agents",
-    "adapters/claude/skills",
-    "adapters/codex/skills",
+    "entries",
     "docs",
   ]
 ).map((value) => path.resolve(repoRoot, value));

@@ -1,0 +1,85 @@
+name: Agent Skills
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    outputs:
+      release: ${{ steps.version.outputs.release }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 2
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          package-manager-cache: false
+      - run: node scripts/check-all.cjs
+      - name: Check release version
+        id: version
+        shell: bash
+        run: |
+          subject=$(git log -1 --format=%s)
+          if [[ "$subject" == "release: "* ]]; then
+            version=$(cat VERSION)
+            if [[ "$subject " != "release: v$version "* ]]; then
+              echo "::error::Release subject must start with release: v$version"
+              exit 1
+            fi
+            if git diff --quiet HEAD^ HEAD -- VERSION; then
+              echo "::error::Release requires a new VERSION"
+              exit 1
+            fi
+            echo "release=true" >> "$GITHUB_OUTPUT"
+          fi
+
+  publish:
+    needs: validate
+    if: github.event_name == 'push' && needs.validate.outputs.release == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    concurrency: publish-skills
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          package-manager-cache: false
+      - name: Build installable skills
+        run: node scripts/build-skills.cjs --out "$RUNNER_TEMP/skills-dist"
+      - name: Publish distribution
+        shell: bash
+        run: |
+          version=$(cat VERSION)
+          if git ls-remote --exit-code --heads origin skills-dist; then
+            git fetch --depth=1 origin refs/heads/skills-dist
+            previous_source=$(git log -1 --format='%(trailers:key=Source-Commit,valueonly)' FETCH_HEAD)
+            if [[ "$previous_source" == "$GITHUB_SHA" ]]; then exit 0; fi
+            if ! git merge-base --is-ancestor "$previous_source" "$GITHUB_SHA"; then
+              echo "::error::Distribution already refers to a newer or unrelated source commit"
+              exit 1
+            fi
+            git switch -C skills-dist FETCH_HEAD
+            git rm -r --ignore-unmatch skills
+          else
+            result=$?
+            if [[ $result != 2 ]]; then exit "$result"; fi
+            git switch --orphan skills-dist
+          fi
+          cp -R "$RUNNER_TEMP/skills-dist/skills" skills
+          git add -f -- skills
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Build v$version" -m "Source-Commit: $GITHUB_SHA"
+          git push origin HEAD:skills-dist

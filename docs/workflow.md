@@ -187,9 +187,9 @@ project-workflow 分两层:
 | 层 | 负责什么 | 是否绑定工具 | 例 |
 |---|---|---|---|
 | **Methodology core** | 流程、不变量、workflow action、reviewer 方法、文档契约、review 分层 | 否 | `AGENTS.md`, `docs/actions/`, `docs/reviewers/`, `docs/specs/`, `docs/specs/changes/`, ADR, proof bundle, L1/L2/L3 |
-| **Runtime adapter** | 把 core 自动化到某个工具 | 是 | Claude Code plugin skills, Codex skills/plugins, shell scripts |
+| **Runtime adapter** | 把 core 自动化到某个工具 | 是 | 技能加载、子代理调度、shell scripts |
 
-Core docs 只定义"应该发生什么";adapter docs 定义"在某个工具里怎么触发"。其中 `docs/actions/` 是每个 workflow action 的唯一权威层,定义触发、输入、输出、不变量和验证;`docs/reviewers/` 是 reviewer / auditor / researcher 的唯一权威层。本文用 `/feature-init` 等短写表示 action 名,不是绑定某个宿主的精确命令;Claude Code 使用 `/project-workflow:*`,Codex 使用同名 `$skill`,手工模式直接按 action spec 执行。完整映射见 [`cross-tool-methodology.md`](cross-tool-methodology.md)。
+Core docs 只定义"应该发生什么";adapter docs 定义"在某个工具里怎么触发"。其中 `docs/actions/` 是每个 workflow action 的唯一权威层,定义触发、输入、输出、不变量和验证;`docs/reviewers/` 是 reviewer / auditor / researcher 的唯一权威层。本文用 `/feature-init` 等短写表示 action 名,不是绑定某个宿主的精确命令;客户端按同名 Agent Skill 调用,手工模式直接按 action spec 执行。完整映射见 [`cross-tool-methodology.md`](cross-tool-methodology.md)。
 
 ### 0.4 项目核心目标
 
@@ -217,9 +217,9 @@ Core docs 只定义"应该发生什么";adapter docs 定义"在某个工具里�
 
 2. **方法论 core 必须 portable;adapter 可以 opinionated**。
 
-   `AGENTS.md` / `docs/actions/` / `spec.md` / ADR / proof bundle 这层用最广可读的格式(markdown + 标准约定),让 Claude Code、Codex 和手工流程都能执行同一方法论。仓库分别维护 Claude Code 与 Codex 的 host-native adapter;两端只实现各自运行时细节,不能复制一套不同的方法论。
+   `AGENTS.md` / `docs/actions/` / `spec.md` / ADR / proof bundle 这层用最广可读的格式(markdown + 标准约定),让 Claude Code、Codex 和手工流程都能执行同一方法论。各端加载相同的 Agent Skills，按宿主能力执行审查。
 
-   **底层逻辑**:底层工具是 weeks-级别迁移成本,上层规范(AGENTS.md / spec.md)是 months-级别投入。上层规范必须 portable;工具特有能力(plugin manifests / sub-agent 配置)放进 adapter,不要反向污染 core。详见 §7.6 反模式 + [`cross-tool-methodology.md`](cross-tool-methodology.md)。
+   **底层逻辑**:底层工具是 weeks-级别迁移成本,上层规范(AGENTS.md / spec.md)是 months-级别投入。上层规范必须 portable;工具特有能力（如子代理调度）由宿主提供,不要反向污染 core。详见 §7.6 反模式 + [`cross-tool-methodology.md`](cross-tool-methodology.md)。
 
 3. **Plugin / skill 支持理解、决策和留证，不替用户决定产品方向**。
 
@@ -952,7 +952,7 @@ P0-P4 不绑定语言或框架。项目个性化时从仓库事实识别 formatt
 |---|---|
 | AGENTS.md 是跨工具事实标准 | 18 个月后社区可能转向别的命名;Cursor / Gemini CLI 渗透率待观察 |
 | Skills(SKILL.md)跨工具兼容 | 各家实现细节有差异,**真跨工具需实测** |
-| 宿主 plugin/skill 接口保持兼容 | 各宿主接口会演进;project-workflow 以各自 adapter 封装差异,并保留 manual fallback |
+| 宿主技能接口保持兼容 | 各端加载相同的技能，独立审查按动作约定处理宿主能力差异 |
 
 ### 10.3 已知失败模式
 
@@ -969,7 +969,7 @@ P0-P4 不绑定语言或框架。项目个性化时从仓库事实识别 formatt
 
 - **真实项目出现可复现失败模式** → 修订对应流程与回归检查
 - **AGENTS.md 渗透率变化** → §1.3-1.4 内容跟进
-- **宿主 plugin/skill 接口发生兼容性变化** → adapter 与安装文档同步
+- **宿主技能接口发生兼容性变化** → 核对技能入口与安装说明
 - **跨工具实测发现差异** → §6.3 失效情形扩充
 - **新的方法论流派出现** → §6 重新审视
 
@@ -978,7 +978,7 @@ P0-P4 不绑定语言或框架。项目个性化时从仓库事实识别 formatt
 ## 附:跟现有工具的关系
 
 - **`~/.claude/rules/`**(Claude Code 官方支持):Claude 用户级规则载体;不属于项目 baseline,是否使用由用户自行决定
-- **project-workflow v3**:本手册是它的核心文档;`template/` 存放 P0 starter assets 与 feature 模板,`adapters/` 承载 host-native actions,`scripts/` 负责 release checks 与 package build
+- **project-workflow v3**:本手册是它的核心文档;`template/` 存放 P0 starter assets 与 feature 模板,`entries/` 提供跨端技能入口,`scripts/` 负责 release checks 与 package build
 - **GitHub Spec Kit `/speckit.clarify`**:P2 spec 不完整时的 Q&A 工具(可选)
 
 ---
@@ -1022,4 +1022,4 @@ P0-P4 不绑定语言或框架。项目个性化时从仓库事实识别 formatt
 
 - [`spec-driven.md`](spec-driven.md) — 功能记录与验证实践指南
 - [`tooling.md`](tooling.md) — 各 AI 工具横向比较
-- [`actions/agents-md-revise.md`](actions/agents-md-revise.md) — P4 主动 refresh action contract;宿主执行细节由各自 adapter 提供
+- [`actions/agents-md-revise.md`](actions/agents-md-revise.md) — P4 主动 refresh action contract;宿主执行细节见技能入口

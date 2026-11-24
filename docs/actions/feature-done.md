@@ -9,7 +9,7 @@ Check whether a feature is ready to deliver and record the result and supporting
 
 This action runs the delivery check: completion preflight, tests and automated checks (L1), applicable
 project-convention and requirement reviews (L2/L3), comparison with current product documentation,
-and a delivery receipt. Both adapters provide one entry point for this process.
+and a delivery receipt. Use this action as the delivery entry point.
 Each gate run reviews one stable final snapshot and returns its terminal verdict. It never repairs
 implementation or non-receipt artifacts; a non-READY verdict returns control to the enclosing request.
 
@@ -236,7 +236,7 @@ remains available. Record `update pending` in the receipt and merge it during ar
 
 Use the receipt's L2/L3/Drift counts for gate health. Repeated zero findings are a cost/calibration signal; inspect
 history only when the user requests calibration. Establish reviewer sensitivity with the repeatable
-[known-bad endpoint smoke](../examples/reviewer-mutation-smoke.md).
+[known-bad endpoint smoke](https://github.com/shrekshrek/project-workflow/blob/main/docs/examples/reviewer-mutation-smoke.md).
 
 ## Invariants
 

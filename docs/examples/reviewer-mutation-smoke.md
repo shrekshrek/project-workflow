@@ -19,7 +19,7 @@ node scripts/check-reviewer-fixtures.cjs
   reviewer against the same snapshot and confirm it cites the matching-test-name and no-throw conventions; this
   checks L2 sensitivity without contradicting endpoint scheduling.
 - `compact-clean`: L1 and declared verification pass; no concrete convention/behavior concern requires a reviewer, so reasoned L2/L3 N/A is valid. `compact-known-bad`: those same checks pass, but a new throwing guard violates the accepted whitespace-only no-throw boundary. L3 is explicitly requested in this case and must cite the accepted `spec.md` and return NEEDS WORK; L2 stays N/A. The fixture checker separately probes failed acceptance verification and missing required reviewer evidence.
-- Run both Claude and Codex endpoint adapters when shared/canonical behavior changes. When only one adapter changes, run that adapter plus the deterministic fixture check.
+- Run the endpoint in fresh Codex and DeepSeek Harness sessions when shared behavior changes.
 
 ## Completion-preflight smoke
 
@@ -122,7 +122,7 @@ If the host cannot expose or constrain reviewer capacity, record that limitation
 
 ## Spec-quality authorization smoke
 
-Materialize a mechanically complete, subjectively clean draft with status `草稿`, concrete user-story outcomes, and an enforceable nonnumeric constraint, then run each Claude/Codex adapter in fresh tasks:
+Materialize a mechanically complete, subjectively clean draft with status `草稿`, concrete user-story outcomes, and an enforceable nonnumeric constraint, then run the skill in each host in fresh tasks:
 
 - Pure check request: `APPROVED`; status remains `草稿`; no implementation starts.
 - Explicit conditional request ("if this passes, proceed"): `APPROVED`; only the top status marker changes to
@@ -132,7 +132,7 @@ Materialize a mechanically complete, subjectively clean draft with status `草�
 - `BLOCKED` result: status and implementation remain unchanged; subjective review is N/A when mechanical prerequisites failed.
 - A mechanically readable but substantively empty artifact is BLOCKED by the semantic check. If a reviewer
   was dispatched, its result must be recorded; it never reports reviewer N/A after dispatch.
-- Repeat a complete short spec with different headings: both adapters read only the existing relevant record/attachments; missing optional structure is not a finding.
+- Repeat a complete short spec with different headings: both hosts read only the existing relevant record/attachments; missing optional structure is not a finding.
   Repeat a one-file security change: independent review still applies despite its small record.
 
 ## Active-feature routing smoke

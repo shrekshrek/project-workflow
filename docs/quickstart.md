@@ -34,4 +34,4 @@ docs/specs/changes/<NNN>-<slug>/spec.md
 
 ## 宿主
 
-Claude 与 Codex 的调用方式见 [跨工具说明](cross-tool-methodology.md#3-adapter-mapping)。不要让用户逐个输入命令才能完成一次自然的讨论、实现与交付。
+各客户端的调用方式见 [跨工具说明](cross-tool-methodology.md#3-adapter-mapping)。不要让用户逐个输入命令才能完成一次自然的讨论、实现与交付。

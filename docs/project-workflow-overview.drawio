@@ -8,7 +8,7 @@
         <mxCell id="title" value="project-workflow v3 — Spec-driven AI development blueprint" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=22;fontStyle=1;fontColor=#1A237E;" vertex="1" parent="1">
           <mxGeometry x="40" y="20" width="1620" height="32" as="geometry"/>
         </mxCell>
-        <mxCell id="subtitle" value="methodology core + Claude/Codex native adapters  ·  统一 action surface: 双端各 9 skills;Claude 6 named agents,Codex 复用 reviewer specs" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontColor=#546E7A;" vertex="1" parent="1">
+        <mxCell id="subtitle" value="9 个跨端 Agent Skills，共用 6 份审查角色契约" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontColor=#546E7A;" vertex="1" parent="1">
           <mxGeometry x="40" y="54" width="1620" height="20" as="geometry"/>
         </mxCell>
 
@@ -25,7 +25,7 @@
           <mxGeometry x="1120" y="110" width="540" height="70" as="geometry"/>
         </mxCell>
 
-        <mxCell id="lifecycle_header" value="四个运行阶段(skill = host-native action 入口,sub-agent = LLM-only 内部审查角色)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontStyle=2;fontColor=#37474F;" vertex="1" parent="1">
+        <mxCell id="lifecycle_header" value="四个运行阶段(skill = 跨端 action 入口,sub-agent = LLM-only 内部审查角色)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontStyle=2;fontColor=#37474F;" vertex="1" parent="1">
           <mxGeometry x="40" y="200" width="1620" height="20" as="geometry"/>
         </mxCell>
 
@@ -205,7 +205,7 @@
         <mxCell id="legend_header" value="图例 · 术语" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontStyle=2;fontColor=#37474F;" vertex="1" parent="1">
           <mxGeometry x="40" y="1040" width="200" height="20" as="geometry"/>
         </mxCell>
-        <mxCell id="legend_skill" value="&lt;b&gt;Skill&lt;/b&gt; = 用户调用的 workflow action;Claude 用 /project-workflow:xxx,Codex 用 $xxx" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#37474F;fontSize=10;align=left;spacing=6;" vertex="1" parent="1">
+        <mxCell id="legend_skill" value="&lt;b&gt;Skill&lt;/b&gt; = 用户可以按动作名调用，例如 feature-init" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#37474F;fontSize=10;align=left;spacing=6;" vertex="1" parent="1">
           <mxGeometry x="40" y="1065" width="395" height="32" as="geometry"/>
         </mxCell>
         <mxCell id="legend_agent" value="&lt;b&gt;Sub-agent&lt;/b&gt; = LLM 内部协作角色,由 skill 指令或主会话按需调度 (见 Tab 2)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF8E1;strokeColor=#F57F17;fontSize=10;align=left;spacing=6;" vertex="1" parent="1">
@@ -231,7 +231,7 @@
         <mxCell id="title2" value="Skill ↔ Sub-agent dispatch network" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=20;fontStyle=1;fontColor=#1A237E;" vertex="1" parent="1">
           <mxGeometry x="40" y="20" width="1320" height="30" as="geometry"/>
         </mxCell>
-        <mxCell id="subtitle2" value="双端各 9 skills (左)复用 6 reviewer specs (右)。Claude 用 named agents;Codex 用 general subagent 或主会话 fallback。" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontColor=#546E7A;" vertex="1" parent="1">
+        <mxCell id="subtitle2" value="9 个动作（左）按需调用 6 个审查角色（右）。宿主调度独立子代理或按契约记录回退。" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontColor=#546E7A;" vertex="1" parent="1">
           <mxGeometry x="40" y="54" width="1320" height="20" as="geometry"/>
         </mxCell>
 

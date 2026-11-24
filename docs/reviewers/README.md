@@ -2,10 +2,7 @@
 
 This directory is the canonical reviewer / auditor / researcher layer for project-workflow.
 
-Agents and skills reference these specs; they do not define a second review method. Claude Code uses
-`adapters/claude/agents/*.md`. Codex skills read the same specs and must use a Codex subagent when the calling
-action requires a review and dispatch capability/capacity are available. Adapters define only host metadata,
-tools and how to start the reviewer.
+When the action calls for an independent review, dispatch a fresh reviewer with the relevant role contract. Apply the execution contract below when dispatch is unavailable.
 
 | Reviewer | Purpose |
 |---|---|
@@ -16,7 +13,7 @@ tools and how to start the reviewer.
 | [`tech-researcher`](tech-researcher.md) | stack/library/tool choice research |
 | [`codebase-explorer`](codebase-explorer.md) | existing-codebase structure survey |
 
-If a runtime adapter conflicts with one of these specs, the spec wins. Update this directory first, then update the Claude/Codex adapter files.
+If a runtime adapter conflicts with one of these specs, the spec wins. Update this directory first, then update the affected skill entry.
 
 ## Reviewer execution contract
 
@@ -52,4 +49,4 @@ concise totals when applicable, and the original result reference.
 Missing or unreadable required execution evidence makes the review `UNRELIABLE`. Evidence showing an actual
 violation is a finding, handled under that role's verdict rules.
 
-Reviewers are read-only. The owning action controls any repair or later review cycle.
+Reviewers are read-only and report in the caller’s language. The owning action controls any repair or later review cycle.

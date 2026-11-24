@@ -260,23 +260,21 @@ forbidPatterns("docs/actions/project-personalize.md", [
   ["duplicate apply approval", /user-approved consolidated diff|single consolidated preview/i],
 ]);
 
-for (const host of ["claude", "codex"]) {
-  forbidPatterns(`adapters/${host}/skills/project-personalize/SKILL.md`, [
-    ["duplicate approval choreography", /before approval|consolidated approval/i],
-  ]);
-  requirePatterns(`adapters/${host}/skills/agents-md-revise/SKILL.md`, [
-    ["current-request authorization", /authorized by the current request/i],
-  ]);
-  forbidPatterns(`adapters/${host}/skills/agents-md-revise/SKILL.md`, [
-    ["legacy approved-only wording", /user-approved drift fixes|approved drift fixes|approved convention edits/i],
-  ]);
-  requirePatterns(`adapters/${host}/skills/feature-done/SKILL.md`, [
-    ["canonical action delegation", /Execute the complete canonical action/i],
-  ]);
-  forbidPatterns(`adapters/${host}/skills/feature-done/SKILL.md`, [
-    ["same-run repair delegation", /bounded repair|repair-delta reconciliation/i],
-  ]);
-}
+forbidPatterns("entries/project-personalize.md", [
+  ["duplicate approval choreography", /before approval|consolidated approval/i],
+]);
+requirePatterns("entries/agents-md-revise.md", [
+  ["current-request authorization", /authorized by the current request/i],
+]);
+forbidPatterns("entries/agents-md-revise.md", [
+  ["legacy approved-only wording", /user-approved drift fixes|approved drift fixes|approved convention edits/i],
+]);
+requirePatterns("entries/feature-done.md", [
+  ["canonical action delegation", /Execute the complete canonical action/i],
+]);
+forbidPatterns("entries/feature-done.md", [
+  ["same-run repair delegation", /bounded repair|repair-delta reconciliation/i],
+]);
 
 forbidPatterns("docs/examples/feature-record.md", [
   ["legacy risk-size field", /Delivery risk signal/i],
@@ -294,20 +292,15 @@ forbidPatterns("docs/examples/reviewer-mutation-smoke.md", [
   ["legacy exact-population output", /exact-population evidence|evidence ID|enumerates the full population/i],
 ]);
 
-requirePatterns("adapters/claude/skills/feature-init/SKILL.md", [
-  ["Claude materializer", /CLAUDE_PLUGIN_ROOT[\s\S]*materialize-feature-artifact\.cjs/],
+requirePatterns("entries/feature-init.md", [
+  ["bundled feature materializer", /resources\/[\s\S]*materialize-feature-artifact\.cjs/],
 ]);
-requirePatterns("adapters/codex/skills/feature-init/SKILL.md", [
-  ["Codex plugin root and materializer", /\.codex-plugin\/plugin\.json[\s\S]*materialize-feature-artifact\.cjs/],
+requirePatterns("entries/feature-done.md", [
+  ["receipt", /## Proof Bundle/],
 ]);
-for (const host of ["claude", "codex"]) {
-  requirePatterns(`adapters/${host}/skills/feature-done/SKILL.md`, [
-    ["receipt", /## Proof Bundle/],
-  ]);
-  requirePatterns(`adapters/${host}/skills/feature-done/SKILL.md`, [
-    ["archive handoff", /canonical verdict and closure-authorization rules[\s\S]*feature-archive/i],
-  ]);
-}
+requirePatterns("entries/feature-done.md", [
+  ["archive handoff", /canonical verdict and closure-authorization rules[\s\S]*feature-archive/i],
+]);
 
 requirePatterns("docs/examples/reviewer-mutation-smoke.md", [
   ["endpoint-owned task smoke", /run feature-done and become READY[\s\S]*endpoint\/lifecycle[\s\S]*cleanup before review/i],
@@ -327,10 +320,6 @@ requirePatterns("docs/examples/feature-init-scenario-matrix.md", [
 requirePatterns("template/AGENTS.md", [
   ["plain-language collaboration", /the proposed change and what the user will see[^.]*\.\s+When asked for the approach first, wait for explicit agreement before acting/i],
   ["cost-aware independent verification", /cheapest useful evidence[\s\S]*Matrix, E2E and repository-wide suites are independent options[\s\S]*not a package[\s\S]*observable facts/i],
-]);
-
-requirePatterns("adapters/codex/.codex-plugin/plugin.json", [
-  ["default correction route", /materially corrects accepted feature behavior[\s\S]*\$spec-revise[\s\S]*\$spec-quality-check/i],
 ]);
 
 if (problems.length) {

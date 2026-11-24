@@ -20,13 +20,13 @@
 
 ## 写法
 
-安装 project-workflow 时,由需要 ADR 的 action 从 plugin 内 `template/docs/adr/0000-template.md` 实例化具体编号文件;项目目录不保留空模板。手工流程从 project-workflow 源库同一路径复制。
+安装 project-workflow 时,由需要 ADR 的 action 从技能内 `resources/template/docs/adr/0000-template.md` 实例化具体编号文件;项目目录不保留空模板。手工流程从 project-workflow 源库的 `template/` 复制。
 
 每份 ADR 在 Accepted 后**正文冻结**。决策推翻时:
 - 起新 ADR
 - 老 ADR 的 Status 改为 `Superseded by NNNN`(唯一允许的改动)
 
-**工具支持**(装了 project-workflow 时):draft 规划由主会话按 `ADR_REQUIRED` 条件从 plugin 模板实例化 ADR,`/spec-quality-check` 在条件成立时核对引用;`/spec-revise` 对 frozen contract 使用同一判据并核对 supersede。普通修订只写 revision record。`/feature-archive` / `/spec-reconcile` 在合并 current truth 时核对结论与 Accepted ADR 的一致性。ADR 不按年龄或引用数自动失效。
+**工具支持**(装了 project-workflow 时):draft 规划由主会话按 `ADR_REQUIRED` 条件从技能模板实例化 ADR,`/spec-quality-check` 在条件成立时核对引用;`/spec-revise` 对 frozen contract 使用同一判据并核对 supersede。普通修订只写 revision record。`/feature-archive` / `/spec-reconcile` 在合并 current truth 时核对结论与 Accepted ADR 的一致性。ADR 不按年龄或引用数自动失效。
 
 ## ADR vs 其他文档
 

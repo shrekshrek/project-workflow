@@ -5,8 +5,8 @@ const { spawnSync } = require("node:child_process");
 
 const repoRoot = path.resolve(__dirname, "..");
 const checks = [
-  ["Generated plugin packages", ["scripts/build-plugin-packages.cjs", "--check"]],
-  ["Claude/Codex adapter parity", ["scripts/check-adapter-parity.js"]],
+  ["Self-contained Agent Skills", ["scripts/build-skills.cjs", "--check"]],
+  ["Skill entry and reviewer contracts", ["scripts/check-skill-contracts.cjs"]],
   ["Workflow structural contracts", ["scripts/check-workflow-contracts.cjs"]],
   ["Reviewer fixtures", ["scripts/check-reviewer-fixtures.cjs"]],
   ["Feature-init fixtures", ["scripts/check-feature-init-fixtures.cjs"]],
