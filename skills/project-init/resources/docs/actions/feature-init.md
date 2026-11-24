@@ -136,14 +136,17 @@ is needed. Explain what already works, which flows you will reuse or change, and
 the result. A sentence can suffice for a routine change. For consequential automatic behavior, explain
 who or what decides and what happens if it fails.
 
-Choose a case that shows how the proposed behavior differs from today's or from a plausible alternative.
-If the proposal also changes an existing workflow or stored data, show that effect on a familiar case.
-For shared contracts, permissions or data ownership, name the affected consumers and the code, data
-or deployments involved.
-Use a diagram when it makes the choice clearer. Check the agreed case at the first stage where it can run.
+Use a concrete case to show what would change. For choices affecting data, permissions or later work,
+pick a case that tests the design assumption. Trace who acts on which data, who else is affected and
+what happens if the assumption is wrong. Explain your recommendation and settle open tradeoffs with
+the user. If an assumption could change the plan, suggest the smallest check that would test it
+and explain what the result would help the user decide.
+Use a diagram when helpful. Check the agreed case at the first stage where it can run.
 
-In the preview, say what you will do in this step and what the user will see. Choose the first result
-they can judge before you build on it. For a small change this can be the finished result.
+In the preview, say what you will do in this step and what the user will see. When several stages offer
+results the user can judge, outline what they would see at each. Recommend the earliest result where
+their feedback can guide later work, explain why, and wait for the user to agree on where to stop before
+implementing. For a small change this can be the finished result.
 When the user asks to hear the approach first, use read-only inspection as needed and end the turn
 with the proposed approach, even if the request also describes the deliverable. Wait for the user's
 explicit agreement to the approach and its material effects before creating files or implementing it.

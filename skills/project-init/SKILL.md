@@ -2,7 +2,7 @@
 name: project-init
 description: "Set up project-workflow in a new or existing repository. Inspect the target and complete neutral initialization or existing-project adaptation."
 metadata:
-  version: "5.0.0"
+  version: "5.1.0"
 ---
 
 # project-init

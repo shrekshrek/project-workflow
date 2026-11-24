@@ -2,7 +2,7 @@
 name: agents-md-revise
 description: "Refresh project conventions from objective repository evidence and apply authorized drift fixes."
 metadata:
-  version: "5.0.0"
+  version: "5.1.0"
 ---
 
 # agents-md-revise
