@@ -2,7 +2,7 @@
 name: project-personalize
 description: "Adapt a target whose project evidence or partial/custom baseline must shape the working agreement, using repository evidence and user decisions."
 metadata:
-  version: "4.0.0"
+  version: "4.0.2"
 ---
 
 # Project Personalize

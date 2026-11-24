@@ -2,7 +2,7 @@
 name: feature-archive
 description: "Close READY features by merging durable conclusions into current truth and archiving approved feature directories."
 metadata:
-  version: "4.0.0"
+  version: "4.0.2"
 ---
 
 # Feature Archive

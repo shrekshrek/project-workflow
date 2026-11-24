@@ -2,7 +2,7 @@
 name: feature-init
 description: "Plan the behavior and acceptance of one feature, including changes across modules that follow established rules. If multiple features need the same undecided rule, route that decision to Blueprint plan-project. Keep ordinary questions and diagnosis in conversation. Create or reuse a record only when acceptance or handoff needs one."
 metadata:
-  version: "4.0.0"
+  version: "4.0.2"
 ---
 
 # Feature Init

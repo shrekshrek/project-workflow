@@ -2,7 +2,7 @@
 name: spec-quality-check
 description: "Run the pre-implementation requirements-reconciliation and quality gate for a proposed or accepted feature record. Do not use for a material correction to an accepted contract; use spec-revise first."
 metadata:
-  version: "4.0.0"
+  version: "4.0.2"
 ---
 
 # Spec Quality Check
