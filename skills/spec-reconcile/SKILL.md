@@ -2,7 +2,7 @@
 name: spec-reconcile
 description: "Reconcile objective contradictions among accumulated specs, current truth, ADRs, and optional implementation evidence."
 metadata:
-  version: "5.1.0"
+  version: "5.1.1"
 ---
 
 # spec-reconcile

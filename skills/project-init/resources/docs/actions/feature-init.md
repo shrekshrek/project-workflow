@@ -150,7 +150,10 @@ implementing. For a small change this can be the finished result.
 When the user asks to hear the approach first, use read-only inspection as needed and end the turn
 with the proposed approach, even if the request also describes the deliverable. Wait for the user's
 explicit agreement to the approach and its material effects before creating files or implementing it.
-Permission to start covers work only up to the agreed checkpoint. If the user explicitly asks you to continue through
+If the approach leaves a choice open that materially affects how people use the feature, how their data
+is handled, or what this step delivers, explain your recommendation and its effect. Wait for the user to
+decide before implementing that choice. Permission to start covers work only up to the agreed checkpoint.
+Routine implementation and tests within it can proceed together. If the user explicitly asks you to continue through
 several outcomes to a named result, report progress along the way and stop at that result.
 If material effects emerge sooner, follow [Implementation Scope Stop](#implementation-scope-stop).
 

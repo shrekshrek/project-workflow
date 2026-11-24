@@ -2,7 +2,7 @@
 name: feature-done
 description: "Run the end-of-feature gate and write the canonical delivery receipt."
 metadata:
-  version: "5.1.0"
+  version: "5.1.1"
 ---
 
 # feature-done

@@ -2,7 +2,7 @@
 name: spec-revise
 description: "Revise a materially wrong accepted or delivered-but-unarchived contract, including when the user corrects, rejects, removes, or replaces accepted behavior, while updating affected decisions, acceptance, optional work notes, and any conditional ADR."
 metadata:
-  version: "5.1.0"
+  version: "5.1.1"
 ---
 
 # spec-revise
