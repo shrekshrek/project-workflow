@@ -1,3 +1,8 @@
+---
+name: spec-revise
+description: "Revise a materially wrong accepted or delivered-but-unarchived contract, including when the user corrects, rejects, removes, or replaces accepted behavior, while updating affected decisions, acceptance, optional work notes, and any conditional ADR."
+---
+
 # spec-revise
 
 Correct agreed requirements or plans for a feature that has not been archived, before or after implementation.
@@ -42,10 +47,9 @@ Then explicitly rerun `feature-done`; it replaces the delivery verdict and handl
    A user correction that conflicts with agreed behavior is a `contract-correction`: do not run
    `spec-quality-check` against the stale artifact or continue affected implementation before updating
    the spec and affected linked records.
-3. Identify the agreed scope, affected modules/files and overlap with other Git changes. Reread applicable
-   project conventions. Code already written does not authorize expanding the feature.
+3. Identify the agreed scope, affected modules/files and overlap with other Git changes. Read root and applicable nested `AGENTS.md`; recheck applicability whenever the module scope changes. Preserve unrelated history and edits; never restore via checkout. Code already written does not authorize expanding the feature.
 4. An ADR is required (`ADR_REQUIRED`) for a change to architecture or module boundaries, a durable
-   cross-feature technical decision, or replacement of an existing ADR. Only then check filenames, titles, status
+   cross-feature technical decision, or replacement of an existing ADR. Use the [ADR template](../../template/docs/adr/0000-template.md) for a new decision. Only then check filenames, titles, status
    and references, then read only relevant Accepted or Proposed records. When replacing an ADR, identify
    it in the new decision and obtain approval before marking the old one `Superseded by NNNN`.
 5. Use the [conversation rules](feature-init.md#conversation-and-discovery) to identify what must change

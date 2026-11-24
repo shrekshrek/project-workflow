@@ -20,7 +20,7 @@
 
 ## 写法
 
-安装 project-workflow 时,由需要 ADR 的 action 从技能内 `resources/template/docs/adr/0000-template.md` 实例化具体编号文件;项目目录不保留空模板。手工流程从 project-workflow 源库的 `template/` 复制。
+安装 project-workflow 时,由需要 ADR 的 action 从同组的 `project-init/resources/template/docs/adr/0000-template.md` 实例化具体编号文件;项目目录不保留空模板。手工流程从 project-workflow 源库的 `template/` 复制。
 
 每份 ADR 在 Accepted 后**正文冻结**。决策推翻时:
 - 起新 ADR

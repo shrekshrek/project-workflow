@@ -1,3 +1,8 @@
+---
+name: feature-archive
+description: "Close READY features by merging durable conclusions into current truth and archiving approved feature directories."
+---
+
 # feature-archive
 
 Close a delivered feature by merging durable conclusions into the product documentation and moving the
@@ -28,7 +33,7 @@ authorization without another approval round.
 ## Outputs
 
 - Updated `docs/specs/<area>.md` when the receipt marks an update pending or delivery changes documented
-  behavior. Use the domain template when a durable product rule needs a new area document.
+  behavior. Use the [domain template](../../template/docs/specs/_template/domain.md) when a durable product rule needs a new area document.
   Update `docs/specs/index.md` when ownership changes.
 - Each closed feature at `docs/specs/changes/archive/<NNN>-<slug>/`, keeping its unique number and all
   attachments. Its receipt records what was merged and the archive date.
@@ -47,8 +52,7 @@ authorization without another approval round.
    is not READY, or the reviewed state cannot be verified, leave the candidate active and route back
    to `feature-done`. A valid receipt carries its checks and reviews into archive.
 3. For each candidate, draft the durable present-tense facts, lifecycle status changes, archive note, and optional index update without applying them. A stable READY receipt proves the historical delivery, not today's product behavior: validate every pending current-truth fact against present implementation evidence, current domain documents, and later active/successor changes. Do not merge a stale fact merely because the old receipt remains valid. If pruning still leaves independently changing responsibilities in one document, finish an otherwise unambiguous archive and report a nonblocking restructuring proposal; uncertain fact ownership remains a user question. Do not bundle the restructuring into the archive unless the user authorized it. Stop on unresolved supersession or contradiction with an Accepted ADR until the governing decision is resolved.
-4. Rename the directory on the filesystem, including untracked files. Run the link relocator using
-   the old and new paths so links within the feature stay local and links to other files keep their targets.
+4. Rename the directory on the filesystem, including untracked files. Run [the bundled link relocator](../../scripts/relocate-markdown-links.cjs) with `<old-dir> <new-dir>` so links within the feature stay local and links to other files keep their targets.
    If any target is missing or relocation fails, move the directory back and stop before applying
    the prepared edits.
 5. Apply the prepared current-truth, final-status, archive-note, governing-ADR, and optional index updates.

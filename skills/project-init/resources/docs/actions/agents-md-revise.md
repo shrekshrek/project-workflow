@@ -1,3 +1,8 @@
+---
+name: agents-md-revise
+description: "Refresh project conventions from objective repository evidence and apply authorized drift fixes."
+---
+
 # agents-md-revise
 
 Canonical action for refreshing project conventions.
@@ -39,7 +44,7 @@ owner. Nested guidance states differences only; never create it for directory sy
 
 ## Workflow
 
-1. Resolve root/nested `AGENTS.md` and only the host-specific convention files explicitly included in this run.
+1. Resolve root/nested `AGENTS.md` and only the host-specific convention files explicitly included in this run. Preserve each host’s private rules in its own format.
 2. Extract testable statements about commands, dependencies, directories, configuration, framework rules, tier boundaries, and collaboration rules.
 3. Inspect objective repository evidence: manifests, lockfiles, tool-version files, actual paths, configuration examples, and relevant recent changes.
 4. Audit guidance placement without judging the architecture itself:
@@ -59,7 +64,7 @@ owner. Nested guidance states differences only; never create it for directory sy
    narrow keep/move/create/delete/mechanize patch. Exclude preferences and weak pattern guesses.
 6. Ask only about material ambiguity or genuinely new policy. Objective stale-value synchronization proceeds
    under the current request without a separate decision round.
-7. Draft the proposed patches without editing the worktree. Use an inline trace for repository- or user-sourced synchronization and the decision-completeness auditor only for unconfirmed high-impact policy or conflicting/weak evidence.
+7. Draft the proposed patches without editing the worktree. Use an inline trace for repository- or user-sourced synchronization and the [decision-completeness auditor](../reviewers/decision-completeness-auditor.md#dispatch-boundary) only for unconfirmed high-impact policy or conflicting/weak evidence.
 8. Summarize the patch, apply only authorized convention changes, then validate the changed commands, paths, placeholders,
    nested inheritance, alias content, and absence of parent duplication.
 

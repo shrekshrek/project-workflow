@@ -40,7 +40,7 @@ Do not ask for framework, ORM, database, UI library, state manager, or test tool
 ## Host-private assets
 
 - Existing `.claude/rules/` may be validated when selected; do not translate them into Codex policy.
-- `_multi_tier_examples/` and other plugin examples remain reference assets; never copy them into a target by default.
+- Use `_multi_tier_examples/` as a reference. Do not copy tier examples into the target by default.
 
 ## Optional high-impact path declarations
 

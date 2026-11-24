@@ -1,3 +1,8 @@
+---
+name: feature-done
+description: "Run the end-of-feature gate and write the canonical delivery receipt."
+---
+
 # feature-done
 
 Check whether a feature is ready to deliver and record the result and supporting evidence in its spec.
@@ -84,7 +89,7 @@ This action owns these receipt and status updates; they do not revise the requir
 
 - Feature directory or slug.
 - Current diff or changed files.
-- Project conventions from root and applicable nested `AGENTS.md`, plus host-specific convention files when the active adapter supplies them.
+- Project conventions from root and applicable nested `AGENTS.md`, plus applicable host-specific files. For Claude Code, resolve project-root and explicitly selected user-level rules under the [L2 scope](../reviewers/agents-md-reviewer.md#scope).
 - The accepted `spec.md`, any relevant optional design/work notes, and directly cited accepted ADR/current-truth
   sources needed by its impact boundary, Codify commitments, or current-truth decision.
 - Related domain documents (`docs/specs/<area>.md`) when the feature touches a declared product/system area.
@@ -107,24 +112,24 @@ This action owns these receipt and status updates; they do not revise the requir
   reviewer slots `not-run(L1 prerequisite)` and current truth `not-run(non-READY prerequisite)`.
 - L2 Project conventions: required when the project/user asks for it, convention sources change, or a
   qualitative convention/architecture concern cannot be settled by mechanical checks. Otherwise record a
-  reasoned N/A. Documentation size does not determine applicability.
+  reasoned N/A. When applicable, use [agents-md-reviewer](../reviewers/agents-md-reviewer.md). Documentation size does not determine applicability.
 - L3 Change-spec compliance: required for a concrete behavior, security, data, recovery or shared-contract
   concern requiring independent judgment, or an explicit project/user requirement. Otherwise record a
-  reasoned N/A. Use `spec-reviewer` against the accepted behavior and verification, regardless of record layout.
+  reasoned N/A. Use [spec-reviewer](../reviewers/spec-reviewer.md) against the accepted behavior and verification, regardless of record layout.
 - All acceptance verification: execute or mechanically check every applicable obligation, whether independent
   reviewers apply or not. An unverified or failed obligation blocks READY. Optional files and headings do not
   create or remove obligations. A failed test is not permission to rewrite an expected result.
 - Evidence deduplication: when one command/assertion proves several related Verification items, execute it once and
   map that result to each obligation.
 - Long-run execution: before a materially long, paid, external, opaque, high-volume or restart-costly endpoint
-  check, present the actual next run at `feature-init`'s slice handoff, reusing its concise execution envelope.
+  check, present the actual next run at `feature-init`'s slice handoff, using its [execution envelope](feature-init.md#record-and-authorization).
   Apply [feature-init’s feedback and stop boundaries](feature-init.md#implementation-scope-stop); an accepted
   envelope does not waive a pending handoff. Report observable progress and disclose unavailable counts.
 - Domain doc check: defer it until L1 and applicable L2/L3 and acceptance verification form a READY candidate. Earlier
   failures record `not-run(non-READY prerequisite)`. For a candidate, compare only a declared/relevant
   `docs/specs/<area>.md`: resolved durable behavior with no existing area document is `update pending`; genuinely
   unknown ownership is `area unresolved`; internal/non-durable work is `no relevant domain doc`.
-- Delivery receipt: write compact, decision-relevant evidence to the canonical `## Proof Bundle` section in `spec.md`. The endpoint response shows a human summary and links the receipt; it does not inline the full receipt.
+- Delivery receipt: write compact, decision-relevant evidence to the canonical `## Proof Bundle` section in `spec.md`. Re-read the saved receipt and check its structure. The endpoint response shows a human summary and links the receipt; it does not inline the full receipt.
 
 ## Reviewer Execution
 

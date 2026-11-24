@@ -2,15 +2,15 @@
 name: feature-archive
 description: "Close READY features by merging durable conclusions into current truth and archiving approved feature directories."
 metadata:
-  version: "4.0.2"
+  version: "5.0.0"
 ---
 
-# Feature Archive
+# feature-archive
 
-Match the user's language and preserve file language. Read [`resources/docs/actions/feature-archive.md`](resources/docs/actions/feature-archive.md) completely before acting. Apply [runtime conventions](resources/docs/actions/README.md#shared-runtime-conventions).
+Match the user's language and preserve file language. Read [the action](../project-init/resources/docs/actions/feature-archive.md) completely and follow [the shared conventions](../project-init/resources/docs/actions/README.md#shared-runtime-conventions).
 
-- Resolve an explicit candidate or empty sweep mode through the shared runtime conventions.
-- Validate eligibility using [receipt schema](resources/docs/actions/feature-done.md#delivery-receipt--proof-bundle-on-disk); check freshness and current truth before mutation. Use questions when the action requires a user decision.
-- Use the bundled `resources/` directory; use its domain template when canonical current-truth creation applies.
-- Move approved directories with an ordinary filesystem rename, then run the packaged `scripts/relocate-markdown-links.cjs <old-dir> <new-dir>`. If relocation fails, move the directory back before stopping; apply lifecycle/current-truth edits only after successful relocation.
-- Do not modify implementation code, delete history, or commit.
+Use these references when the action or assigned reviewer calls for them:
+
+- [docs/actions/feature-done.md#delivery-receipt--proof-bundle-on-disk](../project-init/resources/docs/actions/feature-done.md#delivery-receipt--proof-bundle-on-disk)
+- [template/docs/specs/_template/domain.md](../project-init/resources/template/docs/specs/_template/domain.md)
+- [scripts/relocate-markdown-links.cjs](../project-init/resources/scripts/relocate-markdown-links.cjs)

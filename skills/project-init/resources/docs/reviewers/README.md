@@ -13,7 +13,7 @@ When the action calls for an independent review, dispatch a fresh reviewer with 
 | [`tech-researcher`](tech-researcher.md) | stack/library/tool choice research |
 | [`codebase-explorer`](codebase-explorer.md) | existing-codebase structure survey |
 
-If a runtime adapter conflicts with one of these specs, the spec wins. Update this directory first, then update the affected skill entry.
+Maintain each reviewer’s method here. Actions link to the relevant role at its dispatch boundary.
 
 ## Reviewer execution contract
 

@@ -2,21 +2,25 @@
 name: spec-revise
 description: "Revise a materially wrong accepted or delivered-but-unarchived contract, including when the user corrects, rejects, removes, or replaces accepted behavior, while updating affected decisions, acceptance, optional work notes, and any conditional ADR."
 metadata:
-  version: "4.0.2"
+  version: "5.0.0"
 ---
 
-# Spec Revise
+# spec-revise
 
-Match the user's language and preserve file language. Read [`resources/docs/actions/spec-revise.md`](resources/docs/actions/spec-revise.md) completely before acting. Apply [runtime conventions](resources/docs/actions/README.md#shared-runtime-conventions).
+Match the user's language and preserve file language. Read [the action](../project-init/resources/docs/actions/spec-revise.md) completely and follow [the shared conventions](../project-init/resources/docs/actions/README.md#shared-runtime-conventions).
 
-- For a change in scope use [scope stops](resources/docs/actions/feature-init.md#implementation-scope-stop). For material decision closure read [discovery](resources/docs/actions/feature-init.md#conversation-and-discovery); for reopening read [receipt history](resources/docs/actions/feature-done.md#completion-preflight); for convention placement read [guidance placement](resources/docs/actions/agents-md-revise.md#guidance-placement-contract).
+Use these references when the action or assigned reviewer calls for them:
 
-- Resolve the feature under canonical record/lifecycle rules. Read applicable root/nested `AGENTS.md`, recomputing applicability when module scope changes.
-- Use the bundled `resources/` directory; when
-  canonical `ADR_REQUIRED` applies, search only relevant ADR metadata/references and instantiate the bundled
-  `template/docs/adr/0000-template.md`.
-- Apply the authorized revision using [record rules](resources/docs/actions/feature-init.md#record-and-authorization) and [maintenance](resources/docs/actions/feature-init.md#document-updates-and-context).
-- At the narrowed canonical boundary, dispatch a fresh subagent for
-  [`decision-completeness-auditor`](resources/docs/reviewers/decision-completeness-auditor.md#dispatch-boundary), with fallback
-  under the [review execution](resources/docs/reviewers/README.md#reviewer-execution-contract). Blocking or unreliable audit evidence prevents apply.
-- Apply the authorized revision without restoring via checkout, rewriting unrelated history, or committing.
+- [docs/actions/feature-init.md#record-and-authorization](../project-init/resources/docs/actions/feature-init.md#record-and-authorization)
+- [docs/actions/feature-init.md#implementation-scope-stop](../project-init/resources/docs/actions/feature-init.md#implementation-scope-stop)
+- [template/docs/adr/0000-template.md](../project-init/resources/template/docs/adr/0000-template.md)
+- [docs/actions/feature-init.md#conversation-and-discovery](../project-init/resources/docs/actions/feature-init.md#conversation-and-discovery)
+- [docs/actions/feature-init.md#document-updates-and-context](../project-init/resources/docs/actions/feature-init.md#document-updates-and-context)
+- [docs/actions/feature-done.md#completion-preflight](../project-init/resources/docs/actions/feature-done.md#completion-preflight)
+- [docs/actions/agents-md-revise.md#guidance-placement-contract](../project-init/resources/docs/actions/agents-md-revise.md#guidance-placement-contract)
+- [docs/reviewers/decision-completeness-auditor.md#dispatch-boundary](../project-init/resources/docs/reviewers/decision-completeness-auditor.md#dispatch-boundary)
+- [docs/reviewers/README.md#reviewer-execution-contract](../project-init/resources/docs/reviewers/README.md#reviewer-execution-contract)
+- [docs/actions/feature-done.md](../project-init/resources/docs/actions/feature-done.md)
+- [docs/actions/feature-archive.md](../project-init/resources/docs/actions/feature-archive.md)
+- [docs/actions/spec-reconcile.md](../project-init/resources/docs/actions/spec-reconcile.md)
+- [docs/actions/spec-quality-check.md](../project-init/resources/docs/actions/spec-quality-check.md)

@@ -1,3 +1,8 @@
+---
+name: spec-quality-check
+description: "Run the pre-implementation requirements-reconciliation and quality gate for a proposed or accepted feature record. Do not use for a material correction to an accepted contract; use spec-revise first."
+---
+
 # spec-quality-check
 
 Canonical semantic readiness check before implementation or after a material accepted revision.
@@ -57,7 +62,7 @@ user decision. Review the affected boundary, not every project document or unrel
 - `BLOCKED`: a material mismatch, unsupported decision, unexecutable acceptance or missing required evidence
   prevents reliable implementation. State the specific gap and next useful action.
 
-A standalone check is read-only. Return to the enclosing request under the
+A standalone check is read-only. Report content defects for revision; the check never repairs them. Return to the enclosing request under the
 [implementation authorization rule](feature-init.md#record-and-authorization). Once the user has
 accepted the reviewed approach and authorized implementation, an approved record can be marked `已确认`.
 
