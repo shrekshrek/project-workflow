@@ -61,6 +61,7 @@ requirePatterns("docs/actions/feature-init.md", [
   ["requested approach preview ends the turn", /asks to hear the approach first[^.]*read-only inspection[^.]*end the turn/i],
   ["agreement before implementation", /wait for the user's\s+explicit agreement to the approach and its material effects before creating files or implementing/i],
   ["preview identifies the work and visible result", /preview[^.]*what you will do in this step[^.]*what the user will see/i],
+  ["multi-stage preview agrees the first handoff with the user", /outline what they would see at each\.\s+Recommend the earliest result where\s+their feedback can guide later work, explain why, and wait for the user to agree on where to stop before\s+implementing/i],
   ["permission to start ends at the stated checkpoint", /permission to start[^.]*only up to (?:the|that) (?:agreed )?checkpoint/i],
   ["long-run execution envelope", /materially long, paid, external, opaque[\s\S]*execution envelope[\s\S]*partial-result persistence[\s\S]*canary or sample alternative/i],
   ["accepted envelope preserves useful handoffs", /accepted envelope covers ordinary work[\s\S]*does not suppress informative handoffs/i],

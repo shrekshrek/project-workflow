@@ -6,6 +6,7 @@
 
 ## 修改纪律
 
+- **保留用户的阶段决定权**：维护或精简 [feature-init](docs/actions/feature-init.md) 时，必须保留两项约束：有多个值得用户判断的阶段，开工前与用户商定先做到哪里；展示约定结果后，等用户明确同意下一步。不得用整项功能的开工授权或中途进度汇报替代阶段决定。
 - **方法论 vs 工程化分层**:本仓库**只放方法论与技能资产**(`docs/` + `template/` + skills)。工程化样例(具体栈代码)放在另一个仓库,不进本仓库
 - **Action source of truth**:workflow action 的触发、输入、输出、不变量、验证写在 `docs/actions/`;变更动作语义先改对应 action spec。同一关注点只保留一个 normative owner;新增行为先合并或替换已有规则,技能入口、template 和外围文档只保留必要引用或摘要,不复制决策逻辑、条件表或解释;提交前检查第二权威来源和无谓净增。
 - **Template contracts**:修改 baseline 或 `.claude/rules/` 模板后运行 `node scripts/check-template-contracts.js`;保留 no-clobber 安全检查，规则使用 `paths:` YAML list
